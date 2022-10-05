@@ -32,7 +32,7 @@ object NavGraphBuilder {
             if (node.isFragment) {
                 val destination: FragmentNavigator.Destination = fragmentNavigator.createDestination()
                 destination.id = node.id
-                destination.setClassName(node.className)
+                destination.className = node.className
                 destination.addDeepLink(node.pageUrl)
                 navGraph.addDestination(destination)
             } else {
@@ -45,7 +45,7 @@ object NavGraphBuilder {
 
             //给APP页面导航结果图 设置一个默认的展示页的id
             if (node.asStarter) {
-                navGraph.setStartDestination(node.id)
+                navGraph.startDestination = node.id
             }
         }
         controller.graph = navGraph

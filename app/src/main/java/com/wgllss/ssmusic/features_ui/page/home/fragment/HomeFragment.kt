@@ -13,7 +13,7 @@ import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 
-@FragmentDestination(pageUrl = "fmt_home", label = "首页", iconId = R.drawable.ic_home_black_24dp)
+@FragmentDestination(pageUrl = "fmt_home", asStarter = true, label = "首页", iconId = R.drawable.ic_home_black_24dp)
 class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layout.fragment_home) {
     override fun activitySameViewModel() = true
 

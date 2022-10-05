@@ -5,7 +5,7 @@ package com.wgllss.annotations
 annotation class FragmentDestination(
     val pageUrl: String,
     val needLogin: Boolean = false,
-    val asStarter: Boolean = true,
+    val asStarter: Boolean = false,
     val label: String,
     val iconId: Int
 )
