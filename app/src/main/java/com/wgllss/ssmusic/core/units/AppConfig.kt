@@ -2,7 +2,7 @@ package com.wgllss.ssmusic.core.units
 
 import com.alibaba.fastjson.JSON
 import com.alibaba.fastjson.TypeReference
-import com.wgllss.ssmusic.data.navigation.Destination
+import com.wgllss.ssmusic.core.widget.navigation.Destination
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream

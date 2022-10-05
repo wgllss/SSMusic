@@ -150,12 +150,14 @@ class NavProcessor : AbstractProcessor() {
             //标记该页面是fragment 还是activity类型的
             var isFragment = false
             var label: String? = null
+            var iconId :Int?=0
             val annotation = element.getAnnotation(annotationClaz)
             if (annotation is FragmentDestination) {
                 val dest = annotation
                 pageUrl = dest.pageUrl
                 asStarter = dest.asStarter
                 needLogin = dest.needLogin
+                iconId = dest.iconId
                 isFragment = true
                 label = dest.label
             } else if (annotation is ActivityDestination) {
@@ -163,6 +165,7 @@ class NavProcessor : AbstractProcessor() {
                 pageUrl = dest.pageUrl
                 asStarter = dest.asStarter
                 needLogin = dest.needLogin
+                iconId = dest.iconId
                 isFragment = false
             }
             if (destMap.containsKey(pageUrl)) {
@@ -170,6 +173,7 @@ class NavProcessor : AbstractProcessor() {
             } else {
                 val `object` = JSONObject()
                 `object`.put("id", id)
+                `object`.put("iconId", iconId)
                 `object`.put("needLogin", needLogin)
                 `object`.put("asStarter", asStarter)
                 `object`.put("pageUrl", pageUrl)

@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.core.widget
+package com.wgllss.ssmusic.core.widget.navigation
 
 import android.content.Context
 import android.os.Bundle

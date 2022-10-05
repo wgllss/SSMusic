@@ -1,12 +1,13 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
+import android.os.Bundle
 import android.view.Menu
 import androidx.navigation.fragment.NavHostFragment
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
 import com.wgllss.ssmusic.core.units.AppConfig
-import com.wgllss.ssmusic.core.widget.NavGraphBuilder
-import com.wgllss.ssmusic.data.navigation.Destination
+import com.wgllss.ssmusic.core.widget.navigation.NavGraphBuilder
+import com.wgllss.ssmusic.core.widget.navigation.Destination
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -47,7 +48,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
         while (iterator.hasNext()) {
             val next = iterator.next()
             val destination: Destination? = destConfig[next]
-            menu.add(0, destination!!.id, 0, destination.label)
+            menu.add(0, destination!!.id, 0, destination.label).setIcon(destination.iconId)
         }
         return true
     }

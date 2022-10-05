@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.core.widget
+package com.wgllss.ssmusic.core.widget.navigation
 
 import android.content.ComponentName
 import androidx.fragment.app.FragmentActivity
@@ -6,7 +6,6 @@ import androidx.navigation.*
 import androidx.navigation.fragment.FragmentNavigator
 import com.wgllss.ssmusic.core.units.AppConfig
 import com.wgllss.ssmusic.core.units.AppGlobals
-import com.wgllss.ssmusic.data.navigation.Destination
 
 object NavGraphBuilder {
 

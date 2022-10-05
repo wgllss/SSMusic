@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.data.navigation
+package com.wgllss.ssmusic.core.widget.navigation
 
 data class Destination(
     val isFragment: Boolean,
@@ -8,4 +8,5 @@ data class Destination(
     val className: String,
     val id: Int,
     val label: String,
+    val iconId: Int
 )

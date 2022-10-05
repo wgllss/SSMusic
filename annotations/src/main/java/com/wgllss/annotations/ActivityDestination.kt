@@ -5,5 +5,6 @@ package com.wgllss.annotations
 annotation class ActivityDestination(
     val pageUrl: String,
     val needLogin: Boolean,
-    val asStarter: Boolean
+    val asStarter: Boolean,
+    val iconId: Int
 )
