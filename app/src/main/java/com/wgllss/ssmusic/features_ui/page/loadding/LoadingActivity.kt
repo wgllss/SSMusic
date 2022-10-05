@@ -13,6 +13,7 @@ class LoadingActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LogTimer.LogE(this, "onCreate")
         launchActivity(Intent(this, HomeActivity::class.java))
         finishActivity()
     }
