@@ -5,9 +5,6 @@ import android.app.Application
 object AppGlobals {
     lateinit var sApplication: Application;
 
-    //    companion object {
-//        var sApplication: Application = getApplication()
-//
     fun getApplication(): Application {
         if (!this::sApplication.isInitialized) {
             //去反射得到
@@ -22,5 +19,4 @@ object AppGlobals {
         }
         return sApplication
     }
-//    }
 }

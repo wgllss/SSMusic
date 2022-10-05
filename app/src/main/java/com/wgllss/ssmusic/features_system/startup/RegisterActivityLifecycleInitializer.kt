@@ -13,6 +13,9 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class RegisterActivityLifecycleInitializer : Initializer<Unit> {
+
+    override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
+
     override fun create(context: Context) {
         LogTimer.LogE(this, "create")
         GlobalScope.launch {
@@ -49,9 +52,5 @@ class RegisterActivityLifecycleInitializer : Initializer<Unit> {
                 }
             })
         }
-    }
-
-    override fun dependencies(): List<Class<out Initializer<*>>> {
-        return emptyList()
     }
 }

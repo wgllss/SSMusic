@@ -1,8 +1,12 @@
 package com.wgllss.ssmusic.dl
 
 import android.content.Context
+import androidx.lifecycle.ViewModelProvider
+import com.scclzkj.base_core.base.app.CommonApplicationProxy
 import com.wgllss.ssmusic.datasource.net.HeaderInterceptor
 import com.wgllss.ssmusic.datasource.net.MusiceApi
+import com.wgllss.ssmusic.features_system.app.AppViewModel
+import com.wgllss.ssmusic.features_system.app.AppViewModelFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -54,4 +58,9 @@ class AppModule {
     @Provides
     @Singleton
     fun provideApiService(retrofit: Retrofit): MusiceApi = retrofit.create(MusiceApi::class.java)
+
+    @Provides
+    @Singleton
+    fun provideSharedViewModel(factory: AppViewModelFactory) = ViewModelProvider(CommonApplicationProxy.viewModelStore, factory).get(AppViewModel::class.java)
+
 }

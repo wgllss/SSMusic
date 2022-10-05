@@ -5,7 +5,16 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.SSMusic" parent="Base.Theme.SSMusic" />
+    <style name="Theme.SSMusic" parent="Base.Theme.SSMusic" >
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>
+    </style>
+
+    <style name="dialog_Animation_Translucent">
+        <item name="android:windowEnterAnimation">@anim/anim_alpha_121</item>
+        <item name="android:windowExitAnimation">@anim/anim_alpha_121</item>
+    </style>
 
     <style name="Loading" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>

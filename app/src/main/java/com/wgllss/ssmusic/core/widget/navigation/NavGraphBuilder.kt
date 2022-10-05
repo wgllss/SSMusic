@@ -2,7 +2,10 @@ package com.wgllss.ssmusic.core.widget.navigation
 
 import android.content.ComponentName
 import androidx.fragment.app.FragmentActivity
-import androidx.navigation.*
+import androidx.navigation.ActivityNavigator
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
+import androidx.navigation.NavGraphNavigator
 import androidx.navigation.fragment.FragmentNavigator
 import com.wgllss.ssmusic.core.units.AppConfig
 import com.wgllss.ssmusic.core.units.AppGlobals
@@ -22,7 +25,7 @@ object NavGraphBuilder {
         val fragmentNavigator = FixFragmentNavigator(activity, activity.supportFragmentManager, containerId)
         provider.addNavigator(fragmentNavigator)
         val activityNavigator = provider.getNavigator(ActivityNavigator::class.java)
-        val destConfig: HashMap<String, Destination> = AppConfig.getDestConfig()
+        val destConfig: HashMap<String, Destination> = AppConfig.getDestConfig(activity)
         val iterator: Iterator<Destination> = destConfig.values.iterator()
         while (iterator.hasNext()) {
             val node: Destination = iterator.next()

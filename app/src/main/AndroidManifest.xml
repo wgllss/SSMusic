@@ -42,17 +42,19 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
-            android:exported="false"
-           >
+            android:exported="false">
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"
                 android:value="androidx.startup" />
-<!--            <meta-data-->
-<!--                android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"-->
-<!--                android:value="androidx.startup" />-->
-<!--            <meta-data-->
-<!--                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"-->
-<!--                android:value="androidx.startup" />-->
+            <meta-data
+                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"
+                android:value="androidx.startup" />
+            <!--            <meta-data-->
+            <!--                android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"-->
+            <!--                android:value="androidx.startup" />-->
+            <!--            <meta-data-->
+            <!--                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"-->
+            <!--                android:value="androidx.startup" />-->
         </provider>
     </application>
 
