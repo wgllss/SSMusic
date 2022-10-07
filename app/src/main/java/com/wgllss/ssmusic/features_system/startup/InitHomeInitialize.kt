@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.features_system.startup
 
 import android.content.Context
 import androidx.startup.Initializer
+import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.core.units.AppConfig
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
@@ -23,9 +24,10 @@ class InitHomeInitialize : Initializer<Unit> {
                 InitializerEntryPoint.resolve(context).injectAppViewModel().get()
             }
             val time = measureTimeMillis {
-                AppConfig.getDestConfig(context)
+                NavigationConfig.getDestConfig()
+//                AppConfig.getDestConfig(context)
             }
-            appViewModelL.await().installHomeJson.postValue(true)
+//            appViewModelL.await().installHomeJson.postValue(true)
             WLog.e(this@InitHomeInitialize, "time ${time} ms")
             LogTimer.LogE(this@InitHomeInitialize, "getDestConfig")
         }

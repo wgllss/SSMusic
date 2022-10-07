@@ -5,7 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.SSMusic" parent="Base.Theme.SSMusic" >
+    <style name="Theme.SSMusic" parent="Base.Theme.SSMusic">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>
@@ -33,6 +33,15 @@
     </style>
 
     <style name="LauncherTheme" parent="android:Theme.NoTitleBar.Fullscreen">
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/splash_preview</item>
+
+    </style>
+
+    <style name="LauncherTheme2" parent="Base.Theme.SSMusic">
+        <!--        该方式看不到启动页-->
 
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>

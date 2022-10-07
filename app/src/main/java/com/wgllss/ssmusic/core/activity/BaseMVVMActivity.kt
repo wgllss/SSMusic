@@ -7,8 +7,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelLazy
+import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import java.lang.reflect.ParameterizedType
+import kotlin.system.measureTimeMillis
 
 /**
  * contentLayoutId 不传给父类，否则 binding = DataBindingUtil.setContentView(this, contentLayoutId) 设置一次
@@ -36,8 +40,12 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewDataBinding>(@Layou
 
 
     override fun initControl(savedInstanceState: Bundle?) {
-        binding = DataBindingUtil.setContentView(this, contentLayoutId)
-        binding.lifecycleOwner = this@BaseMVVMActivity
+        LogTimer.LogE(this, "initControl")
+        val time = measureTimeMillis {
+            binding = DataBindingUtil.setContentView(this, contentLayoutId)
+            binding.lifecycleOwner = this@BaseMVVMActivity
+        }
+        WLog.e(this, "time:${time}")
     }
 
     override fun bindEvent() {

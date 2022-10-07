@@ -14,8 +14,10 @@ class LoadingActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LogTimer.LogE(this, "onCreate")
+//        startActivity(Intent(this, HomeActivity::class.java))
         launchActivity(Intent(this, HomeActivity::class.java))
-        finishActivity()
+//        finishActivity()
+        LogTimer.LogE(this, "finishActivity")
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {

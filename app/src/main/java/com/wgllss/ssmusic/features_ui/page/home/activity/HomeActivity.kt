@@ -1,16 +1,20 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
+import android.view.Gravity
 import android.view.Menu
 import android.view.View
+import android.widget.FrameLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
-import com.wgllss.ssmusic.core.units.AppConfig
+import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
+import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
+import com.wgllss.ssmusic.core.asyninflater.OnInflateFinishListener
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.core.widget.navigation.Destination
 import com.wgllss.ssmusic.core.widget.navigation.NavGraphBuilder
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_system.app.AppViewModel
@@ -18,9 +22,9 @@ import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.system.measureTimeMillis
 
 @AndroidEntryPoint
 class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layout.activity_home) {
@@ -33,36 +37,54 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
         super.onCreate(savedInstanceState)
     }
 
-    override fun initValue() {
-        LogTimer.LogE(this, "initValue 0")
+    override fun initControl(savedInstanceState: Bundle?) {
+        super.initControl(savedInstanceState)
         val fragment = supportFragmentManager.findFragmentById(R.id.fmt_main)
-        LogTimer.LogE(this, "initValue 1")
-
-        AppViewModelL.get().installHomeJson.observe(this) {
-            it?.takeIf { it }?.let { _ ->
-                var navController = NavHostFragment.findNavController(fragment!!)
-                NavGraphBuilder.build(this, navController, fragment.id)
-                onPrepareOptionsMenu(binding.bottomNavigationView.menu)
-                binding.bottomNavigationView.setOnItemSelectedListener {
-                    navController.navigate(it.itemId)
-                    return@setOnItemSelectedListener true
+        val navController = NavHostFragment.findNavController(fragment!!)
+        NavGraphBuilder.build(this@HomeActivity, navController, fragment.id)
+        LogTimer.LogE(this@HomeActivity, "super initControl after")
+        AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home, object : OnInflateFinishListener {
+            override fun onInflateFinished(view: View) {
+                LogTimer.LogE(this@HomeActivity, "onInflateFinished")
+                lifecycleScope.launch {
+                    val lpA = async(Dispatchers.IO) {
+                        FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, resources.getDimension(R.dimen.navigation_height).toInt()).apply {
+                            gravity = Gravity.BOTTOM
+                        }
+                    }
+                    val menu = async(Dispatchers.IO) {
+                        view?.takeIf {
+                            it is BottomNavigationView
+                        }?.let {
+                            (it as BottomNavigationView)?.apply {
+                                setOnItemSelectedListener {
+                                    navController.navigate(it.itemId)
+                                    return@setOnItemSelectedListener true
+                                }
+                            }?.run {
+                                menu
+                            }
+                        }
+                    }
+                    binding?.frameMain?.addView(view, lpA.await())
+                    onPrepareOptionsMenu(menu!!.await()!!)
                 }
             }
-        }
+        })
     }
 
+    override fun initValue() {
+    }
+
+
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        super.onPrepareOptionsMenu(menu)
-        lifecycleScope.launch {
-            menu.clear()
-            val destConfig: HashMap<String, Destination> = AppConfig.getDestConfig(this@HomeActivity)
-            val iterator: Iterator<String> = destConfig.keys.iterator()
-            while (iterator.hasNext()) {
-                val next = iterator.next()
-                val destination: Destination? = destConfig[next]
-                menu.add(0, destination!!.id, 0, destination.label).setIcon(destination.iconId)
+        menu.clear()
+        NavigationConfig.getDestConfig()?.forEach {
+            it?.value?.run {
+                menu.add(0, id, 0, label).setIcon(iconId)
             }
         }
+        super.onPrepareOptionsMenu(menu)
         return true
     }
 
@@ -70,10 +92,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
         exitApp()
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            LogTimer.LogE(this, "onWindowFocusChanged")
-        }
+    override fun lazyInitValue() {
+        LogTimer.LogE(this, "lazyInitValue")
     }
 }
