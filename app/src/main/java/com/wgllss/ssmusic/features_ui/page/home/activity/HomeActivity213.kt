@@ -38,7 +38,7 @@ class HomeActivity213 : BaseMVVMActivity<HomeViewModel, ActivityHome2323Binding>
             binding.textInputEdit.text?.toString()?.takeIf {
                 it.isNotEmpty()
             }?.let {
-                viewModel.searchKeyByTitle(it)
+//                viewModel.searchKeyByTitle(it)
 //                val pl = ChineseUtils.urlencode(it)
 //                WLog.e(this@HomeActivity, pl)
 //                val sb = StringBuilder("https://www.hifini.com/search-")

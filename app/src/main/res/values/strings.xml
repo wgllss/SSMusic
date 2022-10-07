@@ -16,4 +16,5 @@
     <string name="title_home">首页</string>
     <string name="title_search">搜索</string>
     <string name="title_setting">设置</string>
+    <string name="hint_name">请输入歌曲名称</string>
 </resources>

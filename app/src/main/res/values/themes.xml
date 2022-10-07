@@ -48,4 +48,18 @@
         <item name="android:windowBackground">@drawable/splash_preview</item>
 
     </style>
+
+    <style name="MyHintText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <!--Error label text style-->
+    <style name="MyErrorText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <!--Overflow label text style-->
+    <style name="MyOverflowText" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
 </resources>

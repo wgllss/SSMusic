@@ -1,9 +1,11 @@
 package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.ssmusic.core.ex.flowOnIOAndcatch
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,18 +17,44 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(val musicRepositoryL: Lazy<MusicRepository>) : BaseViewModel() {
 
+    val searchContent by lazy { MutableLiveData<String>() }
+    val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
+
     override fun start() {
     }
 
-    fun searchKeyByTitle(keyword: String) {
+    fun searchKeyByTitle() {
+        if (searchContent.value == null || searchContent.value.isNullOrEmpty()) {
+            WLog.e(this, "searchContent.value ${searchContent.value}")
+            return
+        }
         viewModelScope.launch {
-            musicRepositoryL.get().searchKeyByTitle(keyword)
-                .flowOnIOAndcatch(errorMsgLiveData)
+            musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
+                .onStartAndShow()
+                .onCompletionAndHide()
                 .onEach {
+                    result.postValue(it)
                     it.forEach {
                         WLog.e(this@HomeViewModel, "${it.author}    ${it.musicName}   ${it.detailUrl}")
                     }
-                }.collect()
+                }.flowOnIOAndcatch(errorMsgLiveData)
+                .collect()
+        }
+    }
+
+    fun getDetail(position: Int) {
+        result?.value?.takeIf {
+            it.size > position
+        }?.run {
+            viewModelScope.launch {
+                musicRepositoryL.get().getPlayUrl(get(position).detailUrl)
+                    .onStartAndShow()
+                    .onCompletionAndHide()
+                    .onEach {
+                        WLog.e(this@HomeViewModel, "it-->${it}")
+                    }.flowOnIOAndcatch(errorMsgLiveData)
+                    .collect()
+            }
         }
     }
 }
