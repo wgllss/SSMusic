@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(val musicRepositoryL: Lazy<MusicReposito
                     .onStartAndShow()
                     .onCompletionAndHide()
                     .onEach {
-                        WLog.e(this@HomeViewModel, "it-->${it}")
+                        WLog.e(this@HomeViewModel, "it-->${it.author}:: ${it.url}")
                     }.flowOnIOAndcatch(errorMsgLiveData)
                     .collect()
             }
