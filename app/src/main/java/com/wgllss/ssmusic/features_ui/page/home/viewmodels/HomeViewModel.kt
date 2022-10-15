@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(val musicRepositoryL: Lazy<MusicRepository>) : BaseViewModel() {
+class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>) : BaseViewModel() {
 
     val searchContent by lazy { MutableLiveData<String>() }
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(val musicRepositoryL: Lazy<MusicReposito
                 .onEach {
                     result.postValue(it)
                     it.forEach {
-                        WLog.e(this@HomeViewModel, "${it.author}    ${it.musicName}   ${it.detailUrl}")
+                        WLog.e(this@HomeViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
                     }
                 }.flowOnIOAndcatch(errorMsgLiveData)
                 .collect()
@@ -51,7 +51,7 @@ class HomeViewModel @Inject constructor(val musicRepositoryL: Lazy<MusicReposito
                     .onStartAndShow()
                     .onCompletionAndHide()
                     .onEach {
-                        WLog.e(this@HomeViewModel, "it-->${it.author}:: ${it.url}")
+                        WLog.e(this@HomeViewModel, "\n作者：${it.author}\n歌名:${it.title}\n地址:${it.url}\n图片:${it.pic}")
                     }.flowOnIOAndcatch(errorMsgLiveData)
                     .collect()
             }

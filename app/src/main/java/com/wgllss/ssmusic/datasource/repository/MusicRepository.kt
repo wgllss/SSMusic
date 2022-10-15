@@ -1,11 +1,10 @@
 package com.wgllss.ssmusic.datasource.repository
 
-import com.google.gson.Gson
-import com.wgllss.ssmusic.data.MusicItemBean
-import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.ssmusic.data.MusicItemBean
+import com.wgllss.ssmusic.datasource.net.MusiceApi
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,6 +13,9 @@ import javax.inject.Inject
 
 class MusicRepository @Inject constructor(val musiceApiL: Lazy<MusiceApi>) {
 
+    /**
+     * 按照标题搜索
+     */
     suspend fun searchKeyByTitle(keyword: String): Flow<MutableList<MusicItemBean>> {
         return flow {
             val keywordL = ChineseUtils.urlencode(keyword)
@@ -63,6 +65,9 @@ class MusicRepository @Inject constructor(val musiceApiL: Lazy<MusiceApi>) {
         }
     }
 
+    /**
+     * 得到播放地址
+     */
     suspend fun getPlayUrl(htmlUrl: String): Flow<MusicBean> {
         return flow {
             val startTime = System.currentTimeMillis()
@@ -72,28 +77,43 @@ class MusicRepository @Inject constructor(val musiceApiL: Lazy<MusiceApi>) {
             val element = document.select("script")
             element?.forEach {
                 if (it.html().contains("var ap4 = new APlayer")) {
-                    val str = it.html()
-                    var startIndex = str.indexOf("[")
-                    val endIndex = str.lastIndexOf("]")
-                    var subStr = str.substring(startIndex + 1, endIndex - 2).trim()
-                    subStr = subStr.replace("{", "{\"")
-                        .replace(": '", "\":\"")
-                        .replace(":'", "\":\"")
-                        .replace("',", "\",\"")
-                        .replace("'", "\"")
-                        .replace("},", "}")
+                    val str = it.html().toString()
                         .replace("\n", "")
                         .replace("\r", "")
                         .replace("\t", "")
-                        .replace(" ", "")
-                    WLog.e(this@MusicRepository, "${System.currentTimeMillis() - startTime}ms  ___: ${subStr}")
-                    val musicBean = Gson().fromJson(subStr, MusicBean::class.java)
-                    musicBean.run {
-                        if (!url.contains("http")) {
-                            url = baseUrl + url
+                    var startIndex = str.indexOf("[")
+                    val endIndex = str.lastIndexOf("]")
+                    var subStr = str.substring(startIndex + 1, endIndex).trim()
+                    var startIndex2 = subStr.indexOf("{")
+                    val endIndex2 = subStr.lastIndexOf("}")
+                    var subStr2 = subStr.substring(startIndex2 + 1, endIndex2).trim()
+
+                    val arr = subStr2.split(", ")
+                    var title = ""
+                    var author = ""
+                    var url = ""
+                    var pic = ""
+                    arr.forEach { m ->
+                        m.run {
+                            if (contains("title")) {
+                                title = substring(indexOf("'") + 1, length - 1)
+                            }
+                            if (contains("author")) {
+                                author = substring(indexOf("'") + 1, length - 1)
+                            }
+                            if (contains("url")) {
+                                url = substring(indexOf("'") + 1, length - 1)
+                                if (!url.contains("http")) {
+                                    url = baseUrl + url
+                                }
+                            }
+                            if (contains("pic")) {
+                                pic = substring(indexOf("'") + 1, length)
+                            }
                         }
                     }
-                    emit(musicBean)
+                    WLog.e(this@MusicRepository, "耗时：${System.currentTimeMillis() - startTime} ms")
+                    emit(MusicBean(title, author, url, pic))
                     return@forEach
                 }
             }
