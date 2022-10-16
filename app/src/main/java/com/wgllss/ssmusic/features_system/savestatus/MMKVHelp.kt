@@ -7,6 +7,10 @@ object MMKVHelp {
     private val mmkv by lazy { MMKV.defaultMMKV() }
     private val gson by lazy { Gson() }
 
+    fun setPlayID(ID: Int) = mmkv.encode("current_play_id", ID)
+
+    fun getPlayID() = mmkv.decodeInt("current_play_id")
+
 
     /**
      * 得到token

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import javax.inject.Inject
 
 class AppViewModelFactory @Inject constructor(val application: Application) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when (modelClass) {
             AppViewModel::class.java -> {
                 AppViewModel(application)

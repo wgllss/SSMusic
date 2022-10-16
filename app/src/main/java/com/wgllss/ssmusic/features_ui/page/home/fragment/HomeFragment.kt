@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.scclzkj.base_core.base.BaseMVVMFragment
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
@@ -40,6 +41,13 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onActivityCreated")
         super.onActivityCreated(savedInstanceState)
+        viewModel.start()
+        viewModel.isInitSuccess.observe(viewLifecycleOwner) {
+            viewModel.liveData.observe(viewLifecycleOwner) {
+                logE("it :${it[it.size - 1].author}")
+                viewModel.setPlay()
+            }
+        }
     }
 
     override fun onStart() {

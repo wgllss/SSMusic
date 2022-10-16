@@ -1,17 +1,20 @@
 package com.wgllss.ssmusic.datasource.repository
 
+import androidx.lifecycle.LiveData
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
+import com.wgllss.ssmusic.features_system.room.SSDataBase
+import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.jsoup.Jsoup
 import javax.inject.Inject
 
-class MusicRepository @Inject constructor(val musiceApiL: Lazy<MusiceApi>) {
+class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>, private val mSSDataBaseL: Lazy<SSDataBase>) {
 
     /**
      * 按照标题搜索
@@ -117,6 +120,12 @@ class MusicRepository @Inject constructor(val musiceApiL: Lazy<MusiceApi>) {
                     return@forEach
                 }
             }
+        }
+    }
+
+    suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> {
+        return flow {
+            emit(mSSDataBaseL.get().musicDao().getList())
         }
     }
 }

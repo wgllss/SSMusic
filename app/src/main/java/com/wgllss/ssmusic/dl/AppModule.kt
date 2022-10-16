@@ -2,11 +2,18 @@ package com.wgllss.ssmusic.dl
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.scclzkj.ai_scale.roomdb.RoomDBMigration
 import com.scclzkj.base_core.base.app.CommonApplicationProxy
+import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.FileUtils
 import com.wgllss.ssmusic.datasource.net.HeaderInterceptor
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.app.AppViewModelFactory
+import com.wgllss.ssmusic.features_system.room.SSDataBase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -63,4 +70,32 @@ class AppModule {
     @Singleton
     fun provideSharedViewModel(factory: AppViewModelFactory) = ViewModelProvider(CommonApplicationProxy.viewModelStore, factory).get(AppViewModel::class.java)
 
+    @Provides
+    @Singleton
+    fun provideSSMusicDatabase(@ApplicationContext context: Context, roomDBMigration: RoomDBMigration): SSDataBase {
+        val builder = Room.databaseBuilder(context, SSDataBase::class.java, "ssmusic_db")
+        val migrations = roomDBMigration.createMigration()
+        migrations?.takeIf {
+            it.isNotEmpty()
+        }?.let {
+            builder.addMigrations(*it)
+        }
+        builder.addCallback(object : RoomDatabase.Callback() {
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                logE("RoomDatabase onCreate")
+            }
+
+            override fun onOpen(db: SupportSQLiteDatabase) {
+                super.onOpen(db)
+                logE("RoomDatabase onOpen")
+            }
+
+            override fun onDestructiveMigration(db: SupportSQLiteDatabase) {
+                super.onDestructiveMigration(db)
+                logE("RoomDatabase onDestructiveMigration")
+            }
+        })
+        return builder.build()
+    }
 }

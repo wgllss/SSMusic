@@ -19,7 +19,7 @@ android {
 
         ndk {
             //根据需要 自行选择添加的对应cpu类型的.so库。
-            abiFilters 'armeabi-v7a', 'arm64-v8a', 'armeabi', 'x86', 'x86_64'
+            abiFilters 'armeabi-v7a'//, 'arm64-v8a', 'armeabi', 'x86', 'x86_64'
             // 还可以添加 'x86', 'x86_64', 'mips', 'mips64'
         }
 
@@ -40,8 +40,8 @@ android {
         jvmTarget = '1.8'
     }
     buildFeatures {
-        viewBinding true
-        dataBinding= true
+//        viewBinding true
+        dataBinding = true
     }
 
     kapt {
@@ -109,4 +109,13 @@ dependencies {
     implementation project(path: ':annotations')
     kapt project(path: ':annotation_compiler')
     implementation 'com.alibaba:fastjson:1.2.73'
+
+    //音乐播放器 库
+    implementation 'ywl.ywl5320:libmusic:1.2.6'
+    //LiveEventBus
+    implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'
+    //room 数据库
+    def room_version = "2.4.3"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 }
