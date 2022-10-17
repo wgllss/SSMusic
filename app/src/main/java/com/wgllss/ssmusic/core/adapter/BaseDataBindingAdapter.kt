@@ -29,6 +29,9 @@ abstract class BaseDataBindingAdapter<T, VB : ViewDataBinding>(var context: Cont
             }
     }
 
+    @LayoutRes
+    protected abstract fun getLayoutResId(viewType: Int): Int
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder {
         if (context == null) {
             context = parent.context
@@ -56,9 +59,6 @@ abstract class BaseDataBindingAdapter<T, VB : ViewDataBinding>(var context: Cont
     override fun getItemCount(): Int = if (!this::mData.isInitialized) 0 else mData.size
 
     protected fun getDataSize() = if (!this::mData.isInitialized) 0 else mData.size
-
-    @LayoutRes
-    protected abstract fun getLayoutResId(viewType: Int): Int
 
     class BaseBindingViewHolder internal constructor(itemView: View?) : RecyclerView.ViewHolder(itemView!!)
 }

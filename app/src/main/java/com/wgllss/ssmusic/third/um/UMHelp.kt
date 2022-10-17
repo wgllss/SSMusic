@@ -2,7 +2,6 @@ package com.wgllss.ssmusic.third.um
 
 import android.content.Context
 import com.umeng.commonsdk.UMConfigure
-import com.umeng.message.PushAgent
 import com.wgllss.ssmusic.BuildConfig
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +26,8 @@ object UMHelp {
                     UMConfigure.submitPolicyGrantResult(context, true)
                     /*** 友盟sdk正式初始化*/
                     /*** 友盟sdk正式初始化 */
-                    delay(200)
                     UMConfigure.init(context, APP_KEY, "umeng", UMConfigure.DEVICE_TYPE_PHONE, UMENG_MESSAGE_SECRET)
                 }
-
             } catch (e: Exception) {
                 e.printStackTrace()
             }

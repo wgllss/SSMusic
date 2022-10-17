@@ -6,17 +6,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.scclzkj.base_core.base.BaseMVVMFragment
+import com.scclzkj.base_core.widget.OnRecyclerViewItemClickListener
 import com.umeng.analytics.MobclickAgent
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
+import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
+import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
+import dagger.Lazy
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 @FragmentDestination(pageUrl = "fmt_home", asStarter = true, label = "首页", iconId = R.drawable.ic_home_black_24dp)
 class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layout.fragment_home) {
+
+    @Inject
+    lateinit var playListAdapterL: Lazy<PlayListAdapter>
+
     override fun activitySameViewModel() = true
 
     override fun onAttach(context: Context) {
@@ -42,11 +52,21 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onActivityCreated")
         super.onActivityCreated(savedInstanceState)
+        binding?.apply {
+            viewModel = this@HomeFragment.viewModel
+            adapter = playListAdapterL.get()
+            lifecycleOwner = this@HomeFragment
+            executePendingBindings()
+            rvPlList.addOnItemTouchListener(object : OnRecyclerViewItemClickListener(rvPlList) {
+                override fun onItemClickListener(itemRootView: View, position: Int) {
+                    viewModel.setPlay(position)
+                }
+            })
+        }
         viewModel.start()
         viewModel.isInitSuccess.observe(viewLifecycleOwner) {
             viewModel.liveData.observe(viewLifecycleOwner) {
-//                logE("it :${it[it.size - 1].author}")
-                viewModel.setPlay()
+                playListAdapterL.get().notifyData(it)
             }
         }
     }

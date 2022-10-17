@@ -30,8 +30,8 @@ class SearchFragment : BaseMVVMFragment<HomeViewModel, FragmentSearchBinding>(R.
         binding?.apply {
             model = this@SearchFragment.viewModel
             adapter = musicAdapterL.get()
-            executePendingBindings()
             lifecycleOwner = this@SearchFragment
+            executePendingBindings()
             shapeableSearch.setOnClickListener {
                 viewModel.searchKeyByTitle()
                 HideSoftInputFromWindow(binding.root)

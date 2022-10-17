@@ -7,6 +7,8 @@ data class MusicBeanEvent(
     var author: String = "",
     var url: String = "",
     var pic: String = "",
-    var musicType: Int = 0
+    var musicType: Int = 0,
+    var playFrom: Int = 0,
+    var uuid: Long = 0
 ) : LiveEvent {
 }

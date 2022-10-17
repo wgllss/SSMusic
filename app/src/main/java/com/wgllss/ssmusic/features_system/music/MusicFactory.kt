@@ -115,10 +115,14 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
             val musicBean = MusicBean(title, author, url, pic)
             currentUrl = url
             musicBean.run {
-                val uuID = UUIDHelp.getMusicUUID(this)
-                MMKVHelp.setPlayID(uuID)
-                val bean = MusicTabeBean(uuID.toLong(), title, author, url, pic)
-                mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+                if (it.playFrom == 1) {
+                    MMKVHelp.setPlayID(it.uuid)
+                } else {
+                    val uuID = UUIDHelp.getMusicUUID(this)
+                    MMKVHelp.setPlayID(uuID)
+                    val bean = MusicTabeBean(uuID.toLong(), title, author, url, pic)
+                    mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+                }
             }
         }
     }

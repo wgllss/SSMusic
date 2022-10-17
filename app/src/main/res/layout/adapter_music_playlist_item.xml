@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="bean"
+            type="com.wgllss.ssmusic.features_system.room.table.MusicTabeBean" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="50dp"
+            android:text="@{bean.author}"
+            android:textColor="@color/black"
+            android:textSize="22dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="50dp"
+            android:text="@{bean.title}"
+            android:textColor="@color/black"
+            android:textSize="22dp" />
+
+    </FrameLayout>
+</layout>

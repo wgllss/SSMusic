@@ -37,10 +37,13 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         }
     }
 
-    fun setPlay() {
+    fun setPlay(position: Int) {
         viewModelScope.launch {
-            val uuid = MMKVHelp.getPlayID()
-            
+            liveData.value?.let {
+                it[position]?.run {
+                    LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(title, author, url, pic, 0, 1, id))
+                }
+            }
         }
     }
 
