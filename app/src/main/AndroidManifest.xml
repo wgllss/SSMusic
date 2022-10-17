@@ -68,6 +68,13 @@
             android:name="com.wgllss.ssmusic.features_system.services.MusicService"
             android:enabled="true"
             android:exported="true" />
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="634d040505844627b5672f2f"/>
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Umeng"/>
     </application>
 
 </manifest>

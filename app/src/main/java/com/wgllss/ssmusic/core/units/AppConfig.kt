@@ -8,7 +8,9 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
-
+//App Key：634d040505844627b5672f2f
+//App Master Secret：6y2akwgydlplnewzdhqczfmld5kan6xo
+//Umeng Message Secret：163045f64d1a5f94f8e50cbf8bb81f65
 object AppConfig {
 
     private var sDestConfig: HashMap<String, Destination>? = null

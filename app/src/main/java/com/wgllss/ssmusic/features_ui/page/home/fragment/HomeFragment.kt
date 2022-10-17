@@ -44,7 +44,7 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
         viewModel.start()
         viewModel.isInitSuccess.observe(viewLifecycleOwner) {
             viewModel.liveData.observe(viewLifecycleOwner) {
-                logE("it :${it[it.size - 1].author}")
+//                logE("it :${it[it.size - 1].author}")
                 viewModel.setPlay()
             }
         }
