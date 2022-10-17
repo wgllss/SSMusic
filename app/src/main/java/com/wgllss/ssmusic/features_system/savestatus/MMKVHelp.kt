@@ -16,4 +16,8 @@ object MMKVHelp {
      * 得到token
      */
     fun getToken() = mmkv.decodeString("Authorization") ?: ""
+
+    fun setUmInit() = mmkv.encode("um_init", 1)
+    
+    fun getUmInit() = mmkv.decodeInt("um_init", 0)
 }

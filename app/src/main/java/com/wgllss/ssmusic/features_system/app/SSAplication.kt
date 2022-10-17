@@ -18,13 +18,9 @@ class SSAplication : AndroidApplication() {
         super.attachBaseContext(base)
     }
 
-    var job: Job? = null
-
     override fun onCreate() {
         super.onCreate()
-        job = GlobalScope.launch {
-            UMHelp.umInit(this@SSAplication)
-        }
+        UMHelp.umInit(this@SSAplication)
     }
 
 }
