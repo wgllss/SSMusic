@@ -10,23 +10,32 @@
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_height="100dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitCenter"
+            android:id="@+id/music_icon"
+            android:layout_gravity="top|left" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:gravity="center_vertical"
-            android:paddingLeft="50dp"
+            android:layout_marginLeft="120dp"
             android:text="@{bean.author}"
             android:textColor="@color/black"
             android:textSize="22dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
             android:gravity="center_vertical"
-            android:paddingLeft="50dp"
+            android:layout_marginLeft="120dp"
             android:text="@{bean.title}"
             android:textColor="@color/black"
             android:textSize="22dp" />

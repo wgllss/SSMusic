@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
+
     <data>
 
         <variable
@@ -11,19 +12,33 @@
             type="com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter" />
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/rv_pl_list"
-        itemColorStr="@{`#60000000`}"
-        itemWidth="@{1.0f}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
-        android:layout_marginTop="50dp"
-        android:adapter="@{adapter}"
-        android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp">
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:text="播放列表"
+            android:textColor="@color/color_FFCD4339"
+            android:textSize="23dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_pl_list"
+            itemColorStr="@{`#60000000`}"
+            itemWidth="@{1.0f}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:adapter="@{adapter}"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+    </FrameLayout>
 </layout>

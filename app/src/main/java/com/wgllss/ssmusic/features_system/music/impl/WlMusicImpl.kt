@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.features_system.music.impl
 
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.music.IMusicPlay
+import com.wgllss.ssmusic.features_system.music.OnPlayCompleteListener
 import com.ywl5320.libmusic.WlMusic
 import javax.inject.Inject
 
@@ -10,7 +11,7 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
     private val wlMusic by lazy { WlMusic.getInstance() }
 
     override fun onCreate() {
-        wlMusic.isPlaying
+//        wlMusic.isPlaying
     }
 
     override fun start() {
@@ -38,10 +39,6 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
         wlMusic.setOnPreparedListener {
             start()
         }
-        wlMusic.setOnInfoListener { _ ->
-            //播放进度发送
-//            WLog.e(this@WlMusicImpl, "setOnInfoListener")
-        }
 
         wlMusic.setOnErrorListener { code, msg ->
             WLog.e(this@WlMusicImpl, "code:${code} msg:${msg}")
@@ -51,8 +48,8 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
             WLog.e(this@WlMusicImpl, "load:${load} ")
         }
 
-        wlMusic.setOnCompleteListener {
-            WLog.e(this@WlMusicImpl, "setOnCompleteListener")
+        wlMusic.setOnInfoListener {
+//            WLog.e(this@WlMusicImpl, "setOnCompleteListener")
         }
 
         wlMusic.setOnPauseResumeListener { pause ->
@@ -63,6 +60,14 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
             WLog.e(this@WlMusicImpl, "setOnVolumeDBListener")
         }
         wlMusic.prePared()
+    }
+
+    override fun setOnCompleteListener(listener: OnPlayCompleteListener) {
+        wlMusic.setOnCompleteListener {
+            listener?.onComplete()
+            //播放进度发送
+//            WLog.e(this@WlMusicImpl, "setOnInfoListener")
+        }
     }
 
     override fun setSource(url: String) {
@@ -89,5 +94,4 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
     override fun onDestroy() {
         wlMusic.stop()
     }
-
 }

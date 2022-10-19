@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.features_ui.page.home.adapter
 
 import androidx.recyclerview.widget.RecyclerView
 import com.scclzkj.base_core.base.BaseDataBindingAdapter
+import com.scclzkj.base_core.extension.loadUrl
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.AdapterMusicPlaylistItemBinding
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
@@ -12,6 +13,7 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MusicTabeBe
     override fun onBindItem(binding: AdapterMusicPlaylistItemBinding, item: MusicTabeBean, holder: RecyclerView.ViewHolder, position: Int) {
         binding?.apply {
             bean = item
+            musicIcon.loadUrl(item.pic)
         }
     }
 

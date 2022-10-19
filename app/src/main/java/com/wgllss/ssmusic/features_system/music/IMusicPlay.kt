@@ -35,6 +35,9 @@ interface IMusicPlay {
     //设置播放地址
     fun setSource(url: String)
 
+    //单曲播放结束
+    fun setOnCompleteListener(listener: OnPlayCompleteListener)
+
     //是否循环
     fun setPlayCircle(isCircle: Boolean)
 
@@ -50,4 +53,5 @@ interface IMusicPlay {
     fun isPlaying(): Boolean
 
     fun onDestroy()
+
 }

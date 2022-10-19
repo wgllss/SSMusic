@@ -13,6 +13,9 @@ interface MusicDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMusicBean(musicTabeBean: MusicTabeBean)
 
-    @Query("SELECT * FROM music_tab")
+    @Query("SELECT * FROM music_tab ORDER BY createTime DESC")
     fun getList(): LiveData<MutableList<MusicTabeBean>>
+
+    @Query("SELECT COUNT(*) FROM music_tab WHERE id = :uuID")
+    fun queryByUUID(uuID: Long): Int
 }

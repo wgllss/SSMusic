@@ -1,6 +1,5 @@
 package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -11,7 +10,6 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
-import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -25,26 +23,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     val searchContent by lazy { MutableLiveData<String>() }
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
-    lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
-    val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     override fun start() {
-        flowAsyncWorkOnLaunch {
-            musicRepositoryL.get().getMusicList()
-                .onEach {
-                    liveData = it
-                    isInitSuccess.postValue(true)
-                }
-        }
-    }
-
-    fun setPlay(position: Int) {
-        viewModelScope.launch {
-            liveData.value?.let {
-                it[position]?.run {
-                    LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(title, author, url, pic, 0, 1, id))
-                }
-            }
-        }
     }
 
     fun searchKeyByTitle() {
@@ -66,7 +45,16 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         }
     }
 
-    fun getDetail(position: Int) {
+    fun getDetail(tableIt: MusicTabeBean) {
+        flowAsyncWorkOnLaunch {
+            musicRepositoryL.get().getPlayUrl(tableIt.url)
+                .onEach {
+                    LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(it.title, it.author, tableIt.url, it.pic, it.url, uuid = tableIt.id))
+                }
+        }
+    }
+
+    fun getDetailFromSearch(position: Int) {
         result?.value?.takeIf {
             it.size > position
         }?.run {
@@ -75,7 +63,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
                     .onStartAndShow()
                     .onCompletionAndHide()
                     .onEach {
-                        LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(it.title, it.author, it.url, it.pic))
+                        LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(it.title, it.author, get(position).detailUrl, it.pic, it.url))
 //                        WLog.e(this@HomeViewModel, "\n作者：${it.author}\n歌名:${it.title}\n地址:${it.url}\n图片:${it.pic}")
                     }.flowOnIOAndcatch(errorMsgLiveData)
                     .collect()

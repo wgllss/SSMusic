@@ -2,13 +2,12 @@ package com.wgllss.ssmusic.features_ui.page.home.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.scclzkj.base_core.base.BaseMVVMFragment
 import com.scclzkj.base_core.extension.HideSoftInputFromWindow
 import com.scclzkj.base_core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
@@ -39,9 +38,19 @@ class SearchFragment : BaseMVVMFragment<HomeViewModel, FragmentSearchBinding>(R.
             rvResult?.run {
                 addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                     override fun onItemClickListener(itemRootView: View, position: Int) {
-                        viewModel.getDetail(position)
+                        viewModel.getDetailFromSearch(position)
                     }
                 })
+            }
+            binding.etName.setOnEditorActionListener { v, actionId, event ->
+                when (actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        viewModel.searchKeyByTitle()
+                        HideSoftInputFromWindow(binding.root)
+                    }
+                    else -> {}
+                }
+                true
             }
         }
         viewModel.result.observe(viewLifecycleOwner) {

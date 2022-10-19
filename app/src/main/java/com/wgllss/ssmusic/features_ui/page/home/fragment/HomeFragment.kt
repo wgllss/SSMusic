@@ -13,6 +13,7 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
+import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
@@ -23,6 +24,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 @FragmentDestination(pageUrl = "fmt_home", asStarter = true, label = "首页", iconId = R.drawable.ic_home_black_24dp)
 class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layout.fragment_home) {
+    @Inject
+    lateinit var appViewModel: Lazy<AppViewModel>
 
     @Inject
     lateinit var playListAdapterL: Lazy<PlayListAdapter>
@@ -59,14 +62,20 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
             executePendingBindings()
             rvPlList.addOnItemTouchListener(object : OnRecyclerViewItemClickListener(rvPlList) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-                    viewModel.setPlay(position)
+                    appViewModel.get().playPosition(position)
                 }
             })
         }
-        viewModel.start()
-        viewModel.isInitSuccess.observe(viewLifecycleOwner) {
-            viewModel.liveData.observe(viewLifecycleOwner) {
-                playListAdapterL.get().notifyData(it)
+        appViewModel.get().run {
+            queryPlayList()
+            isInitSuccess.observe(viewLifecycleOwner) {
+                it.takeIf {
+                    it == true
+                }?.let {
+                    liveData.observe(viewLifecycleOwner) { data ->
+                        playListAdapterL.get().notifyData(data)
+                    }
+                }
             }
         }
     }

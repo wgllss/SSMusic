@@ -68,7 +68,7 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedViewModel(factory: AppViewModelFactory) = ViewModelProvider(CommonApplicationProxy.viewModelStore, factory).get(AppViewModel::class.java)
+    fun provideAppViewModel(factory: AppViewModelFactory) = ViewModelProvider(CommonApplicationProxy.viewModelStore, factory).get(AppViewModel::class.java)
 
     @Provides
     @Singleton

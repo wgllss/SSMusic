@@ -6,11 +6,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.MutableLiveData
 import com.jeremyliao.liveeventbus.LiveEventBus
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.dl.annotations.BindWlMusic
+import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
@@ -22,11 +24,13 @@ import javax.inject.Inject
 
 /**
  * 音乐播放工厂，处理多音乐功能，
+ * musicPlay:主持音乐各种操作
+ * appViewModel:主持提供各种数据
  */
-class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<IMusicPlay>, private val mSSDataBaseL: Lazy<SSDataBase>) : MusicLifcycle() {
+class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>, private val mSSDataBaseL: Lazy<SSDataBase>) : MusicLifcycle() {
 
     //正常播放
-    private val music_status_paly_numoal = 0
+    private val music_status_paly_numal = 0
 
     //播放下一曲
     private val music_status_paly_next = 1
@@ -60,6 +64,10 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                 }
             }
         }
+        appViewModel.get().currentPposition.observe(this@MusicFactory) {
+            logE("播放：position:${it}")
+            appViewModel.get().getDetail(it)
+        }
     }
 
 
@@ -77,29 +85,36 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
     //处理音乐播放
     fun onMusicDo(it: MusicBeanEvent) {
         when (it.musicType) {
-            music_status_paly_numoal -> {//正常播放
+            music_status_paly_numal -> {//从搜索结果 过来正常播放
                 it.run {
                     if (currentUrl.isNullOrEmpty()) {
-                        setStore(it)
+                        currentUrl = url
                         currentUrl?.let {
                             musicPlay.get().apply {
                                 setSource(it)
                                 setVolume(100)
                                 prePared()
+                                setOnCompleteListener(object : OnPlayCompleteListener {
+                                    override fun onComplete() {
+                                        appViewModel.get().playNext()
+                                    }
+                                })
                             }
                         }
+                        appViewModel.get().addToPlayList(it)
                     } else {
                         if (currentUrl == url) {
                             if (musicPlay.get().isPlaying()) {
                                 return@run
                             } else {
-                                musicPlay.get().onResume()
+                                musicPlay.get().playNext(url)
                             }
                         } else {
-                            setStore(it)
+                            currentUrl = url
                             currentUrl?.run {
                                 musicPlay.get().playNext(this)
                             }
+                            appViewModel.get().addToPlayList(it)
                         }
                     }
                 }
@@ -112,16 +127,14 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
 
     private fun setStore(it: MusicBeanEvent) {
         it.run {
-            val musicBean = MusicBean(title, author, url, pic)
-            currentUrl = url
-            musicBean.run {
-                if (it.playFrom == 1) {
+            when (it.playFrom) {
+//                0 -> {//搜索过来播放
+//                    appViewModel.get().addToPlayList(it)
+//                }
+                1 -> {//播放列表点击播放
                     MMKVHelp.setPlayID(it.uuid)
-                } else {
-                    val uuID = UUIDHelp.getMusicUUID(this)
-                    MMKVHelp.setPlayID(uuID)
-                    val bean = MusicTabeBean(uuID.toLong(), title, author, url, pic)
-                    mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+                }
+                else -> {
                 }
             }
         }

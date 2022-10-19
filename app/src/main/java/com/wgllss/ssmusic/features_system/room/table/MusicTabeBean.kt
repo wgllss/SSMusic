@@ -11,4 +11,5 @@ class MusicTabeBean(
     @ColumnInfo(name = "author", typeAffinity = ColumnInfo.TEXT, defaultValue = "") val author: String,
     @ColumnInfo(name = "url", typeAffinity = ColumnInfo.TEXT, defaultValue = "") var url: String,
     @ColumnInfo(name = "pic", typeAffinity = ColumnInfo.TEXT, defaultValue = "") val pic: String,
+    @ColumnInfo(name = "createTime", typeAffinity = ColumnInfo.INTEGER, defaultValue = "") val createTime: Long //加入播放列表时间
 )
