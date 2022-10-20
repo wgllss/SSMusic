@@ -82,10 +82,6 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
         wlMusic.volume = volume
     }
 
-//    override fun setPlayType(type: Int) {
-////        TODO("Not yet implemented")
-//    }
-
     override fun seek(secds: Int, seekingfinished: Boolean, showTime: Boolean) {
     }
 

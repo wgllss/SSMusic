@@ -11,6 +11,7 @@ import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
+import com.wgllss.ssmusic.dl.annotations.BindMediaPlayer
 import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.room.SSDataBase
@@ -58,13 +59,13 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
         super.onCreate()
         jobc = GlobalScope.launch {
             musicPlay.get().onCreate()
-            LiveEventBus.get(MusicBeanEvent::class.java).observe(this@MusicFactory) {
+            LiveEventBus.get(MusicBeanEvent::class.java).observeForever {
                 jobPlay = GlobalScope.launch {
                     onMusicDo(it)
                 }
             }
         }
-        appViewModel.get().currentPposition.observe(this@MusicFactory) {
+        appViewModel.get().currentPposition.observeForever {
             logE("播放：position:${it}")
             appViewModel.get().getDetail(it)
         }

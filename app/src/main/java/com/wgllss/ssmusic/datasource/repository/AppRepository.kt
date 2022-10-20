@@ -32,14 +32,19 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
             it.run {
                 val uuID = UUIDHelp.getMusicUUID(this)
                 MMKVHelp.setPlayID(uuID)
-                val count = mSSDataBaseL.get().musicDao().queryByUUID(uuID)
-                if (count > 0) {
-                    logE("已经在播放列表里面")
-                } else {
-                    val bean = MusicTabeBean(uuID, title, author, requestRealUrl, pic, System.currentTimeMillis())
-                    mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+                //uuID： 1519754784   uuid： 0
+                //uuID： 1529454536   uuid： 1519754784
+                logE("uuID： $uuID   uuid： $uuid")
+                if (uuid == 0L) {
+                    val count = mSSDataBaseL.get().musicDao().queryByUUID(uuID)
+                    if (count > 0) {
+                        logE("已经在播放列表里面")
+                    } else {
+                        val bean = MusicTabeBean(uuID, title, author, requestRealUrl, pic, System.currentTimeMillis())
+                        mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+                    }
+                    emit(uuID)
                 }
-                emit(uuID)
             }
         }.catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
     }

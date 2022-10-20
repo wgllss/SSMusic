@@ -1,7 +1,9 @@
 package com.wgllss.ssmusic.dl
 
+import com.wgllss.ssmusic.dl.annotations.BindMediaPlayer
 import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.music.IMusicPlay
+import com.wgllss.ssmusic.features_system.music.impl.MediaPlayerImpl
 import com.wgllss.ssmusic.features_system.music.impl.WlMusicImpl
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,9 @@ abstract class AbstractServiceModule {
     @Binds
     @ServiceScoped
     abstract fun bindWlmusic(mumicImpl: WlMusicImpl): IMusicPlay
+
+    @BindMediaPlayer
+    @Binds
+    @ServiceScoped
+    abstract fun bindMediaPlayer(mumicImpl: MediaPlayerImpl): IMusicPlay
 }
