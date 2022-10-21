@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.features_system.music
 
+import android.content.Context
 import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -18,6 +19,7 @@ import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -28,7 +30,7 @@ import javax.inject.Inject
  * musicPlay:主持音乐各种操作
  * appViewModel:主持提供各种数据
  */
-class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>, private val mSSDataBaseL: Lazy<SSDataBase>) : MusicLifcycle() {
+class MusicFactory @Inject constructor(@ApplicationContext val context: Context, @BindMediaPlayer private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>, private val mSSDataBaseL: Lazy<SSDataBase>) : MusicLifcycle() {
 
     //正常播放
     private val music_status_paly_numal = 0
