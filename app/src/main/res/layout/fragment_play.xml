@@ -43,7 +43,7 @@
         <SeekBar
             android:id="@+id/sb_progress"
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="30dp"
             android:layout_gravity="bottom"
             android:layout_marginLeft="120dp"
             android:layout_marginRight="120dp"
@@ -51,7 +51,7 @@
             android:maxHeight="2dp"
             android:minHeight="2dp"
             android:progressDrawable="@drawable/seek_bar_progress_style"
-            android:thumb="@drawable/ic_seek_bar_progress_btn" />
+            android:thumb="@drawable/seekbar_thumb" />
 
         <TextView
             android:id="@+id/tv_total_time"
@@ -61,7 +61,7 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="120dp"
             android:gravity="center_vertical|left"
-            android:text="04:21"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="10dp" />
 

@@ -10,4 +10,5 @@
     <color name="white_24p">#3DFFFFFF</color>
     <color name="red">#F44336</color>
     <color name="red_30p">#4CF44336</color>
+    <color name="color_white">#ffffff</color>
 </resources>

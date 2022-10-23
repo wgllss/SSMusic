@@ -1,14 +1,12 @@
-package com.wgllss.ssmusic.features_system.music.impl
+package com.wgllss.ssmusic.features_system.music.impl.mediaplayer
 
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
-import androidx.media.MediaSessionManager
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.features_system.music.IMusicPlay
 import com.wgllss.ssmusic.features_system.music.OnPlayCompleteListener
-import com.wgllss.ssmusic.features_system.music.impl.mediaplayer.AudioFocusManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -127,7 +125,7 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
     override fun seek(secds: Int, seekingfinished: Boolean, showTime: Boolean) {
         if (isPlaying() || isPausing()) {
             mediaPlayer.seekTo(secds)
-            LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerProgress(secds))
+//            LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerProgress(secds))
 //            MediaSessionManager.get().updatePlaybackState()
         }
     }

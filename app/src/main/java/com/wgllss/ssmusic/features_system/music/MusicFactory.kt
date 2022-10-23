@@ -57,17 +57,16 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
             LiveEventBus.get(PlayerEvent::class.java).observeForever {
                 when (it) {
                     is PlayerEvent.PlayEvent -> {
-                        logE("it.pause ---${it.pause}")
-                        if (it.pause)
-                            musicPlay.get().onPause()
-                        else
-                            musicPlay.get().onResume()
+                        if (it.pause) musicPlay.get().onPause() else musicPlay.get().onResume()
                     }
                     is PlayerEvent.PlayNext -> {
                         appViewModel.get().playNext()
                     }
                     is PlayerEvent.PlayPrevious -> {
                         appViewModel.get().playPrevious()
+                    }
+                    is PlayerEvent.SeekEvent -> {
+                        musicPlay.get().seek(it.position, it.seekingfinished, it.showTime)
                     }
                     else -> {
 

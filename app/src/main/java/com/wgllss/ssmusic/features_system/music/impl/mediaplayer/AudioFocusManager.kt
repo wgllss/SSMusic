@@ -2,7 +2,6 @@ package com.wgllss.ssmusic.features_system.music.impl.mediaplayer
 
 import android.content.Context
 import android.media.AudioManager
-import com.wgllss.ssmusic.features_system.music.impl.MediaPlayerImpl
 import dagger.hilt.android.qualifiers.ApplicationContext
 
 class AudioFocusManager constructor(@ApplicationContext val context: Context, val mediaPlayerImpl: MediaPlayerImpl) : AudioManager.OnAudioFocusChangeListener {

@@ -7,8 +7,16 @@ import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 
 class PlayModel : BaseViewModel() {
+    val toatal by lazy { MutableLiveData<Int>() }
+    val position by lazy { MutableLiveData<Int>() }
 
     override fun start() {
+    }
+
+    fun seek(seekingfinished: Boolean, showTime: Boolean) {
+        position?.value?.run {
+            LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.SeekEvent(this, seekingfinished, showTime))
+        }
     }
 
     val onPlay = View.OnClickListener {//true 暂停 false 继续播放

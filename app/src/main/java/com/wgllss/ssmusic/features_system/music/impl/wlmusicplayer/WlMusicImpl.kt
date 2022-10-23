@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.features_system.music.impl
+package com.wgllss.ssmusic.features_system.music.impl.wlmusicplayer
 
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.ex.logE
@@ -43,7 +43,7 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
     }
 
     override fun prePared() {
-        setPlayCircle(true)
+//        setPlayCircle(true)
         wlMusic.setOnPreparedListener {
             start()
         }
@@ -57,17 +57,15 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
         }
 
         wlMusic.setOnInfoListener {
-//            WLog.e(this@WlMusicImpl, "setOnCompleteListener")
+            it?.takeIf {
+                it.totalSecs > 0
+            }?.run {
+                LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerProgress(it.currSecs, it.totalSecs))
+            }
         }
 
         wlMusic.setOnPauseResumeListener { pause ->
-            WLog.e(this@WlMusicImpl, "pause ${pause}")
-            if (pause)
-                LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerStart)
-            else
-                LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerPause)
-
-
+            LiveEventBus.get(MusicEvent::class.java).post(if (pause) MusicEvent.PlayerStart else MusicEvent.PlayerPause)
         }
 
         wlMusic.setOnVolumeDBListener {
@@ -97,6 +95,7 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
     }
 
     override fun seek(secds: Int, seekingfinished: Boolean, showTime: Boolean) {
+        wlMusic.seek(secds, seekingfinished, showTime)
     }
 
     override fun isPlaying() = wlMusic.isPlaying

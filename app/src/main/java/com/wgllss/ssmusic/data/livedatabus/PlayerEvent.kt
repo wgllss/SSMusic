@@ -9,4 +9,6 @@ sealed class PlayerEvent : LiveEvent {
     object PlayNext : PlayerEvent()
 
     object PlayPrevious : PlayerEvent()
+
+    data class SeekEvent(val position: Int, val seekingfinished: Boolean, val showTime: Boolean) : PlayerEvent()
 }
