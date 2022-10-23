@@ -68,8 +68,18 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     fun playNext() {
-        currentPposition?.value?.let {
+        currentPposition?.value?.takeIf {
+            it + 1 < liveData.value!!.size
+        }?.let {
             playPosition(it + 1)
+        }
+    }
+
+    fun playPrevious() {
+        currentPposition?.value?.takeIf {
+            it - 1 > 0
+        }?.let {
+            playPosition(it - 1)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.third.um
+package com.wgllss.ssmusic.features_third.um
 
 import android.content.Context
 import com.umeng.commonsdk.UMConfigure
@@ -6,7 +6,6 @@ import com.wgllss.ssmusic.BuildConfig
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 object UMHelp {

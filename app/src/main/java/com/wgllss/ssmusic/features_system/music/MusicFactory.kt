@@ -1,25 +1,15 @@
 package com.wgllss.ssmusic.features_system.music
 
-import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.MutableLiveData
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.core.units.UUIDHelp
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
+import com.wgllss.ssmusic.data.livedatabus.MusicEvent
+import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 import com.wgllss.ssmusic.dl.annotations.BindMediaPlayer
 import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.app.AppViewModel
-import com.wgllss.ssmusic.features_system.room.SSDataBase
-import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
-import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -30,7 +20,7 @@ import javax.inject.Inject
  * musicPlay:主持音乐各种操作
  * appViewModel:主持提供各种数据
  */
-class MusicFactory @Inject constructor(@ApplicationContext val context: Context, @BindMediaPlayer private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>, private val mSSDataBaseL: Lazy<SSDataBase>) : MusicLifcycle() {
+class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>) : MusicLifcycle() {
 
     //正常播放
     private val music_status_paly_numal = 0
@@ -51,11 +41,9 @@ class MusicFactory @Inject constructor(@ApplicationContext val context: Context,
     private val music_status_paly_resume = 5
 
 
-    private var job: Job? = null
     private var jobc: Job? = null
     private var jobPlay: Job? = null
     private var currentUrl: String? = null
-
 
     override fun onCreate() {
         super.onCreate()
@@ -64,6 +52,26 @@ class MusicFactory @Inject constructor(@ApplicationContext val context: Context,
             LiveEventBus.get(MusicBeanEvent::class.java).observeForever {
                 jobPlay = GlobalScope.launch {
                     onMusicDo(it)
+                }
+            }
+            LiveEventBus.get(PlayerEvent::class.java).observeForever {
+                when (it) {
+                    is PlayerEvent.PlayEvent -> {
+                        logE("it.pause ---${it.pause}")
+                        if (it.pause)
+                            musicPlay.get().onPause()
+                        else
+                            musicPlay.get().onResume()
+                    }
+                    is PlayerEvent.PlayNext -> {
+                        appViewModel.get().playNext()
+                    }
+                    is PlayerEvent.PlayPrevious -> {
+                        appViewModel.get().playPrevious()
+                    }
+                    else -> {
+
+                    }
                 }
             }
         }
@@ -79,7 +87,6 @@ class MusicFactory @Inject constructor(@ApplicationContext val context: Context,
 
     override fun onDestory() {
         super.onDestory()
-        job?.cancel()
         jobc?.cancel()
         jobPlay?.cancel()
         musicPlay.get().onDestroy()
@@ -126,20 +133,8 @@ class MusicFactory @Inject constructor(@ApplicationContext val context: Context,
 
             }
         }
-    }
-
-    private fun setStore(it: MusicBeanEvent) {
         it.run {
-            when (it.playFrom) {
-//                0 -> {//搜索过来播放
-//                    appViewModel.get().addToPlayList(it)
-//                }
-                1 -> {//播放列表点击播放
-                    MMKVHelp.setPlayID(it.uuid)
-                }
-                else -> {
-                }
-            }
+            LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.ChangeMusic(pic, title, author))
         }
     }
 }

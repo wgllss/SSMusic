@@ -3,6 +3,9 @@ package com.wgllss.ssmusic.features_system.music.impl
 import android.content.Context
 import android.media.AudioManager
 import android.media.MediaPlayer
+import androidx.media.MediaSessionManager
+import com.jeremyliao.liveeventbus.LiveEventBus
+import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.features_system.music.IMusicPlay
 import com.wgllss.ssmusic.features_system.music.OnPlayCompleteListener
 import com.wgllss.ssmusic.features_system.music.impl.mediaplayer.AudioFocusManager
@@ -30,6 +33,9 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
                 start()
             }
         }
+        mediaPlayer.setOnBufferingUpdateListener { mp, percent ->
+            LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.BufferingUpdate(percent))
+        }
     }
 
     override fun start() {
@@ -40,6 +46,7 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
             mediaPlayer.start()
             state = STATE_PLAYING
         }
+        LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerStart)
     }
 
     override fun onPause() {
@@ -68,6 +75,7 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
         if (abandonAudioFocus) {
             audioFocusManager.abandonAudioFocus()
         }
+        LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerPause)
     }
 
     override fun onResume() {
@@ -75,7 +83,7 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
     }
 
     override fun playNext(nextUrl: String) {
-//        mediaPlayer.
+        setSource(nextUrl)
     }
 
     override fun playPrevious(previousUrl: String) {
@@ -83,19 +91,18 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
     }
 
     override fun prePared() {
-//        try {
-//            mediaPlayer.prepare()
-//            start()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
+        try {
+            mediaPlayer.prepareAsync()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun setSource(url: String) {
         try {
             mediaPlayer.reset()
             mediaPlayer.setDataSource(url)
-            mediaPlayer.prepareAsync()
+
             state = STATE_PREPARING
 //            mediaPlayer.prepareAsync()
         } catch (e: Exception) {
@@ -118,7 +125,11 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
     }
 
     override fun seek(secds: Int, seekingfinished: Boolean, showTime: Boolean) {
-//        mediaPlayer.seekTo(/)
+        if (isPlaying() || isPausing()) {
+            mediaPlayer.seekTo(secds)
+            LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerProgress(secds))
+//            MediaSessionManager.get().updatePlaybackState()
+        }
     }
 
     override fun isPlaying() = state == STATE_PLAYING

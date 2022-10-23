@@ -1,14 +1,10 @@
 package com.wgllss.ssmusic.features_system.app
 
 import android.content.Context
-import com.umeng.commonsdk.UMConfigure
 import com.wgllss.ssmusic.core.app.AndroidApplication
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.third.um.UMHelp
+import com.wgllss.ssmusic.features_third.um.UMHelp
 import dagger.hilt.android.HiltAndroidApp
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 @HiltAndroidApp
 class SSAplication : AndroidApplication() {

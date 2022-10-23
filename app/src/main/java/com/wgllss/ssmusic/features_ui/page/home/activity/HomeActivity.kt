@@ -1,6 +1,10 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -18,6 +22,7 @@ import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.widget.navigation.NavGraphBuilder
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_system.app.AppViewModel
+import com.wgllss.ssmusic.features_system.services.MusicService
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
@@ -31,6 +36,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
 
     @Inject
     lateinit var AppViewModelL: Lazy<AppViewModel>
+    lateinit var serviceConnection: PlayServiceConnection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
@@ -94,5 +100,31 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
+        bindService()
+    }
+
+    override fun onDestroy() {
+        if (serviceConnection != null) {
+            unbindService(serviceConnection)
+        }
+        super.onDestroy()
+    }
+
+    private fun bindService() {
+        val intent = Intent()
+        intent.setClass(this, MusicService::class.java)
+        serviceConnection = PlayServiceConnection()
+        bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+    }
+
+    private lateinit var musicService: MusicService
+
+    inner class PlayServiceConnection : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            musicService = (service as MusicService.MusicBinder).musicService
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+        }
     }
 }

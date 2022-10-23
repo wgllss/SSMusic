@@ -1,6 +1,5 @@
 package com.wgllss.ssmusic.features_system.services
 
-import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.Bundle
@@ -25,15 +24,14 @@ class MusicService : MediaBrowserServiceCompat() {
     @Inject
     lateinit var musicFactory: Lazy<MusicFactory>
 
-//    public class MusicBinder : Binder() {
-//        fun getService(): MusicService {
-//            return this
-//        }
-//    }
+    inner class MusicBinder : Binder() {
+        val musicService: MusicService
+            get() = this@MusicService
+    }
 
     override fun onBind(intent: Intent): IBinder? {
         musicFactory?.get()?.onResume()
-        return null
+        return MusicBinder()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

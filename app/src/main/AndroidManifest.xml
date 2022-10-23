@@ -40,7 +40,7 @@
         </activity>
 
         <activity
-            android:name="com.wgllss.ssmusic.features_ui.page.home.activity.PlayActivity"
+            android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity"
             android:exported="false" />
 
         <provider

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="playModel"
+            type="com.wgllss.ssmusic.features_ui.page.home.viewmodels.PlayModel" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/play_page_default_bg"
+        tools:context=".features_ui.page.playing.fragment.PlayFragment">
+
+        <TextView
+            android:id="@+id/mater_music_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="25dp" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp" />
+
+        <TextView
+            android:id="@+id/tv_current_time"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|left"
+            android:layout_marginLeft="40dp"
+            android:layout_marginBottom="120dp"
+            android:gravity="center_vertical|right"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:textSize="10dp" />
+
+        <SeekBar
+            android:id="@+id/sb_progress"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="120dp"
+            android:layout_marginRight="120dp"
+            android:layout_marginBottom="135dp"
+            android:maxHeight="2dp"
+            android:minHeight="2dp"
+            android:progressDrawable="@drawable/seek_bar_progress_style"
+            android:thumb="@drawable/ic_seek_bar_progress_btn" />
+
+        <TextView
+            android:id="@+id/tv_total_time"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|right"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="120dp"
+            android:gravity="center_vertical|left"
+            android:text="04:21"
+            android:textColor="@color/white"
+            android:textSize="10dp" />
+
+        <ImageView
+            android:id="@+id/iv_mode"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginRight="200dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/play_mode_level_list" />
+
+        <ImageView
+            android:id="@+id/iv_prev"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginRight="100dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="@{playModel.onPlayPrevious}"
+            android:src="@drawable/play_btn_prev_selector" />
+
+        <ImageView
+            android:id="@+id/iv_play"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:onClick="@{playModel.onPlay}"
+            android:src="@drawable/play_btn_play_pause_selector" />
+
+        <ImageView
+            android:id="@+id/iv_next"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginLeft="105dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="@{playModel.onPlayNext}"
+            android:src="@drawable/play_btn_next_selector" />
+
+    </FrameLayout>
+</layout>

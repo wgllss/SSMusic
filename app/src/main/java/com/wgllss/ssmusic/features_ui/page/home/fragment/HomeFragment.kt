@@ -1,6 +1,7 @@
 package com.wgllss.ssmusic.features_ui.page.home.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import com.scclzkj.base_core.widget.OnRecyclerViewItemClickListener
 import com.umeng.analytics.MobclickAgent
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.launchActivity
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
@@ -17,6 +19,7 @@ import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
+import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -63,6 +66,7 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
             rvPlList.addOnItemTouchListener(object : OnRecyclerViewItemClickListener(rvPlList) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
                     appViewModel.get().playPosition(position)
+                    activity?.let { it.launchActivity(Intent(it, PlayActivity::class.java)) }
                 }
             })
         }
