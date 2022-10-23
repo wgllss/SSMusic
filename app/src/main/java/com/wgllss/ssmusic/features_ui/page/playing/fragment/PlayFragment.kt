@@ -15,6 +15,7 @@ import com.scclzkj.base_core.extension.loadUrl
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.adapter.BasePagerAdapter
 import com.wgllss.ssmusic.core.ex.dpToPx
+import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
@@ -102,6 +103,9 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             }
         })
         initViewPage()
+        img_back.setOnClickListener {
+            activity?.let { it.finishActivity() }
+        }
     }
 
     lateinit var iv_point: View
@@ -144,7 +148,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             })
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
-                    logE("onAnimationStart viewModel.isPlaying ${viewModel.isPlaying}")
                     if (!viewModel.isPlaying) {
                         pauseCDanimat()
                     }

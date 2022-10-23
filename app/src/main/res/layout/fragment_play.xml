@@ -15,6 +15,15 @@
         android:background="@drawable/play_page_default_bg"
         tools:context=".features_ui.page.playing.fragment.PlayFragment">
 
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="top|left"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_arrow_back_24" />
+
         <TextView
             android:id="@+id/mater_music_name"
             android:layout_width="match_parent"
@@ -45,10 +54,10 @@
             android:id="@+id/sb_progress"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|left"
             android:layout_marginLeft="120dp"
             android:layout_marginRight="120dp"
-            android:layout_marginBottom="135dp"
+            android:layout_marginBottom="120dp"
             android:maxHeight="2dp"
             android:minHeight="2dp"
             android:progressDrawable="@drawable/seek_bar_progress_style"
@@ -71,7 +80,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginRight="200dp"
+            android:layout_marginRight="160dp"
             android:layout_marginBottom="20dp"
             android:src="@drawable/play_mode_level_list" />
 
@@ -80,7 +89,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginRight="100dp"
+            android:layout_marginRight="80dp"
             android:layout_marginBottom="20dp"
             android:onClick="@{playModel.onPlayPrevious}"
             android:src="@drawable/play_btn_prev_selector" />
@@ -99,7 +108,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginLeft="105dp"
+            android:layout_marginLeft="80dp"
             android:layout_marginBottom="20dp"
             android:onClick="@{playModel.onPlayNext}"
             android:src="@drawable/play_btn_next_selector" />
