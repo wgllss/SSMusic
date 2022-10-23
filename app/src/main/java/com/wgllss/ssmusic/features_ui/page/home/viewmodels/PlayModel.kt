@@ -9,6 +9,8 @@ import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 class PlayModel : BaseViewModel() {
     val toatal by lazy { MutableLiveData<Int>() }
     val position by lazy { MutableLiveData<Int>() }
+    var isPlaying: Boolean = false
+    val pic by lazy { MutableLiveData<String>() }
 
     override fun start() {
     }
@@ -20,6 +22,7 @@ class PlayModel : BaseViewModel() {
     }
 
     val onPlay = View.OnClickListener {//true 暂停 false 继续播放
+        isPlaying = !it.isSelected
         LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayEvent(it.isSelected))
     }
     val onPlayNext = View.OnClickListener {

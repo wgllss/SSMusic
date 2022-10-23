@@ -62,4 +62,16 @@
     <style name="MyOverflowText" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
+
+    <!--ShapeableImageView 圆 -->
+    <style name="CircleStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <!--ShapeableImageView 切角 -->
+    <style name="CutStyle">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">10dp</item>
+    </style>
 </resources>
