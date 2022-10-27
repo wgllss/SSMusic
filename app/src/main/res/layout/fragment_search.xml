@@ -19,14 +19,14 @@
         android:orientation="vertical">
         <View
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="81dp"
             android:layout_gravity="top|left"
             android:background="@color/colorAccent" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_name"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_gravity="top"
             android:layout_marginTop="36dp"
             android:background="@color/color_translucent"
@@ -42,8 +42,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shapeable_search"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:layout_marginTop="36dp"
             android:layout_gravity="top|right"
             android:foreground="?android:attr/selectableItemBackground"
@@ -62,7 +62,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:background="@color/white"
-            android:layout_marginTop="86dp"
+            android:layout_marginTop="81dp"
             android:adapter="@{adapter}"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
