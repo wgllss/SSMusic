@@ -1,10 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorAccent">
+        android:layout_height="match_parent">
 
-    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="81dp"
+            android:layout_gravity="top|left"
+            android:background="@color/colorAccent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="36dp"
+            android:gravity="center"
+            android:text="设置"
+            android:textColor="@color/white"
+            android:textSize="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="81dp"
+            android:background="@color/white" />
+    </FrameLayout>
 </layout>

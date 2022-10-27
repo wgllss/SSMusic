@@ -17,42 +17,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="86dp"
+            android:layout_gravity="top|left"
+            android:background="@color/colorAccent" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="top"
-            android:background="@color/color_FFCD4339"
+            android:layout_marginTop="36dp"
+            android:background="@color/color_translucent"
             android:hint="@string/hint_name"
             android:paddingLeft="50dp"
             android:maxLines="1"
             android:paddingTop="0dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/black"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:paddingBottom="0dp"
             android:text="@={model.searchContent}"
             android:textSize="18dp" />
 
-        <com.google.android.material.imageview.ShapeableImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shapeable_search"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginTop="36dp"
             android:layout_gravity="top|right"
+            android:padding="8dp"
+            android:layout_marginRight="20dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/action_icon_search" />
+            android:src="@drawable/ic_baseline_search_24" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_result"
-            itemColorStr="@{`#60000000`}"
+            itemColorStr="@{`#30000000`}"
             itemWidth="@{1.0f}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:background="@color/color_ff2B9E62"
-            android:layout_marginTop="50dp"
+            android:background="@color/white"
+            android:layout_marginTop="86dp"
             android:adapter="@{adapter}"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

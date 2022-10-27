@@ -10,7 +10,7 @@ import com.wgllss.ssmusic.core.widget.CommonToast
 abstract class BaseActivity : AppCompatActivity() {
     private var loading: CommonLoadingView? = null
     private var initFlag = false
-    open fun hasNavigationBarStatusBarTranslucent() = false
+    open fun hasNavigationBarStatusBarTranslucent() = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (hasNavigationBarStatusBarTranslucent()) StatusBarUtil.setNavigationBarStatusBarTranslucent(this)

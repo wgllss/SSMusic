@@ -31,17 +31,14 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             WLog.e(this, "searchContent.value ${searchContent.value}")
             return
         }
-        viewModelScope.launch {
+        flowAsyncWorkOnLaunch {
             musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
-                .onStartAndShow()
-                .onCompletionAndHide()
                 .onEach {
                     result.postValue(it)
                     it.forEach {
                         WLog.e(this@HomeViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
                     }
-                }.flowOnIOAndcatch(errorMsgLiveData)
-                .collect()
+                }
         }
     }
 

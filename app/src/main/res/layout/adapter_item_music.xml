@@ -10,31 +10,34 @@
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="45dp">
+        android:layout_height="50dp">
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:layout_gravity="top|left"
+            android:gravity="center_vertical"
             android:layout_marginRight="150dp"
-            android:textColor="@color/black"
             android:text="@{bean.author}"
+            android:textColor="@color/color_999999"
             android:textSize="16dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="150dp"
             android:layout_height="20dp"
             android:layout_gravity="right|top"
-            android:textColor="@color/black"
+            android:gravity="center_vertical"
             android:text="@{bean.samplingRate}"
-            android:textSize="16dp" />
+            android:textColor="@color/color_999999"
+            android:textSize="15dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_marginTop="25dp"
-            android:textColor="@color/black"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|left"
+            android:gravity="center_vertical"
             android:text="@{bean.musicName}"
-            android:textSize="16dp" />
+            android:textColor="@color/black"
+            android:textSize="20dp" />
     </FrameLayout>
 </layout>
