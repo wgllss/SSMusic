@@ -74,34 +74,40 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                         startPointAnimat(-40f, 0f)
                     }
                 }
+                is MusicEvent.PlayerLoadding -> {
+                    pb_load.visibility = if (it.loadding) View.VISIBLE else View.GONE
+                    iv_play.visibility = if (it.loadding) View.GONE else View.VISIBLE
+                }
                 else -> {
 
                 }
             }
         }
 
-        viewModel.position.observe(viewLifecycleOwner) {
+        viewModel.position.observe(viewLifecycleOwner)
+        {
             logE("position:${it}")
         }
 
-        sb_progress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                viewModel?.toatal?.value?.run {
-                    val position = this * progress / 100
-                    viewModel.position.postValue(position)
-                    tv_current_time.text = WlTimeUtil.secdsToDateFormat(position, this)
+        sb_progress.setOnSeekBarChangeListener(
+            object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    viewModel?.toatal?.value?.run {
+                        val position = this * progress / 100
+                        viewModel.position.postValue(position)
+                        tv_current_time.text = WlTimeUtil.secdsToDateFormat(position, this)
+                    }
                 }
-            }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                viewModel.seek(false, false)
-            }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    viewModel.seek(false, false)
+                }
 
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                logE("onStopTrackingTouch ")
-                viewModel.seek(true, true)
-            }
-        })
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    logE("onStopTrackingTouch ")
+                    viewModel.seek(true, true)
+                }
+            })
         initViewPage()
         img_back.setOnClickListener {
             activity?.let { it.finishActivity() }

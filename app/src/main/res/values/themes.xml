@@ -74,4 +74,11 @@
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">10dp</item>
     </style>
+
+    <style name="RippleWhite80" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:colorControlHighlight">#FF4081</item>
+        <item name="paddingStart">20dp</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:radius">60dp</item>
+    </style>
 </resources>

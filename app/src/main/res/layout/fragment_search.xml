@@ -46,6 +46,8 @@
             android:layout_height="50dp"
             android:layout_marginTop="36dp"
             android:layout_gravity="top|right"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:theme="@style/RippleWhite80"
             android:padding="8dp"
             android:layout_marginRight="20dp"
             android:scaleType="fitCenter"

@@ -12,4 +12,8 @@ sealed class MusicEvent : LiveEvent {
     object PlayerStart : MusicEvent()
 
     object PlayerPause : MusicEvent()
+
+    data class PlayerLoadding(val loadding: Boolean) : MusicEvent()
+
+    object PlayerError : MusicEvent()
 }

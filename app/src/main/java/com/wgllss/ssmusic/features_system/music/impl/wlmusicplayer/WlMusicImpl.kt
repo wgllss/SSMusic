@@ -53,6 +53,7 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
         }
 
         wlMusic.setOnLoadListener { load ->
+            LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerLoadding(load))
             WLog.e(this@WlMusicImpl, "load:${load} ")
         }
 
