@@ -50,6 +50,19 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                     sb_progress.progress = WlTimeUtil.getProgress(it.currSecs, it.totalSecs)
                     tv_current_time.text = WlTimeUtil.secdsToDateFormat(it.currSecs, it.totalSecs)
                     tv_total_time.text = WlTimeUtil.secdsToDateFormat(it.totalSecs, it.totalSecs)
+
+                    if (pb_load.visibility == View.VISIBLE) {
+                        pb_load.visibility = View.GONE
+                    }
+                    if (iv_play.visibility == View.GONE) {
+                        iv_play.visibility = View.VISIBLE
+                    }
+                    if (iv_point.rotation == -40f) {
+                        iv_play.isSelected = true
+                        viewModel.isPlaying = true
+                        startPointAnimat(-40f, 0f)
+                    }
+
                     viewModel.toatal?.takeIf { t ->
                         t.value == null || t.value != it.totalSecs
                     }?.let { _ ->
@@ -84,8 +97,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             }
         }
 
-        viewModel.position.observe(viewLifecycleOwner)
-        {
+        viewModel.position.observe(viewLifecycleOwner) {
             logE("position:${it}")
         }
 
