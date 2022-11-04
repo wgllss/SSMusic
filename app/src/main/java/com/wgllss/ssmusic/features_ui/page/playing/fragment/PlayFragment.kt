@@ -33,6 +33,11 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
     override fun activitySameViewModel() = true
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         binding?.apply {
@@ -41,6 +46,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             executePendingBindings()
         }
         LiveEventBus.get(MusicEvent::class.java).observe(viewLifecycleOwner) {
+            logE("  12212121  ")
             when (it) {
                 is MusicEvent.ChangeMusic -> {
                     mater_music_name.text = it.title

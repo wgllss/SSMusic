@@ -5,8 +5,7 @@ import android.media.AudioManager
 import android.media.MediaPlayer
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
-import com.wgllss.ssmusic.features_system.music.IMusicPlay
-import com.wgllss.ssmusic.features_system.music.OnPlayCompleteListener
+import com.wgllss.ssmusic.features_system.music.*
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -20,6 +19,11 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
     private val STATE_PLAYING = 2
     private val STATE_PAUSE = 3
     private var state: Int = STATE_IDLE
+    override fun setOnPreparedListener(listener: OnPreparedListener) {
+    }
+
+    override fun setOnPauseResumeListener(listener: OnPauseResumeListener) {
+    }
 
     private val audioFocusManager by lazy { AudioFocusManager(context, this) }
 
@@ -114,6 +118,12 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
         }
     }
 
+    override fun setOnPlayInfoListener(listener: OnPlayInfoListener) {
+    }
+
+    override fun setOnLoadListener(listener: OnLoadListener) {
+    }
+
     override fun setPlayCircle(isCircle: Boolean) {
 //        mediaPlayer
     }
@@ -150,5 +160,8 @@ class MediaPlayerImpl @Inject constructor(@ApplicationContext val context: Conte
 
     override fun onDestroy() {
         stopPlayer()
+    }
+
+    override fun onStop() {
     }
 }

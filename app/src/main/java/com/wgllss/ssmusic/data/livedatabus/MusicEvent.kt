@@ -5,7 +5,7 @@ import com.jeremyliao.liveeventbus.core.LiveEvent
 sealed class MusicEvent : LiveEvent {
     data class ChangeMusic(val pic: String, val title: String, val author: String) : MusicEvent()
 
-    data class PlayerProgress(val currSecs: Int, val totalSecs: Int) : MusicEvent()
+    data class PlayerProgress(var currSecs: Int, var totalSecs: Int) : MusicEvent()
 
     data class BufferingUpdate(val percent: Int) : MusicEvent()
 
@@ -13,7 +13,7 @@ sealed class MusicEvent : LiveEvent {
 
     object PlayerPause : MusicEvent()
 
-    data class PlayerLoadding(val loadding: Boolean) : MusicEvent()
+    data class PlayerLoadding(var loadding: Boolean) : MusicEvent()
 
     object PlayerError : MusicEvent()
 }

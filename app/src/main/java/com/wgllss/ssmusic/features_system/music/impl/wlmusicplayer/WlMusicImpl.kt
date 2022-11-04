@@ -4,8 +4,7 @@ import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
-import com.wgllss.ssmusic.features_system.music.IMusicPlay
-import com.wgllss.ssmusic.features_system.music.OnPlayCompleteListener
+import com.wgllss.ssmusic.features_system.music.*
 import com.ywl5320.libmusic.WlMusic
 import javax.inject.Inject
 
@@ -14,7 +13,6 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
     private val wlMusic by lazy { WlMusic.getInstance() }
 
     override fun onCreate() {
-//        wlMusic.isPlaying
     }
 
     override fun start() {
@@ -23,7 +21,6 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
     }
 
     override fun onPause() {
-        logE("onPause- isPlaying()-> ${isPlaying()}")
         if (isPlaying()) {
             wlMusic.pause()
         }
@@ -43,44 +40,28 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
     }
 
     override fun prePared() {
-//        setPlayCircle(true)
-        wlMusic.setOnPreparedListener {
-            start()
-        }
-
-        wlMusic.setOnErrorListener { code, msg ->
-            WLog.e(this@WlMusicImpl, "code:${code} msg:${msg}")
-        }
-
-        wlMusic.setOnLoadListener { load ->
-            LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerLoadding(load))
-            WLog.e(this@WlMusicImpl, "load:${load} ")
-        }
-
-        wlMusic.setOnInfoListener {
-            it?.takeIf {
-                it.totalSecs > 0
-            }?.run {
-                LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.PlayerProgress(it.currSecs, it.totalSecs))
-            }
-        }
-
-        wlMusic.setOnPauseResumeListener { pause ->
-            LiveEventBus.get(MusicEvent::class.java).post(if (pause) MusicEvent.PlayerStart else MusicEvent.PlayerPause)
-        }
-
-        wlMusic.setOnVolumeDBListener {
-            WLog.e(this@WlMusicImpl, "setOnVolumeDBListener")
-        }
         wlMusic.prePared()
     }
 
-    override fun setOnCompleteListener(listener: OnPlayCompleteListener) {
-        wlMusic.setOnCompleteListener {
-            listener?.onComplete()
-            //播放进度发送
-//            WLog.e(this@WlMusicImpl, "setOnInfoListener")
-        }
+    override fun setOnPreparedListener(listener: OnPreparedListener) = wlMusic.setOnPreparedListener {
+        listener.onPrepared()
+    }
+
+    override fun setOnPauseResumeListener(listener: OnPauseResumeListener) = wlMusic.setOnPauseResumeListener {
+        listener.onPause(it)
+    }
+
+    override fun setOnCompleteListener(listener: OnPlayCompleteListener) = wlMusic.setOnCompleteListener {
+        listener?.onComplete()
+    }
+
+    override fun setOnPlayInfoListener(listener: OnPlayInfoListener) = wlMusic.setOnInfoListener {
+        listener.onPlayInfo(it.currSecs, it.totalSecs)
+    }
+
+
+    override fun setOnLoadListener(listener: OnLoadListener) = wlMusic.setOnLoadListener {
+        listener.onLoad(it)
     }
 
     override fun setSource(url: String) {
@@ -95,13 +76,13 @@ class WlMusicImpl @Inject constructor() : IMusicPlay {
         wlMusic.volume = volume
     }
 
-    override fun seek(secds: Int, seekingfinished: Boolean, showTime: Boolean) {
-        wlMusic.seek(secds, seekingfinished, showTime)
-    }
+    override fun seek(secds: Int, seekingfinished: Boolean, showTime: Boolean) = wlMusic.seek(secds, seekingfinished, showTime)
 
     override fun isPlaying() = wlMusic.isPlaying
 
     override fun onDestroy() {
         wlMusic.stop()
     }
+
+    override fun onStop() = wlMusic.stop()
 }

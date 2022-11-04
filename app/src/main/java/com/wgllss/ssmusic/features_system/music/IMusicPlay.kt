@@ -38,14 +38,23 @@ interface IMusicPlay {
     //单曲播放结束
     fun setOnCompleteListener(listener: OnPlayCompleteListener)
 
+    //正在播放，进度等
+    fun setOnPlayInfoListener(listener: OnPlayInfoListener)
+
+    //加载进度等
+    fun setOnLoadListener(listener: OnLoadListener)
+
+    //准备监听
+    fun setOnPreparedListener(listener: OnPreparedListener)
+
+    //播放暂停监听
+    fun setOnPauseResumeListener(listener: OnPauseResumeListener)
+
     //是否循环
     fun setPlayCircle(isCircle: Boolean)
 
     //设置音量
     fun setVolume(volume: Int)
-
-//    //播放模式，0:按照顺序 1：单曲循环 2：随机播放
-//    fun setPlayType(type: Int)
 
     //播放到制定位置
     fun seek(secds: Int, seekingfinished: Boolean, showTime: Boolean)
@@ -53,5 +62,7 @@ interface IMusicPlay {
     fun isPlaying(): Boolean
 
     fun onDestroy()
+
+    fun onStop()
 
 }
