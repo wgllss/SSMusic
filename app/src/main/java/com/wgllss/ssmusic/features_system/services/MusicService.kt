@@ -1,9 +1,12 @@
 package com.wgllss.ssmusic.features_system.services
 
+import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
+import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.music.MusicFactory
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +35,7 @@ class MusicService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        musicFactory.get().onCreate()
+        musicFactory.get().onCreate(this)
     }
 
     override fun onStart(intent: Intent?, startId: Int) {

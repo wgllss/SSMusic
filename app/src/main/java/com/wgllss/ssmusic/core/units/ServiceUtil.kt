@@ -3,6 +3,8 @@ package com.wgllss.ssmusic.core.units
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 object ServiceUtil {
 
@@ -36,6 +38,18 @@ object ServiceUtil {
                 packageContext.startService(intent)
             }
         } catch (e: Exception) {
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun startForegroundService(packageContext: Context, cls: Class<*>) {
+        try {
+            if (!isServiceExisted(packageContext, cls.name)) {
+                val intent = Intent(packageContext, cls)
+                packageContext.startForegroundService(intent)
+            }
+        } catch (e: Exception) {
+
         }
     }
 

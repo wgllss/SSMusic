@@ -8,6 +8,7 @@ import android.os.IBinder
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
@@ -71,6 +72,11 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
                                 menu
                             }
                         }
+                    }
+                    view.parent?.takeIf {
+                        it is ViewGroup
+                    }?.let {
+                        (it as ViewGroup).removeView(view)
                     }
                     binding?.frameMain?.addView(view, lpA.await())
                     onPrepareOptionsMenu(menu!!.await()!!)

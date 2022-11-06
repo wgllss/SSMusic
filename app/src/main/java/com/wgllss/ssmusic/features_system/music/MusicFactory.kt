@@ -1,14 +1,18 @@
 package com.wgllss.ssmusic.features_system.music
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import androidx.core.app.NotificationManagerCompat
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
-import com.wgllss.ssmusic.dl.annotations.BindMediaPlayer
 import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.app.AppViewModel
+import com.wgllss.ssmusic.features_system.services.MusicService
 import dagger.Lazy
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -20,7 +24,7 @@ import javax.inject.Inject
  * musicPlay:主持音乐各种操作
  * appViewModel:主持提供各种数据
  */
-class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>) : MusicLifcycle() {
+class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>) : MusicComponent() {
 
     private lateinit var playerProgress: MusicEvent.PlayerProgress
     private lateinit var playerLoadding: MusicEvent.PlayerLoadding
@@ -31,8 +35,11 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
     private var jobPlay: Job? = null
     private var currentUrl: String? = null
 
-    override fun onCreate() {
-        super.onCreate()
+
+    override fun isPlaying() = musicPlay.get().isPlaying()
+
+    override fun onCreate(musicService: MusicService) {
+        super.onCreate(musicService)
         jobc = GlobalScope.launch {
             musicPlay.get().onCreate()
             LiveEventBus.get(MusicBeanEvent::class.java).observeForever {
@@ -88,6 +95,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         setOnPreparedListener(object : OnPreparedListener {
                             override fun onPrepared() {
                                 musicPlay.get().start()
+                                updateNotification()
                             }
                         })
                         setOnCompleteListener(object : OnPlayCompleteListener {
@@ -147,6 +155,9 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                     appViewModel.get().addToPlayList(it)
                 }
             }
+            musicTitle = title
+            musicAuthor = author
+            musicPic = pic
             it.run {
                 LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.ChangeMusic(pic, title, author))
             }

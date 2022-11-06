@@ -46,7 +46,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             executePendingBindings()
         }
         LiveEventBus.get(MusicEvent::class.java).observe(viewLifecycleOwner) {
-            logE("  12212121  ")
             when (it) {
                 is MusicEvent.ChangeMusic -> {
                     mater_music_name.text = it.title
@@ -55,8 +54,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                 is MusicEvent.PlayerProgress -> {
                     sb_progress.progress = WlTimeUtil.getProgress(it.currSecs, it.totalSecs)
                     tv_current_time.text = WlTimeUtil.secdsToDateFormat(it.currSecs, it.totalSecs)
-                    tv_total_time.text = WlTimeUtil.secdsToDateFormat(it.totalSecs, it.totalSecs)
-
                     if (pb_load.visibility == View.VISIBLE) {
                         pb_load.visibility = View.GONE
                     }
@@ -73,6 +70,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                         t.value == null || t.value != it.totalSecs
                     }?.let { _ ->
                         viewModel.toatal.postValue(it.totalSecs)
+                        tv_total_time.text = WlTimeUtil.secdsToDateFormat(it.totalSecs, it.totalSecs)
                     }
                 }
                 is MusicEvent.BufferingUpdate -> {
