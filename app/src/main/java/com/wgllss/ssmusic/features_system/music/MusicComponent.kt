@@ -1,9 +1,11 @@
 package com.wgllss.ssmusic.features_system.music
 
 import android.app.*
+import android.app.PendingIntent.FLAG_MUTABLE
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.PowerManager
@@ -73,7 +75,7 @@ open class MusicComponent : LifecycleOwner {
         val shutdownIntent = Intent(musicService, MusicService::class.java)
         shutdownIntent.action = SHUTDOWN
         mAlarmManager = musicService.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        mShutdownIntent = PendingIntent.getService(musicService, 0, shutdownIntent, 0)
+        mShutdownIntent = PendingIntent.getService(musicService, 0, shutdownIntent, FLAG_MUTABLE)
 
         scheduleDelayedShutdown()
 
@@ -160,7 +162,8 @@ open class MusicComponent : LifecycleOwner {
 //        val text = if (TextUtils.isEmpty(albumName)) artistName else "$artistName - $albumName"
         val playButtonResId: Int = if (isPlaying) R.drawable.ic_baseline_pause_36 else R.drawable.ic_baseline_play_arrow_36
         val nowPlayingIntent: Intent = NavigationUtils.getNowPlayingIntent(musicService)
-        val clickIntent = PendingIntent.getActivity(musicService, 0, nowPlayingIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        nowPlayingIntent.setFlags(FLAG_ACTIVITY_MULTIPLE_TASK)
+        val clickIntent = PendingIntent.getActivity(musicService, 0, nowPlayingIntent, PendingIntent.FLAG_MUTABLE)
 //        var artwork: Bitmap
 //        artwork = Glide.with(musicService).asBitmap().load(musicPic).into(SimpleTarget<Bitmap>() {
 //            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
@@ -207,6 +210,6 @@ open class MusicComponent : LifecycleOwner {
         val serviceName = ComponentName(musicService, MusicService::class.java)
         val intent = Intent(action)
         intent.component = serviceName
-        return PendingIntent.getService(musicService, 0, intent, 0)
+        return PendingIntent.getService(musicService, 0, intent, FLAG_MUTABLE)
     }
 }
