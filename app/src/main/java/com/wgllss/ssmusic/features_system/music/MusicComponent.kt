@@ -2,12 +2,13 @@ package com.wgllss.ssmusic.features_system.music
 
 import android.app.*
 import android.app.PendingIntent.FLAG_MUTABLE
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK
 import android.graphics.Bitmap
-import android.graphics.Color
+import android.os.Build
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.os.SystemClock
@@ -20,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.NavigationUtils
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.services.MusicService
@@ -79,7 +81,8 @@ open class MusicComponent : LifecycleOwner {
 
         scheduleDelayedShutdown()
 
-        musicService.startForeground(hashCode(), buildNotification())
+        mNotificationManager.notify(hashCode(), buildNotification())
+//        musicService.startForeground(hashCode(), buildNotification())
     }
 
     open fun onStart() {
@@ -156,21 +159,17 @@ open class MusicComponent : LifecycleOwner {
     }
 
     protected open fun buildNotification(): Notification {
-//        val albumName: String = getAlbumName()
-//        val artistName: String = getArtistName()
-        val isPlaying = isPlaying()
-//        val text = if (TextUtils.isEmpty(albumName)) artistName else "$artistName - $albumName"
-        val playButtonResId: Int = if (isPlaying) R.drawable.ic_baseline_pause_36 else R.drawable.ic_baseline_play_arrow_36
+        val playButtonResId: Int = if (isPlaying()) R.drawable.ic_baseline_pause_36 else R.drawable.ic_baseline_play_arrow_36
         val nowPlayingIntent: Intent = NavigationUtils.getNowPlayingIntent(musicService)
-        nowPlayingIntent.setFlags(FLAG_ACTIVITY_MULTIPLE_TASK)
-        val clickIntent = PendingIntent.getActivity(musicService, 0, nowPlayingIntent, PendingIntent.FLAG_MUTABLE)
-//        var artwork: Bitmap
-//        artwork = Glide.with(musicService).asBitmap().load(musicPic).into(SimpleTarget<Bitmap>() {
-//            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-//            }
-//        })
+        val clickIntent = PendingIntent.getActivity(musicService, 0, nowPlayingIntent, FLAG_MUTABLE)
+        var artwork: Bitmap? = null
+        Glide.with(musicService).asBitmap().load(musicPic).into(object : SimpleTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                artwork = resource
+            }
+        })
 //        if (artwork == null) {
-//            artwork = ImageLoader.getInstance().loadImageSync("drawable://" + R.drawable.ic_empty_music2)
+//            artwork =
 //        }
         if (mNotificationPostTime == 0L) {
             mNotificationPostTime = System.currentTimeMillis()
@@ -210,6 +209,21 @@ open class MusicComponent : LifecycleOwner {
         val serviceName = ComponentName(musicService, MusicService::class.java)
         val intent = Intent(action)
         intent.component = serviceName
-        return PendingIntent.getService(musicService, 0, intent, FLAG_MUTABLE)
+        val mFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_UPDATE_CURRENT
+        }
+        return PendingIntent.getService(musicService, 0, intent, mFlag)
+    }
+
+    inner class IntentReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            handleCommandIntent(intent)
+        }
+    }
+
+    open fun handleCommandIntent(intent: Intent?) {
+
     }
 }

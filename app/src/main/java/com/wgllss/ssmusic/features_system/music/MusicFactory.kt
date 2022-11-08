@@ -1,12 +1,12 @@
 package com.wgllss.ssmusic.features_system.music
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationManagerCompat
+import android.content.IntentFilter
+import android.media.AudioManager
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.wgllss.ssmusic.core.units.SdkIntUtils
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
@@ -30,10 +30,12 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
     private lateinit var playerLoadding: MusicEvent.PlayerLoadding
     private lateinit var playerStart: MusicEvent.PlayerStart
     private lateinit var playerPause: MusicEvent.PlayerPause
+    private lateinit var intentReceiver: IntentReceiver
 
     private var jobc: Job? = null
     private var jobPlay: Job? = null
     private var currentUrl: String? = null
+    private var pause = true
 
 
     override fun isPlaying() = musicPlay.get().isPlaying()
@@ -66,13 +68,28 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                     }
                 }
             }
+            // Initialize the intent filter and each action
+            val filter = IntentFilter()
+//            filter.addAction(SERVICECMD)
+            filter.addAction(TOGGLEPAUSE_ACTION)
+//            filter.addAction(PAUSE_ACTION)
+//            filter.addAction(STOP_ACTION)
+            filter.addAction(NEXT_ACTION)
+            filter.addAction(PREVIOUS_ACTION)
+//            filter.addAction(PREVIOUS_FORCE_ACTION)
+//            filter.addAction(REPEAT_ACTION)
+//            filter.addAction(SHUFFLE_ACTION)
+            filter.addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+            filter.addAction(Intent.ACTION_SCREEN_ON)
+            if (!this@MusicFactory::intentReceiver.isInitialized) {
+                intentReceiver = IntentReceiver()
+            }
+            musicService.registerReceiver(intentReceiver, filter)
+
         }
         appViewModel.get().currentPposition.observeForever {
             appViewModel.get().getDetail(it)
         }
-    }
-
-    fun handlerIntent(intent: Intent) {
     }
 
     override fun onDestory() {
@@ -80,6 +97,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
         jobc?.cancel()
         jobPlay?.cancel()
         musicPlay.get().onDestroy()
+        musicService?.unregisterReceiver(intentReceiver)
     }
 
     //处理音乐播放
@@ -128,6 +146,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         })
                         setOnPauseResumeListener(object : OnPauseResumeListener {
                             override fun onPause(pause: Boolean) {
+                                this@MusicFactory.pause = pause
                                 if (!this@MusicFactory::playerStart.isInitialized) {
                                     playerStart = MusicEvent.PlayerStart
                                 }
@@ -163,4 +182,22 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
             }
         }
     }
+
+    override fun handleCommandIntent(intent: Intent?) {
+        intent?.action?.run {
+            logE(" intent?.action ${intent?.action}")
+            when (this) {
+                PREVIOUS_ACTION -> {
+                    appViewModel.get().playPrevious()
+                }
+                TOGGLEPAUSE_ACTION -> {
+                    if (pause) musicPlay.get().onResume() else musicPlay.get().onPause()
+                }
+                NEXT_ACTION -> {
+                    appViewModel.get().playNext()
+                }
+            }
+        }
+    }
+
 }
