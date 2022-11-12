@@ -82,7 +82,7 @@ open class MusicComponent : LifecycleOwner {
         scheduleDelayedShutdown()
 
         mNotificationManager.notify(hashCode(), buildNotification())
-//        musicService.startForeground(hashCode(), buildNotification())
+        musicService.startForeground(hashCode(), buildNotification())
     }
 
     open fun onStart() {
@@ -163,11 +163,15 @@ open class MusicComponent : LifecycleOwner {
         val nowPlayingIntent: Intent = NavigationUtils.getNowPlayingIntent(musicService)
         val clickIntent = PendingIntent.getActivity(musicService, 0, nowPlayingIntent, FLAG_MUTABLE)
         var artwork: Bitmap? = null
+//        musicPic?.run {
+        logE("musicPic:$musicPic")
         Glide.with(musicService).asBitmap().load(musicPic).into(object : SimpleTarget<Bitmap>() {
             override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                 artwork = resource
             }
         })
+//        }
+
 //        if (artwork == null) {
 //            artwork =
 //        }

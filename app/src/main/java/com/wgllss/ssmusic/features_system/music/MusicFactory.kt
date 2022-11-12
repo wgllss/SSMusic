@@ -1,7 +1,5 @@
 package com.wgllss.ssmusic.features_system.music
 
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
@@ -195,6 +193,9 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                 }
                 NEXT_ACTION -> {
                     appViewModel.get().playNext()
+                }
+                else -> {
+
                 }
             }
         }
