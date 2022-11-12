@@ -54,8 +54,7 @@ object StatusBarUtil {
      */
     fun setNavigationBarStatusBarTranslucent(activity: Activity) {
         activity?.window?.apply {
-            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     )
             navigationBarColor = Color.TRANSPARENT
             statusBarColor = Color.TRANSPARENT

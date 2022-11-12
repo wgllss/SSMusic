@@ -81,7 +81,7 @@ open class MusicComponent : LifecycleOwner {
 
         scheduleDelayedShutdown()
 
-        mNotificationManager.notify(hashCode(), buildNotification())
+//        mNotificationManager.notify(hashCode(), buildNotification())
         musicService.startForeground(hashCode(), buildNotification())
     }
 
