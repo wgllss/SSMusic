@@ -35,6 +35,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
     private var currentUrl: String? = null
     private var pause = true
     private var isUItoFront = false
+    private var isNewAddToPlaylist = false
 
     override fun isPlaying() = musicPlay.get().isPlaying() && !pause
 
@@ -103,7 +104,9 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
 
         }
         appViewModel.get().currentPposition.observeForever {
-            appViewModel.get().getDetail(it)
+            if (!isNewAddToPlaylist)
+                appViewModel.get().getDetail(it)
+            isNewAddToPlaylist = false
         }
     }
 
@@ -184,6 +187,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         })
                     }
                 }
+                isNewAddToPlaylist = true
                 appViewModel.get().addToPlayList(it)
             } else {
                 if (currentUrl == url) {

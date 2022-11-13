@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseDataBindingAdapter<T, VB : ViewDataBinding>(var context: Context? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private lateinit var mData: MutableList<T>
-    var selectPositon = 0
+    var selectPositon = -1
 
     fun notifyData(mData: MutableList<T>) {
         if (mData == null) {

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.scclzkj.base_core.base.BaseMVVMFragment
 import com.scclzkj.base_core.widget.OnRecyclerViewItemClickListener
 import com.umeng.analytics.MobclickAgent
@@ -14,6 +15,7 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.launchActivity
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
+import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
@@ -79,6 +81,25 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
                     liveData.observe(viewLifecycleOwner) { data ->
                         playListAdapterL.get().notifyData(data)
                     }
+                }
+            }
+        }
+
+        appViewModel.get().currentPposition.observe(viewLifecycleOwner) {
+            playListAdapterL.get().selectPositon = it
+            playListAdapterL.get().notifyItemChanged(it)
+        }
+
+        LiveEventBus.get(MusicEvent::class.java).observe(viewLifecycleOwner) {
+            when (it) {
+                is MusicEvent.PlayerStart -> {// false 显示播放UI
+                    playListAdapterL.get().selectPositon = appViewModel.get().currentPposition.value!!
+                }
+                is MusicEvent.PlayerPause -> {// true 显示暂停
+                    playListAdapterL.get().selectPositon = -1
+                }
+                else -> {
+
                 }
             }
         }

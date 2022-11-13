@@ -54,7 +54,11 @@ class AppViewModel @Inject constructor(application: Application, private val app
     //添加到播放列表
     fun addToPlayList(it: MusicBeanEvent) {
         flowAsyncWorkOnLaunch {
-            appRepository.addToPlayList(it)
+            appRepository.addToPlayList(it).onEach {
+                liveData?.value?.let {
+                    currentPposition.postValue(it.size)
+                }
+            }
         }
     }
 
