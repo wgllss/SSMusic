@@ -6,18 +6,21 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_MULTIPLE_TASK
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Build
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.os.SystemClock
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
@@ -25,6 +28,10 @@ import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.NavigationUtils
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.services.MusicService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 open class MusicComponent : LifecycleOwner {
 
@@ -55,7 +62,7 @@ open class MusicComponent : LifecycleOwner {
     lateinit var mShutdownIntent: PendingIntent
     private var mShutdownScheduled = false
 
-    private val mLastPlayedTime: Long = 0
+    protected var mLastPlayedTime: Long = 0
 
     protected var musicTitle = ""
     protected var musicAuthor = ""
@@ -82,7 +89,7 @@ open class MusicComponent : LifecycleOwner {
         scheduleDelayedShutdown()
 
 //        mNotificationManager.notify(hashCode(), buildNotification())
-        musicService.startForeground(hashCode(), buildNotification())
+//        musicService.startForeground(hashCode(), buildNotification())
     }
 
     open fun onStart() {
@@ -127,19 +134,32 @@ open class MusicComponent : LifecycleOwner {
         mShutdownScheduled = true
     }
 
+    private fun cancelShutdown() {
+        if (mShutdownScheduled) {
+            mAlarmManager.cancel(mShutdownIntent)
+            mShutdownScheduled = false
+        }
+    }
+
     protected open fun isPlaying(): Boolean = false
 
-    protected open fun recentlyPlayed() = isPlaying() || System.currentTimeMillis() - mLastPlayedTime < IDLE_DELAY
+    protected open fun recentlyPlayed(): Boolean {
+        logE("isPlaying()：${isPlaying()}")
+        return isPlaying() || System.currentTimeMillis() - mLastPlayedTime < IDLE_DELAY
+    }
 
 
     protected fun updateNotification() {
-        val newNotifyMode: Int
-        if (isPlaying()) {
-            newNotifyMode = NOTIFY_MODE_FOREGROUND
+        logE("updateNotification")
+        val newNotifyMode = if (isPlaying()) {
+            logE("updateNotification  if (isPlaying()) {")
+            NOTIFY_MODE_FOREGROUND
         } else if (recentlyPlayed()) {
-            newNotifyMode = NOTIFY_MODE_BACKGROUND
+            logE("updateNotification   } else if (recentlyPlayed()) {")
+            NOTIFY_MODE_BACKGROUND
         } else {
-            newNotifyMode = NOTIFY_MODE_NONE
+            logE("updateNotification   NOTIFY_MODE_NONE")
+            NOTIFY_MODE_NONE
         }
         val notificationId = hashCode()
         if (mNotifyMode != newNotifyMode) {
@@ -150,37 +170,44 @@ open class MusicComponent : LifecycleOwner {
                 mNotificationPostTime = 0
             }
         }
-        if (newNotifyMode == NOTIFY_MODE_FOREGROUND) {
-            musicService.startForeground(notificationId, buildNotification())
-        } else if (newNotifyMode == NOTIFY_MODE_BACKGROUND) {
-            mNotificationManager.notify(notificationId, buildNotification())
-        }
-        mNotifyMode = newNotifyMode
+        starNotification(notificationId, newNotifyMode)
     }
 
-    protected open fun buildNotification(): Notification {
+    private fun starNotification(notificationId: Int, newNotifyMode: Int) {
+        GlobalScope.launch {
+            flow {
+                musicPic?.let {
+                    val futureBitmap = Glide.with(musicService).asBitmap().load(musicPic).submit();
+                    val artwork: Bitmap = futureBitmap.get()
+                    emit(artwork)
+                }
+            }.flowOn(Dispatchers.IO)
+                .onEach {
+                    if (newNotifyMode == NOTIFY_MODE_FOREGROUND) {
+                        musicService.startForeground(notificationId, buildNotification(it))
+                    } else {
+                        mNotificationManager.notify(notificationId, buildNotification(it))
+                    }
+                    mNotifyMode = newNotifyMode
+                }
+                .catch {
+                    it.printStackTrace()
+                }.collect()
+        }
+    }
+
+    protected open fun buildNotification(artwork: Bitmap): Notification {
         val playButtonResId: Int = if (isPlaying()) R.drawable.ic_baseline_pause_36 else R.drawable.ic_baseline_play_arrow_36
         val nowPlayingIntent: Intent = NavigationUtils.getNowPlayingIntent(musicService)
         val clickIntent = PendingIntent.getActivity(musicService, 0, nowPlayingIntent, FLAG_MUTABLE)
-        var artwork: Bitmap? = null
-//        musicPic?.run {
-        logE("musicPic:$musicPic")
-        Glide.with(musicService).asBitmap().load(musicPic).into(object : SimpleTarget<Bitmap>() {
-            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                artwork = resource
-            }
-        })
-//        }
 
-//        if (artwork == null) {
-//            artwork =
-//        }
         if (mNotificationPostTime == 0L) {
             mNotificationPostTime = System.currentTimeMillis()
         }
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(musicService, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_my_music_folder)
-//            .setLargeIcon(artwork)
+            .setOngoing(true)
+            .setLargeIcon(artwork)
             .setContentIntent(clickIntent)
             .setContentTitle(musicTitle)
             .setContentText(musicAuthor)
@@ -190,15 +217,15 @@ open class MusicComponent : LifecycleOwner {
             .addAction(R.drawable.ic_baseline_skip_next_36, "", retrievePlaybackAction(NEXT_ACTION))
         if (SdkIntUtils.isJellyBeanMR1()) builder.setShowWhen(false)
         if (SdkIntUtils.isLollipop()) {
-            builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+            builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             val style = androidx.media.app.NotificationCompat.MediaStyle()
 //                .setMediaSession(mSession.getSessionToken())
                 .setShowActionsInCompactView(0, 1, 2, 3)
             builder.setStyle(style)
         }
-//        if (artwork != null && SdkIntUtils.isLollipop()) {
-//        builder.color = Palette.from(artwork).generate().getVibrantColor(Color.parseColor("#403f4d"))
-//        }
+        if (artwork != null && SdkIntUtils.isLollipop()) {
+            builder.color = Palette.from(artwork).generate().getVibrantColor(Color.parseColor("#403f4d"))
+        }
         if (SdkIntUtils.isOreo()) {
             builder.setColorized(true)
         }
@@ -228,6 +255,10 @@ open class MusicComponent : LifecycleOwner {
     }
 
     open fun handleCommandIntent(intent: Intent?) {
+
+    }
+
+    open fun play() {
 
     }
 }

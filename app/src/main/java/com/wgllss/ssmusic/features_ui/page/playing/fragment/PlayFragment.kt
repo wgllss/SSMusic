@@ -35,7 +35,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -101,10 +100,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             }
         }
 
-        viewModel.position.observe(viewLifecycleOwner) {
-            logE("position:${it}")
-        }
-
         sb_progress.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -120,7 +115,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    logE("onStopTrackingTouch ")
                     viewModel.seek(true, true)
                 }
             })
@@ -128,6 +122,16 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         img_back.setOnClickListener {
             activity?.let { it.finishActivity() }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onResume()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        viewModel.onStop()
     }
 
     lateinit var iv_point: View
@@ -143,7 +147,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                 iv_center.loadUrl(it)
             }
         }
-
         iv_point.setRotation(-40f)
         views.add(coverView)
         val pagerAdapter = BasePagerAdapter(views)
@@ -164,10 +167,10 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             setRepeatCount(0)
             setDuration(300)
             setInterpolator(lin)
-            addUpdateListener(AnimatorUpdateListener { animation ->
+            addUpdateListener { animation ->
                 val current = animation.animatedValue as Float
                 iv_point.setRotation(current)
-            })
+            }
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                     if (!viewModel.isPlaying) {

@@ -29,13 +29,13 @@ class AppViewModel @Inject constructor(application: Application, private val app
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     val currentPposition by lazy { MutableLiveData<Int>() }
 
-    fun <T> Flow<T>.flowOnIOAndcatch(): Flow<T> = flowOnIOAndcatch(errorMsgLiveData)
+    private fun <T> Flow<T>.flowOnIOAndcatch(): Flow<T> = flowOnIOAndcatch(errorMsgLiveData)
 
-    suspend fun <T> Flow<T>.flowOnIOAndcatchAAndCollect() {
+    private suspend fun <T> Flow<T>.flowOnIOAndcatchAAndCollect() {
         flowOnIOAndcatch().collect()//这里，开始结束全放在异步里面处理
     }
 
-    fun <T> flowAsyncWorkOnLaunch(flowAsyncWork: suspend () -> Flow<T>) {
+    private fun <T> flowAsyncWorkOnLaunch(flowAsyncWork: suspend () -> Flow<T>) {
         viewModelScope.launch {
             flowAsyncWork.invoke().flowOnIOAndcatchAAndCollect()
         }
@@ -58,7 +58,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
         }
     }
 
-    fun findBeanByPosition(position: Int): MusicTabeBean? {
+    private fun findBeanByPosition(position: Int): MusicTabeBean? {
         liveData?.value?.takeIf {
             it.size > position
         }?.run {

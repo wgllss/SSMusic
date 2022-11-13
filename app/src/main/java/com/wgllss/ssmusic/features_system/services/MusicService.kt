@@ -48,7 +48,7 @@ class MusicService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         intent?.let { musicFactory.get().handleCommandIntent(intent) }
-        logE("onStartCommand intent $intent")
+        logE("onStartCommand intent ")
         return START_NOT_STICKY //no sense to use START_STICKY with using startForeground
 //        return super.onStartCommand(intent, flags, startId)
     }

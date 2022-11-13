@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.jeremyliao.liveeventbus.LiveEventBus
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 
@@ -11,6 +12,7 @@ class PlayModel : BaseViewModel() {
     val position by lazy { MutableLiveData<Int>() }
     var isPlaying: Boolean = false
     val pic by lazy { MutableLiveData<String>() }
+    val playUIToFront by lazy { MutableLiveData<PlayerEvent.PlayUIToFront>() }
 
     override fun start() {
     }
@@ -31,5 +33,24 @@ class PlayModel : BaseViewModel() {
 
     val onPlayPrevious = View.OnClickListener {
         LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayPrevious)
+    }
+
+    fun onResume() {
+        if (playUIToFront.value == null) {
+            playUIToFront.value = PlayerEvent.PlayUIToFront(true)
+        } else {
+            playUIToFront.value!!.isFront = true
+        }
+        logE("onResume ${playUIToFront.value!!.isFront }")
+        LiveEventBus.get(PlayerEvent::class.java).post(playUIToFront.value)
+    }
+
+    fun onStop() {
+        if (playUIToFront.value == null) {
+            playUIToFront.value = PlayerEvent.PlayUIToFront(false)
+        } else {
+            playUIToFront.value!!.isFront = false
+        }
+        LiveEventBus.get(PlayerEvent::class.java).post(playUIToFront.value)
     }
 }

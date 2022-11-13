@@ -14,11 +14,11 @@ class AndroidServiceInitializer : Initializer<Any> {
 
     override fun create(context: Context) {
         GlobalScope.launch {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                ServiceUtil.startForegroundService(context, MusicService::class.java)
-            } else {
-                ServiceUtil.startService(context, MusicService::class.java)
-            }
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                ServiceUtil.startForegroundService(context, MusicService::class.java)
+//            } else {
+            ServiceUtil.startService(context, MusicService::class.java)
+//            }
         }
     }
 

@@ -11,4 +11,6 @@ sealed class PlayerEvent : LiveEvent {
     object PlayPrevious : PlayerEvent()
 
     data class SeekEvent(val position: Int, val seekingfinished: Boolean, val showTime: Boolean) : PlayerEvent()
+
+    data class PlayUIToFront(var isFront: Boolean) : PlayerEvent()
 }

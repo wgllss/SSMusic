@@ -34,9 +34,10 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
     private var jobPlay: Job? = null
     private var currentUrl: String? = null
     private var pause = true
+    private var isUItoFront = false
 
 
-    override fun isPlaying() = musicPlay.get().isPlaying()
+    override fun isPlaying() = musicPlay.get().isPlaying() && !pause
 
     override fun onCreate(musicService: MusicService) {
         super.onCreate(musicService)
@@ -50,7 +51,8 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
             LiveEventBus.get(PlayerEvent::class.java).observeForever {
                 when (it) {
                     is PlayerEvent.PlayEvent -> {
-                        if (it.pause) musicPlay.get().onPause() else musicPlay.get().onResume()
+                        if (it.pause) musicPlay.get().onPause()
+                        else musicPlay.get().onResume()
                     }
                     is PlayerEvent.PlayNext -> {
                         appViewModel.get().playNext()
@@ -60,6 +62,15 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                     }
                     is PlayerEvent.SeekEvent -> {
                         musicPlay.get().seek(it.position, it.seekingfinished, it.showTime)
+                    }
+                    is PlayerEvent.PlayUIToFront -> {
+                        isUItoFront = it.isFront
+                        logE("is PlayerEvent.PlayUIToFront isUItoFront $isUItoFront")
+                        if (isUItoFront) {
+                            if (isPlaying()) {
+                                LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.ChangeMusic(musicPic, musicTitle, musicAuthor))
+                            }
+                        }
                     }
                     else -> {
 
@@ -111,7 +122,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         setOnPreparedListener(object : OnPreparedListener {
                             override fun onPrepared() {
                                 musicPlay.get().start()
-                                updateNotification()
+                                logE("onPrepared")
                             }
                         })
                         setOnCompleteListener(object : OnPlayCompleteListener {
@@ -121,6 +132,11 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         })
                         setOnLoadListener(object : OnLoadListener {
                             override fun onLoad(load: Boolean) {
+                                logE("onLoad: $load")
+                                if (!load) {
+                                    pause = load
+                                    updateNotification()
+                                }
                                 if (!this@MusicFactory::playerLoadding.isInitialized) {
                                     playerLoadding = MusicEvent.PlayerLoadding(load)
                                 } else {
@@ -131,6 +147,9 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         })
                         setOnPlayInfoListener(object : OnPlayInfoListener {
                             override fun onPlayInfo(currSecs: Int, totalSecs: Int) {
+                                if (!isUItoFront) {
+                                    return
+                                }
                                 if (totalSecs > 0) {
                                     if (!this@MusicFactory::playerProgress.isInitialized) {
                                         playerProgress = MusicEvent.PlayerProgress(currSecs, totalSecs)
@@ -144,7 +163,10 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         })
                         setOnPauseResumeListener(object : OnPauseResumeListener {
                             override fun onPause(pause: Boolean) {
+                                logE("pause: $pause")
                                 this@MusicFactory.pause = pause
+                                if (pause) mLastPlayedTime = System.currentTimeMillis()
+                                updateNotification()
                                 if (!this@MusicFactory::playerStart.isInitialized) {
                                     playerStart = MusicEvent.PlayerStart
                                 }
