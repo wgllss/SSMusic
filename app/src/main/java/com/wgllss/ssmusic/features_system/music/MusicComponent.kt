@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.os.SystemClock
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
@@ -20,9 +19,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.FutureTarget
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.NavigationUtils

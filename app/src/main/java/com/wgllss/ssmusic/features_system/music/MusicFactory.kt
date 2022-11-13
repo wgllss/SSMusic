@@ -36,7 +36,6 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
     private var pause = true
     private var isUItoFront = false
 
-
     override fun isPlaying() = musicPlay.get().isPlaying() && !pause
 
     override fun onCreate(musicService: MusicService) {
@@ -70,6 +69,13 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                             if (isPlaying()) {
                                 LiveEventBus.get(MusicEvent::class.java).post(MusicEvent.ChangeMusic(musicPic, musicTitle, musicAuthor))
                             }
+                            if (!this@MusicFactory::playerStart.isInitialized) {
+                                playerStart = MusicEvent.PlayerStart
+                            }
+                            if (!this@MusicFactory::playerPause.isInitialized) {
+                                playerPause = MusicEvent.PlayerPause
+                            }
+                            LiveEventBus.get(MusicEvent::class.java).post(if (pause) playerStart else playerPause)
                         }
                     }
                     else -> {
