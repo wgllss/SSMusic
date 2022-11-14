@@ -32,11 +32,12 @@
             android:background="@color/color_translucent"
             android:hint="@string/hint_name"
             android:paddingLeft="50dp"
+            android:gravity="center_vertical"
             android:maxLines="1"
-            android:paddingTop="0dp"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:paddingBottom="0dp"
             android:text="@={model.searchContent}"
             android:textSize="18dp" />
 

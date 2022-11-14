@@ -13,6 +13,11 @@ abstract class BaseDataBindingAdapter<T, VB : ViewDataBinding>(var context: Cont
     private lateinit var mData: MutableList<T>
     var selectPositon = -1
 
+    fun setSelectPosition(selectPositon: Int) {
+        this.selectPositon = selectPositon
+        notifyDataSetChanged()
+    }
+
     fun notifyData(mData: MutableList<T>) {
         if (mData == null) {
             this.mData = mutableListOf()

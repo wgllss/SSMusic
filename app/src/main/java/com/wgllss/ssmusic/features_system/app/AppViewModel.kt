@@ -27,7 +27,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
     //播放列表
     lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
-    val currentPposition by lazy { MutableLiveData<Int>() }
+    val currentPosition by lazy { MutableLiveData<Int>() }
 
     private fun <T> Flow<T>.flowOnIOAndcatch(): Flow<T> = flowOnIOAndcatch(errorMsgLiveData)
 
@@ -56,7 +56,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
         flowAsyncWorkOnLaunch {
             appRepository.addToPlayList(it).onEach {
                 liveData?.value?.let {
-                    currentPposition.postValue(it.size)
+                    currentPosition.postValue(it.size)
                 }
             }
         }
@@ -72,7 +72,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     fun playNext() {
-        currentPposition?.value?.takeIf {
+        currentPosition?.value?.takeIf {
             it + 1 < liveData.value!!.size
         }?.let {
             playPosition(it + 1)
@@ -80,7 +80,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     fun playPrevious() {
-        currentPposition?.value?.takeIf {
+        currentPosition?.value?.takeIf {
             it - 1 > 0
         }?.let {
             playPosition(it - 1)
@@ -89,7 +89,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
 
     fun playPosition(position: Int) {
         logE("点击：position:${position}")
-        currentPposition.postValue(position)
+        currentPosition.postValue(position)
     }
 
     fun getDetail(position: Int) {

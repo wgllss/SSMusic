@@ -103,7 +103,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
             musicService.registerReceiver(intentReceiver, filter)
 
         }
-        appViewModel.get().currentPposition.observeForever {
+        appViewModel.get().currentPosition.observeForever {
             if (!isNewAddToPlaylist)
                 appViewModel.get().getDetail(it)
             isNewAddToPlaylist = false

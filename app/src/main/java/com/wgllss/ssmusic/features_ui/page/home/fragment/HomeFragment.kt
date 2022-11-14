@@ -13,6 +13,7 @@ import com.umeng.analytics.MobclickAgent
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.launchActivity
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
@@ -85,18 +86,20 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
             }
         }
 
-        appViewModel.get().currentPposition.observe(viewLifecycleOwner) {
-            playListAdapterL.get().selectPositon = it
-            playListAdapterL.get().notifyItemChanged(it)
-        }
-
         LiveEventBus.get(MusicEvent::class.java).observe(viewLifecycleOwner) {
             when (it) {
-                is MusicEvent.PlayerStart -> {// false 显示播放UI
-                    playListAdapterL.get().selectPositon = appViewModel.get().currentPposition.value!!
+                is MusicEvent.PlayerLoadding -> {// false 正在加载
+                    logE("PlayerLoadding")
+                    if (it.loadding)
+                        playListAdapterL.get().setSelectPosition(-1)
                 }
-                is MusicEvent.PlayerPause -> {// true 显示暂停
-                    playListAdapterL.get().selectPositon = -1
+                is MusicEvent.PlayerStart -> {
+                    playListAdapterL.get().setSelectPosition(-1)
+                }
+                is MusicEvent.PlayerProgress -> {// true 显示暂停，正在播放
+                    appViewModel.get().currentPosition?.value?.let { p ->
+                        playListAdapterL.get().setSelectPosition(p)
+                    }
                 }
                 else -> {
 
@@ -113,11 +116,13 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
     override fun onResume() {
         LogTimer.LogE(this, "onResume")
         super.onResume()
+        viewModel.onResume()
     }
 
     override fun onStop() {
         LogTimer.LogE(this, "onStop")
         super.onStop()
+        viewModel.onStop()
     }
 
     override fun onDestroy() {

@@ -33,7 +33,7 @@ class SearchFragment : BaseMVVMFragment<HomeViewModel, FragmentSearchBinding>(R.
             executePendingBindings()
             shapeableSearch.setOnClickListener {
                 viewModel.searchKeyByTitle()
-                HideSoftInputFromWindow(binding.root)
+                HideSoftInputFromWindow(root)
             }
             rvResult?.run {
                 addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
@@ -42,15 +42,16 @@ class SearchFragment : BaseMVVMFragment<HomeViewModel, FragmentSearchBinding>(R.
                     }
                 })
             }
-            binding.etName.setOnEditorActionListener { v, actionId, event ->
+            etName.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
-                    EditorInfo.IME_ACTION_DONE -> {
+                    EditorInfo.IME_ACTION_SEARCH -> {
                         viewModel.searchKeyByTitle()
-                        HideSoftInputFromWindow(binding.root)
+                        HideSoftInputFromWindow(root)
+                        true
                     }
                     else -> {}
                 }
-                true
+                false
             }
         }
         viewModel.result.observe(viewLifecycleOwner) {

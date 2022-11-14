@@ -31,10 +31,15 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
     private var pointAnimator: ValueAnimator? = null
     private val lin by lazy { LinearInterpolator() }
 
+    lateinit var iv_center: ImageView
+    lateinit var iv_point: View
+    lateinit var cd_layout: View
+
     override fun activitySameViewModel() = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViewPage()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -118,10 +123,16 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                     viewModel.seek(true, true)
                 }
             })
-        initViewPage()
         img_back.setOnClickListener {
             activity?.let { it.finishActivity() }
         }
+        iv_center?.run {
+            viewModel.pic.observe(viewLifecycleOwner) {
+                iv_center.loadUrl(it)
+            }
+        }
+        initPointAnimat()
+        initCDAnimat()
     }
 
     override fun onResume() {
@@ -134,25 +145,16 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         viewModel.onStop()
     }
 
-    lateinit var iv_point: View
-    lateinit var cd_layout: View
 
     fun initViewPage() {
         val coverView: View = LayoutInflater.from(context).inflate(R.layout.music_cd_layout, null)
         iv_point = coverView.findViewById(R.id.iv_point)
         cd_layout = coverView.findViewById(R.id.cd_layout)
-        val iv_center: ImageView = coverView.findViewById(R.id.iv_center)
-        iv_center?.run {
-            viewModel.pic.observe(viewLifecycleOwner) {
-                iv_center.loadUrl(it)
-            }
-        }
-        iv_point.setRotation(-40f)
+        iv_center = coverView.findViewById(R.id.iv_center)
+        iv_point.rotation = -40f
         views.add(coverView)
         val pagerAdapter = BasePagerAdapter(views)
         view_pager.adapter = pagerAdapter
-        initPointAnimat()
-        initCDAnimat()
     }
 
     /**

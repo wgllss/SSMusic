@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.scclzkj.base_core.base.BaseDataBindingAdapter
 import com.scclzkj.base_core.extension.loadUrl
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.databinding.AdapterMusicPlaylistItemBinding
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import javax.inject.Inject

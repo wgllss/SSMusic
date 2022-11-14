@@ -4,10 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.ex.flowOnIOAndcatch
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
+import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import dagger.Lazy
@@ -19,6 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>) : BaseViewModel() {
+    val playUIToFront by lazy { MutableLiveData<PlayerEvent.PlayUIToFront>() }
+
 
     val searchContent by lazy { MutableLiveData<String>() }
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
@@ -62,5 +66,24 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
                     }
             }
         }
+    }
+
+    fun onResume() {
+        if (playUIToFront.value == null) {
+            playUIToFront.value = PlayerEvent.PlayUIToFront(true)
+        } else {
+            playUIToFront.value!!.isFront = true
+        }
+        logE("onResume ${playUIToFront.value!!.isFront }")
+        LiveEventBus.get(PlayerEvent::class.java).post(playUIToFront.value)
+    }
+
+    fun onStop() {
+        if (playUIToFront.value == null) {
+            playUIToFront.value = PlayerEvent.PlayUIToFront(false)
+        } else {
+            playUIToFront.value!!.isFront = false
+        }
+        LiveEventBus.get(PlayerEvent::class.java).post(playUIToFront.value)
     }
 }
