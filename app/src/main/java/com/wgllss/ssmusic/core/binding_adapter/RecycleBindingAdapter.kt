@@ -1,4 +1,4 @@
-package com.scclzkj.base_core.binding_adapter
+package com.wgllss.ssmusic.core.binding_adapter
 
 import android.graphics.Color
 import android.view.View

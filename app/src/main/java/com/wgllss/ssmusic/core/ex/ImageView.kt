@@ -1,4 +1,4 @@
-package com.scclzkj.base_core.extension
+package com.wgllss.ssmusic.core.ex
 
 import android.widget.ImageView
 import com.bumptech.glide.Glide

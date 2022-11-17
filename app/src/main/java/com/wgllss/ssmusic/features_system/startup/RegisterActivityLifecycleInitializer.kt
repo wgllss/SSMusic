@@ -8,7 +8,7 @@ import androidx.databinding.library.BuildConfig
 import androidx.startup.Initializer
 import com.wgllss.ssmusic.core.activity.ActivityManager
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.widget.ViewServer
+//import com.wgllss.ssmusic.core.widget.ViewServer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -22,18 +22,18 @@ class RegisterActivityLifecycleInitializer : Initializer<Unit> {
             (context.applicationContext as Application).registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(p0: Activity, p1: Bundle?) {
                     ActivityManager.instance.pushActivity(p0)
-                    if (BuildConfig.DEBUG) {
+//                    if (BuildConfig.DEBUG) {
 //                        SMFrameCallback.instance?.start()
-                        ViewServer.get(p0).addWindow(p0);
-                    }
+//                        ViewServer.get(p0).addWindow(p0);
+//                    }
                 }
 
                 override fun onActivityStarted(p0: Activity) {
                 }
 
                 override fun onActivityResumed(p0: Activity) {
-                    if (BuildConfig.DEBUG)
-                        ViewServer.get(p0).setFocusedWindow(p0);
+//                    if (BuildConfig.DEBUG)
+//                        ViewServer.get(p0).setFocusedWindow(p0);
                 }
 
                 override fun onActivityPaused(p0: Activity) {
@@ -47,8 +47,8 @@ class RegisterActivityLifecycleInitializer : Initializer<Unit> {
 
                 override fun onActivityDestroyed(p0: Activity) {
                     ActivityManager.instance.popActivity(p0)
-                    if (BuildConfig.DEBUG)
-                        ViewServer.get(p0).removeWindow(p0);
+//                    if (BuildConfig.DEBUG)
+//                        ViewServer.get(p0).removeWindow(p0);
                 }
             })
         }

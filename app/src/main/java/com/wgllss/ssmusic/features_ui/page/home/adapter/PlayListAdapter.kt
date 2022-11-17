@@ -3,10 +3,9 @@ package com.wgllss.ssmusic.features_ui.page.home.adapter
 import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.scclzkj.base_core.base.BaseDataBindingAdapter
-import com.scclzkj.base_core.extension.loadUrl
+import com.wgllss.ssmusic.core.adapter.BaseDataBindingAdapter
+import com.wgllss.ssmusic.core.ex.loadUrl
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.databinding.AdapterMusicPlaylistItemBinding
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import javax.inject.Inject

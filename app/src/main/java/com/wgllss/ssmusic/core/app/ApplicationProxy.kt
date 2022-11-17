@@ -1,4 +1,4 @@
-package com.scclzkj.base_core.base.app
+package com.wgllss.ssmusic.core.app
 
 import android.app.Application
 

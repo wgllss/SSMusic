@@ -1,2 +1,2 @@
-package com.scclzkj.base_core.extension
+package com.wgllss.ssmusic.core.ex
 

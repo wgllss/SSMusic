@@ -10,13 +10,12 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.SeekBar
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.scclzkj.base_core.base.BaseMVVMFragment
-import com.scclzkj.base_core.extension.loadUrl
+import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
+import com.wgllss.ssmusic.core.ex.loadUrl
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.adapter.BasePagerAdapter
 import com.wgllss.ssmusic.core.ex.dpToPx
 import com.wgllss.ssmusic.core.ex.finishActivity
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
 import com.wgllss.ssmusic.features_system.music.impl.wlmusicplayer.WlTimeUtil

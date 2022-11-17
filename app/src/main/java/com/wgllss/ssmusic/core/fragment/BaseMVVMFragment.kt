@@ -1,4 +1,4 @@
-package com.scclzkj.base_core.base
+package com.wgllss.ssmusic.core.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

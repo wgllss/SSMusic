@@ -2,8 +2,6 @@ package com.wgllss.ssmusic.core.app
 
 import android.app.Application
 import android.content.Context
-import com.scclzkj.base_core.base.app.ApplicationProxy
-import com.scclzkj.base_core.base.app.CommonApplicationProxy
 import com.wgllss.ssmusic.core.units.AppGlobals
 
 open class AndroidApplication : Application() {

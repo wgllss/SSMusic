@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.scclzkj.base_core.base.BaseMVVMFragment
+import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.units.LogTimer

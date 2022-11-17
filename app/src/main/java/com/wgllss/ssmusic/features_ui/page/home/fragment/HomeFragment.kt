@@ -7,9 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.scclzkj.base_core.base.BaseMVVMFragment
-import com.scclzkj.base_core.widget.OnRecyclerViewItemClickListener
-import com.umeng.analytics.MobclickAgent
+import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
+import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.launchActivity
@@ -19,7 +18,6 @@ import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.features_system.app.AppViewModel
-import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity

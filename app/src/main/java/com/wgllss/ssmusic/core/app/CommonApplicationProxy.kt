@@ -1,4 +1,4 @@
-package com.scclzkj.base_core.base.app
+package com.wgllss.ssmusic.core.app
 
 import android.app.Application
 import androidx.lifecycle.ViewModelStore
@@ -10,7 +10,7 @@ object CommonApplicationProxy : ApplicationProxy, ViewModelStoreOwner {
     private var viewModelStore = ViewModelStore()
 
     override fun onCreate(application: Application) {
-        this.application = application
+        CommonApplicationProxy.application = application
     }
 
     override fun onTerminate() = viewModelStore.clear()

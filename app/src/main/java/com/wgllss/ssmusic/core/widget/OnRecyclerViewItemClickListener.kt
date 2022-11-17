@@ -1,4 +1,4 @@
-package com.scclzkj.base_core.widget
+package com.wgllss.ssmusic.core.widget
 
 import android.view.GestureDetector
 import android.view.MotionEvent

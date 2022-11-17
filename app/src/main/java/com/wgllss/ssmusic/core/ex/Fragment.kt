@@ -1,11 +1,10 @@
-package com.scclzkj.base_core.extension
+package com.wgllss.ssmusic.core.ex
 
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 
 fun Fragment.switchFragment(fragment: Fragment, mCurrentFragmentTAG: StringBuilder?, @IdRes idRes: Int) {
     if (mCurrentFragmentTAG == null || fragment.javaClass.simpleName !== mCurrentFragmentTAG.toString()) {

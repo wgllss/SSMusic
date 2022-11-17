@@ -3,9 +3,9 @@ package com.wgllss.ssmusic.features_ui.page.home.fragment
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import com.scclzkj.base_core.base.BaseMVVMFragment
-import com.scclzkj.base_core.extension.HideSoftInputFromWindow
-import com.scclzkj.base_core.widget.OnRecyclerViewItemClickListener
+import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
+import com.wgllss.ssmusic.core.ex.HideSoftInputFromWindow
+import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding

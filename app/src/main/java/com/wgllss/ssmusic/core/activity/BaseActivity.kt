@@ -2,7 +2,7 @@ package com.wgllss.ssmusic.core.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.scclzkj.base_core.dialog.CommonLoadingView
+import com.wgllss.ssmusic.core.dialog.CommonLoadingView
 import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.units.StatusBarUtil
 import com.wgllss.ssmusic.core.widget.CommonToast

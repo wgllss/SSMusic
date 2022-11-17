@@ -1,4 +1,4 @@
-package com.scclzkj.base_core.dialog
+package com.wgllss.ssmusic.core.dialog
 
 import android.content.Context
 import android.view.Gravity
