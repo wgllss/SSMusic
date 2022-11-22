@@ -11,6 +11,7 @@ import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.transform
 import org.jsoup.Jsoup
 import javax.inject.Inject
 
@@ -141,9 +142,14 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
                 return@forEach
             }
         }
-    }
-
-    suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> = flow {
-        emit(mSSDataBaseL.get().musicDao().getList())
+    }.transform {
+        it.takeIf {
+            it.url.isNotEmpty()
+        }?.let {
+            musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
+                it.url = this@run.toString().replace("http://", "https://")
+            }
+        }
+        emit(it)
     }
 }

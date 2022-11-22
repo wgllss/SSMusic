@@ -1,5 +1,7 @@
 package com.wgllss.ssmusic.datasource.net
 
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Url
@@ -15,4 +17,7 @@ interface MusiceApi {
 
     @GET
     suspend fun getPlayUrl(@Url url: String): String
+
+    @GET
+    suspend fun getMusicFileUrl(@Url url: String): Response<ResponseBody>
 }
