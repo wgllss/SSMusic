@@ -12,10 +12,7 @@ import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
 import javax.inject.Inject
 
@@ -52,55 +49,62 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
     /**
      * 得到播放地址
      */
-    suspend fun getPlayUrl(htmlUrl: String): Flow<MusicBean> {
-        return flow {
-            val startTime = System.currentTimeMillis()
-            val html = musiceApiL.get().getPlayUrl(htmlUrl)
-            val baseUrl = "https://www.hifini.com/"
-            val document = Jsoup.parse(html, baseUrl)
-            val element = document.select("script")
-            element?.forEach {
-                if (it.html().contains("var ap4 = new APlayer")) {
-                    val str = it.html().toString()
-                        .replace("\n", "")
-                        .replace("\r", "")
-                        .replace("\t", "")
-                    var startIndex = str.indexOf("[")
-                    val endIndex = str.lastIndexOf("]")
-                    var subStr = str.substring(startIndex + 1, endIndex).trim()
-                    var startIndex2 = subStr.indexOf("{")
-                    val endIndex2 = subStr.lastIndexOf("}")
-                    var subStr2 = subStr.substring(startIndex2 + 1, endIndex2).trim()
+    suspend fun getPlayUrl(htmlUrl: String) = flow {
+        val startTime = System.currentTimeMillis()
+        val html = musiceApiL.get().getPlayUrl(htmlUrl)
+        val baseUrl = "https://www.hifini.com/"
+        val document = Jsoup.parse(html, baseUrl)
+        val element = document.select("script")
+        element?.forEach {
+            if (it.html().contains("var ap4 = new APlayer")) {
+                val str = it.html().toString()
+                    .replace("\n", "")
+                    .replace("\r", "")
+                    .replace("\t", "")
+                var startIndex = str.indexOf("[")
+                val endIndex = str.lastIndexOf("]")
+                var subStr = str.substring(startIndex + 1, endIndex).trim()
+                var startIndex2 = subStr.indexOf("{")
+                val endIndex2 = subStr.lastIndexOf("}")
+                var subStr2 = subStr.substring(startIndex2 + 1, endIndex2).trim()
 
-                    val arr = subStr2.split(", ")
-                    var title = ""
-                    var author = ""
-                    var url = ""
-                    var pic = ""
-                    arr.forEach { m ->
-                        m.run {
-                            if (contains("title")) {
-                                title = substring(indexOf("'") + 1, length - 1)
-                            }
-                            if (contains("author")) {
-                                author = substring(indexOf("'") + 1, length - 1)
-                            }
-                            if (contains("url")) {
-                                url = substring(indexOf("'") + 1, length - 1)
-                                if (!url.contains("http")) {
-                                    url = baseUrl + url
-                                }
-                            }
-                            if (contains("pic")) {
-                                pic = substring(indexOf("'") + 1, length)
+                val arr = subStr2.split(", ")
+                var title = ""
+                var author = ""
+                var url = ""
+                var pic = ""
+                arr.forEach { m ->
+                    m.run {
+                        if (contains("title")) {
+                            title = substring(indexOf("'") + 1, length - 1)
+                        }
+                        if (contains("author")) {
+                            author = substring(indexOf("'") + 1, length - 1)
+                        }
+                        if (contains("url")) {
+                            url = substring(indexOf("'") + 1, length - 1)
+                            if (!url.contains("http")) {
+                                url = baseUrl + url
                             }
                         }
+                        if (contains("pic")) {
+                            pic = substring(indexOf("'") + 1, length)
+                        }
                     }
-                    WLog.e(this@AppRepository, "耗时：${System.currentTimeMillis() - startTime} ms")
-                    emit(MusicBean(title, author, url, pic))
-                    return@forEach
                 }
+                WLog.e(this@AppRepository, "耗时：${System.currentTimeMillis() - startTime} ms")
+                emit(MusicBean(title, author, url, pic))
+                return@forEach
             }
         }
+    }.transform {
+        it.takeIf {
+            it.url.isNotEmpty()
+        }?.let {
+            musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
+                it.url = this@run.toString().replace("http://", "https://")
+            }
+        }
+        emit(it)
     }
 }

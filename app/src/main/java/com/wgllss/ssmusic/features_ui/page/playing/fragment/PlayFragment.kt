@@ -3,12 +3,14 @@ package com.wgllss.ssmusic.features_ui.page.playing.fragment
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.AnimatorUpdateListener
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.SeekBar
+import androidx.palette.graphics.Palette
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.core.ex.loadUrl

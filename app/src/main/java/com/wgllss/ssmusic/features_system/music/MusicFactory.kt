@@ -8,6 +8,7 @@ import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
+import com.wgllss.ssmusic.dl.annotations.BindExoPlayer
 import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.services.MusicService
@@ -22,7 +23,8 @@ import javax.inject.Inject
  * musicPlay:主持音乐各种操作
  * appViewModel:主持提供各种数据
  */
-class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>) : MusicComponent() {
+
+class MusicFactory @Inject constructor(@BindExoPlayer private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>) : MusicComponent() {
 
     private lateinit var playerProgress: MusicEvent.PlayerProgress
     private lateinit var playerLoadding: MusicEvent.PlayerLoadding
@@ -44,9 +46,9 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
         jobc = GlobalScope.launch {
             musicPlay.get().onCreate()
             LiveEventBus.get(MusicBeanEvent::class.java).observeForever {
-                jobPlay = GlobalScope.launch {
-                    onMusicDo(it)
-                }
+//                jobPlay = GlobalScope.launch {
+                onMusicDo(it)
+//                }
             }
             LiveEventBus.get(PlayerEvent::class.java).observeForever {
                 when (it) {
@@ -136,6 +138,7 @@ class MusicFactory @Inject constructor(@BindWlMusic private val musicPlay: Lazy<
                         })
                         setOnCompleteListener(object : OnPlayCompleteListener {
                             override fun onComplete() {
+                                isNewAddToPlaylist = false
                                 appViewModel.get().playNext()
                             }
                         })

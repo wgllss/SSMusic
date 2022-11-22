@@ -12,11 +12,13 @@ import android.os.Build
 import android.os.PowerManager
 import android.os.PowerManager.WakeLock
 import android.os.SystemClock
+import android.support.v4.media.MediaBrowserCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.media.MediaBrowserServiceCompat
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.wgllss.ssmusic.R
@@ -106,6 +108,10 @@ open class MusicComponent : LifecycleOwner {
 
     open fun onDestory() {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    }
+
+    open fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+
     }
 
     private fun createNotificationChannel() {

@@ -17,7 +17,7 @@ class AndroidServiceInitializer : Initializer<Any> {
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //                ServiceUtil.startForegroundService(context, MusicService::class.java)
 //            } else {
-            ServiceUtil.startService(context, MusicService::class.java)
+//            ServiceUtil.startService(context, MusicService::class.java)
 //            }
         }
     }

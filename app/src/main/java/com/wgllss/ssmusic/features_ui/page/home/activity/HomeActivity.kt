@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.support.v4.media.MediaBrowserCompat
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -19,6 +20,7 @@ import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
 import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.OnInflateFinishListener
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.widget.navigation.NavGraphBuilder
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
@@ -37,7 +39,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
 
     @Inject
     lateinit var AppViewModelL: Lazy<AppViewModel>
-    lateinit var serviceConnection: PlayServiceConnection
+//    lateinit var serviceConnection: PlayServiceConnection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
@@ -110,27 +112,45 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
     }
 
     override fun onDestroy() {
-        if (serviceConnection != null) {
-            unbindService(serviceConnection)
-        }
+//        if (serviceConnection != null) {
+//            unbindService(serviceConnection)
+//        }
         super.onDestroy()
     }
 
     private fun bindService() {
-        val intent = Intent()
-        intent.setClass(this, MusicService::class.java)
-        serviceConnection = PlayServiceConnection()
-        bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+        logE("bindService")
+        MediaBrowserCompat(this, ComponentName(this, MusicService::class.java), object : MediaBrowserCompat.ConnectionCallback() {
+            override fun onConnected() {
+                super.onConnected()
+                logE("onConnected")
+            }
+
+            override fun onConnectionSuspended() {
+                super.onConnectionSuspended()
+                logE("onConnectionSuspended")
+            }
+
+            override fun onConnectionFailed() {
+                super.onConnectionFailed()
+                logE("onConnectionFailed")
+            }
+        }, null).connect()
+
+//        val intent = Intent()
+//        intent.setClass(this, MusicService::class.java)
+//        serviceConnection = PlayServiceConnection()
+//        bindService(intent, serviceConnection, BIND_AUTO_CREATE)
     }
 
-    private lateinit var musicService: MusicService
-
-    inner class PlayServiceConnection : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            musicService = (service as MusicService.MusicBinder).musicService
-        }
-
-        override fun onServiceDisconnected(p0: ComponentName?) {
-        }
-    }
+//    private lateinit var musicService: MusicService
+//
+//    inner class PlayServiceConnection : ServiceConnection {
+//        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+//            musicService = (service as MusicService.MusicBinder).musicService
+//        }
+//
+//        override fun onServiceDisconnected(p0: ComponentName?) {
+//        }
+//    }
 }

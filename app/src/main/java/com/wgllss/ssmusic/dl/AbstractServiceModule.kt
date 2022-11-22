@@ -1,8 +1,10 @@
 package com.wgllss.ssmusic.dl
 
+import com.wgllss.ssmusic.dl.annotations.BindExoPlayer
 import com.wgllss.ssmusic.dl.annotations.BindMediaPlayer
 import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.music.IMusicPlay
+import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerImp
 import com.wgllss.ssmusic.features_system.music.impl.mediaplayer.MediaPlayerImpl
 import com.wgllss.ssmusic.features_system.music.impl.wlmusicplayer.WlMusicImpl
 import com.wgllss.ssmusic.features_system.music.notifications.NotificationsListener
@@ -26,6 +28,11 @@ abstract class AbstractServiceModule {
     @Binds
     @ServiceScoped
     abstract fun bindMediaPlayer(mumicImpl: MediaPlayerImpl): IMusicPlay
+
+    @BindExoPlayer
+    @Binds
+    @ServiceScoped
+    abstract fun bindExoPlayer(exoPlayerImp: ExoPlayerImp): IMusicPlay
 
     @Binds
     @ServiceScoped

@@ -11,6 +11,7 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -74,11 +75,12 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         } else {
             playUIToFront.value!!.isFront = true
         }
-        logE("onResume ${playUIToFront.value!!.isFront }")
+        logE("onResume ${playUIToFront.value!!.isFront}")
         LiveEventBus.get(PlayerEvent::class.java).post(playUIToFront.value)
     }
 
     fun onStop() {
+//        musicServiceConnection.get()
         if (playUIToFront.value == null) {
             playUIToFront.value = PlayerEvent.PlayUIToFront(false)
         } else {
