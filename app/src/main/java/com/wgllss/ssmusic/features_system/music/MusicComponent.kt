@@ -8,11 +8,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.os.Build
-import android.os.PowerManager
+import android.net.Uri
+import android.os.*
 import android.os.PowerManager.WakeLock
-import android.os.SystemClock
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
@@ -21,6 +22,8 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.media.MediaBrowserServiceCompat
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.NavigationUtils
@@ -31,7 +34,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-open class MusicComponent : LifecycleOwner {
+open class MusicComponent(val context: Context) : LifecycleOwner {
 
     private val mLifecycleRegistry by lazy { LifecycleRegistry(this) }
 
@@ -66,6 +69,27 @@ open class MusicComponent : LifecycleOwner {
     protected var musicAuthor = ""
     protected var musicPic = ""
 
+    val mediaSession by lazy {
+        MediaSessionCompat(context, context.getString(R.string.app_name))
+            .apply {
+                setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
+//            setCallback(MediaSessionCallback(this, this@RealSongPlayer, songsRepository, queueDao))
+//            setPlaybackState(stateBuilder.build())
+
+                val sessionIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+                val sessionActivityPendingIntent = PendingIntent.getActivity(context, 0, sessionIntent, 0)
+                setSessionActivity(sessionActivityPendingIntent)
+                isActive = true
+            }
+    }
+
+    private val mediaSessionConnector by lazy {
+        MediaSessionConnector(mediaSession).apply {
+            setPlaybackPreparer(PlaybackPreparer())
+//            setQueueNavigator(UampQueueNavigator(mediaSession))
+        }
+    }
+
 
     override fun getLifecycle() = mLifecycleRegistry
 
@@ -74,7 +98,6 @@ open class MusicComponent : LifecycleOwner {
         this.musicService = musicService
         mNotificationManager = NotificationManagerCompat.from(musicService)
         createNotificationChannel()
-
         powerManager = musicService.getSystemService(Context.POWER_SERVICE) as PowerManager
         mWakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, javaClass.name)
         mWakeLock.setReferenceCounted(false)
@@ -108,6 +131,10 @@ open class MusicComponent : LifecycleOwner {
 
     open fun onDestory() {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        mediaSession.run {
+            isActive = false
+            release()
+        }
     }
 
     open fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
@@ -261,6 +288,29 @@ open class MusicComponent : LifecycleOwner {
     }
 
     open fun play() {
+
+    }
+
+    private inner class PlaybackPreparer : MediaSessionConnector.PlaybackPreparer {
+        override fun onCommand(player: Player, command: String, extras: Bundle?, cb: ResultReceiver?) = false
+
+        override fun getSupportedPrepareActions(): Long =
+            PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                    PlaybackStateCompat.ACTION_PREPARE_FROM_SEARCH or
+                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+
+        override fun onPrepare(playWhenReady: Boolean) {
+        }
+
+        override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
+        }
+
+        override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) {
+        }
+
+        override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
+        }
 
     }
 }

@@ -21,32 +21,13 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat() {
 
-    protected lateinit var mediaSession: MediaSessionCompat
-
     @Inject
     lateinit var musicFactory: Lazy<MusicFactory>
-
-//    inner class MusicBinder : Binder() {
-//        val musicService: MusicService
-//            get() = this@MusicService
-//    }
-
-//    override fun onBind(intent: Intent): IBinder? {
-//        musicFactory?.get()?.onResume()
-//        return MusicBinder()
-//    }
-//
-//    override fun onUnbind(intent: Intent?): Boolean {
-//        musicFactory.get().onStop()
-//        return super.onUnbind(intent)
-//    }
 
     override fun onCreate() {
         super.onCreate()
         musicFactory.get().onCreate(this)
-
-        mediaSession = MediaSessionCompat(this, "MusicService")
-        sessionToken = mediaSession.sessionToken
+        sessionToken = musicFactory.get().mediaSession.sessionToken
     }
 
     override fun onStart(intent: Intent?, startId: Int) {

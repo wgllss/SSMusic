@@ -1,18 +1,17 @@
 package com.wgllss.ssmusic.features_system.music.impl.exoplayer
 
+import android.app.PendingIntent
 import android.content.Context
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.util.Log
-import android.widget.Toast
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
-import com.google.android.exoplayer2.util.Util
 import com.google.android.gms.cast.framework.CastContext
+import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.features_system.music.*
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -20,6 +19,8 @@ import javax.inject.Inject
 
 class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context) : IMusicPlay {
     private val playerListener = PlayerEventListener()
+
+
     private val uAmpAudioAttributes by lazy {
         AudioAttributes.Builder()
             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
@@ -42,6 +43,7 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
 //        }
     }
 
+
     /**
      * If Cast is available, create a CastPlayer to handle communication with a Cast session.
      */
@@ -58,8 +60,6 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
     }
 
     private lateinit var currentPlayer: Player
-    protected lateinit var mediaSession: MediaSessionCompat
-    protected lateinit var mediaSessionConnector: MediaSessionConnector
     private var currentPlaylistItems: List<MediaMetadataCompat> = emptyList()
     private var currentMediaItemIndex: Int = 0
 
@@ -130,6 +130,7 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
     override fun isPlaying(): Boolean = false
 
     override fun onDestroy() {
+
     }
 
     override fun onStop() {
@@ -227,7 +228,7 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
                 )
             }
         }
-        mediaSessionConnector.setPlayer(newPlayer)
+//        mediaSessionConnector.setPlayer(newPlayer)
         previousPlayer?.stop(/* reset= */true)
     }
 

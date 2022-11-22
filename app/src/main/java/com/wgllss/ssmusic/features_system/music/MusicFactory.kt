@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.features_system.music
 
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
@@ -13,6 +14,7 @@ import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.services.MusicService
 import dagger.Lazy
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -24,7 +26,7 @@ import javax.inject.Inject
  * appViewModel:主持提供各种数据
  */
 
-class MusicFactory @Inject constructor(@BindExoPlayer private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>) : MusicComponent() {
+class MusicFactory @Inject constructor(@ApplicationContext context: Context, @BindExoPlayer private val musicPlay: Lazy<IMusicPlay>, private val appViewModel: Lazy<AppViewModel>) : MusicComponent(context) {
 
     private lateinit var playerProgress: MusicEvent.PlayerProgress
     private lateinit var playerLoadding: MusicEvent.PlayerLoadding
