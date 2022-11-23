@@ -13,13 +13,13 @@ import kotlinx.coroutines.launch
 class AndroidServiceInitializer : Initializer<Any> {
 
     override fun create(context: Context) {
-        GlobalScope.launch {
+//        GlobalScope.launch {
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //                ServiceUtil.startForegroundService(context, MusicService::class.java)
 //            } else {
 //            ServiceUtil.startService(context, MusicService::class.java)
 //            }
-        }
+//        }
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {

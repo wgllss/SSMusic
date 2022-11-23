@@ -28,8 +28,8 @@ import javax.inject.Inject
 @AndroidEntryPoint
 @FragmentDestination(pageUrl = "fmt_home", asStarter = true, label = "首页", iconId = R.drawable.ic_home_black_24dp)
 class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layout.fragment_home) {
-    @Inject
-    lateinit var appViewModel: Lazy<AppViewModel>
+//    @Inject
+//    lateinit var appViewModel: Lazy<AppViewModel>
 
     @Inject
     lateinit var playListAdapterL: Lazy<PlayListAdapter>
@@ -66,44 +66,51 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
             executePendingBindings()
             rvPlList.addOnItemTouchListener(object : OnRecyclerViewItemClickListener(rvPlList) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-                    appViewModel.get().playPosition(position)
+                    playListAdapterL.get().getItem(position)?.run {
+                        viewModel.mediaItemClicked(this, this.description.extras)
+                    }
                     activity?.let { it.launchActivity(Intent(it, PlayActivity::class.java)) }
                 }
             })
         }
-        appViewModel.get().run {
-            queryPlayList()
-            isInitSuccess.observe(viewLifecycleOwner) {
-                it.takeIf {
-                    it == true
-                }?.let {
-                    liveData.observe(viewLifecycleOwner) { data ->
-                        playListAdapterL.get().notifyData(data)
-                    }
-                }
-            }
+
+        viewModel.liveData.observe(viewLifecycleOwner) {
+            playListAdapterL.get().notifyData(it)
         }
 
-        LiveEventBus.get(MusicEvent::class.java).observe(viewLifecycleOwner) {
-            when (it) {
-                is MusicEvent.PlayerLoadding -> {// false 正在加载
-                    logE("PlayerLoadding")
-                    if (it.loadding)
-                        playListAdapterL.get().setSelectPosition(-1)
-                }
-                is MusicEvent.PlayerStart -> {
-                    playListAdapterL.get().setSelectPosition(-1)
-                }
-                is MusicEvent.PlayerProgress -> {// true 显示暂停，正在播放
-                    appViewModel.get().currentPosition?.value?.let { p ->
-                        playListAdapterL.get().setSelectPosition(p)
-                    }
-                }
-                else -> {
+//        appViewModel.get().run {
+//            queryPlayList()
+//            isInitSuccess.observe(viewLifecycleOwner) {
+//                it.takeIf {
+//                    it == true
+//                }?.let {
+//                    liveData.observe(viewLifecycleOwner) { data ->
+//                        playListAdapterL.get().notifyData(data)
+//                    }
+//                }
+//            }
+//        }
 
-                }
-            }
-        }
+//        LiveEventBus.get(MusicEvent::class.java).observe(viewLifecycleOwner) {
+//            when (it) {
+//                is MusicEvent.PlayerLoadding -> {// false 正在加载
+//                    logE("PlayerLoadding")
+//                    if (it.loadding)
+//                        playListAdapterL.get().setSelectPosition(-1)
+//                }
+//                is MusicEvent.PlayerStart -> {
+//                    playListAdapterL.get().setSelectPosition(-1)
+//                }
+//                is MusicEvent.PlayerProgress -> {// true 显示暂停，正在播放
+//                    appViewModel.get().currentPosition?.value?.let { p ->
+//                        playListAdapterL.get().setSelectPosition(p)
+//                    }
+//                }
+//                else -> {
+//
+//                }
+//            }
+//        }
     }
 
     override fun onStart() {

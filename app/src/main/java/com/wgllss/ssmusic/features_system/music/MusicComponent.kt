@@ -34,7 +34,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-open class MusicComponent(val context: Context) : LifecycleOwner {
+open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionConnector.PlaybackPreparer {
 
     private val mLifecycleRegistry by lazy { LifecycleRegistry(this) }
 
@@ -83,9 +83,10 @@ open class MusicComponent(val context: Context) : LifecycleOwner {
             }
     }
 
-    private val mediaSessionConnector by lazy {
+
+    val mediaSessionConnector by lazy {
         MediaSessionConnector(mediaSession).apply {
-            setPlaybackPreparer(PlaybackPreparer())
+            setPlaybackPreparer(this@MusicComponent)
 //            setQueueNavigator(UampQueueNavigator(mediaSession))
         }
     }
@@ -291,26 +292,32 @@ open class MusicComponent(val context: Context) : LifecycleOwner {
 
     }
 
-    private inner class PlaybackPreparer : MediaSessionConnector.PlaybackPreparer {
-        override fun onCommand(player: Player, command: String, extras: Bundle?, cb: ResultReceiver?) = false
+    override fun onCommand(player: Player, command: String, extras: Bundle?, cb: ResultReceiver?) = false
 
-        override fun getSupportedPrepareActions(): Long =
-            PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
-                    PlaybackStateCompat.ACTION_PREPARE_FROM_SEARCH or
-                    PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+    override fun getSupportedPrepareActions(): Long =
+        PlaybackStateCompat.ACTION_PREPARE_FROM_MEDIA_ID or
+                PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID or
+                PlaybackStateCompat.ACTION_PREPARE_FROM_SEARCH or
+                PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
 
-        override fun onPrepare(playWhenReady: Boolean) {
-        }
+    override fun onPrepare(playWhenReady: Boolean) {
+        logE("onPrepare playWhenReady: $playWhenReady  ")
+    }
 
-        override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
-        }
+    override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
+        logE("onPrepareFromMediaId mediaId: $mediaId playWhenReady: $playWhenReady  extras:${Thread.currentThread().name}")
+    }
 
-        override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) {
-        }
+    override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) {
+        logE("onPrepareFromSearch query: $query playWhenReady: $playWhenReady  extras:$extras ")
+    }
 
-        override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
-        }
+    override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
+        logE("onPrepareFromUri uri: $uri playWhenReady: $playWhenReady  extras:$extras")
+    }
 
+
+    fun onGetRoot() {
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 }

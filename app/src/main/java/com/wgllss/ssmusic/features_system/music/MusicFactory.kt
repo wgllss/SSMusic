@@ -4,20 +4,23 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.media.AudioManager
+import android.net.Uri
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
+import androidx.media.MediaBrowserServiceCompat
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 import com.wgllss.ssmusic.dl.annotations.BindExoPlayer
-import com.wgllss.ssmusic.dl.annotations.BindWlMusic
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.services.MusicService
 import dagger.Lazy
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import javax.inject.Inject
 
 /**
@@ -41,10 +44,14 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
     private var isUItoFront = false
     private var isNewAddToPlaylist = false
 
+    private val serviceJob by lazy { SupervisorJob() }
+    private val serviceScope by lazy { CoroutineScope(Dispatchers.Main + serviceJob) }
+
     override fun isPlaying() = musicPlay.get().isPlaying() && !pause
 
     override fun onCreate(musicService: MusicService) {
         super.onCreate(musicService)
+        appViewModel.get().queryPlayList()
         jobc = GlobalScope.launch {
             musicPlay.get().onCreate()
             LiveEventBus.get(MusicBeanEvent::class.java).observeForever {
@@ -236,6 +243,43 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
                 }
             }
         }
+    }
+
+    override fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        if ("-1" == parentId) {
+            logE("onLoadChildren parentId333: $parentId")
+            appViewModel.get().isInitSuccess.observe(this) {
+                it.takeIf {
+                    it == true
+                }?.let {
+                    appViewModel.get().liveData.observe(this@MusicFactory) { list ->
+                        serviceScope.launch {
+                            val child = withContext(IO) {
+                                list.map { musicTableBean ->
+                                    MediaBrowserCompat.MediaItem(
+                                        MediaDescriptionCompat.Builder()
+                                            .setMediaId(musicTableBean.id.toString())
+                                            .setTitle(musicTableBean.title)
+                                            .setIconUri(Uri.parse(musicTableBean.pic))
+                                            .setMediaUri(Uri.parse(musicTableBean.url))
+                                            .setSubtitle(musicTableBean.author)
+                                            .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                                    )
+                                }?.toMutableList()
+                            }
+                            result.sendResult(child)
+                        }
+                    }
+                }
+            }
+        } else {
+
+        }
+    }
+
+    override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
+        super.onPrepareFromMediaId(mediaId, playWhenReady, extras)
+        appViewModel.get().getPlayUrl(mediaId)
     }
 
 }

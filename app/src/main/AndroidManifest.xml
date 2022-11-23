@@ -22,6 +22,7 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.SSMusic"
         android:usesCleartextTraffic="true">
         <activity
@@ -59,9 +60,9 @@
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.AsynInflaterInitializer"
                 android:value="androidx.startup" />
-            <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.AndroidServiceInitializer"
-                android:value="androidx.startup" />
+            <!--            <meta-data-->
+            <!--                android:name="com.wgllss.ssmusic.features_system.startup.AndroidServiceInitializer"-->
+            <!--                android:value="androidx.startup" />-->
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"
                 android:value="androidx.startup" />

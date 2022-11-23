@@ -39,7 +39,8 @@ import javax.inject.Singleton
  *  parameters, rather than private properties. They're only required to build the
  *  [MediaBrowserConnectionCallback] and [MediaBrowserCompat] objects.
  */
-class MusicServiceConnection @Inject constructor(@ActivityContext context: Context) {
+@Singleton
+class MusicServiceConnection @Inject constructor(@ApplicationContext context: Context) {
     val isConnected = MutableLiveData<Boolean>()
         .apply { postValue(false) }
     val networkFailure = MutableLiveData<Boolean>()

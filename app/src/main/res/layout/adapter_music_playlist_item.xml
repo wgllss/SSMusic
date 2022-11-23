@@ -5,7 +5,7 @@
 
         <variable
             name="bean"
-            type="com.wgllss.ssmusic.features_system.room.table.MusicTabeBean" />
+            type="android.support.v4.media.MediaBrowserCompat.MediaItem" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -29,7 +29,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="95dp"
             android:gravity="center_vertical"
-            android:text="@{bean.author}"
+            android:text="@{bean.description.subtitle}"
             android:textColor="@color/black"
             android:textSize="22dp" />
 
@@ -40,7 +40,7 @@
             android:layout_marginLeft="95dp"
             android:layout_marginTop="40dp"
             android:gravity="center_vertical"
-            android:text="@{bean.title}"
+            android:text="@{bean.description.title}"
             android:textColor="@color/black"
             android:textSize="22dp" />
 

@@ -1,9 +1,11 @@
 package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
+import android.os.Bundle
+import android.support.v4.media.MediaBrowserCompat
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
 import com.jeremyliao.liveeventbus.LiveEventBus
-import com.wgllss.ssmusic.core.ex.flowOnIOAndcatch
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
@@ -11,24 +13,72 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>) : BaseViewModel() {
+class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>, private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
     val playUIToFront by lazy { MutableLiveData<PlayerEvent.PlayUIToFront>() }
-
 
     val searchContent by lazy { MutableLiveData<String>() }
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
+    //播放列表
+    val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
+
+    private val subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
+        override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
+            liveData.value = children
+        }
+    }
+
+    fun mediaItemClicked(clickedItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
+        logE("clickedItem.isBrowsable : ${clickedItem.isBrowsable}")
+        if (clickedItem.isBrowsable) {
+//            browseToItem(clickedItem)
+        } else {
+            clickedItem.mediaId?.let { playMediaId(it) }
+        }
+    }
+
+    fun playMediaId(mediaId: String) {
+        val transportControls = musicServiceConnectionL.get().transportControls
+//        val nowPlaying = musicServiceConnection.nowPlaying.value
+//        val transportControls = musicServiceConnection.transportControls
+//
+//        val isPrepared = musicServiceConnection.playbackState.value?.isPrepared ?: false
+//        if (isPrepared && mediaId == nowPlaying?.id) {
+//            musicServiceConnection.playbackState.value?.let { playbackState ->
+//                when {
+//                    playbackState.isPlaying -> transportControls.pause()
+//                    playbackState.isPlayEnabled -> transportControls.play()
+//                    else -> {
+//                        Log.w(
+//                            TAG, "Playable item clicked but neither play nor pause are enabled!" +
+//                                    " (mediaId=$mediaId)"
+//                        )
+//                    }
+//                }
+//            }
+//        } else {
+        transportControls.playFromMediaId(mediaId, null)
+//        }
+    }
+
+
     override fun start() {
+        val mediaId = MEDIA_ID_ROOT
+        musicServiceConnectionL.get().run {
+            logE("MusicService    it.subscribe(mediaId, subscriptionCallback) ${Thread.currentThread().name} ")
+            subscribe(mediaId, subscriptionCallback)
+//            playbackState.observeForever(playbackStateObserver)
+//            nowPlaying.observeForever(mediaMetadataObserver)
+        }
     }
 
     fun searchKeyByTitle() {

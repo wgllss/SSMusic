@@ -39,7 +39,6 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
 
     @Inject
     lateinit var AppViewModelL: Lazy<AppViewModel>
-//    lateinit var serviceConnection: PlayServiceConnection
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
@@ -112,45 +111,11 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
     }
 
     override fun onDestroy() {
-//        if (serviceConnection != null) {
-//            unbindService(serviceConnection)
-//        }
         super.onDestroy()
     }
 
     private fun bindService() {
         logE("bindService")
-        MediaBrowserCompat(this, ComponentName(this, MusicService::class.java), object : MediaBrowserCompat.ConnectionCallback() {
-            override fun onConnected() {
-                super.onConnected()
-                logE("onConnected")
-            }
-
-            override fun onConnectionSuspended() {
-                super.onConnectionSuspended()
-                logE("onConnectionSuspended")
-            }
-
-            override fun onConnectionFailed() {
-                super.onConnectionFailed()
-                logE("onConnectionFailed")
-            }
-        }, null).connect()
-
-//        val intent = Intent()
-//        intent.setClass(this, MusicService::class.java)
-//        serviceConnection = PlayServiceConnection()
-//        bindService(intent, serviceConnection, BIND_AUTO_CREATE)
+        viewModel.start()
     }
-
-//    private lateinit var musicService: MusicService
-//
-//    inner class PlayServiceConnection : ServiceConnection {
-//        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-//            musicService = (service as MusicService.MusicBinder).musicService
-//        }
-//
-//        override fun onServiceDisconnected(p0: ComponentName?) {
-//        }
-//    }
 }

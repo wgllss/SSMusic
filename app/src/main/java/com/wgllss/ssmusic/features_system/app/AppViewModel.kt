@@ -45,6 +45,10 @@ class AppViewModel @Inject constructor(application: Application, private val app
     fun queryPlayList() {
         flowAsyncWorkOnLaunch {
             appRepository.getMusicList().onEach {
+                logE("11111 onEach ${it.value}")
+                it.value?.forEach {
+                    logE("11111 ${it.url}}")
+                }
                 liveData = it
                 isInitSuccess.postValue(true)
             }
@@ -99,6 +103,22 @@ class AppViewModel @Inject constructor(application: Application, private val app
                     .onEach {
                         LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(it.title, it.author, this@run.url, it.pic, it.url, uuid = this@run.id))
                     }
+            }
+        }
+    }
+
+    fun getPlayUrl(mediaId: String) {
+        liveData.value?.forEach {
+            it.takeIf {
+                mediaId.toLong() == it.id
+            }?.let {
+                flowAsyncWorkOnLaunch {
+                    appRepository.getPlayUrl(it.url)
+                        .onEach { m ->
+                            LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(m.title, m.author, it.url, m.pic, it.url, uuid = it.id))
+                        }
+                }
+                return@forEach
             }
         }
     }
