@@ -1,14 +1,23 @@
 package com.wgllss.ssmusic.features_system.app
 
 import android.app.Application
+import android.net.Uri
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
+import android.support.v4.media.MediaMetadataCompat
+import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.MediaMetadata
+import com.google.android.exoplayer2.util.MimeTypes
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.ex.flowOnIOAndcatch
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.UUIDHelp
+import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.datasource.repository.AppRepository
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
@@ -28,6 +37,8 @@ class AppViewModel @Inject constructor(application: Application, private val app
     lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     val currentPosition by lazy { MutableLiveData<Int>() }
+
+    val metadataList by lazy { MutableLiveData<MusicBean>() }
 
     private fun <T> Flow<T>.flowOnIOAndcatch(): Flow<T> = flowOnIOAndcatch(errorMsgLiveData)
 
@@ -101,24 +112,36 @@ class AppViewModel @Inject constructor(application: Application, private val app
             flowAsyncWorkOnLaunch {
                 appRepository.getPlayUrl(url)
                     .onEach {
-                        LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(it.title, it.author, this@run.url, it.pic, it.url, uuid = this@run.id))
+                        metadataList.postValue(it)
+//                        metadataList.postValue(
+//                            listOf(
+//                                MediaItem.Builder()
+//                                    .setMediaId(m.url)
+//                                    .setUri(m.url.toUri())
+//                                    .setMimeType(MimeTypes.AUDIO_MPEG)
+//                                    .setMediaMetadata(
+//                                        MediaMetadata.Builder()
+//                                            .setTitle(m.title)
+//                                            .setWriter(m.author)
+//                                            .setArtworkUri(m.pic.toUri())
+//                                            .build()
+//                                    ).build()
+//                            )
+//                        )
+                        logE("getPlayUrl mediaId onEach ")
                     }
             }
         }
     }
 
     fun getPlayUrl(mediaId: String) {
-        liveData.value?.forEach {
+        logE("getPlayUrl mediaId $mediaId")
+        liveData.value?.forEachIndexed { position, it ->
             it.takeIf {
                 mediaId.toLong() == it.id
             }?.let {
-                flowAsyncWorkOnLaunch {
-                    appRepository.getPlayUrl(it.url)
-                        .onEach { m ->
-                            LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(m.title, m.author, it.url, m.pic, it.url, uuid = it.id))
-                        }
-                }
-                return@forEach
+                currentPosition.postValue(position)
+                return@forEachIndexed
             }
         }
     }

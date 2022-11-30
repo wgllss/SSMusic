@@ -21,7 +21,7 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onCreate()
         musicFactory.get().onCreate(this)
         sessionToken = musicFactory.get().mediaSession.sessionToken
-        musicFactory.get().mediaSessionConnector
+
     }
 
     override fun onStart(intent: Intent?, startId: Int) {

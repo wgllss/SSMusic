@@ -13,6 +13,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
 import com.wgllss.ssmusic.features_system.services.MusicService
 import dagger.hilt.android.qualifiers.ActivityContext
@@ -112,16 +113,35 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
     }
 
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
+        private var stateL = PlaybackStateCompat.STATE_NONE
+        private var mediaID = ""
+
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            playbackState.postValue(state ?: EMPTY_PLAYBACK_STATE)
+            state?.state.takeIf {
+                it != stateL
+            }?.let {
+                stateL = it
+                logE("onPlaybackStateChanged: state ${state?.state} position:${state} state extras ${state?.extras}")
+                playbackState.postValue(state)
+            }
         }
 
-        override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
-            nowPlaying.postValue(metadata ?: NOTHING_PLAYING)
+        override fun onMetadataChanged(it: MediaMetadataCompat?) {
+            it?.takeIf {
+                mediaID != it.id
+            }?.let {
+                mediaID = it.id ?: ""
+                logE("mediaId: ${it!!.id} title:${it.title} artist:${it.artist} albumArtUri:${it.albumArtUri}")
+                nowPlaying.postValue(it)
+            }
         }
 
         override fun onQueueChanged(queue: MutableList<MediaSessionCompat.QueueItem>?) {
-//            queueData.postValue(QueueData().fromMediaController(mediaController))
+        }
+
+        override fun onExtrasChanged(extras: Bundle?) {
+            super.onExtrasChanged(extras)
+            logE("onExtrasChanged extras $extras")
         }
 
         override fun onSessionDestroyed() {

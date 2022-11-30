@@ -1,23 +1,44 @@
 package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
-import android.graphics.Bitmap
+import android.content.Context
+import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.bumptech.glide.Glide
+import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import com.jeremyliao.liveeventbus.LiveEventBus
+import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
-import com.wgllss.ssmusic.features_system.music.MusicComponent
+import com.wgllss.ssmusic.features_system.music.extensions.*
+import com.wgllss.ssmusic.features_system.music.impl.exoplayer.EMPTY_PLAYBACK_STATE
+import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
+import com.wgllss.ssmusic.features_system.music.impl.exoplayer.NOTHING_PLAYING
+import dagger.Lazy
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PlayModel : BaseViewModel() {
+@HiltViewModel
+class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
     val toatal by lazy { MutableLiveData<Int>() }
     val position by lazy { MutableLiveData<Int>() }
     var isPlaying: Boolean = false
     val pic by lazy { MutableLiveData<String>() }
-    val playUIToFront by lazy { MutableLiveData<PlayerEvent.PlayUIToFront>() }
+    val nowPlaying = MutableLiveData<MediaMetadataCompat>()
+    val playbackState = MutableLiveData<PlaybackStateCompat>()
+
+    private var updatePosition = true
+    val mediaPosition = MutableLiveData(0L)
 
     override fun start() {
     }
@@ -30,7 +51,14 @@ class PlayModel : BaseViewModel() {
 
     val onPlay = View.OnClickListener {//true 暂停 false 继续播放
         isPlaying = !it.isSelected
-        LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayEvent(it.isSelected))
+        musicServiceConnectionL.get().transportControls.run {
+            if (it.isSelected) pause() else play()
+        }
+//        if (it.isSelected) {
+//            musicServiceConnectionL.get().transportControls.pause()
+//        }
+//
+//        LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayEvent(it.isSelected))
     }
     val onPlayNext = View.OnClickListener {
         LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayNext)
@@ -40,43 +68,46 @@ class PlayModel : BaseViewModel() {
         LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayPrevious)
     }
 
-    fun onResume() {
-        if (playUIToFront.value == null) {
-            playUIToFront.value = PlayerEvent.PlayUIToFront(true)
-        } else {
-            playUIToFront.value!!.isFront = true
-        }
-        logE("onResume ${playUIToFront.value!!.isFront}")
-        LiveEventBus.get(PlayerEvent::class.java).post(playUIToFront.value)
+    private val playbackStateObserver = Observer<PlaybackStateCompat> {
+        playbackState.postValue(it)
     }
 
-    fun onStop() {
-        if (playUIToFront.value == null) {
-            playUIToFront.value = PlayerEvent.PlayUIToFront(false)
-        } else {
-            playUIToFront.value!!.isFront = false
+    private val mediaMetadataObserver = Observer<MediaMetadataCompat> {
+        nowPlaying.postValue(it)
+        it?.albumArtUri?.let { url ->
+            if (pic.value == null || pic!!.value != url) {
+                logE("mediaMetadataObserver url $url")
+                pic.postValue(url)
+            }
         }
-        LiveEventBus.get(PlayerEvent::class.java).post(playUIToFront.value)
     }
 
-    fun getBitMapColor(url: String) {
-//        flow {
-//            url?.let {
-//                val futureBitmap = Glide.with(musicService).asBitmap().load(musicPic).submit();
-//                val artwork: Bitmap = futureBitmap.get()
-//                emit(artwork)
-//            }
-//        }.flowOn(Dispatchers.IO)
-//            .onEach {
-//                if (newNotifyMode == MusicComponent.NOTIFY_MODE_FOREGROUND) {
-//                    musicService.startForeground(notificationId, buildNotification(it))
-//                } else {
-//                    mNotificationManager.notify(notificationId, buildNotification(it))
-//                }
-//                mNotifyMode = newNotifyMode
-//            }
-//            .catch {
-//                it.printStackTrace()
-//            }.collect()
+    private val musicServiceConnection = musicServiceConnectionL.get().also {
+        it.playbackState.observeForever(playbackStateObserver)
+        it.nowPlaying.observeForever(mediaMetadataObserver)
+        checkPlaybackPosition()
+    }
+
+    private fun checkPlaybackPosition() {
+        viewModelScope.launch {
+            flow {
+                while (updatePosition) {
+                    val currPosition = playbackState?.value?.currentPlayBackPosition ?: 0
+                    if (mediaPosition.value != currPosition)
+                        mediaPosition.postValue(currPosition)
+                }
+                delay(300)
+                emit(0)
+            }.flowOn(Dispatchers.IO)
+                .catch { it.printStackTrace() }
+                .collect()
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        musicServiceConnection.playbackState.removeObserver(playbackStateObserver)
+        musicServiceConnection.nowPlaying.removeObserver(mediaMetadataObserver)
+        updatePosition = false
     }
 }

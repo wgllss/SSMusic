@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.util.Log
+import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.jeremyliao.liveeventbus.LiveEventBus
@@ -13,7 +14,11 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_TITLE_KEY
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_URL_KEY
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import dagger.Lazy
@@ -31,6 +36,8 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
 
+    private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
+
     private val subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
         override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
             liveData.value = children
@@ -47,7 +54,6 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     }
 
     fun playMediaId(mediaId: String) {
-        val transportControls = musicServiceConnectionL.get().transportControls
 //        val nowPlaying = musicServiceConnection.nowPlaying.value
 //        val transportControls = musicServiceConnection.transportControls
 //
@@ -113,7 +119,14 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             flowAsyncWorkOnLaunch {
                 musicRepositoryL.get().getPlayUrl(get(position).detailUrl)
                     .onEach {
-                        LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(it.title, it.author, get(position).detailUrl, it.pic, it.url))
+                        val extras = Bundle().apply {
+                            putString(MEDIA_TITLE_KEY, it.title)
+                            putString(MEDIA_AUTHOR_KEY, it.author)
+                            putString(MEDIA_ARTNETWORK_URL_KEY, it.pic)
+                            putString(MEDIA_URL_KEY, it.url)
+                        }
+                        transportControls.prepareFromUri(it.url.toUri(), extras)
+//                        LiveEventBus.get(MusicBeanEvent::class.java).post(MusicBeanEvent(it.title, it.author, get(position).detailUrl, it.pic, it.url))
                     }
             }
         }

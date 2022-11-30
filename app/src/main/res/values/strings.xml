@@ -17,6 +17,7 @@
     <string name="title_search">搜索</string>
     <string name="title_setting">设置</string>
     <string name="hint_name">请输入歌曲名称</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="duration_unknown">--:--</string>
+    <string name="duration_format">%d:%02d</string>
 </resources>

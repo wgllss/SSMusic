@@ -9,4 +9,9 @@ object Constants {
 //    const val MEDIA_ID_ARG = "MEDIA_ID"
 //    const val MEDIA_TYPE_ARG = "MEDIA_TYPE"
 //    const val MEDIA_CALLER = "MEDIA_CALLER"
+
+    const val MEDIA_TITLE_KEY = "MEDIA_TITLE_KEY"
+    const val MEDIA_AUTHOR_KEY = "MEDIA_AUTHOR_KEY"
+    const val MEDIA_ARTNETWORK_URL_KEY = "MEDIA_ARTNETWORK_URL_KEY"
+    const val MEDIA_URL_KEY = "MEDIA_URL_KEY"
 }

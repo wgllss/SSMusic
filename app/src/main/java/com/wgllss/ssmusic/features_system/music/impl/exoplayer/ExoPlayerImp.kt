@@ -1,17 +1,13 @@
 package com.wgllss.ssmusic.features_system.music.impl.exoplayer
 
-import android.app.PendingIntent
 import android.content.Context
 import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.session.MediaSessionCompat
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.gms.cast.framework.CastContext
-import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.features_system.music.*
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -67,7 +63,7 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
     }
 
     override fun start() {
-        exoPlayer.play()
+//        exoPlayer.play()
     }
 
     override fun onPause() {
@@ -89,6 +85,7 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
     }
 
     override fun setSource(url: String) {
+        logE("getPlayUrl mediaId setSource $url")
         exoPlayer.setMediaItem(MediaItem.fromUri(Uri.parse(url)))
     }
 

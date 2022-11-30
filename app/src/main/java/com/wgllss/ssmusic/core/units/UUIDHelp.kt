@@ -12,4 +12,10 @@ object UUIDHelp {
         }
         return Math.abs(UUID(sb.toString().hashCode().toLong(), sb.toString().hashCode().toLong()).toString().replace("-", "").hashCode()).toLong()
     }
+
+    fun getMusicUUID(title: String, author: String, requestRealUrl: String, pic: String): Long {
+        val sb = StringBuilder()
+        sb.append(title).append(author).append(requestRealUrl).append(pic).append(toString())
+        return Math.abs(UUID(sb.toString().hashCode().toLong(), sb.toString().hashCode().toLong()).toString().replace("-", "").hashCode()).toLong()
+    }
 }
