@@ -121,7 +121,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
                 it != stateL
             }?.let {
                 stateL = it
-                logE("onPlaybackStateChanged: state ${state?.state} position:${state} state extras ${state?.extras}")
+                logE("onPlaybackStateChanged333: state ${state?.state} position:${state} state extras ${state?.extras}")
                 playbackState.postValue(state)
             }
         }
@@ -131,7 +131,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
                 mediaID != it.id
             }?.let {
                 mediaID = it.id ?: ""
-                logE("mediaId: ${it!!.id} title:${it.title} artist:${it.artist} albumArtUri:${it.albumArtUri}")
+                logE("mediaId: ${it!!.id} title:${it.title} artist:${it.artist} albumArtUri:${it.albumArtUri} duration :${it.duration}")
                 nowPlaying.postValue(it)
             }
         }

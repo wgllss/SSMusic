@@ -26,6 +26,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import retrofit2.http.Url
 import javax.inject.Inject
 
 @HiltViewModel
@@ -67,15 +68,15 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     //添加到播放列表
-    fun addToPlayList(it: MusicBeanEvent) {
-        flowAsyncWorkOnLaunch {
-            appRepository.addToPlayList(it).onEach {
-                liveData?.value?.let {
-                    currentPosition.postValue(it.size)
-                }
-            }
-        }
-    }
+//    fun addToPlayList(it: MusicBeanEvent) {
+//        flowAsyncWorkOnLaunch {
+//            appRepository.addToPlayList(it).onEach {
+//                liveData?.value?.let {
+//                    currentPosition.postValue(it.size)
+//                }
+//            }
+//        }
+//    }
 
     private fun findBeanByPosition(position: Int): MusicTabeBean? {
         liveData?.value?.takeIf {
@@ -102,7 +103,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
         }
     }
 
-    fun playPosition(position: Int) {
+    private fun playPosition(position: Int) {
         logE("点击：position:${position}")
         currentPosition.postValue(position)
     }
@@ -113,33 +114,23 @@ class AppViewModel @Inject constructor(application: Application, private val app
                 appRepository.getPlayUrl(url)
                     .onEach {
                         metadataList.postValue(it)
-//                        metadataList.postValue(
-//                            listOf(
-//                                MediaItem.Builder()
-//                                    .setMediaId(m.url)
-//                                    .setUri(m.url.toUri())
-//                                    .setMimeType(MimeTypes.AUDIO_MPEG)
-//                                    .setMediaMetadata(
-//                                        MediaMetadata.Builder()
-//                                            .setTitle(m.title)
-//                                            .setWriter(m.author)
-//                                            .setArtworkUri(m.pic.toUri())
-//                                            .build()
-//                                    ).build()
-//                            )
-//                        )
                         logE("getPlayUrl mediaId onEach ")
                     }
             }
         }
     }
 
-    fun getPlayUrl(mediaId: String) {
+//    fun getPlayUrlFromMediaUri(url: Url) {
+//
+//    }
+
+    fun getPlayUrlFromMediaID(mediaId: String) {
         logE("getPlayUrl mediaId $mediaId")
         liveData.value?.forEachIndexed { position, it ->
             it.takeIf {
                 mediaId.toLong() == it.id
             }?.let {
+                logE("getPlayUrl mediaId $mediaId picurl:${it.pic}")
                 currentPosition.postValue(position)
                 return@forEachIndexed
             }

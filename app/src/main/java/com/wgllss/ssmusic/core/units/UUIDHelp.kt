@@ -8,14 +8,16 @@ object UUIDHelp {
     fun getMusicUUID(musicBeanEvent: MusicBeanEvent): Long {
         val sb = StringBuilder()
         musicBeanEvent?.run {
-            sb.append(title).append(author).append(requestRealUrl).append(pic).append(toString())
+            sb.append(title).append(author).append(requestRealUrl).append(pic)
         }
-        return Math.abs(UUID(sb.toString().hashCode().toLong(), sb.toString().hashCode().toLong()).toString().replace("-", "").hashCode()).toLong()
+        val uuLongID = sb.toString().hashCode().toLong()
+        return Math.abs(UUID(uuLongID, uuLongID).toString().replace("-", "").hashCode()).toLong()
     }
 
     fun getMusicUUID(title: String, author: String, requestRealUrl: String, pic: String): Long {
         val sb = StringBuilder()
-        sb.append(title).append(author).append(requestRealUrl).append(pic).append(toString())
-        return Math.abs(UUID(sb.toString().hashCode().toLong(), sb.toString().hashCode().toLong()).toString().replace("-", "").hashCode()).toLong()
+        sb.append(title).append(author).append(requestRealUrl).append(pic)
+        val uuLongID = sb.toString().hashCode().toLong()
+        return Math.abs(UUID(uuLongID, uuLongID).toString().replace("-", "").hashCode()).toLong()
     }
 }

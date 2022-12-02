@@ -24,27 +24,27 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
         }
     }
 
-    suspend fun addToPlayList(it: MusicBeanEvent): Flow<Long> {
-        return flow {
-            it.run {
-                val uuID = UUIDHelp.getMusicUUID(this)
-                MMKVHelp.setPlayID(uuID)
-                //uuID： 1519754784   uuid： 0
-                //uuID： 1529454536   uuid： 1519754784
-                logE("uuID： $uuID   uuid： $uuid")
-                if (uuid == 0L) {
-                    val count = mSSDataBaseL.get().musicDao().queryByUUID(uuID)
-                    if (count > 0) {
-                        logE("已经在播放列表里面")
-                    } else {
-                        val bean = MusicTabeBean(uuID, title, author, requestRealUrl, pic, System.currentTimeMillis())
-                        mSSDataBaseL.get().musicDao().insertMusicBean(bean)
-                    }
-                    emit(uuID)
-                }
-            }
-        }.catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
-    }
+//    suspend fun addToPlayList(it: MusicBeanEvent): Flow<Long> {
+//        return flow {
+//            it.run {
+//                val uuID = UUIDHelp.getMusicUUID(this)
+//                MMKVHelp.setPlayID(uuID)
+//                //uuID： 1519754784   uuid： 0
+//                //uuID： 1529454536   uuid： 1519754784
+//                logE("uuID： $uuID   uuid： $uuid")
+//                if (uuid == 0L) {
+//                    val count = mSSDataBaseL.get().musicDao().queryByUUID(uuID)
+//                    if (count > 0) {
+//                        logE("已经在播放列表里面")
+//                    } else {
+//                        val bean = MusicTabeBean(uuID, title, author, requestRealUrl, pic, System.currentTimeMillis())
+//                        mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+//                    }
+//                    emit(uuID)
+//                }
+//            }
+//        }.catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
+//    }
 
     /**
      * 得到播放地址
@@ -101,6 +101,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
         it.takeIf {
             it.url.isNotEmpty()
         }?.let {
+            it.requestRealUrl = it.url
             musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
                 it.url = this@run.toString().replace("http://", "https://")
             }

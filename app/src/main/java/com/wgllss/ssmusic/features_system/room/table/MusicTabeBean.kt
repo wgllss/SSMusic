@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "music_tab")
 class MusicTabeBean(
-    @PrimaryKey @ColumnInfo(name = "id", typeAffinity = ColumnInfo.INTEGER, defaultValue = "0") val id: Long,
+    @PrimaryKey @ColumnInfo(name = "id", typeAffinity = ColumnInfo.INTEGER, defaultValue = "0") var id: Long,
     @ColumnInfo(name = "title", typeAffinity = ColumnInfo.TEXT, defaultValue = "") val title: String,
     @ColumnInfo(name = "author", typeAffinity = ColumnInfo.TEXT, defaultValue = "") val author: String,
     @ColumnInfo(name = "url", typeAffinity = ColumnInfo.TEXT, defaultValue = "") var url: String,

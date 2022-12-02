@@ -23,9 +23,7 @@ import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
-import com.wgllss.ssmusic.features_system.music.extensions.albumArtist
-import com.wgllss.ssmusic.features_system.music.extensions.currentPlayBackPosition
-import com.wgllss.ssmusic.features_system.music.extensions.title
+import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
 import com.wgllss.ssmusic.features_system.music.impl.wlmusicplayer.WlTimeUtil
@@ -60,93 +58,30 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             lifecycleOwner = this@PlayFragment
             executePendingBindings()
         }
-        LiveEventBus.get(MusicEvent::class.java).observe(viewLifecycleOwner) {
-            when (it) {
-                is MusicEvent.ChangeMusic -> {
-                    mater_music_name.text = it.title
-                    viewModel.pic.postValue(it.pic)
-                }
-                is MusicEvent.PlayerProgress -> {
-                    sb_progress.progress = WlTimeUtil.getProgress(it.currSecs, it.totalSecs)
-                    tv_current_time.text = WlTimeUtil.secdsToDateFormat(it.currSecs, it.totalSecs)
-                    if (pb_load.visibility == View.VISIBLE) {
-                        pb_load.visibility = View.GONE
-                    }
-                    if (iv_play.visibility == View.GONE) {
-                        iv_play.visibility = View.VISIBLE
-                    }
-                    if (iv_point.rotation == -40f) {
-                        iv_play.isSelected = true
-                        viewModel.isPlaying = true
-                        startPointAnimat(-40f, 0f)
-                    }
-
-                    viewModel.toatal?.takeIf { t ->
-                        t.value == null || t.value != it.totalSecs
-                    }?.let { _ ->
-                        viewModel.toatal.postValue(it.totalSecs)
-                        tv_total_time.text = WlTimeUtil.secdsToDateFormat(it.totalSecs, it.totalSecs)
-                    }
-                }
-                is MusicEvent.BufferingUpdate -> {
-                    sb_progress.secondaryProgress = (sb_progress.max * 100 / it.percent)
-                }
-                is MusicEvent.PlayerStart -> {// false 显示播放UI
-                    iv_play.isSelected = false
-                    viewModel.isPlaying = false
-                    if (iv_point.getRotation() == 0f) {
-                        startPointAnimat(0f, -40f)
-                    }
-                }
-
-                is MusicEvent.PlayerPause -> {// true 显示暂停
-                    iv_play.isSelected = true
-                    viewModel.isPlaying = true
-                    if (iv_point.getRotation() == -40f) {
-                        startPointAnimat(-40f, 0f)
-                    }
-                }
-                is MusicEvent.PlayerLoadding -> {
-                    pb_load.visibility = if (it.loadding) View.VISIBLE else View.GONE
-                    iv_play.visibility = if (it.loadding) View.GONE else View.VISIBLE
-                }
-                else -> {
-
-                }
-            }
-        }
-
         sb_progress.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    viewModel?.toatal?.value?.run {
-                        val position = this * progress / 100
-                        viewModel.position.postValue(position)
-                        tv_current_time.text = WlTimeUtil.secdsToDateFormat(position, this)
-                    }
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    viewModel.seek(false, false)
                 }
 
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    viewModel.seek(true, true)
+                override fun onStopTrackingTouch(seekBar: SeekBar) {
+                    viewModel.seek(seekBar.progress.toLong())
                 }
             })
         img_back.setOnClickListener {
             activity?.let { it.finishActivity() }
-        }
-        iv_center?.run {
-            viewModel.pic.observe(viewLifecycleOwner) {
-                iv_center.loadUrl(it)
-            }
         }
         initPointAnimat()
         initCDAnimat()
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             mater_music_name.text = it!!.title
+            sb_progress.max = it.duration.toInt()
+            logE("it.duration：${it.duration}")
+            tv_total_time.text = timestampToMSS(requireContext(), it.duration)
+            iv_center.loadUrl(it.albumArtUri)
         }
 
         viewModel.playbackState.observe(viewLifecycleOwner) {
@@ -172,7 +107,11 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                     }
                 }
                 STATE_PAUSED -> {
-
+                    iv_play.isSelected = false
+                    viewModel.isPlaying = false
+                    if (iv_point.rotation == 0f) {
+                        startPointAnimat(0f, -40f)
+                    }
                 }
             }
         }
@@ -202,9 +141,9 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         pointAnimator = ValueAnimator.ofFloat(0f, 0f)
         pointAnimator?.apply {
             setTarget(iv_point)
-            setRepeatCount(0)
-            setDuration(300)
-            setInterpolator(lin)
+            repeatCount = 0
+            duration = 300
+            interpolator = lin
             addUpdateListener { animation ->
                 val current = animation.animatedValue as Float
                 iv_point.setRotation(current)

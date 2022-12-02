@@ -121,13 +121,11 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
     override fun onResume() {
         LogTimer.LogE(this, "onResume")
         super.onResume()
-        viewModel.onResume()
     }
 
     override fun onStop() {
         LogTimer.LogE(this, "onStop")
         super.onStop()
-        viewModel.onStop()
     }
 
     override fun onDestroy() {

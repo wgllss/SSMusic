@@ -23,8 +23,10 @@ import com.google.android.exoplayer2.util.Util
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.services.MusicService
+
 
 open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionConnector.PlaybackPreparer {
 
@@ -84,7 +86,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     open fun onCreate(musicService: MusicService) {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         this.musicService = musicService
-
         mediaSessionConnector.setPlayer(exoPlayer)
         exoPlayer.clearMediaItems()
     }
@@ -133,10 +134,12 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                 PlaybackStateCompat.ACTION_PREPARE_FROM_SEARCH or
                 PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH or
                 PlaybackStateCompat.ACTION_PLAY_FROM_URI or
-                PlaybackStateCompat.ACTION_PREPARE_FROM_URI
+                PlaybackStateCompat.ACTION_PREPARE_FROM_URI or
+                PlaybackStateCompat.ACTION_SEEK_TO or
+                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
 
     override fun onPrepare(playWhenReady: Boolean) {
-        logE("onPrepare playWhenReady: $playWhenReady  ")
     }
 
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
@@ -148,12 +151,28 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
         logE("onPrepareFromUri uri: $uri playWhenReady: $playWhenReady  extras:$extras")
+        extras?.run {
+            val mediaMetadataCompat = MediaMetadataCompat.Builder().apply {
+                id = getString(Constants.MEDIA_ID_KEY) ?: ""
+                title = getString(Constants.MEDIA_TITLE_KEY) ?: ""
+                mediaUri = getString(Constants.MEDIA_URL_KEY) ?: ""
+                artist = getString(Constants.MEDIA_AUTHOR_KEY) ?: ""
+                albumArtUri = getString(Constants.MEDIA_ARTNETWORK_URL_KEY) ?: ""
+                downloadStatus = MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
+            }.build().apply {
+                description.extras?.putAll(bundle)
+            }
+            currentPlaylistItems = mutableListOf(mediaMetadataCompat)
+            exoPlayer.stop()
+            exoPlayer.playWhenReady = playWhenReady
+            exoPlayer.setMediaItem(mediaMetadataCompat.toMediaItem())
+            exoPlayer.prepare()
+        }
     }
-
 
     protected open fun preparePlaylist(playWhenReady: Boolean, itemToPlay: MusicBean) {
         val mediaMetadataCompat = MediaMetadataCompat.Builder().apply {
-            id = itemToPlay.url
+            id = itemToPlay.id.toString()
             title = itemToPlay.title
             mediaUri = itemToPlay.url
             artist = itemToPlay.author
@@ -163,14 +182,15 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
             description.extras?.putAll(bundle)
         }
         currentPlaylistItems = mutableListOf(mediaMetadataCompat)
-        exoPlayer.playWhenReady = playWhenReady
         exoPlayer.stop()
+        exoPlayer.playWhenReady = playWhenReady
         exoPlayer.setMediaItem(mediaMetadataCompat.toMediaItem())
         exoPlayer.prepare()
     }
 
 
     private inner class PlayerEventListener : Player.Listener {
+
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_BUFFERING, Player.STATE_READY -> {
@@ -178,8 +198,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                         if (!playWhenReady) {
 
                         }
-                        logE("exoPlayer.duration：${exoPlayer.duration}")
-                        setplaybackState(playbackState)
+                        setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
                     }
                 }
                 Player.STATE_ENDED -> {
@@ -187,21 +206,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                     playNext()
                 }
             }
-//            logE("onPlayerStateChanged playbackState:$playbackState")
-//            setplaybackState(playbackState)
-        }
-
-        override fun onPlaybackStateChanged(playbackState: Int) {
-            super.onPlaybackStateChanged(playbackState)
-        }
-
-//        override fun onTimelineChanged(timeline: Timeline, reason: Int) {
-//            logE("onTimelineChanged timeline:${timeline} reason ${reason}")
-//        }
-
-        override fun onPlayerErrorChanged(error: PlaybackException?) {
-            error?.printStackTrace()
-            logE("onPlayerErrorChanged error $error")
         }
 
         override fun onEvents(player: Player, events: Player.Events) {
@@ -212,12 +216,13 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
             }
         }
 
-        private fun setplaybackState(playbackState: Int) {
+        private fun setPlaybackState(playbackState: Int) {
             val speed = exoPlayer.playbackParameters?.speed ?: 1.0f
             mediaSession.setPlaybackState(PlaybackStateCompat.Builder().apply {
-                setState(playbackState, 0, speed)
+                setState(playbackState, exoPlayer.contentPosition, speed)
+                    .setActions(supportedPrepareActions)
                 setExtras(Bundle().apply {
-                    putLong("contentPosition", exoPlayer.contentPosition)
+//                    putLong("contentPosition", exoPlayer.contentPosition)
                     putLong("duration", exoPlayer.duration)
                 })
             }.build())
@@ -227,9 +232,25 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     private inner class SSQueueNavigator(mediaSession: MediaSessionCompat) : TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat = if (windowIndex < currentPlaylistItems.size) currentPlaylistItems[windowIndex].description
         else MediaDescriptionCompat.Builder().build()
+
+        override fun onSkipToNext(player: Player) {
+            playNext()
+        }
+
+        override fun onSkipToPrevious(player: Player) {
+            playPrevious()
+        }
+
+        override fun getSupportedQueueNavigatorActions(player: Player) =
+            PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
+                    PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
     }
 
     protected open fun playNext() {
+
+    }
+
+    protected open fun playPrevious() {
 
     }
 }

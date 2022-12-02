@@ -1,11 +1,17 @@
 package com.wgllss.ssmusic.data
 
+import com.wgllss.ssmusic.core.units.UUIDHelp
+
 data class MusicBean(
-    val title:String,
-    val author:String,
-    var url:String,
-    val pic:String,
-)
+    val title: String,
+    val author: String,
+    var url: String,
+    val pic: String,
+) {
+    var requestRealUrl: String = ""
+    inline val id: Long
+        get() = UUIDHelp.getMusicUUID(title, author, requestRealUrl, pic)
+}
 //{
 //    "title":"起风了",
 //    "author":"潇潇潇潇如",

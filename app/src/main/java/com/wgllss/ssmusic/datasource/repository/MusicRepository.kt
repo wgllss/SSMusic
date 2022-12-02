@@ -1,17 +1,20 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import androidx.lifecycle.LiveData
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.ChineseUtils
+import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
+import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
 import javax.inject.Inject
 
@@ -146,11 +149,32 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
         it.takeIf {
             it.url.isNotEmpty()
         }?.let {
+            it.requestRealUrl = it.url
             musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
                 it.url = this@run.toString().replace("http://", "https://")
             }
         }
         emit(it)
+    }
+
+    suspend fun addToPlayList(it: MusicBean): Flow<Long> {
+        return flow {
+            it.run {
+//                val uuID = UUIDHelp.getMusicUUID(it.title, it.author, it.url, it.pic)
+//                MMKVHelp.setPlayID(uuID)
+                //uuID： 1519754784   uuid： 0
+                //uuID： 1529454536   uuid： 1519754784
+                logE("addToPlayList id: ${it.id}")
+                val count = mSSDataBaseL.get().musicDao().queryByUUID(it.id)
+                if (count > 0) {
+                    logE("已经在播放列表里面")
+                } else {
+                    val bean = MusicTabeBean(it.id, title, author, requestRealUrl, pic, System.currentTimeMillis())
+                    mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+                }
+                emit(it.id)
+            }
+        }.catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
     }
 
     suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> = flow {

@@ -1,22 +1,14 @@
 package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
-import android.content.Context
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
-import com.jeremyliao.liveeventbus.LiveEventBus
-import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
-import com.wgllss.ssmusic.data.livedatabus.PlayerEvent
-import com.wgllss.ssmusic.features_system.music.extensions.*
-import com.wgllss.ssmusic.features_system.music.impl.exoplayer.EMPTY_PLAYBACK_STATE
+import com.wgllss.ssmusic.features_system.music.extensions.currentPlayBackPosition
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
-import com.wgllss.ssmusic.features_system.music.impl.exoplayer.NOTHING_PLAYING
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,10 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
-    val toatal by lazy { MutableLiveData<Int>() }
-    val position by lazy { MutableLiveData<Int>() }
     var isPlaying: Boolean = false
-    val pic by lazy { MutableLiveData<String>() }
     val nowPlaying = MutableLiveData<MediaMetadataCompat>()
     val playbackState = MutableLiveData<PlaybackStateCompat>()
 
@@ -43,10 +32,9 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
     override fun start() {
     }
 
-    fun seek(seekingfinished: Boolean, showTime: Boolean) {
-        position?.value?.run {
-            LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.SeekEvent(this, seekingfinished, showTime))
-        }
+    //从指定位置开始播放
+    fun seek(pos: Long) {
+        musicServiceConnectionL.get().transportControls.seekTo(pos)
     }
 
     val onPlay = View.OnClickListener {//true 暂停 false 继续播放
@@ -54,18 +42,14 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
         musicServiceConnectionL.get().transportControls.run {
             if (it.isSelected) pause() else play()
         }
-//        if (it.isSelected) {
-//            musicServiceConnectionL.get().transportControls.pause()
-//        }
-//
-//        LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayEvent(it.isSelected))
     }
+
     val onPlayNext = View.OnClickListener {
-        LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayNext)
+        musicServiceConnectionL.get().transportControls.skipToNext()
     }
 
     val onPlayPrevious = View.OnClickListener {
-        LiveEventBus.get(PlayerEvent::class.java).post(PlayerEvent.PlayPrevious)
+        musicServiceConnectionL.get().transportControls.skipToPrevious()
     }
 
     private val playbackStateObserver = Observer<PlaybackStateCompat> {
@@ -74,12 +58,6 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
 
     private val mediaMetadataObserver = Observer<MediaMetadataCompat> {
         nowPlaying.postValue(it)
-        it?.albumArtUri?.let { url ->
-            if (pic.value == null || pic!!.value != url) {
-                logE("mediaMetadataObserver url $url")
-                pic.postValue(url)
-            }
-        }
     }
 
     private val musicServiceConnection = musicServiceConnectionL.get().also {
