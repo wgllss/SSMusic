@@ -3,7 +3,6 @@ package com.wgllss.ssmusic.features_ui.page.playing.fragment
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.AnimatorUpdateListener
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat.*
 import android.view.LayoutInflater
@@ -11,9 +10,6 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.SeekBar
-import androidx.lifecycle.lifecycleScope
-import androidx.palette.graphics.Palette
-import com.jeremyliao.liveeventbus.LiveEventBus
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.core.ex.loadUrl
 import com.wgllss.ssmusic.R
@@ -21,18 +17,12 @@ import com.wgllss.ssmusic.core.adapter.BasePagerAdapter
 import com.wgllss.ssmusic.core.ex.dpToPx
 import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
-import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_DURATION_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.*
-import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
-import com.wgllss.ssmusic.features_system.music.impl.wlmusicplayer.WlTimeUtil
-import com.wgllss.ssmusic.features_ui.page.home.viewmodels.PlayModel
+import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import kotlinx.android.synthetic.main.fragment_play.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentPlayBinding>(R.layout.fragment_play) {

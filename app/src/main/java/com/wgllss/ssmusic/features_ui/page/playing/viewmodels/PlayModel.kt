@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.features_ui.page.home.viewmodels
+package com.wgllss.ssmusic.features_ui.page.playing.viewmodels
 
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat

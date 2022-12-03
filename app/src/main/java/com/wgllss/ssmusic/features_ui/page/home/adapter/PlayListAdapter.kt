@@ -12,14 +12,16 @@ import javax.inject.Inject
 
 class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowserCompat.MediaItem, AdapterMusicPlaylistItemBinding>() {
 
+    var currentMediaID: String = ""
+
     override fun onBindItem(binding: AdapterMusicPlaylistItemBinding, item: MediaBrowserCompat.MediaItem, holder: RecyclerView.ViewHolder, position: Int) {
         binding?.apply {
             bean = item
             musicIcon.loadUrl(item.description.iconUri.toString())
             musicVisualizerView.setColor(Color.RED)
-            author.setTextColor(if (selectPositon == position) Color.RED else Color.BLACK)
-            title.setTextColor(if (selectPositon == position) Color.RED else Color.BLACK)
-            musicVisualizerView.visibility = if (selectPositon == position) View.VISIBLE else View.GONE
+            author.setTextColor(if (currentMediaID == item.mediaId) Color.RED else Color.BLACK)
+            title.setTextColor(if (currentMediaID == item.mediaId) Color.RED else Color.BLACK)
+            musicVisualizerView.visibility = if (currentMediaID == item.mediaId) View.VISIBLE else View.GONE
         }
     }
 

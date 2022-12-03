@@ -2,8 +2,10 @@ package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.core.units.WLog
@@ -28,10 +30,12 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>, private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
+class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>, val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
 
     val searchContent by lazy { MutableLiveData<String>() }
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
+
+    val currentMediaID by lazy { MutableLiveData("") }
 
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
@@ -49,15 +53,16 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             val transportControls = musicServiceConnectionL.get().transportControls
             val isPrepared = musicServiceConnectionL.get().playbackState.value?.isPrepared ?: false
             if (isPrepared && it == nowPlaying?.id) {
-                musicServiceConnectionL.get().playbackState.value?.let { playbackState ->
-                    when {
-                        playbackState.isPlaying -> transportControls.pause()
-                        playbackState.isPlayEnabled -> transportControls.play()
-                        else -> {
-                            logE("Playable item clicked but neither play nor pause are enabled! (mediaId=$it)")
-                        }
-                    }
-                }
+//                musicServiceConnectionL.get().playbackState.value?.let { playbackState ->
+//                    logE("playbackState：$playbackState")
+//                    when {
+//                        playbackState.isPlaying -> transportControls.pause()
+//                        playbackState.isPlayEnabled -> transportControls.play()
+//                        else -> {
+//                            logE("Playable item clicked but neither play nor pause are enabled! (mediaId=$it)")
+//                        }
+//                    }
+//                }
             } else {
                 transportControls.playFromMediaId(it, extras)
             }
@@ -69,7 +74,12 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         musicServiceConnectionL.get().run {
             logE("MusicService    it.subscribe(mediaId, subscriptionCallback) ${Thread.currentThread().name} ")
             subscribe(mediaId, subscriptionCallback)
+            nowPlaying.observeForever(mediaMetadataObserver)
         }
+    }
+
+    private val mediaMetadataObserver = Observer<MediaMetadataCompat> {
+        currentMediaID.postValue(it.id)
     }
 
     fun searchKeyByTitle() {
@@ -109,5 +119,10 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
                     }
             }
         }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        musicServiceConnectionL.get().nowPlaying.removeObserver(mediaMetadataObserver)
     }
 }

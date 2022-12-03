@@ -19,12 +19,9 @@ const val NOW_PLAYING_CHANNEL_ID = "ssmusic_channel_01"
 const val NOW_PLAYING_NOTIFICATION_ID = 0xb339 // Arbitrary number used to identify our notification
 
 class SSNotificationManager constructor(val context: Context, sessionToken: MediaSessionCompat.Token, notificationListener: PlayerNotificationManager.NotificationListener) {
-    private var player: Player? = null
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
     private val notificationManager: PlayerNotificationManager
-    private val platformNotificationManager: NotificationManager =
-        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     init {
         val mediaController = MediaControllerCompat(context, sessionToken)
@@ -104,7 +101,7 @@ class SSNotificationManager constructor(val context: Context, sessionToken: Medi
 const val NOTIFICATION_LARGE_ICON_SIZE = 144 // px
 
 private val glideOptions = RequestOptions()
-//    .fallback(R.drawable.default_art)
+    .fallback(R.drawable.ic_my_music_folder)
     .diskCacheStrategy(DiskCacheStrategy.DATA)
 
 private const val MODE_READ_ONLY = "r"

@@ -5,7 +5,7 @@
 
         <variable
             name="playModel"
-            type="com.wgllss.ssmusic.features_ui.page.home.viewmodels.PlayModel" />
+            type="com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"

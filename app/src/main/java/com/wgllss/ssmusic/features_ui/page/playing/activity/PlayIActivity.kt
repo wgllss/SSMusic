@@ -5,7 +5,7 @@ import com.wgllss.ssmusic.core.ex.setFramgment
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
 import com.wgllss.ssmusic.databinding.ActivityPlayBinding
-import com.wgllss.ssmusic.features_ui.page.home.viewmodels.PlayModel
+import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import com.wgllss.ssmusic.features_ui.page.playing.fragment.PlayFragment
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
