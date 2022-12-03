@@ -149,7 +149,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
         it.takeIf {
             it.url.isNotEmpty()
         }?.let {
-            it.requestRealUrl = it.url
+            it.requestRealUrl = htmlUrl
             musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
                 it.url = this@run.toString().replace("http://", "https://")
             }
@@ -160,11 +160,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
     suspend fun addToPlayList(it: MusicBean): Flow<Long> {
         return flow {
             it.run {
-//                val uuID = UUIDHelp.getMusicUUID(it.title, it.author, it.url, it.pic)
-//                MMKVHelp.setPlayID(uuID)
-                //uuID： 1519754784   uuid： 0
-                //uuID： 1529454536   uuid： 1519754784
-                logE("addToPlayList id: ${it.id}")
+                logE("addToPlayList id: ${it.id} requestRealUrl $requestRealUrl")
                 val count = mSSDataBaseL.get().musicDao().queryByUUID(it.id)
                 if (count > 0) {
                     logE("已经在播放列表里面")

@@ -50,6 +50,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
      * 得到播放地址
      */
     suspend fun getPlayUrl(htmlUrl: String) = flow {
+        logE("htmlUrl:$htmlUrl")
         val startTime = System.currentTimeMillis()
         val html = musiceApiL.get().getPlayUrl(htmlUrl)
         val baseUrl = "https://www.hifini.com/"
@@ -101,7 +102,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
         it.takeIf {
             it.url.isNotEmpty()
         }?.let {
-            it.requestRealUrl = it.url
+            it.requestRealUrl = htmlUrl
             musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
                 it.url = this@run.toString().replace("http://", "https://")
             }

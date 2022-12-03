@@ -23,6 +23,8 @@ import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.livedatabus.MusicEvent
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
+import com.wgllss.ssmusic.features_system.globle.Constants
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_DURATION_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
@@ -98,10 +100,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                         viewModel.isPlaying = true
                         startPointAnimat(-40f, 0f)
                     }
-                    if (it.extras != null) {
-                        logE("it.extras: ${it.extras}")
-                    }
-                    it.extras?.getLong("duration")?.let { d ->
+                    it.extras?.getLong(MEDIA_DURATION_KEY)?.let { d ->
                         tv_total_time.text = timestampToMSS(requireContext(), d)
                         sb_progress.max = d.toInt()
                     }

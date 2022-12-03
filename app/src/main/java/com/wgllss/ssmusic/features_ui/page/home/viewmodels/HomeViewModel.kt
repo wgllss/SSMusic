@@ -23,6 +23,7 @@ import com.wgllss.ssmusic.features_system.music.extensions.isPrepared
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -104,7 +105,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
                         }
                         logE("getDetailFromSearch extras--> $extras")
                         transportControls.prepareFromUri(it.url.toUri(), extras)
-                        musicRepositoryL.get().addToPlayList(it)
+                        musicRepositoryL.get().addToPlayList(it).collect()
                     }
             }
         }

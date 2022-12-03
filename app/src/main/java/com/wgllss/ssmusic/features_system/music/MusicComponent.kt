@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.features_system.music
 
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
@@ -19,18 +21,24 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.util.Util
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.features_system.globle.Constants
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_DURATION_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.*
+import com.wgllss.ssmusic.features_system.music.notifications.SSNotificationManager
 import com.wgllss.ssmusic.features_system.services.MusicService
 
 
 open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionConnector.PlaybackPreparer {
 
     private val mLifecycleRegistry by lazy { LifecycleRegistry(this) }
+
+    private lateinit var notificationManager: SSNotificationManager
+    private var isForegroundService = false
 
     companion object {
         private const val CHANNEL_ID = "ssmusic_channel_01"
@@ -86,8 +94,17 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     open fun onCreate(musicService: MusicService) {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         this.musicService = musicService
+
+        notificationManager = SSNotificationManager(
+            musicService,
+            mediaSession.sessionToken,
+            PlayerNotificationListener()
+        )
+
         mediaSessionConnector.setPlayer(exoPlayer)
         exoPlayer.clearMediaItems()
+
+        notificationManager.showNotificationForPlayer(exoPlayer)
     }
 
     open fun onStart() {
@@ -150,50 +167,41 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     }
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
-        logE("onPrepareFromUri uri: $uri playWhenReady: $playWhenReady  extras:$extras")
         extras?.run {
-            val mediaMetadataCompat = MediaMetadataCompat.Builder().apply {
-                id = getString(Constants.MEDIA_ID_KEY) ?: ""
-                title = getString(Constants.MEDIA_TITLE_KEY) ?: ""
-                mediaUri = getString(Constants.MEDIA_URL_KEY) ?: ""
-                artist = getString(Constants.MEDIA_AUTHOR_KEY) ?: ""
-                albumArtUri = getString(Constants.MEDIA_ARTNETWORK_URL_KEY) ?: ""
-                downloadStatus = MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
-            }.build().apply {
-                description.extras?.putAll(bundle)
-            }
-            currentPlaylistItems = mutableListOf(mediaMetadataCompat)
-            exoPlayer.stop()
-            exoPlayer.playWhenReady = playWhenReady
-            exoPlayer.setMediaItem(mediaMetadataCompat.toMediaItem())
-            exoPlayer.prepare()
+            preparePlaylist(
+                getString(Constants.MEDIA_ID_KEY) ?: "",
+                getString(Constants.MEDIA_TITLE_KEY) ?: "",
+                getString(Constants.MEDIA_AUTHOR_KEY) ?: "",
+                getString(Constants.MEDIA_ARTNETWORK_URL_KEY) ?: "",
+                getString(Constants.MEDIA_URL_KEY) ?: ""
+            )
         }
     }
 
-    protected open fun preparePlaylist(playWhenReady: Boolean, itemToPlay: MusicBean) {
+    protected open fun preparePlaylist(mediaId: String, musicTitle: String, author: String, pic: String, url: String) {
         val mediaMetadataCompat = MediaMetadataCompat.Builder().apply {
-            id = itemToPlay.id.toString()
-            title = itemToPlay.title
-            mediaUri = itemToPlay.url
-            artist = itemToPlay.author
-            albumArtUri = itemToPlay.pic
+            id = mediaId
+            title = musicTitle
+            mediaUri = url
+            artist = author
+            albumArtUri = pic
             downloadStatus = MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
         }.build().apply {
             description.extras?.putAll(bundle)
         }
         currentPlaylistItems = mutableListOf(mediaMetadataCompat)
         exoPlayer.stop()
-        exoPlayer.playWhenReady = playWhenReady
+        exoPlayer.playWhenReady = true
         exoPlayer.setMediaItem(mediaMetadataCompat.toMediaItem())
         exoPlayer.prepare()
     }
-
 
     private inner class PlayerEventListener : Player.Listener {
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_BUFFERING, Player.STATE_READY -> {
+                    notificationManager.showNotificationForPlayer(exoPlayer)
                     if (playbackState == Player.STATE_READY) {
                         if (!playWhenReady) {
 
@@ -205,6 +213,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                     logE("单曲播放结束，可以下一首")
                     playNext()
                 }
+                else -> notificationManager.hideNotification()
             }
         }
 
@@ -222,8 +231,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                 setState(playbackState, exoPlayer.contentPosition, speed)
                     .setActions(supportedPrepareActions)
                 setExtras(Bundle().apply {
-//                    putLong("contentPosition", exoPlayer.contentPosition)
-                    putLong("duration", exoPlayer.duration)
+                    putLong(MEDIA_DURATION_KEY, exoPlayer.duration)
                 })
             }.build())
         }
@@ -252,5 +260,31 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
 
     protected open fun playPrevious() {
 
+    }
+
+
+    private inner class PlayerNotificationListener :
+        PlayerNotificationManager.NotificationListener {
+        override fun onNotificationPosted(
+            notificationId: Int,
+            notification: Notification,
+            ongoing: Boolean
+        ) {
+            if (ongoing && !isForegroundService) {
+                ContextCompat.startForegroundService(
+                    musicService,
+                    Intent(musicService, musicService.javaClass)
+                )
+
+                musicService.startForeground(notificationId, notification)
+                isForegroundService = true
+            }
+        }
+
+        override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+            musicService.stopForeground(true)
+            isForegroundService = false
+            musicService.stopSelf()
+        }
     }
 }

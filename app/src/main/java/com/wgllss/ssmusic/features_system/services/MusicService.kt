@@ -49,7 +49,6 @@ class MusicService : MediaBrowserServiceCompat() {
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         result.detach()
-        logE("onLoadChildren parentId: $parentId")
         musicFactory?.get()?.onLoadChildren(parentId, result)
     }
 }

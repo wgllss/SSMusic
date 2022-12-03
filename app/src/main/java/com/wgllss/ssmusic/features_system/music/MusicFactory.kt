@@ -39,6 +39,8 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
     private var jobc: Job? = null
     private var jobPlay: Job? = null
 
+    private var isSendChild = false
+
     private val serviceJob by lazy { SupervisorJob() }
     private val serviceScope by lazy { CoroutineScope(Dispatchers.Main + serviceJob) }
 
@@ -46,7 +48,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
         super.onCreate(musicService)
         appViewModel.get().queryPlayList()
         appViewModel.get().metadataList.observe(this) {
-            preparePlaylist(true, it)
+            preparePlaylist(it.id.toString(), it.title, it.author, it.pic, it.url)
         }
         appViewModel.get().currentPosition.observeForever {
             appViewModel.get().getDetail(it)
@@ -69,6 +71,13 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
                 }?.let {
                     appViewModel.get().liveData.observe(this@MusicFactory) { list ->
                         serviceScope.launch {
+                            if (isSendChild) {
+                                logE("notifyChildrenChanged $parentId")
+                                isSendChild = false
+                                musicService.notifyChildrenChanged(parentId)
+                                return@launch
+                            }
+                            isSendChild = true
                             val child = withContext(IO) {
                                 list.map { musicTableBean ->
                                     MediaBrowserCompat.MediaItem(
@@ -82,7 +91,12 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
                                     )
                                 }?.toMutableList()
                             }
-                            result.sendResult(child)
+                            try {
+                                result.sendResult(child)
+                            } catch (e: Exception) {
+                                logE("notifyChildrenChanged $parentId   ${e.message}")
+                                musicService.notifyChildrenChanged(parentId)
+                            }
                         }
                     }
                 }
@@ -93,7 +107,6 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
     }
 
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
-        super.onPrepareFromMediaId(mediaId, playWhenReady, extras)
         logE("onPrepareFromMediaId mediaId: $mediaId playWhenReady: $playWhenReady  extras:${Thread.currentThread().name}")
         appViewModel.get().getPlayUrlFromMediaID(mediaId)
     }
