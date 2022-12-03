@@ -1,11 +1,12 @@
 package com.wgllss.ssmusic.features_system.music.notifications
 
-import android.app.Notification
+import android.graphics.Bitmap
 import android.support.v4.media.session.MediaSessionCompat
 
 interface NotificationsListener {
 
-    fun updateNotification(mediaSession: MediaSessionCompat)
+    fun updateNotification(mediaSession: MediaSessionCompat, largeIcon: Bitmap? = null)
 
-    fun buildNotification(mediaSession: MediaSessionCompat): Notification
+    fun setNotificationListener(notificationsListener: NotificationListener)
+
 }

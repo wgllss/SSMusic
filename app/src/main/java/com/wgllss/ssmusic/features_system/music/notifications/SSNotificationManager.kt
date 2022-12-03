@@ -103,5 +103,3 @@ const val NOTIFICATION_LARGE_ICON_SIZE = 144 // px
 private val glideOptions = RequestOptions()
     .fallback(R.drawable.ic_my_music_folder)
     .diskCacheStrategy(DiskCacheStrategy.DATA)
-
-private const val MODE_READ_ONLY = "r"

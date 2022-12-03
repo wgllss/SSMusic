@@ -34,15 +34,7 @@ class MusicService : MediaBrowserServiceCompat() {
         musicFactory?.get()?.onDestory()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        intent?.let { musicFactory.get().handleCommandIntent(intent) }
-        logE("onStartCommand intent ")
-        return START_NOT_STICKY //no sense to use START_STICKY with using startForeground
-//        return super.onStartCommand(intent, flags, startId)
-    }
-
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        logE("onGetRoot clientPackageName: $clientPackageName")
         musicFactory?.get()?.onGetRoot()
         return BrowserRoot(MEDIA_ID_ROOT, null)
     }

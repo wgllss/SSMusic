@@ -18,6 +18,7 @@ import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_KEY
+import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_TITLE_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_URL_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.*
@@ -63,7 +64,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
     }
 
     override fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
-        if ("-1" == parentId) {
+        if (MEDIA_ID_ROOT == parentId) {
             logE("onLoadChildren parentId333: $parentId")
             appViewModel.get().isInitSuccess.observe(this) {
                 it.takeIf {
@@ -110,9 +111,6 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
         logE("onPrepareFromMediaId mediaId: $mediaId playWhenReady: $playWhenReady  extras:${Thread.currentThread().name}")
         appViewModel.get().getPlayUrlFromMediaID(mediaId)
     }
-
-//    override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
-//    }
 
     override fun playNext() {
         appViewModel.get().playNext()
