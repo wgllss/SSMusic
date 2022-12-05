@@ -19,6 +19,7 @@
     <style name="home_theme" parent="Base.Theme.SSMusic">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@drawable/splash_preview</item>
         <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>
     </style>
@@ -89,8 +90,8 @@
 
     <style name="RippleWhite80" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:colorControlHighlight">#FF4081</item>
-<!--        <item name="paddingStart">20dp</item>-->
-<!--        <item name="android:paddingTop">20dp</item>-->
+        <!--        <item name="paddingStart">20dp</item>-->
+        <!--        <item name="android:paddingTop">20dp</item>-->
         <item name="android:radius">20dp</item>
     </style>
 </resources>
