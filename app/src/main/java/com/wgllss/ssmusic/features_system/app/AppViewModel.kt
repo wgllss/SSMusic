@@ -39,6 +39,8 @@ class AppViewModel @Inject constructor(application: Application, private val app
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     val currentPosition by lazy { MutableLiveData<Int>() }
 
+    val map by lazy { HashMap<String, MusicBean>() }
+
     val metadataList by lazy { MutableLiveData<MusicBean>() }
 
     private fun <T> Flow<T>.flowOnIOAndcatch(): Flow<T> = flowOnIOAndcatch(errorMsgLiveData)
@@ -57,31 +59,17 @@ class AppViewModel @Inject constructor(application: Application, private val app
     fun queryPlayList() {
         flowAsyncWorkOnLaunch {
             appRepository.getMusicList().onEach {
-                logE("11111 onEach ${it.value}")
-                it.value?.forEach {
-                    logE("11111 ${it.url}}")
-                }
                 liveData = it
                 isInitSuccess.postValue(true)
             }
         }
     }
 
-    //添加到播放列表
-//    fun addToPlayList(it: MusicBeanEvent) {
-//        flowAsyncWorkOnLaunch {
-//            appRepository.addToPlayList(it).onEach {
-//                liveData?.value?.let {
-//                    currentPosition.postValue(it.size)
-//                }
-//            }
-//        }
-//    }
-
     private fun findBeanByPosition(position: Int): MusicTabeBean? {
         liveData?.value?.takeIf {
             it.size > position
         }?.run {
+            val mmsicTabeBean = get(position)
             return get(position)
         }
         return null
@@ -110,19 +98,42 @@ class AppViewModel @Inject constructor(application: Application, private val app
 
     fun getDetail(position: Int) {
         findBeanByPosition(position)?.run {
-            flowAsyncWorkOnLaunch {
-                appRepository.getPlayUrl(url)
-                    .onEach {
-                        metadataList.postValue(it)
-                        logE("getPlayUrl mediaId onEach ")
-                    }
+            val currentMediaID = id.toString()
+            if (map.containsKey(currentMediaID)) {
+                metadataList.postValue(map.remove(currentMediaID))
+                logE("取到缓存的下一曲")
+                getNextCache(position, currentMediaID)
+            } else {
+                viewModelScope.launch {
+                    appRepository.getPlayUrl(url)
+                        .onEach {
+                            metadataList.postValue(it)
+                            logE("getPlayUrl mediaId onEach ")
+                        }.flowOnIOAndcatch()
+                        .collect {
+                            getNextCache(position, currentMediaID)
+                        }
+                }
             }
         }
     }
 
-//    fun getPlayUrlFromMediaUri(url: Url) {
-//
-//    }
+    private fun getNextCache(position: Int, currentMediaID: String) {
+        findBeanByPosition(position + 1)?.run {
+            flowAsyncWorkOnLaunch {
+                appRepository.getPlayUrl(url)
+                    .onEach {
+                        map[id.toString()] = it
+                        map.takeIf { m ->
+                            m.containsKey(currentMediaID)
+                        }?.let {
+                            map.remove(currentMediaID)
+                        }
+                        logE("缓存到下一曲")
+                    }
+            }
+        }
+    }
 
     fun getPlayUrlFromMediaID(mediaId: String) {
         logE("getPlayUrl mediaId $mediaId")
