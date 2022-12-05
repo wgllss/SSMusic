@@ -32,7 +32,7 @@ import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import kotlinx.coroutines.*
 
-open class SSPlayerNotificationManager(private val context: Context, private val mediaSession: MediaSessionCompat, private val notificationsListener: NotificationListener) {
+class SSPlayerNotificationManager(private val context: Context, private val mediaSession: MediaSessionCompat, private val notificationsListener: NotificationListener) {
 
     companion object {
         private const val CHANNEL_ID = "ssmusic_channel_00001"

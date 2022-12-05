@@ -2,7 +2,7 @@ package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -10,7 +10,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.MusicItemBean
@@ -18,11 +17,9 @@ import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_KEY
-import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_TITLE_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_URL_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.id
-import com.wgllss.ssmusic.features_system.music.extensions.isPlayEnabled
 import com.wgllss.ssmusic.features_system.music.extensions.isPlaying
 import com.wgllss.ssmusic.features_system.music.extensions.isPrepared
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
@@ -80,12 +77,12 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         musicServiceConnectionL.get().run {
             logE("MusicService    it.subscribe(mediaId, subscriptionCallback) ${Thread.currentThread().name} ")
             subscribe(mediaId, subscriptionCallback)
-            nowPlaying.observeForever(mediaMetadataObserver)
+            playbackState.observeForever(playbackStateObserver)
         }
     }
 
-    private val mediaMetadataObserver = Observer<MediaMetadataCompat> {
-        currentMediaID.postValue(it.id)
+    private val playbackStateObserver = Observer<PlaybackStateCompat> {
+        currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.get().nowPlaying.value?.id ?: "" else "")
     }
 
     fun searchKeyByTitle() {
@@ -129,6 +126,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnectionL.get().nowPlaying.removeObserver(mediaMetadataObserver)
+//        musicServiceConnectionL.get().nowPlaying.removeObserver(mediaMetadataObserver)
+        musicServiceConnectionL.get().playbackState.removeObserver(playbackStateObserver)
     }
 }

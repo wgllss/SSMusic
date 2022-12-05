@@ -63,7 +63,6 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
     private val mediaBrowser = MediaBrowserCompat(context, ComponentName(context, MusicService::class.java), mediaBrowserConnectionCallback, null).apply {
         Log.e("TAG", "MusicService   connect() thead ${Thread.currentThread().name}")
         connect()
-//        disconnect()
     }
     private lateinit var mediaController: MediaControllerCompat
 
@@ -115,6 +114,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
         private var stateL = PlaybackStateCompat.STATE_NONE
         private var mediaID = ""
+        private var duration = 0L
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
             state?.state.takeIf {
@@ -128,9 +128,10 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
 
         override fun onMetadataChanged(it: MediaMetadataCompat?) {
             it?.takeIf {
-                mediaID != it.id
+                mediaID != it.id && duration != it.duration
             }?.let {
                 mediaID = it.id ?: ""
+                duration = it.duration
                 logE("mediaId: ${it!!.id} title:${it.title} artist:${it.artist} albumArtUri:${it.albumArtUri} duration :${it.duration}")
                 nowPlaying.postValue(it)
             }

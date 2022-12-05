@@ -10,6 +10,7 @@ import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_DURATION
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.content.ContextCompat
@@ -184,23 +185,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
 
     private inner class PlayerEventListener : Player.Listener {
 
-        override fun onEvents(player: Player, events: Player.Events) {
-            if (events.containsAny(
-                    Player.EVENT_PLAYBACK_STATE_CHANGED,
-                    Player.EVENT_PLAY_WHEN_READY_CHANGED,
-                    Player.EVENT_IS_PLAYING_CHANGED,
-                    Player.EVENT_TIMELINE_CHANGED,
-                    Player.EVENT_PLAYBACK_PARAMETERS_CHANGED,
-                    Player.EVENT_POSITION_DISCONTINUITY,
-                    Player.EVENT_REPEAT_MODE_CHANGED,
-                    Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED,
-                    Player.EVENT_MEDIA_METADATA_CHANGED
-                )
-            ) {
-                logE("onEvents $events")
-            }
-        }
-
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_BUFFERING, Player.STATE_READY -> {
@@ -232,7 +216,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                 setState(playbackState, exoPlayer.contentPosition, speed)
                     .setActions(supportedPrepareActions)
                 setExtras(Bundle().apply {
-                    putLong(MEDIA_DURATION_KEY, exoPlayer.duration)
+                    putLong(METADATA_KEY_DURATION, exoPlayer.duration)
                 })
             }.build())
         }

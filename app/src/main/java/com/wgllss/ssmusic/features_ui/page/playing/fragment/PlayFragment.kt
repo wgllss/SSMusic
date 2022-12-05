@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.os.Bundle
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat.*
 import android.view.LayoutInflater
 import android.view.View
@@ -70,9 +71,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             mater_music_name.text = it!!.title
-            sb_progress.max = it.duration.toInt()
-            logE("it.duration：${it.duration}")
-            tv_total_time.text = timestampToMSS(requireContext(), it.duration)
             iv_center.loadUrl(it.albumArtUri)
         }
 
@@ -90,7 +88,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                         viewModel.isPlaying = true
                         startPointAnimat(-40f, 0f)
                     }
-                    it.extras?.getLong(MEDIA_DURATION_KEY)?.let { d ->
+                    it.extras?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)?.let { d ->
                         tv_total_time.text = timestampToMSS(requireContext(), d)
                         sb_progress.max = d.toInt()
                     }
