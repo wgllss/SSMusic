@@ -1,11 +1,6 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Bundle
-import android.os.IBinder
-import android.support.v4.media.MediaBrowserCompat
 import android.view.Gravity
 import android.view.Menu
 import android.view.View
@@ -16,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.activity.ActivityManager
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
 import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
@@ -25,7 +21,6 @@ import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.widget.navigation.NavGraphBuilder
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_system.app.AppViewModel
-import com.wgllss.ssmusic.features_system.services.MusicService
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
@@ -116,6 +111,8 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
 
     private fun bindService() {
         logE("bindService")
-        viewModel.start()
+//        viewModel.start()
+
+        ActivityManager.instance.print()
     }
 }

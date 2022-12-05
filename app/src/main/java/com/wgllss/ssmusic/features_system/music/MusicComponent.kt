@@ -23,27 +23,23 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
-import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_DURATION_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.notifications.NotificationListener
-import com.wgllss.ssmusic.features_system.music.notifications.NotificationsListener
+import com.wgllss.ssmusic.features_system.music.notifications.SSPlayerNotificationManager
 import com.wgllss.ssmusic.features_system.services.MusicService
-import dagger.Lazy
-import javax.inject.Inject
+import com.wgllss.ssmusic.features_ui.page.playing.activity.NotificationTargetActivity
 
 
 open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionConnector.PlaybackPreparer {
 
     private val mLifecycleRegistry by lazy { LifecycleRegistry(this) }
 
-    //    private lateinit var notificationManager: SSNotificationManager
-
-    @Inject
-    lateinit var notificationsListenerL: Lazy<NotificationsListener>
+    private lateinit var notificationManager: SSPlayerNotificationManager
 
     private var isForegroundService = false
 
@@ -69,8 +65,14 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         MediaSessionCompat(context, context.getString(R.string.app_name))
             .apply {
                 setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS or MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS)
-                val sessionIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
-                val sessionActivityPendingIntent = PendingIntent.getActivity(context, 0, sessionIntent, 0)
+                val pendingFlags = if (SdkIntUtils.isLollipop()) {
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                } else {
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                }
+//                val sessionIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+                val sessionIntent = Intent(context, NotificationTargetActivity::class.java)
+                val sessionActivityPendingIntent = PendingIntent.getActivity(musicService, 0, sessionIntent, pendingFlags)
                 setSessionActivity(sessionActivityPendingIntent)
                 isActive = true
             }
@@ -88,19 +90,10 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     open fun onCreate(musicService: MusicService) {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         this.musicService = musicService
-
-//        notificationManager = SSNotificationManager(
-//            musicService,
-//            mediaSession.sessionToken,
-//            PlayerNotificationListener()
-//        )
-
-        notificationsListenerL.get().setNotificationListener(NotificationsListenerImp())
-
+        notificationManager = SSPlayerNotificationManager(musicService, mediaSession, PlayerNotificationListener())
+        notificationManager.showNotificationForPlayer(exoPlayer)
         mediaSessionConnector.setPlayer(exoPlayer)
         exoPlayer.clearMediaItems()
-
-//        notificationManager.showNotificationForPlayer(exoPlayer)
     }
 
     open fun onStart() {
@@ -177,6 +170,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
             mediaUri = url
             artist = author
             albumArtUri = pic
+//            duration = 203976L
             downloadStatus = MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
         }.build().apply {
             description.extras?.putAll(bundle)
@@ -190,14 +184,33 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
 
     private inner class PlayerEventListener : Player.Listener {
 
+        override fun onEvents(player: Player, events: Player.Events) {
+            if (events.containsAny(
+                    Player.EVENT_PLAYBACK_STATE_CHANGED,
+                    Player.EVENT_PLAY_WHEN_READY_CHANGED,
+                    Player.EVENT_IS_PLAYING_CHANGED,
+                    Player.EVENT_TIMELINE_CHANGED,
+                    Player.EVENT_PLAYBACK_PARAMETERS_CHANGED,
+                    Player.EVENT_POSITION_DISCONTINUITY,
+                    Player.EVENT_REPEAT_MODE_CHANGED,
+                    Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED,
+                    Player.EVENT_MEDIA_METADATA_CHANGED
+                )
+            ) {
+                logE("onEvents $events")
+            }
+        }
+
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_BUFFERING, Player.STATE_READY -> {
-                    notificationsListenerL.get().updateNotification(mediaSession)
+//                    notificationsListenerL.get().updateNotification(mediaSession)
+                    notificationManager.showNotificationForPlayer(exoPlayer)
                     if (playbackState == Player.STATE_READY) {
                         if (!playWhenReady) {
 
                         }
+                        logE("onPlayerStateChanged duration: ${exoPlayer.duration}")
                         setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
                     }
                 }
@@ -205,7 +218,11 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                     logE("单曲播放结束，可以下一首")
                     playNext()
                 }
-                else -> musicService.stopForeground(false)//notificationManager.hideNotification()
+                else -> {
+                    logE("hideNotification ")
+//                    notificationManager.hideNotification()
+                }
+
             }
         }
 
@@ -243,57 +260,31 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
 
     }
 
-    private inner class NotificationsListenerImp : NotificationListener {
-        override fun onNotificationCancelled(notificationId: Int, ongoing: Boolean) {
-            musicService.stopForeground(true)
-            isForegroundService = false
-            musicService.stopSelf()
-        }
-
+    /**
+     * Listen for notification events.
+     */
+    private inner class PlayerNotificationListener : NotificationListener {
         override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
             if (ongoing && !isForegroundService) {
-                ContextCompat.startForegroundService(
-                    musicService, Intent(musicService, musicService.javaClass)
-                )
+                ContextCompat.startForegroundService(musicService, Intent(musicService, musicService.javaClass))
                 musicService.startForeground(notificationId, notification)
                 isForegroundService = true
             }
         }
 
-        override fun onActionNext() {
+        override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
+            musicService.stopForeground(true)
+            isForegroundService = false
+            musicService.stopSelf()
+        }
+
+        override fun onNotificationActionNext() {
             playNext()
         }
 
-        override fun onActionPrev() {
+        override fun onNotificationPrev() {
             playPrevious()
         }
 
-        override fun onActionPause() {
-            exoPlayer.pause()
-        }
-
-        override fun onActionPlay() {
-            exoPlayer.play()
-        }
     }
-
-
-//    private inner class PlayerNotificationListener :
-//        PlayerNotificationManager.NotificationListener {
-//        override fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean) {
-//            if (ongoing && !isForegroundService) {
-//                ContextCompat.startForegroundService(
-//                    musicService, Intent(musicService, musicService.javaClass)
-//                )
-//                musicService.startForeground(notificationId, notification)
-//                isForegroundService = true
-//            }
-//        }
-//
-//        override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
-//            musicService.stopForeground(true)
-//            isForegroundService = false
-//            musicService.stopSelf()
-//        }
-//    }
 }

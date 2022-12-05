@@ -1,6 +1,5 @@
 package com.wgllss.ssmusic.features_system.music.notifications
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
@@ -15,13 +14,21 @@ import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.wgllss.ssmusic.R
 import kotlinx.coroutines.*
 
-const val NOW_PLAYING_CHANNEL_ID = "ssmusic_channel_01"
+const val NOW_PLAYING_CHANNEL_ID = "com.example.android.uamp.media.NOW_PLAYING"
 const val NOW_PLAYING_NOTIFICATION_ID = 0xb339 // Arbitrary number used to identify our notification
 
-class SSNotificationManager constructor(val context: Context, sessionToken: MediaSessionCompat.Token, notificationListener: PlayerNotificationManager.NotificationListener) {
+class UampNotificationManager(
+    private val context: Context,
+    sessionToken: MediaSessionCompat.Token,
+    notificationListener: PlayerNotificationManager.NotificationListener
+) {
+
+    private var player: Player? = null
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
     private val notificationManager: PlayerNotificationManager
+//    private val platformNotificationManager: NotificationManager =
+//        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     init {
         val mediaController = MediaControllerCompat(context, sessionToken)
@@ -101,5 +108,7 @@ class SSNotificationManager constructor(val context: Context, sessionToken: Medi
 const val NOTIFICATION_LARGE_ICON_SIZE = 144 // px
 
 private val glideOptions = RequestOptions()
-    .fallback(R.drawable.ic_my_music_folder)
+    .fallback(R.drawable.loading_logo)
     .diskCacheStrategy(DiskCacheStrategy.DATA)
+
+private const val MODE_READ_ONLY = "r"

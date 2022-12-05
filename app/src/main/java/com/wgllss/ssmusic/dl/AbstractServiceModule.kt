@@ -7,8 +7,6 @@ import com.wgllss.ssmusic.features_system.music.IMusicPlay
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerImp
 import com.wgllss.ssmusic.features_system.music.impl.mediaplayer.MediaPlayerImpl
 import com.wgllss.ssmusic.features_system.music.impl.wlmusicplayer.WlMusicImpl
-import com.wgllss.ssmusic.features_system.music.notifications.NotificationsListener
-import com.wgllss.ssmusic.features_system.music.notifications.RealNotifications
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -34,7 +32,7 @@ abstract class AbstractServiceModule {
     @ServiceScoped
     abstract fun bindExoPlayer(exoPlayerImp: ExoPlayerImp): IMusicPlay
 
-    @Binds
-    @ServiceScoped
-    abstract fun bindNotificationsListener(realNotifications: RealNotifications): NotificationsListener
+//    @Binds
+//    @ServiceScoped
+//    abstract fun bindNotificationsListener(realNotifications: RealNotifications): NotificationsListener
 }

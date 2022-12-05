@@ -5,9 +5,6 @@ import android.net.Uri
 import android.support.v4.media.MediaMetadataCompat
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.audio.AudioAttributes
-import com.google.android.exoplayer2.ext.cast.CastPlayer
-import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
-import com.google.android.gms.cast.framework.CastContext
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.features_system.music.*
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -37,22 +34,6 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
 //            setHandleAudioBecomingNoisy(true)
 //            addListener(playerListener)
 //        }
-    }
-
-
-    /**
-     * If Cast is available, create a CastPlayer to handle communication with a Cast session.
-     */
-    private val castPlayer: CastPlayer? by lazy {
-        try {
-            val castContext = CastContext.getSharedInstance(context)
-            CastPlayer(castContext, CastMediaItemConverter()).apply {
-                setSessionAvailabilityListener(CastSessionAvailabilityListener())
-                addListener(playerListener)
-            }
-        } catch (e: Exception) {
-            null
-        }
     }
 
     private lateinit var currentPlayer: Player
@@ -190,17 +171,6 @@ class ExoPlayerImp @Inject constructor(@ApplicationContext val context: Context)
 //            message = R.string.error_media_not_found;
 //        }
 //        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private inner class CastSessionAvailabilityListener : SessionAvailabilityListener {
-
-        override fun onCastSessionAvailable() {
-            switchToPlayer(currentPlayer, castPlayer!!)
-        }
-
-        override fun onCastSessionUnavailable() {
-            switchToPlayer(currentPlayer, exoPlayer)
         }
     }
 

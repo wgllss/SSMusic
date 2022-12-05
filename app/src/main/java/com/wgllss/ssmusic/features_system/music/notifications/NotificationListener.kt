@@ -8,11 +8,7 @@ interface NotificationListener {
 
     fun onNotificationPosted(notificationId: Int, notification: Notification, ongoing: Boolean)
 
-    fun onActionNext()
+    fun onNotificationActionNext()
 
-    fun onActionPrev()
-
-    fun onActionPause()
-
-    fun onActionPlay()
+    fun onNotificationPrev()
 }

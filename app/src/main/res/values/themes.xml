@@ -16,6 +16,13 @@
         <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>
     </style>
 
+    <style name="home_theme" parent="Base.Theme.SSMusic">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@drawable/splash_preview</item>
+        <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>
+    </style>
+
     <style name="dialog_Animation_Translucent">
         <item name="android:windowEnterAnimation">@anim/anim_alpha_121</item>
         <item name="android:windowExitAnimation">@anim/anim_alpha_121</item>

@@ -72,13 +72,13 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
                 }?.let {
                     appViewModel.get().liveData.observe(this@MusicFactory) { list ->
                         serviceScope.launch {
-                            if (isSendChild) {
-                                logE("notifyChildrenChanged $parentId")
-                                isSendChild = false
-                                musicService.notifyChildrenChanged(parentId)
-                                return@launch
-                            }
-                            isSendChild = true
+//                            if (isSendChild) {
+//                                logE("notifyChildrenChanged $parentId")
+//                                isSendChild = false
+////                                musicService.notifyChildrenChanged(parentId)
+////                                return@launch
+//                            }
+//                            isSendChild = true
                             val child = withContext(IO) {
                                 list.map { musicTableBean ->
                                     MediaBrowserCompat.MediaItem(

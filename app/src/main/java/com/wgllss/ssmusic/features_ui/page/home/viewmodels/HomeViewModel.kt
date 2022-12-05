@@ -3,9 +3,12 @@ package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
+import android.util.Log
 import androidx.core.net.toUri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.core.units.WLog
@@ -30,12 +33,22 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>, val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
+class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>, private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
 
     val searchContent by lazy { MutableLiveData<String>() }
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
     val currentMediaID by lazy { MutableLiveData("") }
+
+    val rootMediaId: LiveData<String> =
+        Transformations.map(musicServiceConnectionL.get().isConnected) { isConnected ->
+            if (isConnected) {
+                Log.e("TAG", "isConnected $isConnected   musicServiceConnection.rootMediaId：${musicServiceConnectionL.get().rootMediaId} ${Thread.currentThread().name}")
+                musicServiceConnectionL.get().rootMediaId
+            } else {
+                null
+            }
+        }
 
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
@@ -53,16 +66,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             val transportControls = musicServiceConnectionL.get().transportControls
             val isPrepared = musicServiceConnectionL.get().playbackState.value?.isPrepared ?: false
             if (isPrepared && it == nowPlaying?.id) {
-//                musicServiceConnectionL.get().playbackState.value?.let { playbackState ->
-//                    logE("playbackState：$playbackState")
-//                    when {
-//                        playbackState.isPlaying -> transportControls.pause()
-//                        playbackState.isPlayEnabled -> transportControls.play()
-//                        else -> {
-//                            logE("Playable item clicked but neither play nor pause are enabled! (mediaId=$it)")
-//                        }
-//                    }
-//                }
+                //当前正在播放 or 准备播放
             } else {
                 transportControls.playFromMediaId(it, extras)
             }
@@ -70,7 +74,9 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     }
 
     override fun start() {
-        val mediaId = MEDIA_ID_ROOT
+    }
+
+    fun subscribeByMediaID(mediaId: String) {
         musicServiceConnectionL.get().run {
             logE("MusicService    it.subscribe(mediaId, subscriptionCallback) ${Thread.currentThread().name} ")
             subscribe(mediaId, subscriptionCallback)

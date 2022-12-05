@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.core.activity
 
 import android.app.Activity
 import android.os.Process
+import com.wgllss.ssmusic.core.ex.logE
 import java.util.*
 
 class ActivityManager {
@@ -320,6 +321,12 @@ class ActivityManager {
         if (activityStack != null && activityStack.size > 0) {
             activityStack[activityStack.size - 1]!!.finish()
             activityStack.removeAt(activityStack.size - 1)
+        }
+    }
+
+    fun print() {
+        activityStack?.forEachIndexed { i, a ->
+            logE("kkk activity simpleName : ${i} -- ${a.javaClass.simpleName}")
         }
     }
 

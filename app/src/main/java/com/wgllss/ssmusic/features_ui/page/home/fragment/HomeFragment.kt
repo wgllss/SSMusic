@@ -77,8 +77,13 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
             playListAdapterL.get().notifyData(it)
         }
         viewModel.currentMediaID.observe(viewLifecycleOwner) {
-            playListAdapterL.get().currentMediaID = it
-            playListAdapterL.get().notifyDataSetChanged()
+            it?.let {
+                playListAdapterL.get().currentMediaID = it
+                playListAdapterL.get().notifyDataSetChanged()
+            }
+        }
+        viewModel.rootMediaId.observe(viewLifecycleOwner) {
+            it?.let { viewModel.subscribeByMediaID(it) }
         }
     }
 
