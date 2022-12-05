@@ -40,8 +40,6 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
     private var jobc: Job? = null
     private var jobPlay: Job? = null
 
-    private var isSendChild = false
-
     private val serviceJob by lazy { SupervisorJob() }
     private val serviceScope by lazy { CoroutineScope(Dispatchers.Main + serviceJob) }
 
@@ -72,13 +70,6 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, @Bi
                 }?.let {
                     appViewModel.get().liveData.observe(this@MusicFactory) { list ->
                         serviceScope.launch {
-//                            if (isSendChild) {
-//                                logE("notifyChildrenChanged $parentId")
-//                                isSendChild = false
-////                                musicService.notifyChildrenChanged(parentId)
-////                                return@launch
-//                            }
-//                            isSendChild = true
                             val child = withContext(IO) {
                                 list.map { musicTableBean ->
                                     MediaBrowserCompat.MediaItem(

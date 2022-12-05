@@ -4,9 +4,10 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.media.AudioFocusRequest
+import android.media.AudioManager
 import android.net.Uri
-import android.os.Bundle
-import android.os.ResultReceiver
+import android.os.*
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -43,7 +44,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     private lateinit var notificationManager: SSPlayerNotificationManager
 
     private var isForegroundService = false
-
     protected lateinit var musicService: MusicService
     private var currentMediaMetadataCompat: MediaMetadataCompat? = null
 
@@ -99,18 +99,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
 
     open fun onStart() {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_START)
-    }
-
-    open fun onResume() {
-        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    }
-
-    open fun onPause() {
-        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    }
-
-    open fun onStop() {
-        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
     }
 
     open fun onDestory() {
@@ -171,7 +159,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
             mediaUri = url
             artist = author
             albumArtUri = pic
-//            duration = 203976L
             downloadStatus = MediaDescriptionCompat.STATUS_NOT_DOWNLOADED
         }.build().apply {
             description.extras?.putAll(bundle)
@@ -188,10 +175,10 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_BUFFERING, Player.STATE_READY -> {
-//                    notificationsListenerL.get().updateNotification(mediaSession)
                     notificationManager.showNotificationForPlayer(exoPlayer)
                     if (playbackState == Player.STATE_READY) {
-                        if (!playWhenReady) {
+                        if (playWhenReady) {
+
 
                         }
                         logE("onPlayerStateChanged duration: ${exoPlayer.duration}")
@@ -236,14 +223,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         override fun getSupportedQueueNavigatorActions(player: Player) = PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
     }
 
-    protected open fun playNext() {
-
-    }
-
-    protected open fun playPrevious() {
-
-    }
-
     /**
      * Listen for notification events.
      */
@@ -269,6 +248,14 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         override fun onNotificationPrev() {
             playPrevious()
         }
+
+    }
+
+    protected open fun playNext() {
+
+    }
+
+    protected open fun playPrevious() {
 
     }
 }
