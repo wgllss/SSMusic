@@ -13,29 +13,46 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/play_page_default_bg"
+        android:fitsSystemWindows="true"
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txt_date"
+        <TextClock
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginRight="5dp"
+            android:format12Hour="HH:mm"
+            android:format24Hour="HH:mm"
+            android:gravity="center_vertical"
             android:paddingLeft="30dp"
             android:textColor="@color/white"
-            android:textSize="62dp" />
+            android:textSize="40dp" />
 
-        <TextView
-            android:id="@+id/txt_time"
+        <TextClock
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
+            android:layout_height="20dp"
+            android:format12Hour="MM月dd日"
+            android:format24Hour="MM月dd日"
+            android:gravity="center_vertical"
+            android:paddingLeft="30dp"
             android:textColor="@color/white"
-            android:textSize="32dp" />
+            android:textSize="18dp" />
+
+        <TextClock
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:format12Hour="EEEE"
+            android:format24Hour="EEEE"
+            android:gravity="center_vertical"
+            android:paddingLeft="30dp"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
 
         <TextView
             android:id="@+id/mater_music_name"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="32dp" />
@@ -44,15 +61,15 @@
             android:id="@+id/music_autor"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="26dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="25dp" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_center"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
+            android:layout_width="190dp"
+            android:layout_height="190dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:scaleType="centerCrop"
@@ -103,7 +120,7 @@
             android:gravity="center"
             android:text=">>>滑动返回"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
 
     </LinearLayout>
 </layout>
