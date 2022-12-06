@@ -58,6 +58,12 @@
             android:launchMode="singleTask"
             android:theme="@style/LauncherTheme" />
 
+        <activity
+            android:name="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SSMusic"
+            android:launchMode="singleTask" />
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -77,9 +83,9 @@
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"
                 android:value="androidx.startup" />
-<!--            <meta-data-->
-<!--                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"-->
-<!--                android:value="androidx.startup" />-->
+            <!--            <meta-data-->
+            <!--                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"-->
+            <!--                android:value="androidx.startup" />-->
         </provider>
 
         <service
@@ -109,4 +115,6 @@
     </application>
 
 </manifest>
+
+
 

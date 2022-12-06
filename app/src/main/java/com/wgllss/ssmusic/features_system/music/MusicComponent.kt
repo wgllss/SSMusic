@@ -222,13 +222,9 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     private inner class SSQueueNavigator(mediaSession: MediaSessionCompat) : TimelineQueueNavigator(mediaSession) {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat = currentMediaMetadataCompat?.description ?: MediaDescriptionCompat.Builder().build()
 
-        override fun onSkipToNext(player: Player) {
-            playNext()
-        }
+        override fun onSkipToNext(player: Player) = playNext()
 
-        override fun onSkipToPrevious(player: Player) {
-            playPrevious()
-        }
+        override fun onSkipToPrevious(player: Player) = playPrevious()
 
         override fun getSupportedQueueNavigatorActions(player: Player) = PlaybackStateCompat.ACTION_SKIP_TO_NEXT or PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
     }
@@ -250,15 +246,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
             isForegroundService = false
             musicService.stopSelf()
         }
-
-        override fun onNotificationActionNext() {
-            playNext()
-        }
-
-        override fun onNotificationPrev() {
-            playPrevious()
-        }
-
     }
 
     protected open fun playNext() {

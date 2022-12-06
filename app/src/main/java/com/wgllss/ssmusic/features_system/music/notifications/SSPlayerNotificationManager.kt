@@ -21,8 +21,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.media.session.MediaButtonReceiver
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.util.Assertions
@@ -31,6 +29,7 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
 import com.wgllss.ssmusic.features_system.globle.Constants.glideOptions
+import com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity
 import kotlinx.coroutines.*
 
 class SSPlayerNotificationManager(private val context: Context, private val mediaSession: MediaSessionCompat, private val notificationsListener: NotificationListener) {
@@ -252,6 +251,16 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 }?.apply {
                     addAction(ACTION_CONTENT)
                 }
+                takeUnless {
+                    it.hasAction(Intent.ACTION_SCREEN_OFF)
+                }?.apply {
+                    addAction(Intent.ACTION_SCREEN_OFF)
+                }
+                takeUnless {
+                    it.hasAction(Intent.ACTION_SCREEN_ON)
+                }?.apply {
+                    addAction(Intent.ACTION_SCREEN_ON)
+                }
             }
             context.registerReceiver(notificationBroadcastReceiver, intentFilter)
         }
@@ -354,10 +363,18 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     player?.pause()
                 }
                 ACTION_PREVIOUS -> {
-                    notificationsListener?.onNotificationPrev()
+                    mediaSession.controller?.transportControls?.skipToPrevious()
                 }
                 ACTION_NEXT -> {
-                    notificationsListener?.onNotificationActionNext()
+                    mediaSession.controller?.transportControls?.skipToNext()
+                }
+                Intent.ACTION_SCREEN_OFF -> {//锁屏显示歌词等等
+                    val intent = Intent(context, LockerActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                    context.startActivity(intent)
+                }
+                Intent.ACTION_SCREEN_ON -> {
+
                 }
                 ACTION_CONTENT -> {
 
