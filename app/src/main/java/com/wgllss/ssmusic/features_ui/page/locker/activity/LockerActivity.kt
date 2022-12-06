@@ -1,6 +1,5 @@
 package com.wgllss.ssmusic.features_ui.page.locker.activity
 
-import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import com.wgllss.ssmusic.R
@@ -19,12 +18,6 @@ import javax.inject.Inject
 class LockerActivity : BaseMVVMActivity<PlayModel, ActivityLockerBinding>(R.layout.activity_locker) {
 
     override fun berforeSuperOnCreate(savedInstanceState: Bundle?) {
-        val lp = window.attributes
-        if (Build.VERSION.SDK_INT > 18) {
-            lp.flags = WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-        }
-        window.attributes = lp
-        window.decorView.systemUiVisibility = 0X0
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
     }
@@ -34,8 +27,7 @@ class LockerActivity : BaseMVVMActivity<PlayModel, ActivityLockerBinding>(R.layo
 
     override fun initControl(savedInstanceState: Bundle?) {
         super.initControl(savedInstanceState)
-        val drawerBack = DrawerBack(this)
-        drawerBack.setOnOpenDrawerCompleteListener(object : DrawerBack.OnOpenDrawerCompleteListener {
+        DrawerBack(this).setOnOpenDrawerCompleteListener(object : DrawerBack.OnOpenDrawerCompleteListener {
             override fun onOpenDrawerComplete() = finishActivity()
 
             override fun onMoveRight(): Boolean = false

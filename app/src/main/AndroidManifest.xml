@@ -61,7 +61,7 @@
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
             android:exported="false"
-            android:theme="@style/Theme.SSMusic"
+            android:theme="@style/Transparent"
             android:launchMode="singleTask" />
 
         <provider
