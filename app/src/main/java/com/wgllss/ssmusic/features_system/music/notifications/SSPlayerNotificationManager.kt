@@ -29,6 +29,8 @@ import com.google.android.exoplayer2.util.Assertions
 import com.google.android.exoplayer2.util.Util
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.units.SdkIntUtils
+import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
+import com.wgllss.ssmusic.features_system.globle.Constants.glideOptions
 import kotlinx.coroutines.*
 
 class SSPlayerNotificationManager(private val context: Context, private val mediaSession: MediaSessionCompat, private val notificationsListener: NotificationListener) {
@@ -40,7 +42,6 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         private const val ACTION_PREVIOUS = "com.wgllss.ssmusic.prev"
         private const val ACTION_NEXT = "com.wgllss.ssmusic.next"
         private const val ACTION_CONTENT = "com.wgllss.ssmusic.content.intent"
-        private const val NOTIFICATION_LARGE_ICON_SIZE = 144 // px
 
         // Internal messages.
         private const val MSG_START_OR_UPDATE_NOTIFICATION = 0
@@ -190,7 +191,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 setUsesChronometer(true)
             }
             largeIcon?.let {
-                builder?.color = Palette.from(it).generate().getVibrantColor(Color.parseColor("#403f4d"))
+                builder?.color = Palette.from(it).generate().getVibrantColor(Color.parseColor("#F44336"))
             }
         } else {
             builder?.apply {
@@ -316,8 +317,6 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     .get()
             }
         }
-
-        private val glideOptions = RequestOptions().fallback(R.drawable.loading_logo).diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
     inner class LoadLargeIconBitMapCall(private val notificationTag: Int) {

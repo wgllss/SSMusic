@@ -1,5 +1,9 @@
 package com.wgllss.ssmusic.features_system.globle
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.wgllss.ssmusic.R
+
 object Constants {
     const val MEDIA_ID_ROOT = "-1"
 
@@ -8,4 +12,7 @@ object Constants {
     const val MEDIA_AUTHOR_KEY = "MEDIA_AUTHOR_KEY"
     const val MEDIA_ARTNETWORK_URL_KEY = "MEDIA_ARTNETWORK_URL_KEY"
     const val MEDIA_URL_KEY = "MEDIA_URL_KEY"
+
+    const val NOTIFICATION_LARGE_ICON_SIZE = 144 // px
+    val glideOptions = RequestOptions().fallback(R.drawable.loading_logo).diskCacheStrategy(DiskCacheStrategy.DATA)
 }

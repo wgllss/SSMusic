@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.features_ui.page.playing.viewmodels
 
+import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
