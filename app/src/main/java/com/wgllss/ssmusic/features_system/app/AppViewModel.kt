@@ -58,7 +58,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
 
     fun playPrevious() {
         currentPosition?.takeIf {
-            it - 1 > 0
+            it - 1 >= 0
         }?.let {
             playPosition(it - 1)
         }

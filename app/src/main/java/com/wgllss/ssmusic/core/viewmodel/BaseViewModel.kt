@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 
 abstract class BaseViewModel : ViewModel() {
 
@@ -26,12 +27,17 @@ abstract class BaseViewModel : ViewModel() {
         show()
     }
 
-
     protected fun <T> Flow<T>.onCompletionAndHide(): Flow<T> = onCompletion {
         hide()
     }
 
-    suspend fun <T> Flow<T>.onStartShowAndFlowOnIOAndCatchAndOnCompletionAndHideAndCollect() {
+    protected suspend fun <T> Flow<T>.onStartShowAndFlowOnIOAndCatchAndOnCompletionAndHideAndCollect() {
         onStartAndShow().onCompletionAndHide().flowOnIOAndCatch().collect()//这里，开始结束全放在异步里面处理
+    }
+
+    fun <T> flowAsyncWorkOnViewModelScopeLaunch(flowAsyncWork: suspend () -> Flow<T>) {
+        viewModelScope.launch {
+            flowAsyncWork.invoke().onStartShowAndFlowOnIOAndCatchAndOnCompletionAndHideAndCollect()
+        }
     }
 }

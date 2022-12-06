@@ -93,7 +93,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             WLog.e(this, "searchContent.value ${searchContent.value}")
             return
         }
-        flowAsyncWorkOnLaunch {
+        flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
                 .onEach {
                     result.postValue(it)
@@ -108,7 +108,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         result?.value?.takeIf {
             it.size > position
         }?.run {
-            flowAsyncWorkOnLaunch {
+            flowAsyncWorkOnViewModelScopeLaunch {
                 val detailUrl = get(position).detailUrl
                 musicRepositoryL.get().getPlayUrl(detailUrl)
                     .onEach {

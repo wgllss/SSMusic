@@ -28,7 +28,6 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.util.Assertions
 import com.google.android.exoplayer2.util.Util
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import kotlinx.coroutines.*
 
@@ -52,7 +51,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     private val notificationManagerCompat by lazy { NotificationManagerCompat.from(context) }
     private var player: Player? = null
     private val playerListener: Player.Listener by lazy { PlayerListener() }
-    private val currentNotificationTag = 0
+    private var currentNotificationTag = 0
 
     // This fails the nullness checker because handleMessage() is 'called' while `this` is still
     // @UnderInitialization. No tasks are scheduled on mainHandler before the constructor completes,
@@ -63,16 +62,14 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     private var postTime: Long = -1L
     private val notificationId = hashCode()
     private var isNotificationStarted = false
-    private var notificationTag = 0
     private val serviceJob by lazy { SupervisorJob() }
     private val serviceScope by lazy { CoroutineScope(Dispatchers.Main + serviceJob) }
     private val mediaLargeBitmapAdapter by lazy { MediaLargeBitmapAdapter() }
-    private var currentIconUri: String? = null
-    private var currentBitmap: Bitmap? = null
     private var instanceId = 0
     private var builder: NotificationCompat.Builder? = null
     private val intentFilter by lazy { IntentFilter() }
     private val notificationBroadcastReceiver by lazy { NotificationBroadcastReceiver() }
+    private var currentIconUrl: String = ""
 
     @Volatile
     private var isNotificationChange = true
@@ -139,8 +136,6 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         val artistName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST)
         val trackName = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE)
         val artworkUrl = mediaSession.controller.metadata.getString(MediaMetadataCompat.METADATA_KEY_ALBUM_ART_URI)
-        logE("artworkUrl $artworkUrl")
-
         val isPlaying = shouldShowPauseButton(player)
         val playButtonResId: Int = if (isPlaying) R.drawable.ic_baseline_pause_36 else R.drawable.ic_baseline_play_arrow_36
         val togglePausePendingIntent = if (isPlaying) retrievePlaybackAction(ACTION_PAUSE) else retrievePlaybackAction(ACTION_PLAY)
@@ -162,7 +157,8 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
 
         var largeIcon = bitmap
         if (largeIcon == null && artworkUrl != null) {
-            largeIcon = mediaLargeBitmapAdapter.getCurrentLargeIcon(artworkUrl, LoadLargeIconBitMapCall(++notificationTag))
+            val notificationTag = if (currentIconUrl != artworkUrl) ++currentNotificationTag else currentNotificationTag
+            largeIcon = mediaLargeBitmapAdapter.getCurrentLargeIcon(artworkUrl, LoadLargeIconBitMapCall(notificationTag))
         }
 
         val style = androidx.media.app.NotificationCompat.MediaStyle()
@@ -174,7 +170,6 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         builder?.apply {
             setStyle(style)
             setSmallIcon(R.drawable.loading_logo)
-            setLargeIcon(largeIcon)
             setOngoing(ongoing)
 //            setContentIntent(retrievePlaybackAction(ACTION_CONTENT))
             setContentIntent(mediaSession.controller.sessionActivity)
@@ -205,6 +200,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
             }
         }
         builder?.setOnlyAlertOnce(true)
+        builder?.setLargeIcon(largeIcon)
         return builder
     }
 
@@ -223,7 +219,6 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         val ongoing: Boolean = getOngoing(player)
         builder = createNotification(player, ongoing, bitmap)
         if (builder == null) {
-            logE("111")
             stopNotification( /* dismissedByUser= */false)
             return
         }
@@ -280,10 +275,9 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         }
     }
 
-    private fun postUpdateNotificationBitmap(bitmap: Bitmap, notificationTag: Int) {
-        if (notificationTag == this.notificationTag)
-            mainHandler.obtainMessage(MSG_UPDATE_NOTIFICATION_BITMAP, notificationTag, C.INDEX_UNSET, bitmap).sendToTarget()
-    }
+//    private fun postUpdateNotificationBitmap(bitmap: Bitmap, notificationTag: Int) {
+//        mainHandler.obtainMessage(MSG_UPDATE_NOTIFICATION_BITMAP, notificationTag, C.INDEX_UNSET, bitmap).sendToTarget()
+//    }
 
     private fun retrievePlaybackAction(action: String): PendingIntent {
         val intent = Intent(action).setPackage(context.packageName)
@@ -295,10 +289,11 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
 
 
     private inner class MediaLargeBitmapAdapter() {
+        private var currentBitmap: Bitmap? = null
 
         fun getCurrentLargeIcon(bitmapUrl: String, loadLargeIconBitMapCall: LoadLargeIconBitMapCall): Bitmap? {
-            return if (currentIconUri == null || currentIconUri != bitmapUrl) {
-                currentIconUri = bitmapUrl
+            return if (currentIconUrl == null || currentIconUrl != bitmapUrl) {
+                currentIconUrl = bitmapUrl
                 serviceScope.launch {
                     currentBitmap = bitmapUrl?.let {
                         resolveUriAsBitmap(it)
@@ -328,7 +323,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     inner class LoadLargeIconBitMapCall(private val notificationTag: Int) {
 
         fun onBitmap(bitmap: Bitmap) {
-            bitmap?.let { postUpdateNotificationBitmap(bitmap, notificationTag) }
+            bitmap?.let { mainHandler.obtainMessage(MSG_UPDATE_NOTIFICATION_BITMAP, notificationTag, C.INDEX_UNSET, bitmap).sendToTarget() }
         }
     }
 

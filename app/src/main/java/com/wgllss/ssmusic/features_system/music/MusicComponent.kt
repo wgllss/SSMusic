@@ -188,15 +188,13 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_BUFFERING, Player.STATE_READY -> {
-                    notificationManager.showNotificationForPlayer(exoPlayer)
                     if (playbackState == Player.STATE_READY) {
                         if (playWhenReady) {
-
-
                         }
                         logE("onPlayerStateChanged duration: ${exoPlayer.duration}")
                         setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
                     }
+                    notificationManager.showNotificationForPlayer(exoPlayer)
                 }
                 Player.STATE_ENDED -> {
                     logE("单曲播放结束，可以下一首")
@@ -206,7 +204,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                     logE("hideNotification ")
 //                    notificationManager.hideNotification()
                 }
-
             }
         }
 
