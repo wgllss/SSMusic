@@ -56,7 +56,7 @@
             android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.NotificationTargetActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.SSMusic" />
+            android:theme="@style/LauncherTheme" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"
@@ -77,9 +77,9 @@
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"
                 android:value="androidx.startup" />
-            <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"
-                android:value="androidx.startup" />
+<!--            <meta-data-->
+<!--                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"-->
+<!--                android:value="androidx.startup" />-->
         </provider>
 
         <service

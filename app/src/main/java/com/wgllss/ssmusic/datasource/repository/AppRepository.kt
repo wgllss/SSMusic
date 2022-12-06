@@ -2,17 +2,15 @@ package com.wgllss.ssmusic.datasource.repository
 
 import androidx.lifecycle.LiveData
 import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
-import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
-import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.transform
 import org.jsoup.Jsoup
 import javax.inject.Inject
 
@@ -23,28 +21,6 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
             emit(mSSDataBaseL.get().musicDao().getList())
         }
     }
-
-//    suspend fun addToPlayList(it: MusicBeanEvent): Flow<Long> {
-//        return flow {
-//            it.run {
-//                val uuID = UUIDHelp.getMusicUUID(this)
-//                MMKVHelp.setPlayID(uuID)
-//                //uuID： 1519754784   uuid： 0
-//                //uuID： 1529454536   uuid： 1519754784
-//                logE("uuID： $uuID   uuid： $uuid")
-//                if (uuid == 0L) {
-//                    val count = mSSDataBaseL.get().musicDao().queryByUUID(uuID)
-//                    if (count > 0) {
-//                        logE("已经在播放列表里面")
-//                    } else {
-//                        val bean = MusicTabeBean(uuID, title, author, requestRealUrl, pic, System.currentTimeMillis())
-//                        mSSDataBaseL.get().musicDao().insertMusicBean(bean)
-//                    }
-//                    emit(uuID)
-//                }
-//            }
-//        }.catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
-//    }
 
     /**
      * 得到播放地址

@@ -11,6 +11,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelLazy
+import com.wgllss.ssmusic.core.ex.errorMsgLiveData
+import com.wgllss.ssmusic.core.ex.showUIDialog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import java.lang.reflect.ParameterizedType
 
@@ -53,7 +55,7 @@ abstract class BaseMVVMFragment<VM : BaseViewModel, DB : ViewDataBinding>(@Layou
      */
     protected open fun initObserve() {
         viewModel?.run {
-            showDialog.observe(viewLifecycleOwner, Observer { it ->
+            showUIDialog.observe(viewLifecycleOwner, Observer { it ->
                 if (it.isShow) showloading(it.msg) else hideLoading()
             })
             errorMsgLiveData.observe(viewLifecycleOwner, Observer {

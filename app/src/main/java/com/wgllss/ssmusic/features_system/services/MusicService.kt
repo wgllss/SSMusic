@@ -29,6 +29,11 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onStart(intent, startId)
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        musicFactory?.get()?.onStop()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         musicFactory?.get()?.onDestory()

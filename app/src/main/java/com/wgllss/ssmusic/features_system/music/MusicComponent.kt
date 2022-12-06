@@ -4,10 +4,9 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.AudioFocusRequest
-import android.media.AudioManager
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.ResultReceiver
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
@@ -29,12 +28,14 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.globle.Constants
-import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_DURATION_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.notifications.NotificationListener
 import com.wgllss.ssmusic.features_system.music.notifications.SSPlayerNotificationManager
 import com.wgllss.ssmusic.features_system.services.MusicService
 import com.wgllss.ssmusic.features_ui.page.playing.activity.NotificationTargetActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 
 open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionConnector.PlaybackPreparer {
@@ -47,6 +48,10 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     protected lateinit var musicService: MusicService
     private var currentMediaMetadataCompat: MediaMetadataCompat? = null
 
+    protected val serviceJob by lazy { SupervisorJob() }
+    protected val serviceScope by lazy { CoroutineScope(Dispatchers.Main + serviceJob) }
+    private val playerListener by lazy { PlayerEventListener() }
+
     private val uAmpAudioAttributes by lazy {
         AudioAttributes.Builder()
             .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)
@@ -58,7 +63,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         ExoPlayer.Builder(context).build().apply {
             setAudioAttributes(uAmpAudioAttributes, true)
             setHandleAudioBecomingNoisy(true)
-            addListener(PlayerEventListener())
+            addListener(playerListener)
         }
     }
 
@@ -71,7 +76,6 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                 } else {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 }
-//                val sessionIntent = context.packageManager.getLaunchIntentForPackage(context.packageName)
                 val sessionIntent = Intent(context, NotificationTargetActivity::class.java)
                 val sessionActivityPendingIntent = PendingIntent.getActivity(musicService, 0, sessionIntent, pendingFlags)
                 setSessionActivity(sessionActivityPendingIntent)
@@ -101,12 +105,21 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
+    open fun onStop() {
+        mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        exoPlayer.stop(true)
+    }
+
     open fun onDestory() {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         mediaSession.run {
             isActive = false
             release()
         }
+        // Cancel coroutines when the service is going away.
+        serviceJob.cancel()
+        exoPlayer.removeListener(playerListener)
+        exoPlayer.release()
     }
 
     fun onGetRoot() {
@@ -142,7 +155,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
         extras?.run {
-            preparePlaylist(
+            preparePlay(
                 getString(Constants.MEDIA_ID_KEY) ?: "",
                 getString(Constants.MEDIA_TITLE_KEY) ?: "",
                 getString(Constants.MEDIA_AUTHOR_KEY) ?: "",
@@ -152,7 +165,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         }
     }
 
-    protected open fun preparePlaylist(mediaId: String, musicTitle: String, author: String, pic: String, url: String) {
+    protected open fun preparePlay(mediaId: String, musicTitle: String, author: String, pic: String, url: String) {
         val mediaMetadataCompat = MediaMetadataCompat.Builder().apply {
             id = mediaId
             title = musicTitle

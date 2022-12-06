@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.wgllss.ssmusic.core.ex.flowAsyncWorkOnLaunch
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
@@ -33,6 +34,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>, private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
 
     val searchContent by lazy { MutableLiveData<String>() }
+
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
     val currentMediaID by lazy { MutableLiveData("") }
@@ -49,6 +51,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
+
     private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
 
     private val subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
@@ -126,7 +129,6 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     override fun onCleared() {
         super.onCleared()
-//        musicServiceConnectionL.get().nowPlaying.removeObserver(mediaMetadataObserver)
         musicServiceConnectionL.get().playbackState.removeObserver(playbackStateObserver)
     }
 }

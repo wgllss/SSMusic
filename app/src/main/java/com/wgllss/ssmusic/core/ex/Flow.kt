@@ -8,6 +8,7 @@ import isNetWorkActive
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
 import java.io.InterruptedIOException
@@ -51,13 +52,16 @@ fun Throwable?.parseErrorString(): String = when (this) {
     else -> getString(R.string.ElseNetException)
 }
 
-fun <T> Flow<T>.flowOnIOAndcatch(errorMsgLiveData: MutableLiveData<String>? = null): Flow<T> =
+fun <T> Flow<T>.flowOnIOAndCatch(errorMsgLiveData: MutableLiveData<String>? = null): Flow<T> =
     flowOn(Dispatchers.IO)
         .catch {
             it.printStackTrace()
             errorMsgLiveData?.value = it.parseErrorString();
         }
 
+suspend fun <T> Flow<T>.flowOnIOAndCatchAAndCollect() {
+    flowOnIOAndCatch().collect()//这里，开始结束全放在异步里面处理
+}
 
 fun getString(resID: Int) = AppGlobals.sApplication.getString(resID)
 

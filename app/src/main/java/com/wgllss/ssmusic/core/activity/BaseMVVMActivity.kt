@@ -7,7 +7,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelLazy
-import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.ex.errorMsgLiveData
+import com.wgllss.ssmusic.core.ex.showUIDialog
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
@@ -50,7 +51,7 @@ abstract class BaseMVVMActivity<VM : BaseViewModel, VB : ViewDataBinding>(@Layou
 
     override fun bindEvent() {
         viewModel?.run {
-            showDialog.observe(this@BaseMVVMActivity, Observer { it ->
+            showUIDialog.observe(this@BaseMVVMActivity, Observer { it ->
                 if (it.isShow) showloading(it.msg) else hideLoading()
             })
             errorMsgLiveData.observe(this@BaseMVVMActivity, Observer {

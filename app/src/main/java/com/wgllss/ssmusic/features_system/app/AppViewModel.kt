@@ -1,59 +1,32 @@
 package com.wgllss.ssmusic.features_system.app
 
 import android.app.Application
-import android.net.Uri
-import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
-import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.MediaMetadata
-import com.google.android.exoplayer2.util.MimeTypes
-import com.jeremyliao.liveeventbus.LiveEventBus
-import com.wgllss.ssmusic.core.ex.flowOnIOAndcatch
+import com.wgllss.ssmusic.core.ex.flowAsyncWorkOnLaunch
+import com.wgllss.ssmusic.core.ex.flowOnIOAndCatch
 import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.data.MusicBean
-import com.wgllss.ssmusic.data.livedatabus.MusicBeanEvent
 import com.wgllss.ssmusic.datasource.repository.AppRepository
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
-import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import retrofit2.http.Url
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(application: Application, private val appRepository: AppRepository) : AndroidViewModel(application) {
-
-    val errorMsgLiveData by lazy { MutableLiveData<String>() }
-
     //播放列表
     lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
-    val currentPosition by lazy { MutableLiveData<Int>() }
+    var currentPosition: Int = 0
+    private val map by lazy { ConcurrentHashMap<String, MusicBean>() }
 
-    val map by lazy { HashMap<String, MusicBean>() }
-
-    val metadataList by lazy { MutableLiveData<MusicBean>() }
-
-    private fun <T> Flow<T>.flowOnIOAndcatch(): Flow<T> = flowOnIOAndcatch(errorMsgLiveData)
-
-    private suspend fun <T> Flow<T>.flowOnIOAndcatchAAndCollect() {
-        flowOnIOAndcatch().collect()//这里，开始结束全放在异步里面处理
-    }
-
-    private fun <T> flowAsyncWorkOnLaunch(flowAsyncWork: suspend () -> Flow<T>) {
-        viewModelScope.launch {
-            flowAsyncWork.invoke().flowOnIOAndcatchAAndCollect()
-        }
-    }
+    //当前播放 数据源 准备完成
+    val metadataPrepareCompletion by lazy { MutableLiveData<MusicBean>() }
 
     //查询播放列表
     fun queryPlayList() {
@@ -76,7 +49,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     fun playNext() {
-        currentPosition?.value?.takeIf {
+        currentPosition.takeIf {
             it + 1 < liveData.value!!.size
         }?.let {
             playPosition(it + 1)
@@ -84,7 +57,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     fun playPrevious() {
-        currentPosition?.value?.takeIf {
+        currentPosition?.takeIf {
             it - 1 > 0
         }?.let {
             playPosition(it - 1)
@@ -93,23 +66,20 @@ class AppViewModel @Inject constructor(application: Application, private val app
 
     private fun playPosition(position: Int) {
         logE("点击：position:${position}")
-        currentPosition.postValue(position)
-    }
+        currentPosition = position
 
-    fun getDetail(position: Int) {
         findBeanByPosition(position)?.run {
             val currentMediaID = id.toString()
             if (map.containsKey(currentMediaID)) {
-                metadataList.postValue(map.remove(currentMediaID))
-                logE("取到缓存的下一曲")
+                metadataPrepareCompletion.postValue(map.remove(currentMediaID))
+                logE("getDetail 取到缓存的下一曲 ")
                 getNextCache(position, currentMediaID)
             } else {
                 viewModelScope.launch {
                     appRepository.getPlayUrl(url)
                         .onEach {
-                            metadataList.postValue(it)
-                            logE("getPlayUrl mediaId onEach ")
-                        }.flowOnIOAndcatch()
+                            metadataPrepareCompletion.postValue(it)
+                        }.flowOnIOAndCatch()
                         .collect {
                             getNextCache(position, currentMediaID)
                         }
@@ -118,8 +88,13 @@ class AppViewModel @Inject constructor(application: Application, private val app
         }
     }
 
+    //自动播放的下一曲 //todo 分顺序播放 随机 单曲循环
+    private fun getNextPosition(position: Int): Int {
+        return position + 1
+    }
+
     private fun getNextCache(position: Int, currentMediaID: String) {
-        findBeanByPosition(position + 1)?.run {
+        findBeanByPosition(getNextPosition(position))?.run {
             flowAsyncWorkOnLaunch {
                 appRepository.getPlayUrl(url)
                     .onEach {
@@ -141,8 +116,14 @@ class AppViewModel @Inject constructor(application: Application, private val app
             it.takeIf {
                 mediaId.toLong() == it.id
             }?.let {
+                if (map.containsKey(mediaId)) {
+                    metadataPrepareCompletion.postValue(map[mediaId])
+                    logE("getPlayUrlFromMediaID 取到缓存的下一曲 ")
+                    getNextCache(position, mediaId)
+                } else {
+                    playPosition(position)
+                }
                 logE("getPlayUrl mediaId $mediaId picurl:${it.pic}")
-                currentPosition.postValue(position)
                 return@forEachIndexed
             }
         }

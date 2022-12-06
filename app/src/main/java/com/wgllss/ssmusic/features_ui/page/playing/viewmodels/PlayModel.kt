@@ -11,12 +11,9 @@ import com.wgllss.ssmusic.features_system.music.extensions.currentPlayBackPositi
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -76,8 +73,7 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
                 }
                 delay(300)
                 emit(0)
-            }.flowOn(Dispatchers.IO)
-                .catch { it.printStackTrace() }
+            }.flowOnIOAndCatch()
                 .collect()
         }
     }

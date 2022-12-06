@@ -8,5 +8,4 @@ object Constants {
     const val MEDIA_AUTHOR_KEY = "MEDIA_AUTHOR_KEY"
     const val MEDIA_ARTNETWORK_URL_KEY = "MEDIA_ARTNETWORK_URL_KEY"
     const val MEDIA_URL_KEY = "MEDIA_URL_KEY"
-    const val MEDIA_DURATION_KEY = "MEDIA_DURATION_KEY2"
 }
