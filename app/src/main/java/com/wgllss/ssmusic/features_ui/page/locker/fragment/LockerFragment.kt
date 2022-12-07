@@ -8,6 +8,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.loadUrl
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.databinding.FragmentLockerBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
@@ -30,12 +32,13 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             it?.let {
+                logE("nowPlaying nowPlaying nowPlaying")
                 binding.materMusicName.text = it.title
                 binding.musicAutor.text = it.artist
+                binding.ivCenter.loadUrl(it.albumArtUri)
                 Glide.with(this).asBitmap().load(it.albumArtUri).into(object : SimpleTarget<Bitmap>() {
                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                         resource?.let { it ->
-                            binding.ivCenter.setImageBitmap(resource)
                             Palette.from(it).generate { p ->
                                 p?.lightMutedSwatch?.let { s ->
                                     binding.mainUI.setBackgroundColor(s.rgb)

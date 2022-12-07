@@ -77,11 +77,10 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             mater_music_name.text = it!!.title
-//            iv_center.loadUrl(it.albumArtUri)
+            iv_center.loadUrl(it.albumArtUri)
             Glide.with(this).asBitmap().load(it.albumArtUri).into(object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     resource?.let { it ->
-                        iv_center.setImageBitmap(resource)
                         Palette.from(it).generate { p ->
                             p?.lightMutedSwatch?.let { s ->
                                 binding.layoutPlayBg.setBackgroundColor(s.rgb)
