@@ -341,9 +341,11 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     mediaSession.controller?.transportControls?.skipToNext()
                 }
                 Intent.ACTION_SCREEN_OFF, Intent.ACTION_POWER_CONNECTED, Intent.ACTION_SCREEN_ON -> {//锁屏显示歌词等等
-                    val intent = Intent(context, LockerActivity::class.java)
-                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-                    context.startActivity(intent)
+                    if (player!!.isPlaying) {
+                        val intent = Intent(context, LockerActivity::class.java)
+                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                        context.startActivity(intent)
+                    }
                 }
                 ACTION_CONTENT -> {
 

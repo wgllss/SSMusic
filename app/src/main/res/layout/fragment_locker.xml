@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -8,8 +8,7 @@
             type="com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mainUI"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,110 +19,136 @@
 
         <TextClock
             android:id="@+id/txt_time"
-            android:layout_width="match_parent"
+            android:layout_width="130dp"
             android:layout_height="50dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="40dp"
             android:format12Hour="HH:mm"
             android:format24Hour="HH:mm"
             android:gravity="center_vertical"
-            android:paddingLeft="30dp"
+            android:text="12.06"
             android:textColor="@color/white"
-            android:textSize="40dp" />
+            android:textSize="45dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextClock
             android:id="@+id/txt_date"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_width="130dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="10dp"
             android:format12Hour="MM月dd日"
             android:format24Hour="MM月dd日"
             android:gravity="center_vertical"
-            android:paddingLeft="30dp"
+            android:text="14:25"
             android:textColor="@color/white"
-            android:textSize="18dp" />
+            android:textSize="18dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_time" />
 
         <TextClock
             android:id="@+id/txt_week"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_width="130dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginTop="5dp"
             android:format12Hour="EEEE"
             android:format24Hour="EEEE"
             android:gravity="center_vertical"
-            android:paddingLeft="30dp"
+            android:text="星期二"
             android:textColor="@color/white"
-            android:textSize="18dp" />
+            android:textSize="18dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_date" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/mater_music_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
+            android:layout_marginRight="30dp"
+            android:gravity="center_vertical|right"
             android:textColor="@color/white"
-            android:textSize="32dp" />
+            android:textSize="32dp"
+            app:layout_constraintLeft_toRightOf="@id/txt_time"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_time" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/music_autor"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:gravity="center"
+            android:layout_marginRight="30dp"
+            android:gravity="center_vertical|right"
             android:textColor="@color/white"
-            android:textSize="25dp" />
+            android:textSize="25dp"
+            app:layout_constraintLeft_toRightOf="@id/txt_time"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mater_music_name" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_center"
-            android:layout_width="190dp"
-            android:layout_height="190dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/icon_cd_default_bg"
-            app:shapeAppearance="@style/CircleStyle" />
+            app:layout_constraintBottom_toTopOf="@id/iv_play"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/music_autor" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_prev"
+            android:layout_width="80dp"
             android:layout_height="80dp"
-            android:layout_marginTop="50dp">
+            android:layout_marginLeft="50dp"
+            android:onClick="@{playModel.onPlayPrevious}"
+            android:src="@drawable/play_btn_prev_selector"
+            app:layout_constraintBottom_toBottomOf="@id/iv_play"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/iv_play"
+            app:layout_constraintRight_toRightOf="parent" />
 
-            <ImageView
-                android:id="@+id/iv_prev"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginRight="80dp"
-                android:layout_marginBottom="20dp"
-                android:onClick="@{playModel.onPlayPrevious}"
-                android:src="@drawable/play_btn_prev_selector" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_play"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="@{playModel.onPlay}"
+            android:src="@drawable/play_btn_play_pause_selector"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/txt_buttom"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
-            <ImageView
-                android:id="@+id/iv_play"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_marginBottom="20dp"
-                android:onClick="@{playModel.onPlay}"
-                android:src="@drawable/play_btn_play_pause_selector"
-                android:visibility="visible" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_next"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginRight="50dp"
+            android:onClick="@{playModel.onPlayNext}"
+            android:src="@drawable/play_btn_next_selector"
+            app:layout_constraintBottom_toBottomOf="@id/iv_play"
+            app:layout_constraintLeft_toRightOf="@id/iv_play"
+            app:layout_constraintRight_toRightOf="parent" />
 
-            <ImageView
-                android:id="@+id/iv_next"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginLeft="80dp"
-                android:layout_marginBottom="20dp"
-                android:onClick="@{playModel.onPlayNext}"
-                android:src="@drawable/play_btn_next_selector" />
-        </FrameLayout>
-
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_buttom"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="26dp"
+            android:layout_marginBottom="30dp"
             android:gravity="center"
             android:text=">>>滑动解锁"
             android:textColor="@color/white"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
