@@ -14,7 +14,11 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.GET_TOP" />
+    <uses-permission android:name="android.permission.GET_TOP" />、
+
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
 
 
     <application
@@ -60,9 +64,14 @@
 
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
-            android:exported="false"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
             android:theme="@style/Transparent"
-            android:launchMode="singleTask" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

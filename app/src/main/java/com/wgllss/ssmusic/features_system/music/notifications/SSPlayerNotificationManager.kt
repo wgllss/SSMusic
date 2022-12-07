@@ -67,7 +67,16 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     private val mediaLargeBitmapAdapter by lazy { MediaLargeBitmapAdapter() }
     private var instanceId = 0
     private var builder: NotificationCompat.Builder? = null
-    private val intentFilter by lazy { IntentFilter() }
+    private val intentFilter by lazy {
+        val actions = arrayOf(ACTION_PLAY, ACTION_PAUSE, ACTION_PREVIOUS, ACTION_NEXT, ACTION_CONTENT, Intent.ACTION_SCREEN_OFF, Intent.ACTION_SCREEN_ON, Intent.ACTION_POWER_CONNECTED)
+        IntentFilter().apply {
+            actions.forEach { action ->
+                takeUnless {
+                    it.hasAction(action)
+                }?.addAction(action)
+            }
+        }
+    }
     private val notificationBroadcastReceiver by lazy { NotificationBroadcastReceiver() }
     private var currentIconUrl: String = ""
 
@@ -225,43 +234,6 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         val notification: Notification = builder!!.build()
         notificationManagerCompat.notify(notificationId, notification)
         if (!isNotificationStarted) {
-            intentFilter.apply {
-                takeUnless {
-                    it.hasAction(ACTION_PLAY)
-                }?.apply {
-                    addAction(ACTION_PLAY)
-                }
-                takeUnless {
-                    it.hasAction(ACTION_PAUSE)
-                }?.apply {
-                    addAction(ACTION_PAUSE)
-                }
-                takeUnless {
-                    it.hasAction(ACTION_PREVIOUS)
-                }?.apply {
-                    addAction(ACTION_PREVIOUS)
-                }
-                takeUnless {
-                    it.hasAction(ACTION_NEXT)
-                }?.apply {
-                    addAction(ACTION_NEXT)
-                }
-                takeUnless {
-                    it.hasAction(ACTION_CONTENT)
-                }?.apply {
-                    addAction(ACTION_CONTENT)
-                }
-                takeUnless {
-                    it.hasAction(Intent.ACTION_SCREEN_OFF)
-                }?.apply {
-                    addAction(Intent.ACTION_SCREEN_OFF)
-                }
-                takeUnless {
-                    it.hasAction(Intent.ACTION_SCREEN_ON)
-                }?.apply {
-                    addAction(Intent.ACTION_SCREEN_ON)
-                }
-            }
             context.registerReceiver(notificationBroadcastReceiver, intentFilter)
         }
         notificationsListener?.onNotificationPosted(notificationId, notification, ongoing || !isNotificationStarted)
@@ -368,13 +340,10 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 ACTION_NEXT -> {
                     mediaSession.controller?.transportControls?.skipToNext()
                 }
-                Intent.ACTION_SCREEN_OFF -> {//锁屏显示歌词等等
+                Intent.ACTION_SCREEN_OFF, Intent.ACTION_POWER_CONNECTED, Intent.ACTION_SCREEN_ON -> {//锁屏显示歌词等等
                     val intent = Intent(context, LockerActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
                     context.startActivity(intent)
-                }
-                Intent.ACTION_SCREEN_ON -> {
-
                 }
                 ACTION_CONTENT -> {
 

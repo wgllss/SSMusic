@@ -1,9 +1,13 @@
 package com.wgllss.ssmusic.features_ui.page.locker.fragment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.media.session.PlaybackStateCompat
+import androidx.palette.graphics.Palette
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.loadUrl
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.databinding.FragmentLockerBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
@@ -28,7 +32,23 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
             it?.let {
                 binding.materMusicName.text = it.title
                 binding.musicAutor.text = it.artist
-                binding.ivCenter.loadUrl(it.albumArtUri)
+                Glide.with(this).asBitmap().load(it.albumArtUri).into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        resource?.let { it ->
+                            binding.ivCenter.setImageBitmap(resource)
+                            Palette.from(it).generate { p ->
+                                p?.lightMutedSwatch?.let { s ->
+                                    binding.mainUI.setBackgroundColor(s.rgb)
+                                    binding.materMusicName.setTextColor(s.titleTextColor)
+                                    binding.musicAutor.setTextColor(s.titleTextColor)
+                                    binding.txtDate.setTextColor(s.bodyTextColor)
+                                    binding.txtTime.setTextColor(s.bodyTextColor)
+                                    binding.txtWeek.setTextColor(s.bodyTextColor)
+                                }
+                            }
+                        }
+                    }
+                })
             }
         }
 
@@ -44,5 +64,6 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
                 }
             }
         }
+        viewModel.start()
     }
 }

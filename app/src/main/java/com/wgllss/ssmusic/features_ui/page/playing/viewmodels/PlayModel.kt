@@ -1,33 +1,45 @@
 package com.wgllss.ssmusic.features_ui.page.playing.viewmodels
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
+import com.wgllss.ssmusic.features_system.globle.Constants
+import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
 import com.wgllss.ssmusic.features_system.music.extensions.currentPlayBackPosition
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
     var isPlaying: Boolean = false
-    val nowPlaying = MutableLiveData<MediaMetadataCompat>()
-    val playbackState = MutableLiveData<PlaybackStateCompat>()
+    val nowPlaying by lazy { MutableLiveData<MediaMetadataCompat>() }
+    val playbackState by lazy { MutableLiveData<PlaybackStateCompat>() }
+    val bitmap by lazy { MutableLiveData<Bitmap>() }
 
     private var updatePosition = true
-    val mediaPosition = MutableLiveData(0L)
+    val mediaPosition by lazy { MutableLiveData(0L) }
 
     override fun start() {
+        musicServiceConnectionL.get().run {
+            playbackState.observeForever(playbackStateObserver)
+            nowPlaying.observeForever(mediaMetadataObserver)
+        }
+        checkPlaybackPosition()
     }
 
     //从指定位置开始播放
@@ -58,12 +70,6 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
         nowPlaying.postValue(it)
     }
 
-    private val musicServiceConnection = musicServiceConnectionL.get().also {
-        it.playbackState.observeForever(playbackStateObserver)
-        it.nowPlaying.observeForever(mediaMetadataObserver)
-        checkPlaybackPosition()
-    }
-
     private fun checkPlaybackPosition() {
         viewModelScope.launch {
             flow {
@@ -81,8 +87,8 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnection.playbackState.removeObserver(playbackStateObserver)
-        musicServiceConnection.nowPlaying.removeObserver(mediaMetadataObserver)
+        musicServiceConnectionL.get().playbackState.removeObserver(playbackStateObserver)
+        musicServiceConnectionL.get().nowPlaying.removeObserver(mediaMetadataObserver)
         updatePosition = false
     }
 }

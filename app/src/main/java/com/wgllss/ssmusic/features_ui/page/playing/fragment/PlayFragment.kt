@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.features_ui.page.playing.fragment
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.AnimatorUpdateListener
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
@@ -12,25 +13,23 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.SeekBar
-import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.adapter.BasePagerAdapter
 import com.wgllss.ssmusic.core.ex.dpToPx
 import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.ex.loadUrl
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
-import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import kotlinx.android.synthetic.main.fragment_play.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentPlayBinding>(R.layout.fragment_play) {
@@ -78,7 +77,22 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             mater_music_name.text = it!!.title
-            iv_center.loadUrl(it.albumArtUri)
+//            iv_center.loadUrl(it.albumArtUri)
+            Glide.with(this).asBitmap().load(it.albumArtUri).into(object : SimpleTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    resource?.let { it ->
+                        iv_center.setImageBitmap(resource)
+                        Palette.from(it).generate { p ->
+                            p?.lightMutedSwatch?.let { s ->
+                                binding.layoutPlayBg.setBackgroundColor(s.rgb)
+                                mater_music_name.setTextColor(s.titleTextColor)
+                                tv_total_time.setTextColor(s.bodyTextColor)
+                                tv_current_time.setTextColor(s.bodyTextColor)
+                            }
+                        }
+                    }
+                }
+            })
         }
 
         viewModel.playbackState.observe(viewLifecycleOwner) {
@@ -113,6 +127,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             sb_progress.progress = it.toInt()
             tv_current_time.text = timestampToMSS(requireContext(), it)
         }
+        viewModel.start()
     }
 
     fun initViewPage() {

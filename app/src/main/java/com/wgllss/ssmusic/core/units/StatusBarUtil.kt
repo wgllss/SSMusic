@@ -48,8 +48,13 @@ object StatusBarUtil {
 
     fun setStatusBarTranslucent(activity: Activity) {
         activity?.window?.apply {
-            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                //适配刘海屏
+                val layoutParams = attributes
+                layoutParams.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                attributes = layoutParams
+            }
+            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
             statusBarColor = Color.TRANSPARENT
         }
     }

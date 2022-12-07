@@ -10,6 +10,7 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mainUI"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/play_page_default_bg"
@@ -18,6 +19,7 @@
         android:orientation="vertical">
 
         <TextClock
+            android:id="@+id/txt_time"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginRight="5dp"
@@ -29,6 +31,7 @@
             android:textSize="40dp" />
 
         <TextClock
+            android:id="@+id/txt_date"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:format12Hour="MM月dd日"
@@ -39,6 +42,7 @@
             android:textSize="18dp" />
 
         <TextClock
+            android:id="@+id/txt_week"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:format12Hour="EEEE"
@@ -79,8 +83,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:layout_marginTop="50dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="50dp">
 
             <ImageView
                 android:id="@+id/iv_prev"
@@ -118,7 +121,7 @@
             android:layout_height="50dp"
             android:layout_marginTop="26dp"
             android:gravity="center"
-            android:text=">>>滑动返回"
+            android:text=">>>滑动解锁"
             android:textColor="@color/white"
             android:textSize="20dp" />
 

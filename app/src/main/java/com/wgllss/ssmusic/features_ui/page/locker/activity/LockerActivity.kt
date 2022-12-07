@@ -1,11 +1,13 @@
 package com.wgllss.ssmusic.features_ui.page.locker.activity
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
 import com.wgllss.ssmusic.core.ex.finishActivity
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.ex.setFramgment
 import com.wgllss.ssmusic.core.widget.DrawerBack
 import com.wgllss.ssmusic.databinding.ActivityLockerBinding
@@ -21,14 +23,19 @@ class LockerActivity : BaseMVVMActivity<PlayModel, ActivityLockerBinding>(R.layo
     lateinit var lockerFragmentL: Lazy<LockerFragment>
 
     override fun berforeSuperOnCreate(savedInstanceState: Bundle?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            //适配刘海屏
-            val layoutParams = window.attributes
-            layoutParams.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-            window.attributes = layoutParams
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//            //适配刘海屏
+//            val layoutParams = window.attributes
+//            layoutParams.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+//            window.attributes = layoutParams
+//        }
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        logE("onNewIntent ")
     }
 
     override fun initControl(savedInstanceState: Bundle?) {
