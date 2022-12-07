@@ -44,6 +44,7 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
                                     binding.txtDate.setTextColor(s.bodyTextColor)
                                     binding.txtTime.setTextColor(s.bodyTextColor)
                                     binding.txtWeek.setTextColor(s.bodyTextColor)
+                                    binding.txtButtom.setTextColor(s.bodyTextColor)
                                 }
                             }
                         }
