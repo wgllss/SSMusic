@@ -44,7 +44,7 @@
             app:layout_constraintTop_toBottomOf="@id/title" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/material_switch"
+            android:id="@+id/material_switch_settion"
             android:layout_width="100dp"
             android:layout_height="45dp"
             android:layout_marginTop="15dp"
@@ -56,6 +56,33 @@
             android:theme="@style/ssStyle"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title"
+            app:switchMinWidth="60dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/material_notification"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text="通知权限"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            app:layout_constraintTop_toBottomOf="@id/material_locker_setting" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/material_notification_switch"
+            android:layout_width="100dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="20dp"
+            android:checked="true"
+            android:gravity="center_vertical"
+            android:paddingLeft="20dp"
+            android:text=""
+            android:theme="@style/ssStyle"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/material_locker_setting"
             app:switchMinWidth="60dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

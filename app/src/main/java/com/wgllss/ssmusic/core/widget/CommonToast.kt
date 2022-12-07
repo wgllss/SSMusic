@@ -150,6 +150,11 @@ class CommonToast {
             }
         }
 
+        @JvmStatic
+        fun show(resID: Int) {
+            show(AppGlobals.sApplication, AppGlobals.sApplication.resources.getString(resID), 0, 0, Gravity.CENTER, 0, 3000, false)
+        }
+
         /**
          * 显示Toast
          *
