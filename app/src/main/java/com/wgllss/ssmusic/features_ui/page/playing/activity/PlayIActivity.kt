@@ -22,10 +22,4 @@ class PlayActivity : BaseMVVMActivity<PlayModel, ActivityPlayBinding>(R.layout.a
         super.initControl(savedInstanceState)
         setFramgment(playFragmentL.get(), R.id.content)
     }
-
-    override fun lazyInitValue() {
-        super.lazyInitValue()
-        ActivityManager.instance.print()
-    }
-
 }

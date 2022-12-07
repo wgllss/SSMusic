@@ -40,9 +40,8 @@ class AppViewModel @Inject constructor(application: Application, private val app
 
     private fun findBeanByPosition(position: Int): MusicTabeBean? {
         liveData?.value?.takeIf {
-            it.size > position
+            it.size > position && position >= 0
         }?.run {
-            val mmsicTabeBean = get(position)
             return get(position)
         }
         return null
@@ -73,7 +72,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
             if (map.containsKey(currentMediaID)) {
                 metadataPrepareCompletion.postValue(map.remove(currentMediaID))
                 logE("getDetail 取到缓存的下一曲 ")
-                getNextCache(position, currentMediaID)
+                getCacheURL(position, currentMediaID)
             } else {
                 viewModelScope.launch {
                     appRepository.getPlayUrl(url)
@@ -81,7 +80,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
                             metadataPrepareCompletion.postValue(it)
                         }.flowOnIOAndCatch()
                         .collect {
-                            getNextCache(position, currentMediaID)
+                            getCacheURL(position, currentMediaID)
                         }
                 }
             }
@@ -93,7 +92,12 @@ class AppViewModel @Inject constructor(application: Application, private val app
         return position + 1
     }
 
-    private fun getNextCache(position: Int, currentMediaID: String) {
+    //自动播放的上一曲 //todo 分顺序播放 随机 单曲循环
+    private fun getPrevious(position: Int): Int {
+        return position - 1
+    }
+
+    private fun getCacheURL(position: Int, currentMediaID: String) {
         findBeanByPosition(getNextPosition(position))?.run {
             flowAsyncWorkOnLaunch {
                 appRepository.getPlayUrl(url)
@@ -108,6 +112,20 @@ class AppViewModel @Inject constructor(application: Application, private val app
                     }
             }
         }
+        findBeanByPosition(getPrevious(position))?.run {
+            flowAsyncWorkOnLaunch {
+                appRepository.getPlayUrl(url)
+                    .onEach {
+                        map[id.toString()] = it
+                        map.takeIf { m ->
+                            m.containsKey(currentMediaID)
+                        }?.let {
+                            map.remove(currentMediaID)
+                        }
+                        logE("缓存到上一曲")
+                    }
+            }
+        }
     }
 
     fun getPlayUrlFromMediaID(mediaId: String) {
@@ -119,7 +137,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
                 if (map.containsKey(mediaId)) {
                     metadataPrepareCompletion.postValue(map[mediaId])
                     logE("getPlayUrlFromMediaID 取到缓存的下一曲 ")
-                    getNextCache(position, mediaId)
+                    getCacheURL(position, mediaId)
                 } else {
                     playPosition(position)
                 }
