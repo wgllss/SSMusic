@@ -1,20 +1,43 @@
 package com.wgllss.ssmusic.features_ui.page.home.fragment
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.FragmentSettingBinding
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @FragmentDestination(pageUrl = "fmt_setting", label = "设置", iconId = R.drawable.ic_notifications_black_24dp)
 class SettingFragment : BaseMVVMFragment<HomeViewModel, FragmentSettingBinding>(R.layout.fragment_setting) {
+
+    private val overLayPermission = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.canDrawOverlays(requireActivity())) {
+                logE("已经拥有在其他应用上层权限")
+                binding.materialSwitch.isChecked = true
+                //已经拥有在其他应用上层权限
+            } else {
+                binding.materialSwitch.isChecked = false
+            }
+        }
+    }
 
     override fun activitySameViewModel() = true
 
@@ -41,6 +64,36 @@ class SettingFragment : BaseMVVMFragment<HomeViewModel, FragmentSettingBinding>(
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onActivityCreated")
         super.onActivityCreated(savedInstanceState)
+        binding?.apply {
+            materialSwitch.setOnCheckedChangeListener { v, checked ->
+                if (checked) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (Settings.canDrawOverlays(requireActivity())) {
+                            logE("已经拥有在其他应用上层权限")
+                            materialSwitch.isChecked = true
+                        } else {
+                            materialSwitch.isChecked = false
+                            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                            intent.data = Uri.parse("package:${requireActivity().packageName}")
+                            overLayPermission.launch(intent)
+                        }
+                    }
+                }
+            }
+            materialLockerSetting.setOnClickListener {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Settings.canDrawOverlays(requireActivity())) {
+                        logE("已经拥有在其他应用上层权限")
+                        materialSwitch.isChecked = true
+                        //已经拥有在其他应用上层权限
+                    } else {
+                        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+                        intent.data = Uri.parse("package:${requireActivity().packageName}")
+                        overLayPermission.launch(intent)
+                    }
+                }
+            }
+        }
     }
 
     override fun onStart() {
