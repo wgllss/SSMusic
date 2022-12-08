@@ -26,6 +26,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.util.Assertions
 import com.google.android.exoplayer2.util.Util
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
 import com.wgllss.ssmusic.features_system.globle.Constants.glideOptions
@@ -89,6 +90,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     }
 
     private fun handleMessage(msg: Message): Boolean {
+        logE("currentNotificationTag $currentNotificationTag msg.arg1 :${msg.arg1}")
         when (msg.what) {
             MSG_START_OR_UPDATE_NOTIFICATION -> if (player != null) {
                 startOrUpdateNotification(player!!,  /* bitmap= */null)
@@ -166,8 +168,11 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
 
         var largeIcon = bitmap
         if (largeIcon == null && artworkUrl != null) {
-            val notificationTag = if (currentIconUrl != artworkUrl) ++currentNotificationTag else currentNotificationTag
+            val notificationTag = if (currentIconUrl != artworkUrl) {
+                ++currentNotificationTag
+            } else currentNotificationTag
             largeIcon = mediaLargeBitmapAdapter.getCurrentLargeIcon(artworkUrl, LoadLargeIconBitMapCall(notificationTag))
+            logE("notificationTag 33 $notificationTag   currentNotificationTag 55 $currentNotificationTag")
         }
 
         val style = androidx.media.app.NotificationCompat.MediaStyle()
@@ -275,6 +280,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
 
         fun getCurrentLargeIcon(bitmapUrl: String, loadLargeIconBitMapCall: LoadLargeIconBitMapCall): Bitmap? {
             return if (currentIconUrl == null || currentIconUrl != bitmapUrl) {
+                logE("去异步加载 bitmap")
                 currentIconUrl = bitmapUrl
                 serviceScope.launch {
                     currentBitmap = bitmapUrl?.let {
@@ -285,7 +291,10 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     }
                 }
                 null
-            } else currentBitmap
+            } else {
+                logE("已经拿到了bitmap")
+                currentBitmap
+            }
         }
 
         private suspend fun resolveUriAsBitmap(uri: String): Bitmap? {
@@ -303,6 +312,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     inner class LoadLargeIconBitMapCall(private val notificationTag: Int) {
 
         fun onBitmap(bitmap: Bitmap) {
+            logE("异步 bitmap 加载成功 ，通知更新")
             bitmap?.let { mainHandler.obtainMessage(MSG_UPDATE_NOTIFICATION_BITMAP, notificationTag, C.INDEX_UNSET, bitmap).sendToTarget() }
         }
     }

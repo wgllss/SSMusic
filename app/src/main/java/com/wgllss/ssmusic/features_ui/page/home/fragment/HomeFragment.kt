@@ -67,18 +67,14 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
                 }
             })
         }
-
         viewModel.liveData.observe(viewLifecycleOwner) {
             playListAdapterL.get().notifyData(it)
         }
-        viewModel.currentMediaID.observe(viewLifecycleOwner) {
-            it?.let {
-                playListAdapterL.get().currentMediaID = it
-                playListAdapterL.get().notifyDataSetChanged()
-            }
-        }
         viewModel.rootMediaId.observe(viewLifecycleOwner) {
             it?.let { viewModel.subscribeByMediaID(it) }
+        }
+        playListAdapterL.get().setBlockDelete {
+            viewModel.deletFromPlayList(it)
         }
     }
 
@@ -90,6 +86,12 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
     override fun onResume() {
         LogTimer.LogE(this, "onResume")
         super.onResume()
+        viewModel.currentMediaID.observe(viewLifecycleOwner) {
+            it?.let {
+                playListAdapterL.get().currentMediaID = it
+                playListAdapterL.get().notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onStop() {

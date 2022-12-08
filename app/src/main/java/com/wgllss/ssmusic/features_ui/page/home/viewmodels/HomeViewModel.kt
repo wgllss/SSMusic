@@ -127,6 +127,12 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         }
     }
 
+    fun deletFromPlayList(id: Long) {
+        flowAsyncWorkOnViewModelScopeLaunch {
+            musicRepositoryL.get().deledeFromId(id)
+        }
+    }
+
     override fun onCleared() {
         super.onCleared()
         musicServiceConnectionL.get().playbackState.removeObserver(playbackStateObserver)

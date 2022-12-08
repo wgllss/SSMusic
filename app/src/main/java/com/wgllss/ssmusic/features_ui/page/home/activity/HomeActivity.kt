@@ -105,8 +105,5 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
 
     private fun bindService() {
         logE("bindService")
-//        viewModel.start()
-
-        ActivityManager.instance.print()
     }
 }

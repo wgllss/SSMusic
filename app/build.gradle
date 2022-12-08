@@ -134,6 +134,9 @@ dependencies {
     //权限申请框架
     implementation 'com.github.getActivity:XXPermissions:16.2'
 
+    //滑动删除
+    implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
+
 
     def exoplayer_version = '2.18.0'
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"

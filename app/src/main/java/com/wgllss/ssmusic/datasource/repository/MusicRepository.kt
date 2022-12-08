@@ -170,6 +170,11 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
         }.catch { it.printStackTrace() }.flowOn(Dispatchers.IO)
     }
 
+    suspend fun deledeFromId(id: Long) = flow {
+        mSSDataBaseL.get().musicDao().deleteFromID(id)
+        emit(0)
+    }
+
     suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> = flow {
         emit(mSSDataBaseL.get().musicDao().getList())
     }

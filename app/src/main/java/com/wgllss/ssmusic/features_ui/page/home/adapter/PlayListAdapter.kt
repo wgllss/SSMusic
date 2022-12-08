@@ -14,6 +14,13 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowse
 
     var currentMediaID: String = ""
 
+    private var blockDelete: ((id: Long) -> Unit)? = null
+
+    fun setBlockDelete(blockDelete: ((id: Long) -> Unit)? = null) {
+        this.blockDelete = blockDelete
+    }
+
+
     override fun onBindItem(binding: AdapterMusicPlaylistItemBinding, item: MediaBrowserCompat.MediaItem, holder: RecyclerView.ViewHolder, position: Int) {
         binding?.apply {
             bean = item
@@ -22,6 +29,9 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowse
             author.setTextColor(if (currentMediaID == item.mediaId) Color.RED else Color.BLACK)
             title.setTextColor(if (currentMediaID == item.mediaId) Color.RED else Color.BLACK)
             musicVisualizerView.visibility = if (currentMediaID == item.mediaId) View.VISIBLE else View.GONE
+            deleteRightTv.setOnClickListener {
+                blockDelete?.invoke(it.id.toLong())
+            }
         }
     }
 

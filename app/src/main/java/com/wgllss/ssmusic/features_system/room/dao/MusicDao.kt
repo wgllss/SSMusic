@@ -19,4 +19,7 @@ interface MusicDao {
 
     @Query("SELECT COUNT(*) FROM music_tab WHERE id = :uuID")
     fun queryByUUID(uuID: Long): Int
+
+    @Query("DELETE FROM music_tab WHERE id =:id")
+    fun deleteFromID(id: Long)
 }
