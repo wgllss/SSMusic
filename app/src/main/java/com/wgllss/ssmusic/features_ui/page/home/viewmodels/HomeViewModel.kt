@@ -9,6 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.wgllss.ssmusic.core.ex.errorMsgLiveData
 import com.wgllss.ssmusic.core.ex.flowAsyncWorkOnLaunch
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.WLog
@@ -127,7 +128,13 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         }
     }
 
-    fun deletFromPlayList(id: Long) {
+    fun deleteFromPlayList(id: Long) {
+        currentMediaID.value?.takeIf {
+            it.toLong() == id
+        }?.let {
+            errorMsgLiveData.postValue("当前正在播放该歌曲，不能删除")
+            return
+        }
         flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.get().deledeFromId(id)
         }

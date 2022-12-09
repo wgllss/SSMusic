@@ -32,6 +32,8 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
         }
     }
 
+    private var mSendResultCalled = false
+
     override fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         if (MEDIA_ID_ROOT == parentId) {
             logE("onLoadChildren parentId 333: $parentId")
@@ -41,25 +43,32 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
                 }?.let {
                     appViewModel.get().liveData.observe(this@MusicFactory) { list ->
                         serviceScope.launch {
-                            val child = withContext(IO) {
-                                list.map { musicTableBean ->
-                                    logE("musicTableBean id: ${musicTableBean.id}")
-                                    MediaBrowserCompat.MediaItem(
-                                        MediaDescriptionCompat.Builder()
-                                            .setMediaId(musicTableBean.id.toString())
-                                            .setTitle(musicTableBean.title)
-                                            .setIconUri(Uri.parse(musicTableBean.pic))
-                                            .setMediaUri(Uri.parse(musicTableBean.url))
-                                            .setSubtitle(musicTableBean.author)
-                                            .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-                                    )
-                                }?.toMutableList()
-                            }
-                            try {
-                                result.sendResult(child)
-                            } catch (e: Exception) {
-                                logE("notifyChildrenChanged $parentId   ${e.message}")
+                            if (!mSendResultCalled) {
+                                val child = withContext(IO) {
+                                    list.map { musicTableBean ->
+                                        MediaBrowserCompat.MediaItem(
+                                            MediaDescriptionCompat.Builder()
+                                                .setMediaId(musicTableBean.id.toString())
+                                                .setTitle(musicTableBean.title)
+                                                .setIconUri(Uri.parse(musicTableBean.pic))
+                                                .setMediaUri(Uri.parse(musicTableBean.url))
+                                                .setSubtitle(musicTableBean.author)
+                                                .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                                        )
+                                    }?.toMutableList()
+                                }
+                                try {
+                                    result.sendResult(child)
+                                    mSendResultCalled = true
+                                    logE(" result.sendResult(child) $parentId  ")
+                                } catch (e: Exception) {
+                                    mSendResultCalled = false
+                                    logE("Exception e： ${e.message}")
+                                }
+                            } else {
+                                mSendResultCalled = false
                                 musicService.notifyChildrenChanged(parentId)
+                                logE("notifyChildrenChanged $parentId  ")
                             }
                         }
                     }

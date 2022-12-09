@@ -74,7 +74,7 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
             it?.let { viewModel.subscribeByMediaID(it) }
         }
         playListAdapterL.get().setBlockDelete {
-            viewModel.deletFromPlayList(it)
+            viewModel.deleteFromPlayList(it)
         }
     }
 
@@ -87,10 +87,8 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
         LogTimer.LogE(this, "onResume")
         super.onResume()
         viewModel.currentMediaID.observe(viewLifecycleOwner) {
-            it?.let {
-                playListAdapterL.get().currentMediaID = it
-                playListAdapterL.get().notifyDataSetChanged()
-            }
+            playListAdapterL.get().currentMediaID = it
+            playListAdapterL.get().notifyDataSetChanged()
         }
     }
 
