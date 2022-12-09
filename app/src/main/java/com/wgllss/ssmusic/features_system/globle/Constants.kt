@@ -15,4 +15,13 @@ object Constants {
 
     const val NOTIFICATION_LARGE_ICON_SIZE = 144 // px
     val glideOptions = RequestOptions().fallback(R.drawable.loading_logo).diskCacheStrategy(DiskCacheStrategy.DATA)
+
+    //单曲循环
+    const val MODE_PLAY_REPEAT_SONG = 2
+
+    //随机模式
+    const val MODE_PLAY_SHUFFLE_ALL = 1
+
+    //顺序播放重复队列
+    const val MODE_PLAY_REPEAT_QUEUE = 0
 }

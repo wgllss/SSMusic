@@ -18,4 +18,14 @@ object MMKVHelp {
      * 桌面歌词开关是否打开
      */
     fun isOpenLockerUI() = mmkv.decodeBool("open_locker_ui")
+
+    /**
+     * 设置播放模式 单曲循环 随机 顺序播放
+     */
+    fun setPlayMode(playMode: Int) = mmkv.encode("PlayMode", playMode)
+
+    /**
+     * 得到播放模式
+     */
+    fun getPlayMode() = mmkv.decodeInt("PlayMode")
 }

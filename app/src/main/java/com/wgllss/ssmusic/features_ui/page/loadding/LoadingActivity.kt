@@ -20,17 +20,7 @@ class LoadingActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         LogTimer.LogE(this, "onCreate")
-//        startActivity(Intent(this, HomeActivity::class.java))
         mSSDataBaseL.get()
         launchActivity(Intent(this, HomeActivity::class.java))
-//        finishActivity()
-        LogTimer.LogE(this, "finishActivity")
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
-            LogTimer.LogE(this, "onWindowFocusChanged")
-        }
     }
 }

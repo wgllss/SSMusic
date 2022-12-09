@@ -1,26 +1,23 @@
 package com.wgllss.ssmusic.features_ui.page.playing.viewmodels
 
-import android.content.Context
-import android.graphics.Bitmap
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
-import com.bumptech.glide.Glide
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
-import com.wgllss.ssmusic.features_system.globle.Constants
-import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
+import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
+import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_SONG
+import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
 import com.wgllss.ssmusic.features_system.music.extensions.currentPlayBackPosition
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,12 +26,13 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
     var isPlaying: Boolean = false
     val nowPlaying by lazy { MutableLiveData<MediaMetadataCompat>() }
     val playbackState by lazy { MutableLiveData<PlaybackStateCompat>() }
-    val bitmap by lazy { MutableLiveData<Bitmap>() }
+    val currentPlayMode by lazy { MutableLiveData(MODE_PLAY_REPEAT_QUEUE) }
 
     private var updatePosition = true
     val mediaPosition by lazy { MutableLiveData(0L) }
 
     override fun start() {
+        currentPlayMode.postValue(MMKVHelp.getPlayMode())
         musicServiceConnectionL.get().run {
             playbackState.observeForever(playbackStateObserver)
             nowPlaying.observeForever(mediaMetadataObserver)
@@ -60,6 +58,29 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
 
     val onPlayPrevious = View.OnClickListener {
         musicServiceConnectionL.get().transportControls.skipToPrevious()
+    }
+
+    val switchMode = View.OnClickListener {
+        var mode = MODE_PLAY_REPEAT_QUEUE
+        var modeToast = ""
+        when (currentPlayMode.value) {
+            MODE_PLAY_REPEAT_QUEUE -> {
+                mode = MODE_PLAY_SHUFFLE_ALL
+                modeToast = "随机模式"
+            }
+            MODE_PLAY_SHUFFLE_ALL -> {
+                mode = MODE_PLAY_REPEAT_SONG
+                modeToast = "单曲循环"
+            }
+            MODE_PLAY_REPEAT_SONG -> {
+                mode = MODE_PLAY_REPEAT_QUEUE
+                modeToast = "列表循环"
+            }
+            else -> MODE_PLAY_REPEAT_QUEUE
+        }
+        currentPlayMode.postValue(mode)
+        MMKVHelp.setPlayMode(mode)
+        errorMsgLiveData.value = modeToast
     }
 
     private val playbackStateObserver = Observer<PlaybackStateCompat> {

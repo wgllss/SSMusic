@@ -10,12 +10,17 @@ import com.wgllss.ssmusic.core.ex.flowOnIOAndCatch
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.datasource.repository.AppRepository
+import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
+import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_SONG
+import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class AppViewModel @Inject constructor(application: Application, private val appRepository: AppRepository) : AndroidViewModel(application) {
@@ -48,10 +53,20 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     fun playNext() {
-        currentPosition.takeIf {
-            it + 1 < liveData.value!!.size
-        }?.let {
-            playPosition(it + 1)
+        when (MMKVHelp.getPlayMode()) {
+            MODE_PLAY_REPEAT_QUEUE -> {
+                currentPosition.let {
+                    playPosition(if (it + 1 < liveData.value!!.size) it + 1 else 0)
+                }
+            }
+            MODE_PLAY_SHUFFLE_ALL -> {
+                liveData.value?.let {
+                    playPosition(Random.nextInt(it.size))
+                }
+            }
+            MODE_PLAY_REPEAT_SONG -> {
+                playPosition(currentPosition)
+            }
         }
     }
 
@@ -66,7 +81,6 @@ class AppViewModel @Inject constructor(application: Application, private val app
     private fun playPosition(position: Int) {
         logE("点击：position:${position}")
         currentPosition = position
-
         findBeanByPosition(position)?.run {
             val currentMediaID = id.toString()
             if (map.containsKey(currentMediaID)) {

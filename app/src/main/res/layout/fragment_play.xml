@@ -87,8 +87,9 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginRight="160dp"
+            android:layout_marginRight="130dp"
             android:layout_marginBottom="20dp"
+            android:onClick="@{playModel.switchMode}"
             android:src="@drawable/play_mode_level_list" />
 
         <ImageView

@@ -126,6 +126,9 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             sb_progress.progress = it.toInt()
             tv_current_time.text = timestampToMSS(requireContext(), it)
         }
+        viewModel.currentPlayMode.observe(viewLifecycleOwner) {
+            binding.ivMode.setImageLevel(it)
+        }
         viewModel.start()
     }
 
