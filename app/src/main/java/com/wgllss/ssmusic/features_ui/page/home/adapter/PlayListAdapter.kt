@@ -30,7 +30,7 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowse
             title.setTextColor(if (currentMediaID == item.mediaId) Color.RED else Color.BLACK)
             musicVisualizerView.visibility = if (currentMediaID == item.mediaId) View.VISIBLE else View.GONE
             deleteRightTv.setOnClickListener {
-                blockDelete?.invoke(it.id.toLong())
+                blockDelete?.invoke(item.mediaId?.toLong() ?: 0L)
             }
         }
     }

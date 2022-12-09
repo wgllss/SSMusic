@@ -43,6 +43,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
                         serviceScope.launch {
                             val child = withContext(IO) {
                                 list.map { musicTableBean ->
+                                    logE("musicTableBean id: ${musicTableBean.id}")
                                     MediaBrowserCompat.MediaItem(
                                         MediaDescriptionCompat.Builder()
                                             .setMediaId(musicTableBean.id.toString())

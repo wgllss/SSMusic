@@ -171,6 +171,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
     }
 
     suspend fun deledeFromId(id: Long) = flow {
+        logE("deledeFromId id: $id")
         mSSDataBaseL.get().musicDao().deleteFromID(id)
         emit(0)
     }
