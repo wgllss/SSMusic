@@ -30,6 +30,7 @@ import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
 import com.wgllss.ssmusic.features_system.globle.Constants.glideOptions
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity
 import kotlinx.coroutines.*
 
@@ -351,7 +352,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     mediaSession.controller?.transportControls?.skipToNext()
                 }
                 Intent.ACTION_SCREEN_OFF, Intent.ACTION_POWER_CONNECTED, Intent.ACTION_SCREEN_ON -> {//锁屏显示歌词等等
-                    if (player!!.isPlaying) {
+                    if (MMKVHelp.isOpenLockerUI() && player!!.isPlaying) {
                         val intent = Intent(context, LockerActivity::class.java)
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
                         context.startActivity(intent)

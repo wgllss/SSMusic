@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+            name="settingViewModel"
+            type="com.wgllss.ssmusic.features_ui.page.home.viewmodels.SettingViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -49,7 +56,7 @@
             android:layout_height="45dp"
             android:layout_marginTop="15dp"
             android:layout_marginRight="20dp"
-            android:checked="true"
+            android:checked="@{settingViewModel.isOpenLockerUI}"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text=""
@@ -59,31 +66,57 @@
             app:switchMinWidth="60dp" />
 
         <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_loker_des"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="注：开启锁屏歌词需要打开 后台弹窗 权限\n并开启： 在其他应用上层显示 权限"
+            android:textColor="@color/color_999999"
+            android:textSize="18dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/material_locker_setting" />
+
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/material_notification"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginTop="15dp"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text="通知权限"
             android:textColor="@color/black"
-            android:textSize="20dp"
-            app:layout_constraintTop_toBottomOf="@id/material_locker_setting" />
+            android:textSize="18dp"
+            app:layout_constraintTop_toBottomOf="@id/txt_loker_des" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/material_notification_switch"
             android:layout_width="100dp"
             android:layout_height="45dp"
-            android:layout_marginTop="15dp"
             android:layout_marginRight="20dp"
-            android:checked="true"
+            android:checked="@{settingViewModel.isNotificationOpen}"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
             android:text=""
             android:theme="@style/ssStyle"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/material_locker_setting"
+            app:layout_constraintTop_toBottomOf="@id/txt_loker_des"
             app:switchMinWidth="60dp" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txt_notification_des"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="注：开启通知权限后可保证长时间在后台播放音乐"
+            android:textColor="@color/color_999999"
+            android:textSize="18dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/material_notification" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

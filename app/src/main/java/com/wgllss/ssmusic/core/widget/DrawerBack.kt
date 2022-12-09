@@ -15,11 +15,13 @@ import android.widget.ListView
 import android.widget.Scroller
 
 class DrawerBack(activity: Activity) : FrameLayout(activity) {
-    val SLIDE_TARGET_CONTENT = 0
-    val SLIDE_TARGET_WINDOW = 1
-    private val SCROLL_DURATION = 400
-    private val TOUCH_TARGET_WIDTH_DIP = 30
-    private val TOUCH_HANDLE_WIDTH_DIP = 1.33f // 屏幕左侧4分之3
+    companion object {
+        private const val SLIDE_TARGET_CONTENT = 0
+        private const val SLIDE_TARGET_WINDOW = 1
+        private const val SCROLL_DURATION = 400
+        private const val TOUCH_TARGET_WIDTH_DIP = 30
+        private const val TOUCH_HANDLE_WIDTH_DIP = 1.33f // 屏幕左侧4分之3
+    }
 
     private var mAdded = false
     private var mDrawerEnabled = true
@@ -51,7 +53,6 @@ class DrawerBack(activity: Activity) : FrameLayout(activity) {
 
     private var qx = 0f
     private var qy = 0f
-    private var Float = 0f
 
     init {
         val dm = activity.resources.displayMetrics
@@ -65,8 +66,8 @@ class DrawerBack(activity: Activity) : FrameLayout(activity) {
         mContentTarget = mDecorView!!.findViewById<View>(R.id.content) as ViewGroup
         mContentTargetParent = mContentTarget!!.parent as ViewGroup
         mDrawerContent = LinearLayout(context)
-        mDrawerContent!!.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT))
-        mDrawerContent!!.setBackgroundColor(Color.parseColor("#00000000"))
+        mDrawerContent!!.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT)
+        mDrawerContent!!.setBackgroundColor(Color.TRANSPARENT)
         reconfigureViewHierarchy()
         mDrawerContent!!.setPadding(0, 0, mTouchTargetWidth, 0)
 
@@ -78,7 +79,7 @@ class DrawerBack(activity: Activity) : FrameLayout(activity) {
         }
     }
 
-    fun reconfigureViewHierarchy() {
+    private fun reconfigureViewHierarchy() {
         if (mDecorView == null) {
             return
         }
@@ -139,14 +140,10 @@ class DrawerBack(activity: Activity) : FrameLayout(activity) {
             MotionEvent.ACTION_DOWN -> {
                 mLastMotionX = x
                 mLastMotionY = y
-                run {
-                    mGestureCurrentX = (ev.x + 0.5f).toInt()
-                    mGestureStartX = mGestureCurrentX
-                }
-                run {
-                    mGestureCurrentY = (ev.y + 0.5f).toInt()
-                    mGestureStartY = mGestureCurrentY
-                }
+                mGestureCurrentX = (ev.x + 0.5f).toInt()
+                mGestureStartX = mGestureCurrentX
+                mGestureCurrentY = (ev.y + 0.5f).toInt()
+                mGestureStartY = mGestureCurrentY
                 if (mGestureStartX < touchThreshold && !mDrawerOpened) {
                     mGestureStarted = true
                 }
@@ -181,14 +178,10 @@ class DrawerBack(activity: Activity) : FrameLayout(activity) {
                     closeDrawer()
                 }
                 mGestureStarted = false
-                run {
-                    mGestureCurrentX = -1
-                    mGestureStartX = mGestureCurrentX
-                }
-                run {
-                    mGestureCurrentY = -1
-                    mGestureStartY = mGestureCurrentY
-                }
+                mGestureCurrentX = -1
+                mGestureStartX = mGestureCurrentX
+                mGestureCurrentY = -1
+                mGestureStartY = mGestureCurrentY
                 return false
             }
         }
@@ -245,20 +238,16 @@ class DrawerBack(activity: Activity) : FrameLayout(activity) {
                     if (mVelocityTracker!!.xVelocity > 0 && mDecorOffsetX > widthPixels / 5.0) {
                         mDrawerOpened = false
                         openDrawer()
-                        // mDrawerContent.setBackgroundColor(Color.parseColor("#00000000"));
                     } else {
                         mDrawerOpened = true
-                        // mDrawerContent.setBackgroundColor(Color.parseColor("#40000000"));
                         closeDrawer()
                     }
                 } else {
                     if (mDecorOffsetX > widthPixels / 5.0) {
                         mDrawerOpened = false
                         openDrawer()
-                        // mDrawerContent.setBackgroundColor(Color.parseColor("#00000000"));
                     } else {
                         mDrawerOpened = true
-                        // mDrawerContent.setBackgroundColor(Color.parseColor("#40000000"));
                         closeDrawer()
                     }
                 }
