@@ -52,13 +52,14 @@ abstract class BaseMVVMFragment<VM : BaseViewModel, DB : ViewDataBinding>(@Layou
      * 监听当前ViewModel中 showDialog和error的值
      */
     protected open fun initObserve() {
-        viewModel?.run {
-            showUIDialog.observe(viewLifecycleOwner, Observer { it ->
-                if (it.isShow) showloading(it.msg) else hideLoading()
-            })
-            errorMsgLiveData.observe(viewLifecycleOwner, Observer {
-                onToast(it)
-            })
-        }
+        if (!activitySameViewModel())
+            viewModel?.run {
+                showUIDialog.observe(viewLifecycleOwner, Observer { it ->
+                    if (it.isShow) showloading(it.msg) else hideLoading()
+                })
+                errorMsgLiveData.observe(viewLifecycleOwner, Observer {
+                    onToast(it)
+                })
+            }
     }
 }

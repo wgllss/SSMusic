@@ -73,6 +73,7 @@ class SettingFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel, Fr
                 }
             }
         }
+        setNotificationPermissions()
     }
 
     private fun setNotificationPermissions() {

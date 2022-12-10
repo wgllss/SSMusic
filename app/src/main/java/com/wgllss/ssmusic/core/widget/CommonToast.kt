@@ -119,7 +119,7 @@ class CommonToast {
                         toastText!!.layoutParams = LinearLayout.LayoutParams(width, height)
                         toastLayout.rotation = rotation.toFloat()
                     }
-                    toastText!!.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 28f)
+                    toastText!!.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                     toastText!!.setPadding(size, size, size, size)
                     toastText!!.gravity = Gravity.CENTER
                     if (toastBackgroundId != -1) {

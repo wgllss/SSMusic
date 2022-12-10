@@ -72,9 +72,9 @@
             android:gravity="center_vertical"
             android:paddingLeft="25dp"
             android:paddingRight="25dp"
-            android:text="注：开启锁屏歌词需要打开 后台弹窗 权限\n并开启： 在其他应用上层显示 权限"
+            android:text="注：开启锁屏歌词需要打开 后台弹窗 权限并开启： 在其他应用上层显示 权限"
             android:textColor="@color/color_999999"
-            android:textSize="18dp"
+            android:textSize="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/material_locker_setting" />
@@ -113,7 +113,7 @@
             android:paddingRight="25dp"
             android:text="注：开启通知权限后可保证长时间在后台播放音乐"
             android:textColor="@color/color_999999"
-            android:textSize="18dp"
+            android:textSize="16dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/material_notification" />
