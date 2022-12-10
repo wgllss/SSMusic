@@ -37,6 +37,8 @@ import kotlinx.coroutines.*
 class SSPlayerNotificationManager(private val context: Context, private val mediaSession: MediaSessionCompat, private val notificationsListener: NotificationListener) {
 
     companion object {
+        private const val TAG = "SSPlayerNotificationManager"
+
         private const val CHANNEL_ID = "ssmusic_channel_00001"
         private const val ACTION_PLAY = "com.wgllss.ssmusic.play"
         private const val ACTION_PAUSE = "com.wgllss.ssmusic.pause"
@@ -91,7 +93,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     }
 
     private fun handleMessage(msg: Message): Boolean {
-        logE("currentNotificationTag $currentNotificationTag msg.arg1 :${msg.arg1}")
+        logE("$TAG currentNotificationTag $currentNotificationTag msg.arg1 :${msg.arg1}")
         when (msg.what) {
             MSG_START_OR_UPDATE_NOTIFICATION -> if (player != null) {
                 startOrUpdateNotification(player!!,  /* bitmap= */null)
@@ -138,7 +140,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         notificationManagerCompat.createNotificationChannel(mChannel)
     }
 
-    private fun createNotification(player: Player, ongoing: Boolean, bitmap: Bitmap?): NotificationCompat.Builder? {
+    private fun createNotification(player: Player, builderIn: NotificationCompat.Builder?, ongoing: Boolean, bitmap: Bitmap?): NotificationCompat.Builder? {
         if (player.playbackState == Player.STATE_IDLE && player.currentTimeline.isEmpty) {
             return null
         }
@@ -156,6 +158,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
             postTime = System.currentTimeMillis()
         }
         createNotificationChannel()
+        var builder = builderIn
         if (builder == null || isNotificationChange != isPlaying) {
             isNotificationChange = isPlaying
             builder = NotificationCompat.Builder(context, CHANNEL_ID)
@@ -164,16 +167,6 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 addAction(playButtonResId, "", togglePausePendingIntent)
                 addAction(R.drawable.ic_baseline_skip_next_36, "", retrievePlaybackAction(ACTION_NEXT))
             }
-        }
-
-
-        var largeIcon = bitmap
-        if (largeIcon == null && artworkUrl != null) {
-            val notificationTag = if (currentIconUrl != artworkUrl) {
-                ++currentNotificationTag
-            } else currentNotificationTag
-            largeIcon = mediaLargeBitmapAdapter.getCurrentLargeIcon(artworkUrl, LoadLargeIconBitMapCall(notificationTag))
-            logE("notificationTag 33 $notificationTag   currentNotificationTag 55 $currentNotificationTag")
         }
 
         val style = androidx.media.app.NotificationCompat.MediaStyle()
@@ -198,6 +191,14 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
             priority = NotificationCompat.PRIORITY_LOW
             setDeleteIntent(MediaButtonReceiver.buildMediaButtonPendingIntent(context, PlaybackStateCompat.ACTION_STOP))
         }
+        var largeIcon: Bitmap? = bitmap
+        if (largeIcon == null) {
+            val notificationTag = if (currentIconUrl != artworkUrl) {
+                ++currentNotificationTag
+            } else currentNotificationTag
+            logE("$TAG notificationTag: $notificationTag  currentNotificationTag 55 $currentNotificationTag")
+            largeIcon = mediaLargeBitmapAdapter.getCurrentLargeIcon(artworkUrl, LoadLargeIconBitMapCall(notificationTag))
+        }
         if (SdkIntUtils.isLollipop() && player.isPlaying && !player.isPlayingAd && !player.isCurrentMediaItemDynamic && player.playbackParameters.speed == 1f) {
             builder?.apply {
                 setWhen(System.currentTimeMillis() - player.contentPosition)
@@ -214,8 +215,8 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 setWhen(postTime)
             }
         }
-        builder?.setOnlyAlertOnce(true)
         builder?.setLargeIcon(largeIcon)
+        builder?.setOnlyAlertOnce(true)
         return builder
     }
 
@@ -232,7 +233,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
 
     private fun startOrUpdateNotification(player: Player, bitmap: Bitmap?) {
         val ongoing: Boolean = getOngoing(player)
-        builder = createNotification(player, ongoing, bitmap)
+        builder = createNotification(player, builder, ongoing, bitmap)
         if (builder == null) {
             stopNotification( /* dismissedByUser= */false)
             return
@@ -276,14 +277,18 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     }
 
 
-    private inner class MediaLargeBitmapAdapter() {
+    private inner class MediaLargeBitmapAdapter {
+
+        @Volatile
         private var currentBitmap: Bitmap? = null
 
         fun getCurrentLargeIcon(bitmapUrl: String, loadLargeIconBitMapCall: LoadLargeIconBitMapCall): Bitmap? {
+
             return if (currentIconUrl == null || currentIconUrl != bitmapUrl) {
-                logE("去异步加载 bitmap")
+                logE("$TAG 去异步加载 bitmap")
                 currentIconUrl = bitmapUrl
                 serviceScope.launch {
+                    currentBitmap = null
                     currentBitmap = bitmapUrl?.let {
                         resolveUriAsBitmap(it)
                     }
@@ -293,7 +298,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 }
                 null
             } else {
-                logE("已经拿到了bitmap")
+                logE("$TAG 已经拿到了bitmap")
                 currentBitmap
             }
         }
@@ -313,7 +318,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     inner class LoadLargeIconBitMapCall(private val notificationTag: Int) {
 
         fun onBitmap(bitmap: Bitmap) {
-            logE("异步 bitmap 加载成功 ，通知更新")
+            logE("$TAG 异步 bitmap 加载成功 ，通知更新")
             bitmap?.let { mainHandler.obtainMessage(MSG_UPDATE_NOTIFICATION_BITMAP, notificationTag, C.INDEX_UNSET, bitmap).sendToTarget() }
         }
     }
@@ -326,6 +331,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_REPEAT_MODE_CHANGED, Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED, Player.EVENT_MEDIA_METADATA_CHANGED
                 )
             ) {
+                logE("$TAG 00000")
                 postStartOrUpdateNotification()
             }
         }
