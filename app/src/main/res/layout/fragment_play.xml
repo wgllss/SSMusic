@@ -13,8 +13,15 @@
         android:id="@+id/layout_play_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/play_page_default_bg"
+        android:background="@drawable/player_background_real"
         tools:context=".features_ui.page.playing.fragment.PlayFragment">
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/iv_bg"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:scaleType="centerCrop"-->
+        <!--            android:src="@drawable/player_background_real" />-->
 
         <ImageView
             android:id="@+id/img_back"
@@ -87,7 +94,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginRight="130dp"
+            android:layout_marginRight="150dp"
             android:layout_marginBottom="20dp"
             android:onClick="@{playModel.switchMode}"
             android:src="@drawable/play_mode_level_list" />

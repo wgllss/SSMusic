@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout>
 
     <data>
 
@@ -9,10 +9,11 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/mainUI"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/play_page_default_bg"
+        android:background="@drawable/player_background_real"
         android:fitsSystemWindows="true"
         android:gravity="center"
         android:orientation="vertical">

@@ -3,10 +3,10 @@ package com.wgllss.ssmusic.data
 import com.wgllss.ssmusic.core.units.UUIDHelp
 
 data class MusicBean(
-    val title: String,
-    val author: String,
+    var title: String,
+    var author: String,
     var url: String,
-    val pic: String,
+    var pic: String,
 ) {
     var requestRealUrl: String = ""
     inline val id: Long

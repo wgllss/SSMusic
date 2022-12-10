@@ -18,7 +18,6 @@ import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -28,7 +27,6 @@ class AppViewModel @Inject constructor(application: Application, private val app
     lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     var currentPosition: Int = 0
-    private val map by lazy { ConcurrentHashMap<String, MusicBean>() }
 
     //当前播放 数据源 准备完成
     val metadataPrepareCompletion by lazy { MutableLiveData<MusicBean>() }
@@ -82,23 +80,16 @@ class AppViewModel @Inject constructor(application: Application, private val app
         logE("点击：position:${position}")
         currentPosition = position
         findBeanByPosition(position)?.run {
-            val currentMediaID = id.toString()
-            if (map.containsKey(currentMediaID)) {
-                metadataPrepareCompletion.postValue(map.remove(currentMediaID))
-                logE("getDetail 取到缓存的下一曲 ")
-                getCacheURL(position, currentMediaID)
-            } else {
-                viewModelScope.launch {
-                    appRepository.getPlayUrl(url)
-                        .onEach {
-                            metadataPrepareCompletion.postValue(it)
-                        }.flowOnIOAndCatch()
-                        .collect {
-                            getCacheURL(position, currentMediaID)
-                        }
-                }
+            viewModelScope.launch {
+                appRepository.getPlayUrl(id.toString(), url, title, author, pic)
+                    .onEach {
+                        metadataPrepareCompletion.postValue(it)
+                    }.flowOnIOAndCatch()
+                    .collect()
+                //拿取缓存前2个 后2个
             }
         }
+        getCacheURL(position)
     }
 
     //自动播放的下一曲 //todo 分顺序播放 随机 单曲循环
@@ -111,32 +102,24 @@ class AppViewModel @Inject constructor(application: Application, private val app
         return position - 1
     }
 
-    private fun getCacheURL(position: Int, currentMediaID: String) {
-        findBeanByPosition(getNextPosition(position))?.run {
+    private fun getCacheURL(position: Int) {
+        //todo 多线程 正在请求时 再次调用需要控制 await 等待 后续处理
+        getCache(getNextPosition(position))
+        getCache(getPrevious(position))
+
+        getCache(getNextPosition(position + 1))
+        getCache(getPrevious(position - 1))
+
+        getCache(getNextPosition(position + 2))
+        getCache(getPrevious(position - 2))
+    }
+
+    private fun getCache(position: Int) {
+        findBeanByPosition(position)?.run {
             flowAsyncWorkOnLaunch {
-                appRepository.getPlayUrl(url)
+                appRepository.getPlayUrl(id.toString(), url, title, author, pic, true)
                     .onEach {
-                        map[id.toString()] = it
-                        map.takeIf { m ->
-                            m.containsKey(currentMediaID)
-                        }?.let {
-                            map.remove(currentMediaID)
-                        }
-                        logE("缓存到下一曲")
-                    }
-            }
-        }
-        findBeanByPosition(getPrevious(position))?.run {
-            flowAsyncWorkOnLaunch {
-                appRepository.getPlayUrl(url)
-                    .onEach {
-                        map[id.toString()] = it
-                        map.takeIf { m ->
-                            m.containsKey(currentMediaID)
-                        }?.let {
-                            map.remove(currentMediaID)
-                        }
-                        logE("缓存到上一曲")
+                        logE("缓存了:${title}")
                     }
             }
         }
@@ -148,14 +131,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
             it.takeIf {
                 mediaId.toLong() == it.id
             }?.let {
-                if (map.containsKey(mediaId)) {
-                    metadataPrepareCompletion.postValue(map[mediaId])
-                    logE("getPlayUrlFromMediaID 取到缓存的下一曲 ")
-                    getCacheURL(position, mediaId)
-                } else {
-                    playPosition(position)
-                }
-                logE("getPlayUrl mediaId $mediaId picurl:${it.pic}")
+                playPosition(position)
                 return@forEachIndexed
             }
         }

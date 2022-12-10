@@ -84,6 +84,11 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
         appViewModel.get().getPlayUrlFromMediaID(mediaId)
     }
 
+    override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
+        super.onPrepareFromUri(uri, playWhenReady, extras)
+        
+    }
+
     override fun playNext() {
         appViewModel.get().playNext()
     }

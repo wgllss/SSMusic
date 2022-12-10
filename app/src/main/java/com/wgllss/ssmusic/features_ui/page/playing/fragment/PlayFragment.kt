@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
@@ -29,6 +30,7 @@ import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
 
@@ -78,20 +80,22 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             mater_music_name.text = it!!.title
             iv_center.loadUrl(it.albumArtUri)
-            Glide.with(this).asBitmap().load(it.albumArtUri).into(object : SimpleTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    resource?.let { it ->
-                        Palette.from(it).generate { p ->
-                            p?.lightMutedSwatch?.let { s ->
-                                binding.layoutPlayBg.setBackgroundColor(s.rgb)
-                                mater_music_name.setTextColor(s.titleTextColor)
-                                tv_total_time.setTextColor(s.bodyTextColor)
-                                tv_current_time.setTextColor(s.bodyTextColor)
+            Glide.with(this).asBitmap()
+                .load(it.albumArtUri)
+                .into(object : SimpleTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        resource?.let { it ->
+                            Palette.from(it).generate { p ->
+                                p?.lightMutedSwatch?.let { s ->
+                                    binding.layoutPlayBg.setBackgroundColor(s.rgb)
+                                    mater_music_name.setTextColor(s.titleTextColor)
+                                    tv_total_time.setTextColor(s.bodyTextColor)
+                                    tv_current_time.setTextColor(s.bodyTextColor)
+                                }
                             }
                         }
                     }
-                }
-            })
+                })
         }
 
         viewModel.playbackState.observe(viewLifecycleOwner) {
