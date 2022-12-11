@@ -1,7 +1,6 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import androidx.lifecycle.LiveData
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
@@ -29,7 +28,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
     suspend fun getPlayUrl(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", isQueryCache: Boolean = false): Flow<MusicBean> {
         cache.get()?.get(mediaID)?.let {
             return flow {
-                logE("拿到缓存: $title")
+                WLog.e(this@AppRepository, "拿到缓存: $title")
                 if (!isQueryCache) {
                     val musicBean = MusicBean(title, author, it, pic)
                     musicBean.requestRealUrl = htmlUrl
@@ -38,7 +37,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
             }
         }
         return flow {
-            logE("当前线程: ${Thread.currentThread().name}")
+            WLog.e(this@AppRepository,"当前线程: ${Thread.currentThread().name}")
             val startTime = System.currentTimeMillis()
             val html = musiceApiL.get().getPlayUrl(htmlUrl)
             val baseUrl = "https://www.hifini.com/"
