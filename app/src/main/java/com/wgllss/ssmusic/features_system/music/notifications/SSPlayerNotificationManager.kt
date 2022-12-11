@@ -26,8 +26,8 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.util.Assertions
 import com.google.android.exoplayer2.util.Util
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.SdkIntUtils
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
 import com.wgllss.ssmusic.features_system.globle.Constants.glideOptions
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
@@ -93,7 +93,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     }
 
     private fun handleMessage(msg: Message): Boolean {
-        logE("$TAG currentNotificationTag $currentNotificationTag msg.arg1 :${msg.arg1}")
+        WLog.e(this@SSPlayerNotificationManager, " currentNotificationTag $currentNotificationTag msg.arg1 :${msg.arg1}")
         when (msg.what) {
             MSG_START_OR_UPDATE_NOTIFICATION -> if (player != null) {
                 startOrUpdateNotification(player!!,  /* bitmap= */null)
@@ -196,7 +196,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
             val notificationTag = if (currentIconUrl != artworkUrl) {
                 ++currentNotificationTag
             } else currentNotificationTag
-            logE("$TAG notificationTag: $notificationTag  currentNotificationTag 55 $currentNotificationTag")
+            WLog.e(this@SSPlayerNotificationManager, " notificationTag: $notificationTag  currentNotificationTag 55 $currentNotificationTag")
             largeIcon = mediaLargeBitmapAdapter.getCurrentLargeIcon(artworkUrl, LoadLargeIconBitMapCall(notificationTag))
         }
         if (SdkIntUtils.isLollipop() && player.isPlaying && !player.isPlayingAd && !player.isCurrentMediaItemDynamic && player.playbackParameters.speed == 1f) {
@@ -285,7 +285,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         fun getCurrentLargeIcon(bitmapUrl: String, loadLargeIconBitMapCall: LoadLargeIconBitMapCall): Bitmap? {
 
             return if (currentIconUrl == null || currentIconUrl != bitmapUrl) {
-                logE("$TAG 去异步加载 bitmap")
+                WLog.e(this@SSPlayerNotificationManager, " 去异步加载 bitmap")
                 currentIconUrl = bitmapUrl
                 serviceScope.launch {
                     currentBitmap = null
@@ -298,7 +298,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 }
                 null
             } else {
-                logE("$TAG 已经拿到了bitmap")
+                WLog.e(this@SSPlayerNotificationManager, " 已经拿到了bitmap")
                 currentBitmap
             }
         }
@@ -318,7 +318,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
     inner class LoadLargeIconBitMapCall(private val notificationTag: Int) {
 
         fun onBitmap(bitmap: Bitmap) {
-            logE("$TAG 异步 bitmap 加载成功 ，通知更新")
+            WLog.e(this@SSPlayerNotificationManager, " 异步 bitmap 加载成功 ，通知更新")
             bitmap?.let { mainHandler.obtainMessage(MSG_UPDATE_NOTIFICATION_BITMAP, notificationTag, C.INDEX_UNSET, bitmap).sendToTarget() }
         }
     }
@@ -331,7 +331,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     Player.EVENT_POSITION_DISCONTINUITY, Player.EVENT_REPEAT_MODE_CHANGED, Player.EVENT_SHUFFLE_MODE_ENABLED_CHANGED, Player.EVENT_MEDIA_METADATA_CHANGED
                 )
             ) {
-                logE("$TAG 00000")
+                WLog.e(this@SSPlayerNotificationManager, " 00000")
                 postStartOrUpdateNotification()
             }
         }

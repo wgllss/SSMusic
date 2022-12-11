@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.ssmusic.core.ex.flowAsyncWorkOnLaunch
 import com.wgllss.ssmusic.core.ex.flowOnIOAndCatch
-import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.datasource.repository.AppRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
@@ -18,6 +18,7 @@ import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -27,6 +28,10 @@ class AppViewModel @Inject constructor(application: Application, private val app
     lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     var currentPosition: Int = 0
+    var currentMediaID = 0L
+
+    //正在网络请求的队列里面 需要等待 避免重复请求
+    val mapRuningRequest by lazy { ConcurrentHashMap<Long, Boolean>() }
 
     //当前播放 数据源 准备完成
     val metadataPrepareCompletion by lazy { MutableLiveData<MusicBean>() }
@@ -59,7 +64,8 @@ class AppViewModel @Inject constructor(application: Application, private val app
             }
             MODE_PLAY_SHUFFLE_ALL -> {
                 liveData.value?.let {
-                    playPosition(Random.nextInt(it.size))
+                    val n = Random.nextInt(it.size)
+                    playPosition(if (n >= 0 && n < liveData.value!!.size) n else 0)
                 }
             }
             MODE_PLAY_REPEAT_SONG -> {
@@ -69,21 +75,42 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     fun playPrevious() {
-        currentPosition?.takeIf {
-            it - 1 >= 0
-        }?.let {
-            playPosition(it - 1)
+        when (MMKVHelp.getPlayMode()) {
+            MODE_PLAY_REPEAT_QUEUE -> {
+                currentPosition.let {
+                    playPosition(if (it - 1 >= 0) it - 1 else liveData.value!!.size - 1)
+                }
+            }
+            MODE_PLAY_SHUFFLE_ALL -> {
+                liveData.value?.let {
+                    val n = Random.nextInt(it.size)
+                    playPosition(if (n >= 0 && n < liveData.value!!.size) n else 0)
+                }
+            }
+            MODE_PLAY_REPEAT_SONG -> {
+                playPosition(currentPosition)
+            }
         }
     }
 
     private fun playPosition(position: Int) {
-        logE("点击：position:${position}")
+        WLog.e(this@AppViewModel, "点击：position:${position}")
         currentPosition = position
         findBeanByPosition(position)?.run {
+            currentMediaID = id
+            if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
+                WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
+                return@run
+            } else
+                mapRuningRequest[id] = true
             viewModelScope.launch {
                 appRepository.getPlayUrl(id.toString(), url, title, author, pic)
                     .onEach {
-                        metadataPrepareCompletion.postValue(it)
+                        if (currentMediaID == it.id) {
+                            metadataPrepareCompletion.postValue(it)
+                            WLog.e(this@AppViewModel, "当前该播放 ${it.title}")
+                        }
+                        mapRuningRequest.remove(it.id)
                     }.flowOnIOAndCatch()
                     .collect()
                 //拿取缓存前2个 后2个
@@ -103,7 +130,6 @@ class AppViewModel @Inject constructor(application: Application, private val app
     }
 
     private fun getCacheURL(position: Int) {
-        //todo 多线程 正在请求时 再次调用需要控制 await 等待 后续处理
         getCache(getNextPosition(position))
         getCache(getPrevious(position))
 
@@ -116,17 +142,26 @@ class AppViewModel @Inject constructor(application: Application, private val app
 
     private fun getCache(position: Int) {
         findBeanByPosition(position)?.run {
+            if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
+                WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
+                return@run
+            } else
+                mapRuningRequest[id] = true
             flowAsyncWorkOnLaunch {
-                appRepository.getPlayUrl(id.toString(), url, title, author, pic, true)
+                appRepository.getPlayUrl(id.toString(), url, title, author, pic)
                     .onEach {
-                        logE("缓存了:${title}")
+                        if (currentMediaID == it.id) {
+                            metadataPrepareCompletion.postValue(it)
+                            WLog.e(this@AppViewModel, "当前该播放:${title}")
+                        } else
+                            WLog.e(this@AppViewModel, "缓存了:${title}")
+                        mapRuningRequest.remove(it.id)
                     }
             }
         }
     }
 
     fun getPlayUrlFromMediaID(mediaId: String) {
-        logE("getPlayUrl mediaId $mediaId")
         liveData.value?.forEachIndexed { position, it ->
             it.takeIf {
                 mediaId.toLong() == it.id

@@ -38,6 +38,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
             }
         }
         return flow {
+            logE("当前线程: ${Thread.currentThread().name}")
             val startTime = System.currentTimeMillis()
             val html = musiceApiL.get().getPlayUrl(htmlUrl)
             val baseUrl = "https://www.hifini.com/"

@@ -10,13 +10,11 @@ import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
 import com.wgllss.ssmusic.features_system.services.MusicService
-import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -61,7 +59,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
 
     private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
     private val mediaBrowser = MediaBrowserCompat(context, ComponentName(context, MusicService::class.java), mediaBrowserConnectionCallback, null).apply {
-        Log.e("TAG", "MusicService   connect() thead ${Thread.currentThread().name}")
+        WLog.e(this@MusicServiceConnection, "MusicService   connect() thead ${Thread.currentThread().name}")
         connect()
     }
     private lateinit var mediaController: MediaControllerCompat
@@ -94,7 +92,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
 
     private inner class MediaBrowserConnectionCallback(private val context: Context) : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            Log.e("TAG", "MusicService   onConnected() thead ${Thread.currentThread().name}")
+            WLog.e(this@MusicServiceConnection, "MusicService   onConnected() thead ${Thread.currentThread().name}")
             mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
             }
@@ -121,7 +119,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
                 it != stateL
             }?.let {
                 stateL = it
-                logE("onPlaybackStateChanged333: state ${state?.state} position:${state} state extras ${state?.extras}")
+                WLog.e(this@MusicServiceConnection, "onPlaybackStateChanged333: state ${state?.state} position:${state} state extras ${state?.extras}")
                 playbackState.postValue(state)
             }
         }
@@ -132,7 +130,6 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
             }?.let {
                 mediaID = it.id ?: ""
                 duration = it.duration
-                logE("mediaId: ${it!!.id} title:${it.title} artist:${it.artist} albumArtUri:${it.albumArtUri} duration :${it.duration}")
                 nowPlaying.postValue(it)
             }
         }
@@ -142,7 +139,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
 
         override fun onExtrasChanged(extras: Bundle?) {
             super.onExtrasChanged(extras)
-            logE("onExtrasChanged extras $extras")
+            WLog.e(this@MusicServiceConnection, "onExtrasChanged extras $extras")
         }
 
         override fun onSessionDestroyed() {
