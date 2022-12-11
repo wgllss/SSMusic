@@ -114,13 +114,13 @@ class AppViewModel @Inject constructor(application: Application, private val app
                             metadataPrepareCompletion.postValue(it)
                             WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
                         }
-                    }.flowOn(Dispatchers.IO)
+                        mapRuningRequest.remove(it.id)
+                    }
                     .catch {
                         mapRuningRequest.remove(id)
                         it.printStackTrace()
-                    }.onCompletion {
-                        mapRuningRequest.remove(id)
-                    }.collect()
+                    }.flowOn(Dispatchers.IO)
+                    .collect()
             }
         }
         getCacheURL(position)
@@ -248,13 +248,13 @@ class AppViewModel @Inject constructor(application: Application, private val app
                             WLog.e(this@AppViewModel, "当前该播放 cache  position:$position  ${title}")
                         } else
                             WLog.e(this@AppViewModel, "缓存了:${title}")
-                    }.flowOn(Dispatchers.IO)
+                        mapRuningRequest.remove(it.id)
+                    }
                     .catch {
                         mapRuningRequest.remove(id)
                         it.printStackTrace()
-                    }.onCompletion {
-                        mapRuningRequest.remove(id)
-                    }.collect()
+                    }.flowOn(Dispatchers.IO)
+                    .collect()
             }
         }
     }
