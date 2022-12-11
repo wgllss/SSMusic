@@ -69,6 +69,7 @@
             android:layout_height="50dp"
             android:layout_marginRight="30dp"
             android:gravity="center_vertical|right"
+            android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="32dp"
             app:layout_constraintLeft_toRightOf="@id/txt_time"
