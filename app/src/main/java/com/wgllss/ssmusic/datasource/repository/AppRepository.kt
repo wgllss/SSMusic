@@ -25,19 +25,17 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
     /**
      * 得到播放地址
      */
-    suspend fun getPlayUrl(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", isQueryCache: Boolean = false): Flow<MusicBean> {
+    suspend fun getPlayUrl(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = ""): Flow<MusicBean> {
         cache.get()?.get(mediaID)?.let {
             return flow {
                 WLog.e(this@AppRepository, "拿到缓存: $title")
-                if (!isQueryCache) {
-                    val musicBean = MusicBean(title, author, it, pic)
-                    musicBean.requestRealUrl = htmlUrl
-                    emit(musicBean)
-                }
+                val musicBean = MusicBean(title, author, it, pic)
+                musicBean.requestRealUrl = htmlUrl
+                emit(musicBean)
             }
         }
         return flow {
-            WLog.e(this@AppRepository,"当前线程: ${Thread.currentThread().name}")
+            WLog.e(this@AppRepository, "当前线程: ${Thread.currentThread().name}")
             val startTime = System.currentTimeMillis()
             val html = musiceApiL.get().getPlayUrl(htmlUrl)
             val baseUrl = "https://www.hifini.com/"
@@ -95,9 +93,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
                     cache.get()?.put(it.id.toString(), it.url)
                 }
             }
-            if (!isQueryCache) {
-                emit(it)
-            }
+            emit(it)
         }
     }
 }

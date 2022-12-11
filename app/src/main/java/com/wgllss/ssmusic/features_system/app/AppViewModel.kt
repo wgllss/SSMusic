@@ -17,6 +17,7 @@ import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
@@ -113,9 +114,13 @@ class AppViewModel @Inject constructor(application: Application, private val app
                             metadataPrepareCompletion.postValue(it)
                             WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
                         }
-                        mapRuningRequest.remove(it.id)
-                    }.flowOnIOAndCatch()
-                    .collect()
+                    }.flowOn(Dispatchers.IO)
+                    .catch {
+                        mapRuningRequest.remove(id)
+                        it.printStackTrace()
+                    }.onCompletion {
+                        mapRuningRequest.remove(id)
+                    }.collect()
             }
         }
         getCacheURL(position)
@@ -235,7 +240,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
                 return@run
             } else
                 mapRuningRequest[id] = true
-            flowAsyncWorkOnLaunch {
+            viewModelScope.launch {
                 appRepository.getPlayUrl(id.toString(), url, title, author, pic)
                     .onEach {
                         if (currentMediaID == it.id) {
@@ -243,8 +248,13 @@ class AppViewModel @Inject constructor(application: Application, private val app
                             WLog.e(this@AppViewModel, "当前该播放 cache  position:$position  ${title}")
                         } else
                             WLog.e(this@AppViewModel, "缓存了:${title}")
-                        mapRuningRequest.remove(it.id)
-                    }
+                    }.flowOn(Dispatchers.IO)
+                    .catch {
+                        mapRuningRequest.remove(id)
+                        it.printStackTrace()
+                    }.onCompletion {
+                        mapRuningRequest.remove(id)
+                    }.collect()
             }
         }
     }
