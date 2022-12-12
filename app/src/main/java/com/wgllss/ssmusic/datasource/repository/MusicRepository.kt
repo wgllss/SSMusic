@@ -1,7 +1,6 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import androidx.lifecycle.LiveData
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
@@ -157,10 +156,10 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
     suspend fun addToPlayList(it: MusicBean): Flow<Long> {
         return flow {
             it.run {
-                logE("addToPlayList id: ${it.id} requestRealUrl $requestRealUrl")
+                WLog.e(this@MusicRepository, "addToPlayList id: ${it.id} requestRealUrl $requestRealUrl")
                 val count = mSSDataBaseL.get().musicDao().queryByUUID(it.id)
                 if (count > 0) {
-                    logE("已经在播放列表里面")
+                    WLog.e(this@MusicRepository, "已经在播放列表里面")
                 } else {
                     val bean = MusicTabeBean(it.id, title, author, requestRealUrl, pic, System.currentTimeMillis())
                     mSSDataBaseL.get().musicDao().insertMusicBean(bean)
@@ -171,7 +170,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
     }
 
     suspend fun deledeFromId(id: Long) = flow {
-        logE("deledeFromId id: $id")
+        WLog.e(this, "deledeFromId id: $id")
         mSSDataBaseL.get().musicDao().deleteFromID(id)
         emit(0)
     }

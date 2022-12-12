@@ -25,8 +25,8 @@ import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.SdkIntUtils
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.notifications.NotificationListener
@@ -150,7 +150,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     }
 
     override fun onPrepareFromSearch(query: String, playWhenReady: Boolean, extras: Bundle?) {
-        logE("onPrepareFromSearch query: $query playWhenReady: $playWhenReady  extras:$extras ")
+        WLog.e(this, "onPrepareFromSearch query: $query playWhenReady: $playWhenReady  extras:$extras ")
     }
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
@@ -191,17 +191,17 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                     if (playbackState == Player.STATE_READY) {
                         if (playWhenReady) {
                         }
-                        logE("onPlayerStateChanged duration: ${exoPlayer.duration}")
+                        WLog.e(this@MusicComponent, "onPlayerStateChanged duration: ${exoPlayer.duration}")
                         setPlaybackState(PlaybackStateCompat.STATE_PLAYING)
                     }
                     notificationManager.showNotificationForPlayer(exoPlayer)
                 }
                 Player.STATE_ENDED -> {
-                    logE("单曲播放结束，可以下一首")
+                    WLog.e(this@MusicComponent, "单曲播放结束，可以下一首")
                     playNext()
                 }
                 else -> {
-                    logE("hideNotification ")
+                    WLog.e(this@MusicComponent, "hideNotification ")
 //                    notificationManager.hideNotification()
                 }
             }

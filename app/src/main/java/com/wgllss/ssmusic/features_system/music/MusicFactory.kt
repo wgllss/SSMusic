@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import androidx.media.MediaBrowserServiceCompat
-import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.services.MusicService
@@ -36,7 +36,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
 
     override fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         if (MEDIA_ID_ROOT == parentId) {
-            logE("onLoadChildren parentId 333: $parentId")
+            WLog.e(this, "onLoadChildren parentId 333: $parentId")
             appViewModel.get().isInitSuccess.observe(this) {
                 it.takeIf {
                     it == true
@@ -60,15 +60,15 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
                                 try {
                                     result.sendResult(child)
                                     mSendResultCalled = true
-                                    logE(" result.sendResult(child) $parentId  ")
+                                    WLog.e(this@MusicFactory, " result.sendResult(child) $parentId  ")
                                 } catch (e: Exception) {
                                     mSendResultCalled = false
-                                    logE("Exception e： ${e.message}")
+                                    WLog.e(this@MusicFactory, "Exception e： ${e.message}")
                                 }
                             } else {
                                 mSendResultCalled = false
                                 musicService.notifyChildrenChanged(parentId)
-                                logE("notifyChildrenChanged $parentId  ")
+                                WLog.e(this@MusicFactory, "notifyChildrenChanged $parentId  ")
                             }
                         }
                     }
@@ -80,7 +80,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
     }
 
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
-        logE("onPrepareFromMediaId mediaId: $mediaId playWhenReady: $playWhenReady  extras:${Thread.currentThread().name}")
+        WLog.e(this, "onPrepareFromMediaId mediaId: $mediaId playWhenReady: $playWhenReady  extras:${Thread.currentThread().name}")
         appViewModel.get().getPlayUrlFromMediaID(mediaId)
     }
 
