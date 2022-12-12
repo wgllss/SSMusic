@@ -138,7 +138,9 @@ dependencies {
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 
     //高斯模糊
-    implementation 'jp.wasabeef:glide-transformations:2.0.1'
+//    implementation 'jp.wasabeef:glide-transformations:2.0.1'
+    //边播放边缓存
+//    implementation 'com.danikula:videocache:2.7.0'
 
 
     def exoplayer_version = '2.18.0'

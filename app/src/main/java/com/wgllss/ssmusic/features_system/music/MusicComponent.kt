@@ -20,6 +20,7 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.media.MediaBrowserServiceCompat
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.PlaybackException
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -216,6 +217,14 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                     putLong(METADATA_KEY_DURATION, exoPlayer.duration)
                 })
             }.build())
+        }
+
+        override fun onPlayerError(error: PlaybackException) {
+            super.onPlayerError(error)
+            playNext()
+            error?.message?.let {
+                WLog.e(this@MusicComponent, it)
+            }
         }
     }
 
