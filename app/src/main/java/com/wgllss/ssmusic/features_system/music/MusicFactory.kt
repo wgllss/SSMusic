@@ -86,7 +86,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
         super.onPrepareFromUri(uri, playWhenReady, extras)
-        
+        appViewModel.get().getCacheURL()
     }
 
     override fun playNext() {

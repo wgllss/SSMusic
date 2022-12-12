@@ -196,7 +196,7 @@ class AppViewModel @Inject constructor(application: Application, private val app
      * 缓存 自动播放 或者 快速点击上下一曲 避免 点击时才请求 播放链接
      * @param position：当前位置
      */
-    private fun getCacheURL(position: Int) {
+    fun getCacheURL(position: Int = currentPosition) {
         val next1 = getNextPosition(position)
         val next2 = getNextPosition(position + 1)
         val next3 = getNextPosition(position + 2)
