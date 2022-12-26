@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat.*
@@ -15,7 +14,6 @@ import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wgllss.ssmusic.R
@@ -23,14 +21,12 @@ import com.wgllss.ssmusic.core.adapter.BasePagerAdapter
 import com.wgllss.ssmusic.core.ex.dpToPx
 import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.ex.loadUrl
-import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
-import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
 

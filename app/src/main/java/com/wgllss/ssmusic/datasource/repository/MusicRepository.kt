@@ -1,6 +1,5 @@
 package com.wgllss.ssmusic.datasource.repository
 
-import androidx.lifecycle.LiveData
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
@@ -173,9 +172,5 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
         WLog.e(this, "deledeFromId id: $id")
         mSSDataBaseL.get().musicDao().deleteFromID(id)
         emit(0)
-    }
-
-    suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> = flow {
-        emit(mSSDataBaseL.get().musicDao().getList())
     }
 }

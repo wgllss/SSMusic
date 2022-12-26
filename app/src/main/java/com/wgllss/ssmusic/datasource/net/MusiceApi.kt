@@ -14,7 +14,6 @@ interface MusiceApi {
     @GET("https://www.hifini.com/search-{keyword}-1.htm")
     suspend fun searchKeyByTitle(@Path("keyword") keyword: String): String
 
-
     @GET
     suspend fun getPlayUrl(@Url url: String): String
 
