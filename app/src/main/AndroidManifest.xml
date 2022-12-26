@@ -7,9 +7,13 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.REORDER_TASKS" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
@@ -92,9 +96,9 @@
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"
                 android:value="androidx.startup" />
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"-->
-            <!--                android:value="androidx.startup" />-->
+            <meta-data
+                android:name="com.wgllss.ssmusic.features_system.startup.LoadPluginInitiallzer"
+                android:value="androidx.startup" />
         </provider>
 
         <service

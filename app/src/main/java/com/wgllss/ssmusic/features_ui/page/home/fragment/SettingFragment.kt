@@ -77,15 +77,29 @@ class SettingFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel, Fr
     }
 
     private fun setNotificationPermissions() {
+        XXPermissions.with(requireActivity()) // 适配分区存储应该这样写
+            //.permission(Permission.Group.STORAGE)
+            // 不适配分区存储应该这样写
+            .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+            .interceptor(PermissionInterceptor())
+            .request(OnPermissionCallback { permissions, all ->
+                if (!all) {
+                    return@OnPermissionCallback
+                }
+//                toast("获取" + PermissionNameConvert.getPermissionString(this@MainActivity, permissions).toString() + "成功")
+            })
+
         XXPermissions.with(requireActivity())
             .permission(Permission.NOTIFICATION_SERVICE)
-            .interceptor(object : PermissionInterceptor() {
-                override fun deniedPermissions(activity: Activity, allPermissions: List<String>, deniedPermissions: List<String>, never: Boolean, callback: OnPermissionCallback?) {
-                    super.deniedPermissions(activity, allPermissions, deniedPermissions, never, callback)
-                    settingViewModelL.value.setNotificationOpen(false)
-                }
-            })
-            .request(OnPermissionCallback { permissions, all ->
+            .interceptor(
+                object : PermissionInterceptor() {
+                    override fun deniedPermissions(activity: Activity, allPermissions: List<String>, deniedPermissions: List<String>, never: Boolean, callback: OnPermissionCallback?) {
+                        super.deniedPermissions(activity, allPermissions, deniedPermissions, never, callback)
+                        settingViewModelL.value.setNotificationOpen(false)
+                    }
+                })
+            .request(OnPermissionCallback
+            { permissions, all ->
                 if (!all) {
                     settingViewModelL.value.setNotificationOpen(false)
                     return@OnPermissionCallback

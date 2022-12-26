@@ -12,8 +12,21 @@ object FileUtils {
 
     fun getSDPath(): String = if (sdCardExist) environmentGetExternalStorageDirectory else ""
 
-    fun getDBPath(): String {
+    fun getSDPathByRootFile(rootFileName: String): String {
+        val sdCardPath: String = getSDPath()
+        if (TextUtils.isEmpty(sdCardPath)) {
+            logE("SD 卡不存在")
+            return ""
+        } else {
+            val sb = StringBuilder()
+            sb.append(sdCardPath)
+            sb.append(File.separator)
+            sb.append(rootFileName)
+            return sb.toString()
+        }
+    }
 
+    fun getDBPath(): String {
         val sdCardPath: String = getSDPath()
         if (TextUtils.isEmpty(sdCardPath)) {
             logE("SD 卡不存在")
