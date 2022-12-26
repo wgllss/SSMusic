@@ -6,7 +6,6 @@ import com.wgllss.dynamic.host.library.DataSourcePluginMangerImpl
 import com.wgllss.music.datasourcelibrary.data.MusicBean
 import com.wgllss.music.datasourcelibrary.data.MusicItemBean
 import com.wgllss.music.datasourcelibrary.datasource.MusicSourceManager
-import com.wgllss.ssmusic.core.units.WLog
 
 class DynamicDataSourcePluginManager constructor(private val context: Context, private val dexPath: String) : MusicSourceManager {
 

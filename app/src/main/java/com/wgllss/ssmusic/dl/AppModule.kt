@@ -21,40 +21,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 class AppModule {
-//    private val base_url = "https://www.hifini.com/"
-//
-//    @Provides
-//    @Singleton
-//    fun provideRetrofit(@ApplicationContext application: Context): Retrofit {
-//        val logging = HttpLoggingInterceptor().apply {
-//            level = HttpLoggingInterceptor.Level.BODY
-//        }
-//        val timeout = 30000L
-//        val okHttpClient = OkHttpClient.Builder()
-//            .addInterceptor(HeaderInterceptor())
-//            .addInterceptor(logging)
-////            .addInterceptor(RetrofitClient.BaseUrlInterceptor())
-//            .callTimeout(timeout, TimeUnit.MILLISECONDS)
-//            //设置连接超时
-//            .connectTimeout(timeout, TimeUnit.MILLISECONDS)
-//            //设置从主机读信息超时
-//            .readTimeout(timeout, TimeUnit.MILLISECONDS)
-//            //设置写信息超时
-//            .writeTimeout(timeout, TimeUnit.MILLISECONDS)
-//            .retryOnConnectionFailure(true)//设置出现错误进行重新连接。
-//            .cache(Cache(application.cacheDir, 50 * 1024 * 1024)) //10M cache
-//            .build();
-//        return Retrofit.Builder()
-//            .client(okHttpClient)
-//            .addConverterFactory(ScalarsConverterFactory.create())
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .baseUrl(base_url)
-//            .build()
-//    }
-//
-//    @Provides
-//    @Singleton
-//    fun provideApiService(retrofit: Retrofit): MusiceApi = retrofit.create(MusiceApi::class.java)
 
     @Provides
     @Singleton
