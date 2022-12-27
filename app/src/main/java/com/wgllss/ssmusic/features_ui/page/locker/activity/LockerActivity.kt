@@ -1,7 +1,6 @@
 package com.wgllss.ssmusic.features_ui.page.locker.activity
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import com.wgllss.ssmusic.R
