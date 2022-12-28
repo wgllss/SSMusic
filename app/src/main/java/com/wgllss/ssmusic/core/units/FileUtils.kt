@@ -2,7 +2,6 @@ package com.wgllss.ssmusic.core.units
 
 import android.os.Environment
 import android.text.TextUtils
-import com.wgllss.ssmusic.core.ex.logE
 import java.io.File
 
 object FileUtils {
@@ -14,23 +13,23 @@ object FileUtils {
 
     fun getSDPathByRootFile(rootFileName: String): String {
         val sdCardPath: String = getSDPath()
-        if (TextUtils.isEmpty(sdCardPath)) {
-            logE("SD 卡不存在")
-            return ""
+        return if (TextUtils.isEmpty(sdCardPath)) {
+            WLog.e(this, "SD 卡不存在")
+            ""
         } else {
             val sb = StringBuilder()
             sb.append(sdCardPath)
             sb.append(File.separator)
             sb.append(rootFileName)
-            return sb.toString()
+            sb.toString()
         }
     }
 
     fun getDBPath(): String {
         val sdCardPath: String = getSDPath()
-        if (TextUtils.isEmpty(sdCardPath)) {
-            logE("SD 卡不存在")
-            return ""
+        return if (TextUtils.isEmpty(sdCardPath)) {
+            WLog.e(this, "SD 卡不存在")
+            ""
         } else {
             val sb = StringBuilder()
             sb.append(sdCardPath)
@@ -41,7 +40,7 @@ object FileUtils {
             sb.append(File.separator)
             sb.append(".db")
             sb.append(File.separator)
-            return sb.toString()
+            sb.toString()
         }
     }
 
@@ -54,7 +53,7 @@ object FileUtils {
         if (!this::dbPath.isInitialized || dbPath.isNullOrEmpty()) {
             val sdCardPath: String = getSDPath()
             if (TextUtils.isEmpty(sdCardPath)) {
-                logE("SD 卡不存在")
+                WLog.e(this, "SD 卡不存在")
                 return ""
             } else {
                 val sb = StringBuilder()
@@ -71,7 +70,7 @@ object FileUtils {
                     file.mkdirs()
                 }
                 sb.append(dbName)
-                logE("sb:${sb.toString()}")
+                WLog.e(this, "sb:${sb.toString()}")
                 dbPath = sb.toString()
                 return dbPath
             }
@@ -83,7 +82,7 @@ object FileUtils {
     fun getPathDirs(path: String): String {
         val sdCardPath: String = getSDPath()
         if (TextUtils.isEmpty(sdCardPath)) {
-            logE("SD 卡不存在")
+            WLog.e(this, "SD 卡不存在")
             return ""
         } else {
             path?.let {
@@ -97,6 +96,32 @@ object FileUtils {
                 }
                 return sb.toString()
             }
+        }
+    }
+
+    /**
+     * 获取SD卡上的文件 路径
+     * @param fileDirs :路径目录
+     * @param fileName ：文件名称
+     */
+    fun getFilePath(fileDirs: String, fileName: String): String {
+        val sdCardPath: String = getSDPath()
+        return if (TextUtils.isEmpty(sdCardPath)) {
+            WLog.e(this, "SD 卡不存在")
+            ""
+        } else {
+            val sb = StringBuilder()
+            sb.append(sdCardPath)
+            sb.append(File.separator)
+            sb.append(fileDirs)
+            val file = File(sb.toString())
+            if (!file.exists()) {
+                file.mkdirs()
+            }
+            sb.append(File.separator)
+            sb.append(fileName)
+            WLog.e(this, "fileName:路径: $:${sb.toString()}")
+            sb.toString()
         }
     }
 }

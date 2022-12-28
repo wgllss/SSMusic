@@ -4,11 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import androidx.databinding.library.BuildConfig
 import androidx.startup.Initializer
 import com.wgllss.ssmusic.core.activity.ActivityManager
 import com.wgllss.ssmusic.core.units.LogTimer
-//import com.wgllss.ssmusic.core.widget.ViewServer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

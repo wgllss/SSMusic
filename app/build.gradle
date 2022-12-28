@@ -148,4 +148,7 @@ dependencies {
 //    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
 //    implementation "com.google.android.exoplayer:extension-cast:$exoplayer_version"
+
+    //断点续传 协程 chanle 下载
+    implementation 'com.github.LetMeOff:SimpleDownload:v1.0.0'
 }

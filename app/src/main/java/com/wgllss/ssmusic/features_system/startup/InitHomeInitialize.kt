@@ -4,10 +4,8 @@ import android.content.Context
 import androidx.startup.Initializer
 import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.system.measureTimeMillis
 
 class InitHomeInitialize : Initializer<Unit> {
 
@@ -16,16 +14,7 @@ class InitHomeInitialize : Initializer<Unit> {
     override fun create(context: Context) {
         LogTimer.LogE(this, "create")
         GlobalScope.launch {
-//            val appViewModelL = async(Dispatchers.IO) {
-//                InitializerEntryPoint.resolve(context).injectAppViewModel().get()
-//            }
-            val time = measureTimeMillis {
-                NavigationConfig.getDestConfig()
-//                AppConfig.getDestConfig(context)
-            }
-//            appViewModelL.await().installHomeJson.postValue(true)
-            WLog.e(this@InitHomeInitialize, "time ${time} ms")
-            LogTimer.LogE(this@InitHomeInitialize, "getDestConfig")
+            NavigationConfig.getDestConfig()
         }
     }
 }

@@ -177,7 +177,7 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
 
         builder?.apply {
             setStyle(style)
-            setSmallIcon(R.drawable.loading_logo)
+            setSmallIcon(R.mipmap.icon_launcher)
             setOngoing(ongoing)
 //            setContentIntent(retrievePlaybackAction(ACTION_CONTENT))
             setContentIntent(mediaSession.controller.sessionActivity)
