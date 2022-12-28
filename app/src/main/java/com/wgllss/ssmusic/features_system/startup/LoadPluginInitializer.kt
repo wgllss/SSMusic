@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import java.io.File
 
 class LoadPluginInitializer : Initializer<Unit> {
-    
+
     override fun create(context: Context) {
         GlobalScope.launch(Dispatchers.IO) {
             SimpleDownload.instance.init(context)
