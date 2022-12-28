@@ -13,9 +13,7 @@ import kotlinx.coroutines.flow.onEach
 import java.io.File
 
 class LoadPluginInitializer : Initializer<Unit> {
-    private val serviceJob by lazy { SupervisorJob() }
-    private val serviceScope by lazy { CoroutineScope(Dispatchers.IO + serviceJob) }
-
+    
     override fun create(context: Context) {
         GlobalScope.launch(Dispatchers.IO) {
             SimpleDownload.instance.init(context)
@@ -31,7 +29,7 @@ class LoadPluginInitializer : Initializer<Unit> {
                 DynamicDataSourcePluginManagerUser.getInstance(context, file.absolutePath)
                 WLog.e(this@LoadPluginInitializer, "文件已经存在:${file.absolutePath}")
             } else {
-                val downloadTask = serviceScope.download(url, fileName, file.parent)
+                val downloadTask = download(url, fileName, file.parent)
                 var isSucceed = 0
                 //状态监听
                 downloadTask.state().onEach {
@@ -51,11 +49,11 @@ class LoadPluginInitializer : Initializer<Unit> {
                             WLog.e(this@LoadPluginInitializer, "$fileName: 下载成功")
                         }
                     }
-                }.launchIn(serviceScope)
+                }.launchIn(this)
                 //进度监听
                 downloadTask.progress().onEach {
                     WLog.e(this@LoadPluginInitializer, "$fileName: progress : ${it.percentStr()}")
-                }.launchIn(serviceScope)
+                }.launchIn(this)
                 //开始下载任务
                 downloadTask.start()
             }
