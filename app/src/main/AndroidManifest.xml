@@ -96,7 +96,7 @@
                 android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"
                 android:value="androidx.startup" />
             <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.LoadPluginInitiallzer"
+                android:name="com.wgllss.ssmusic.features_system.startup.LoadPluginInitializer"
                 android:value="androidx.startup" />
         </provider>
 
