@@ -29,6 +29,7 @@
             android:layout_gravity="top|left"
             android:layout_marginTop="36dp"
             android:gravity="center"
+            android:theme="@style/Theme.SSMusic"
             android:text="播放列表"
             android:textColor="@color/white"
             android:textSize="20dp" />

@@ -30,8 +30,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layout.activity_home) {
-    @Inject
-    lateinit var mSSDataBaseL: Lazy<SSDataBase>
+
+//    @Inject
+//    lateinit var mSSDataBaseL: Lazy<SSDataBase>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
@@ -39,7 +40,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
     }
 
     override fun initControl(savedInstanceState: Bundle?) {
-        mSSDataBaseL.get()
+//        mSSDataBaseL.get()
         super.initControl(savedInstanceState)
         val fragment = supportFragmentManager.findFragmentById(R.id.fmt_main)
         val navController = NavHostFragment.findNavController(fragment!!)

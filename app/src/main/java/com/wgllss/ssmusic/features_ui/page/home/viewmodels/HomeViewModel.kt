@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
@@ -39,7 +40,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     val rootMediaId: LiveData<String> =
         Transformations.map(musicServiceConnectionL.get().isConnected) { isConnected ->
             if (isConnected) {
-                WLog.e(this@HomeViewModel, "isConnected $isConnected   musicServiceConnection.rootMediaId：${musicServiceConnectionL.get().rootMediaId} ${Thread.currentThread().name}")
+                LogTimer.LogE(this@HomeViewModel, "isConnected")
                 musicServiceConnectionL.get().rootMediaId
             } else {
                 null
@@ -75,7 +76,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     fun subscribeByMediaID(mediaId: String) {
         musicServiceConnectionL.get().run {
-            WLog.e(this@HomeViewModel, "MusicService    it.subscribe(mediaId, subscriptionCallback) ${Thread.currentThread().name} ")
+            LogTimer.LogE(this@HomeViewModel, "subscribeByMediaID")
             subscribe(mediaId, subscriptionCallback)
             playbackState.observeForever(playbackStateObserver)
         }

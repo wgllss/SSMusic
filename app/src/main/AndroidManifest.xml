@@ -43,11 +43,11 @@
             android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"
             android:exported="true"
             android:theme="@style/LauncherTheme">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+            <!--            <intent-filter>-->
+            <!--                <action android:name="android.intent.action.MAIN" />-->
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+            <!--            </intent-filter>-->
         </activity>
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
@@ -85,9 +85,9 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false">
-            <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"
-                android:value="androidx.startup" />
+            <!--            <meta-data-->
+            <!--                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"-->
+            <!--                android:value="androidx.startup" />-->
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"
                 android:value="androidx.startup" />
@@ -97,9 +97,9 @@
             <!--            <meta-data-->
             <!--                android:name="com.wgllss.ssmusic.features_system.startup.AndroidServiceInitializer"-->
             <!--                android:value="androidx.startup" />-->
-            <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"
-                android:value="androidx.startup" />
+            <!--            <meta-data-->
+            <!--                android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"-->
+            <!--                android:value="androidx.startup" />-->
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.LoadPluginInitializer"
                 android:value="androidx.startup" />

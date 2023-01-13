@@ -11,6 +11,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.MutableLiveData
+import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
@@ -59,12 +60,13 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
 
     private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
     private val mediaBrowser = MediaBrowserCompat(context, ComponentName(context, MusicService::class.java), mediaBrowserConnectionCallback, null).apply {
-        WLog.e(this@MusicServiceConnection, "MusicService   connect() thead ${Thread.currentThread().name}")
+        LogTimer.LogE(this, "MusicService connect")
         connect()
     }
     private lateinit var mediaController: MediaControllerCompat
 
     fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
+        LogTimer.LogE(this, "mediaBrowser.subscribe")
         mediaBrowser.subscribe(parentId, callback)
     }
 

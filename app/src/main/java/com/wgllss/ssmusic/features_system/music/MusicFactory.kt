@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
@@ -36,7 +37,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
 
     override fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         if (MEDIA_ID_ROOT == parentId) {
-            WLog.e(this, "onLoadChildren parentId 333: $parentId")
+            LogTimer.LogE(this, "onLoadChildren")
             appViewModel.get().isInitSuccess.observe(this) {
                 it.takeIf {
                     it == true
