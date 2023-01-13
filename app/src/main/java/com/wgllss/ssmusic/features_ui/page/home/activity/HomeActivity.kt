@@ -19,14 +19,19 @@ import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.widget.navigation.NavGraphBuilder
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
+import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
+import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layout.activity_home) {
+    @Inject
+    lateinit var mSSDataBaseL: Lazy<SSDataBase>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
@@ -34,6 +39,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
     }
 
     override fun initControl(savedInstanceState: Bundle?) {
+        mSSDataBaseL.get()
         super.initControl(savedInstanceState)
         val fragment = supportFragmentManager.findFragmentById(R.id.fmt_main)
         val navController = NavHostFragment.findNavController(fragment!!)

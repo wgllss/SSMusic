@@ -43,17 +43,22 @@
             android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"
             android:exported="true"
             android:theme="@style/LauncherTheme">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity
+            android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
+            android:exported="true"
+            android:theme="@style/LauncherTheme2">
+            <nav-graph android:value="@navigation/nav_graph" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
-            android:theme="@style/Theme.SSMusic"
-            android:exported="true">
-            <nav-graph android:value="@navigation/nav_graph" />
         </activity>
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity"
