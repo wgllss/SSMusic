@@ -43,6 +43,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
         super.initControl(savedInstanceState)
         val fragment = supportFragmentManager.findFragmentById(R.id.fmt_main)
         val navController = NavHostFragment.findNavController(fragment!!)
+        viewModel.rootMediaId.observe(this) {
+            it?.let { viewModel.subscribeByMediaID(it) }
+        }
         NavGraphBuilder.build(this@HomeActivity, navController, fragment.id)
         LogTimer.LogE(this@HomeActivity, "super initControl after")
         AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home, object : OnInflateFinishListener {

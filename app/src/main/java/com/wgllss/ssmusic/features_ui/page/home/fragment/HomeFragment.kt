@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_FLING
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
-import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING
 import com.bumptech.glide.Glide
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
@@ -18,7 +16,6 @@ import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.ex.launchActivity
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
@@ -82,23 +79,16 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
         viewModel.liveData.observe(viewLifecycleOwner) {
             playListAdapterL.get().notifyData(it)
         }
-        viewModel.rootMediaId.observe(viewLifecycleOwner) {
-            it?.let { viewModel.subscribeByMediaID(it) }
-        }
         playListAdapterL.get().setBlockDelete {
             viewModel.deleteFromPlayList(it)
         }
     }
 
-    override fun initObserve() {
-        super.initObserve()
+    override fun onResume() {
+        super.onResume()
         viewModel.currentMediaID.observe(viewLifecycleOwner) {
             playListAdapterL.get().currentMediaID = it
             playListAdapterL.get().notifyDataSetChanged()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 }
