@@ -3,6 +3,11 @@ package com.wgllss.ssmusic.features_ui.page.home.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_FLING
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING
+import com.bumptech.glide.Glide
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.ex.launchActivity
@@ -38,6 +43,20 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
                         viewModel.mediaItemClicked(this, this.description.extras)
                     }
                     activity?.let { it.launchActivity(Intent(it, PlayActivity::class.java)) }
+                }
+            })
+            rvPlList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    when (newState) {
+                        //滑动停止
+                        SCROLL_STATE_IDLE -> activity?.let {
+                            Glide.with(it).resumeRequests()
+                        }
+                        else -> activity?.let {
+                            Glide.with(it).pauseRequests()
+                        }
+                    }
                 }
             })
         }
