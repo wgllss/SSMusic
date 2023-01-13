@@ -71,11 +71,15 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun initObserve() {
+        super.initObserve()
         viewModel.currentMediaID.observe(viewLifecycleOwner) {
             playListAdapterL.get().currentMediaID = it
             playListAdapterL.get().notifyDataSetChanged()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 }

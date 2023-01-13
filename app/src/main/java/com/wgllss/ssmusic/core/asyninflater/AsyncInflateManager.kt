@@ -119,20 +119,18 @@ class AsyncInflateManager private constructor() {
      * 异步里面拿布局，不需要主线程 等待阻塞
      */
     fun getAsynInflatedView(context: Context?, inflateKey: String?, asyncInflateFinlish: OnInflateFinishListener) {
-        threadPool.execute {
-            if (!TextUtils.isEmpty(inflateKey) && mInflateMap.containsKey(inflateKey)) {
-                val item = mInflateMap[inflateKey]
-                val latch = mInflateLatchMap[inflateKey]
-                if (item != null) {
-                    val resultView = item.inflatedView
-                    if (resultView != null) {
-                        //拿到了view直接返回
-                        removeInflateKey(item)
-                        replaceContextForView(resultView, context)
-                        ThreadUtils.runOnUiThread {
-                            asyncInflateFinlish?.onInflateFinished(resultView)
-                        }
-                    }
+        if (!TextUtils.isEmpty(inflateKey) && mInflateMap.containsKey(inflateKey)) {
+            val item = mInflateMap[inflateKey]
+            val latch = mInflateLatchMap[inflateKey]
+            if (item != null) {
+                val resultView = item.inflatedView
+                if (resultView != null) {
+                    //拿到了view直接返回
+                    removeInflateKey(item)
+                    replaceContextForView(resultView, context)
+                    asyncInflateFinlish?.onInflateFinished(resultView)
+                }
+                threadPool.execute {
                     if (item.isInflating() && latch != null) {
                         //没拿到view，但是在inflate中，等待返回
                         try {
@@ -148,11 +146,43 @@ class AsyncInflateManager private constructor() {
                             }
                         }
                     }
-                    //如果还没开始inflate，则设置为false，UI线程进行inflate
-                    item.setCancelled(true)
                 }
             }
         }
+//        threadPool.execute {
+//            if (!TextUtils.isEmpty(inflateKey) && mInflateMap.containsKey(inflateKey)) {
+//                val item = mInflateMap[inflateKey]
+//                val latch = mInflateLatchMap[inflateKey]
+//                if (item != null) {
+//                    val resultView = item.inflatedView
+//                    if (resultView != null) {
+//                        //拿到了view直接返回
+//                        removeInflateKey(item)
+//                        replaceContextForView(resultView, context)
+//                        ThreadUtils.runOnUiThread {
+//                            asyncInflateFinlish?.onInflateFinished(resultView)
+//                        }
+//                    }
+//                    if (item.isInflating() && latch != null) {
+//                        //没拿到view，但是在inflate中，等待返回
+//                        try {
+//                            latch.await()
+//                        } catch (e: InterruptedException) {
+//                        }
+//                        val inflatedView = item.inflatedView
+//                        if (inflatedView != null) {
+//                            removeInflateKey(item)
+//                            replaceContextForView(inflatedView, context)
+//                            ThreadUtils.runOnUiThread {
+//                                asyncInflateFinlish?.onInflateFinished(inflatedView)
+//                            }
+//                        }
+//                    }
+//                    //如果还没开始inflate，则设置为false，UI线程进行inflate
+//                    item.setCancelled(true)
+//                }
+//            }
+//        }
     }
 
     /**
@@ -239,7 +269,7 @@ class AsyncInflateManager private constructor() {
 //                    Log.i(TAG, "inflateWithThreadPool: inflateKey is ${item.inflateKey}, time is ${l}")
                 } catch (e: RuntimeException) {
                     e.printStackTrace()
-                    LogTimer.LogE(this@AsyncInflateManager,e.message.toString())
+                    LogTimer.LogE(this@AsyncInflateManager, e.message.toString())
 //                    Log.e(TAG, "Failed to inflate resource in the background! Retrying on the UI thread", e)
                     onAsyncInflateEnd(item, false)
                 }
