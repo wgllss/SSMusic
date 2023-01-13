@@ -2,16 +2,23 @@ package com.wgllss.ssmusic.features_ui.page.home.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_FLING
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_SETTLING
 import com.bumptech.glide.Glide
 import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
+import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.ex.launchActivity
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
+import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
@@ -30,8 +37,20 @@ class HomeFragment : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layo
 
     override fun activitySameViewModel() = true
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = AsyncInflateManager.instance.getInflatedView(inflater.context, R.layout.fragment_home, container, LaunchInflateKey.home_fragment, inflater)
+        binding = DataBindingUtil.bind(view)!!
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        LogTimer.LogE(this, "onViewCreated")
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        LogTimer.LogE(this, "onActivityCreated")
         binding?.apply {
             viewModel = this@HomeFragment.viewModel
             adapter = playListAdapterL.get()

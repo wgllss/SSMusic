@@ -22,7 +22,8 @@ class AsynInflaterInitializer : Initializer<Unit> {
             AsyncInflateManager.initScreenSize(activity)
             val context: Context = MutableContextWrapper(activity)
             val home = AsyncInflateItem(LaunchInflateKey.home, R.layout.home_buttom_navigation, null, null)
-            AsyncInflateManager.instance.asyncInflate(context, home)
+            val homeFragment = AsyncInflateItem(LaunchInflateKey.home_fragment, R.layout.fragment_home, null, null)
+            AsyncInflateManager.instance.asyncInflate(context, home,homeFragment)
         }
     }
 
