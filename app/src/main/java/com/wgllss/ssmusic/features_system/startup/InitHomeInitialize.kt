@@ -20,7 +20,7 @@ class InitHomeInitialize : Initializer<Unit> {
         LogTimer.LogE(this, "create")
         GlobalScope.launch {
             NavigationConfig.getDestConfig()
-            val rootDir: String = MMKV.initialize(context)
+            MMKV.initialize(context)
             (context.applicationContext as Application).registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(p0: Activity, p1: Bundle?) {
                     ActivityManager.instance.pushActivity(p0)

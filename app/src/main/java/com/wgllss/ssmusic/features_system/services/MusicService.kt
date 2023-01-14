@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.music.MusicFactory
 import dagger.Lazy
@@ -19,9 +20,9 @@ class MusicService : MediaBrowserServiceCompat() {
 
     override fun onCreate() {
         super.onCreate()
+        LogTimer.LogE(this, "onCreate")
         musicFactory.get().onCreate(this)
         sessionToken = musicFactory.get().mediaSession.sessionToken
-
     }
 
     override fun onStart(intent: Intent?, startId: Int) {
@@ -41,6 +42,7 @@ class MusicService : MediaBrowserServiceCompat() {
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
         musicFactory?.get()?.onGetRoot()
+        LogTimer.LogE(this, "onGetRoot")
         return BrowserRoot(MEDIA_ID_ROOT, null)
     }
 

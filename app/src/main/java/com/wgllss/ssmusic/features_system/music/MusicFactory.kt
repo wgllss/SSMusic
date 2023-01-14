@@ -17,7 +17,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 /**
  * 音乐播放工厂，处理多音乐功能，主要负责 播放列表取数据源 ，处理上下一曲数据源
  * appViewModel:主持提供各种数据
@@ -27,9 +26,11 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
 
     override fun onCreate(musicService: MusicService) {
         super.onCreate(musicService)
-        appViewModel.get().queryPlayList()
-        appViewModel.get().metadataPrepareCompletion.observe(this) {
-            preparePlay(it.id.toString(), it.title, it.author, it.pic, it.url)
+        serviceScope.launch {
+            appViewModel.get().queryPlayList()
+            appViewModel.get().metadataPrepareCompletion.observe(this@MusicFactory) {
+                preparePlay(it.id.toString(), it.title, it.author, it.pic, it.url)
+            }
         }
     }
 
@@ -61,7 +62,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
                                 try {
                                     result.sendResult(child)
                                     mSendResultCalled = true
-                                    WLog.e(this@MusicFactory, " result.sendResult(child) $parentId  ")
+                                    LogTimer.LogE(this, " result.sendResult(child)$parentId")
                                 } catch (e: Exception) {
                                     mSendResultCalled = false
                                     WLog.e(this@MusicFactory, "Exception e： ${e.message}")
@@ -69,7 +70,7 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
                             } else {
                                 mSendResultCalled = false
                                 musicService.notifyChildrenChanged(parentId)
-                                WLog.e(this@MusicFactory, "notifyChildrenChanged $parentId  ")
+                                LogTimer.LogE(this, " result.sendResult(child)$parentId")
                             }
                         }
                     }

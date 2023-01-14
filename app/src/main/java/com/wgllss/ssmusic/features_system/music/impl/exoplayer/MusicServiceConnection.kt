@@ -17,6 +17,9 @@ import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
 import com.wgllss.ssmusic.features_system.services.MusicService
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -94,7 +97,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
 
     private inner class MediaBrowserConnectionCallback(private val context: Context) : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            WLog.e(this@MusicServiceConnection, "MusicService   onConnected() thead ${Thread.currentThread().name}")
+            LogTimer.LogE(this@MusicServiceConnection, "MusicService   onConnected() ")
             mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
             }

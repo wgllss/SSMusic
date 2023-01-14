@@ -34,10 +34,7 @@ import com.wgllss.ssmusic.features_system.music.notifications.NotificationListen
 import com.wgllss.ssmusic.features_system.music.notifications.SSPlayerNotificationManager
 import com.wgllss.ssmusic.features_system.services.MusicService
 import com.wgllss.ssmusic.features_ui.page.playing.activity.NotificationTargetActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-
+import kotlinx.coroutines.*
 
 open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionConnector.PlaybackPreparer {
 
@@ -78,7 +75,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
                     PendingIntent.FLAG_UPDATE_CURRENT
                 }
                 val sessionIntent = Intent(context, NotificationTargetActivity::class.java)
-                val sessionActivityPendingIntent = PendingIntent.getActivity(musicService, 0, sessionIntent, pendingFlags)
+                val sessionActivityPendingIntent = PendingIntent.getActivity(context, 0, sessionIntent, pendingFlags)
                 setSessionActivity(sessionActivityPendingIntent)
                 isActive = true
             }
@@ -96,10 +93,12 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     open fun onCreate(musicService: MusicService) {
         mLifecycleRegistry?.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         this.musicService = musicService
-        notificationManager = SSPlayerNotificationManager(musicService, mediaSession, PlayerNotificationListener())
-        notificationManager.showNotificationForPlayer(exoPlayer)
-        mediaSessionConnector.setPlayer(exoPlayer)
-        exoPlayer.clearMediaItems()
+        serviceScope.launch {
+            notificationManager = SSPlayerNotificationManager(musicService, mediaSession, PlayerNotificationListener())
+            notificationManager.showNotificationForPlayer(exoPlayer)
+            mediaSessionConnector.setPlayer(exoPlayer)
+            exoPlayer.clearMediaItems()
+        }
     }
 
     open fun onStart() {
