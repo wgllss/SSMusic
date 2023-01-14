@@ -42,7 +42,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
         }
         NavGraphBuilder.build(this@HomeActivity, navController, fragment.id)
         LogTimer.LogE(this@HomeActivity, "super initControl after")
-        AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home, object : OnInflateFinishListener {
+        AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home_navigation, object : OnInflateFinishListener {
             override fun onInflateFinished(view: View) {
                 LogTimer.LogE(this@HomeActivity, "onInflateFinished")
                 lifecycleScope.launch {
