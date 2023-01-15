@@ -6,7 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
 import com.tencent.mmkv.MMKV
-import com.wgllss.ssmusic.NavigationConfig
+//import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.core.activity.ActivityManager
 import com.wgllss.ssmusic.core.units.LogTimer
 import kotlinx.coroutines.GlobalScope
@@ -17,9 +17,9 @@ class InitHomeInitialize : Initializer<Unit> {
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 
     override fun create(context: Context) {
-        LogTimer.LogE(this, "create")
         GlobalScope.launch {
-            NavigationConfig.getDestConfig()
+            LogTimer.LogE(this@InitHomeInitialize, "create ${Thread.currentThread().name}")
+//            NavigationConfig.getDestConfig()
             MMKV.initialize(context)
             (context.applicationContext as Application).registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(p0: Activity, p1: Bundle?) {

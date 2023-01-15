@@ -37,7 +37,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     val currentMediaID by lazy { MutableLiveData("") }
 
-    val rootMediaId: LiveData<String> =
+    val rootMediaId: LiveData<String> by lazy {
         Transformations.map(musicServiceConnectionL.get().isConnected) { isConnected ->
             if (isConnected) {
                 LogTimer.LogE(this@HomeViewModel, "isConnected")
@@ -46,15 +46,18 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
                 null
             }
         }
+    }
 
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
 
     private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
 
-    private val subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
-        override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
-            liveData.value = children
+    private val subscriptionCallback by lazy {
+        object : MediaBrowserCompat.SubscriptionCallback() {
+            override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
+                liveData.value = children
+            }
         }
     }
 
@@ -72,6 +75,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     }
 
     override fun start() {
+        musicServiceConnectionL.get().startConnect()
     }
 
     fun subscribeByMediaID(mediaId: String) {
@@ -82,8 +86,10 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         }
     }
 
-    private val playbackStateObserver = Observer<PlaybackStateCompat> {
-        currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.get().nowPlaying.value?.id ?: "" else "")
+    private val playbackStateObserver by lazy {
+        Observer<PlaybackStateCompat> {
+            currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.get().nowPlaying.value?.id ?: "" else "")
+        }
     }
 
     fun searchKeyByTitle() {

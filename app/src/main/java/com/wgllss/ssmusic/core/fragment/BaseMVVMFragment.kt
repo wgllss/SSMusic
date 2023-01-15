@@ -23,11 +23,6 @@ abstract class BaseMVVMFragment<VM : BaseViewModel, DB : ViewDataBinding>(@Layou
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding.lifecycleOwner = viewLifecycleOwner
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity?.let {

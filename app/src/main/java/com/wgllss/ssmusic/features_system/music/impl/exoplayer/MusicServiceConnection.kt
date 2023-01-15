@@ -44,28 +44,41 @@ import javax.inject.Singleton
  */
 @Singleton
 class MusicServiceConnection @Inject constructor(@ApplicationContext context: Context) {
-    val isConnected = MutableLiveData<Boolean>()
-        .apply { postValue(false) }
-    val networkFailure = MutableLiveData<Boolean>()
-        .apply { postValue(false) }
+    val isConnected by lazy {
+        MutableLiveData<Boolean>().apply { postValue(false) }
+    }
+//    val networkFailure = MutableLiveData<Boolean>()
+//        .apply { postValue(false) }
 
-    val rootMediaId: String get() = mediaBrowser.root
+    val rootMediaId by lazy { mediaBrowser.root }
 
-    val playbackState = MutableLiveData<PlaybackStateCompat>()
-        .apply { postValue(EMPTY_PLAYBACK_STATE) }
-    val nowPlaying = MutableLiveData<MediaMetadataCompat>()
-        .apply { postValue(NOTHING_PLAYING) }
+    val playbackState by lazy {
+        MutableLiveData<PlaybackStateCompat>()
+            .apply { postValue(EMPTY_PLAYBACK_STATE) }
+    }
+    val nowPlaying by lazy {
+        MutableLiveData<MediaMetadataCompat>()
+            .apply { postValue(NOTHING_PLAYING) }
+    }
 
 //    val queueData: MutableLiveData<QueueData>
 
-    val transportControls: MediaControllerCompat.TransportControls
-        get() = mediaController.transportControls
-
-    private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
-    private val mediaBrowser = MediaBrowserCompat(context, ComponentName(context, MusicService::class.java), mediaBrowserConnectionCallback, null).apply {
-        LogTimer.LogE(this, "MusicService connect")
-        connect()
+    val transportControls by lazy {
+        mediaController.transportControls
     }
+
+    private val mediaBrowserConnectionCallback by lazy { MediaBrowserConnectionCallback(context) }
+    private val mediaBrowser by lazy {
+        MediaBrowserCompat(context, ComponentName(context, MusicService::class.java), mediaBrowserConnectionCallback, null).apply {
+            LogTimer.LogE(this, "MusicService connect")
+            connect()
+        }
+    }
+
+    fun startConnect() {
+        mediaBrowser
+    }
+
     private lateinit var mediaController: MediaControllerCompat
 
     fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {

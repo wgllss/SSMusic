@@ -45,7 +45,7 @@ fun FragmentActivity.setFramgment(fragment: Fragment, layoutID: Int) {
     }
 }
 
-fun FragmentActivity.HideSoftInputFromWindow(v: View) {
+fun FragmentActivity.hideSoftInputFromWindow(v: View) {
     (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)?.hideSoftInputFromWindow(v.windowToken, 0); //强制隐藏键盘
 }
 

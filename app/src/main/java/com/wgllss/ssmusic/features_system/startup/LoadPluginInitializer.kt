@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.features_system.startup
 import android.content.Context
 import androidx.startup.Initializer
 import com.wgllss.dynamic.host.library.DynamicPluginHelp
+import com.wgllss.ssmusic.core.units.LogTimer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.catch
@@ -14,13 +15,13 @@ import kotlinx.coroutines.launch
 class LoadPluginInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
-        GlobalScope.launch {
-            flow {
+        GlobalScope.launch{
+            LogTimer.LogE(this@LoadPluginInitializer, "create ${Thread.currentThread().name}")
+            try {
                 DynamicPluginHelp().initDynamicPlugin(context)
-                emit(0)
-            }.catch { it.printStackTrace() }
-                .flowOn(Dispatchers.IO)
-                .collect()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

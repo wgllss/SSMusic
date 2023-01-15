@@ -53,7 +53,7 @@
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
             android:exported="true"
             android:theme="@style/LauncherTheme2">
-            <nav-graph android:value="@navigation/nav_graph" />
+            <!--            <nav-graph android:value="@navigation/nav_graph" />-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -85,21 +85,12 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false">
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"-->
-            <!--                android:value="androidx.startup" />-->
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"
                 android:value="androidx.startup" />
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.AsynInflaterInitializer"
                 android:value="androidx.startup" />
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.AndroidServiceInitializer"-->
-            <!--                android:value="androidx.startup" />-->
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"-->
-            <!--                android:value="androidx.startup" />-->
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.LoadPluginInitializer"
                 android:value="androidx.startup" />
