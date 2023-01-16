@@ -9,7 +9,7 @@ object LayoutContains {
     private val map = ConcurrentHashMap<String, View>()
 
     fun getViewByKey(context: Context, key: String): View? {
-        val view = map[key]
+        val view = map.remove(key)
         replaceContextForView(view, context)
         return view
     }

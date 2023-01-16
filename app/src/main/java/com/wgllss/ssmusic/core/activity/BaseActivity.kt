@@ -14,7 +14,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (hasNavigationBarStatusBarTranslucent()) StatusBarUtil.setStatusBarTranslucent(this)
-        berforeSuperOnCreate(savedInstanceState);
+        beforeSuperOnCreate(savedInstanceState);
         super.onCreate(savedInstanceState)
         initX(savedInstanceState)
     }
@@ -65,7 +65,7 @@ abstract class BaseActivity : AppCompatActivity() {
         finishActivity()
     }
 
-    open fun berforeSuperOnCreate(savedInstanceState: Bundle?) {}
+    open fun beforeSuperOnCreate(savedInstanceState: Bundle?) {}
     open abstract fun initControl(savedInstanceState: Bundle?)
     open abstract fun bindEvent()
     open abstract fun initValue()

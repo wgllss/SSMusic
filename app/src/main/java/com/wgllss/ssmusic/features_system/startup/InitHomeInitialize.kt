@@ -9,6 +9,7 @@ import com.tencent.mmkv.MMKV
 //import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.core.activity.ActivityManager
 import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.features_third.um.UMHelp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -21,6 +22,8 @@ class InitHomeInitialize : Initializer<Unit> {
             LogTimer.LogE(this@InitHomeInitialize, "create ${Thread.currentThread().name}")
 //            NavigationConfig.getDestConfig()
             MMKV.initialize(context)
+            UMHelp.umInit(context)
+            LogTimer.LogE(this@InitHomeInitialize, "create 0 ${Thread.currentThread().name}")
             (context.applicationContext as Application).registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(p0: Activity, p1: Bundle?) {
                     ActivityManager.instance.pushActivity(p0)
@@ -53,6 +56,7 @@ class InitHomeInitialize : Initializer<Unit> {
 //                        ViewServer.get(p0).removeWindow(p0);
                 }
             })
+            LogTimer.LogE(this@InitHomeInitialize, "create 1 ${Thread.currentThread().name}")
         }
     }
 }

@@ -7,7 +7,7 @@ import androidx.fragment.app.viewModels
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
-import com.wgllss.annotations.FragmentDestination
+//import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.core.permissions.PermissionInterceptor
@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-@FragmentDestination(pageUrl = "fmt_setting", label = "设置", iconId = R.drawable.ic_notifications_black_24dp)
+//@FragmentDestination(pageUrl = "fmt_setting", label = "设置", iconId = R.drawable.ic_notifications_black_24dp)
 class SettingFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel, FragmentSettingBinding>(R.layout.fragment_setting) {
 
     private val settingViewModelL = viewModels<SettingViewModel>()

@@ -88,15 +88,6 @@ class AsynInflaterInitializer : Initializer<Unit> {
             measureAndLayout(homeFragmentLayout)
             LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, homeFragmentLayout)
             LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")
-
-
-//            AsyncInflateManager.initScreenSize(activity)
-//            val context: Context = MutableContextWrapper(activity)
-//            val homeActivity = AsyncInflateItem(LaunchInflateKey.home_activity, R.layout.activity_home, null, null)
-//            val homeNavigation = AsyncInflateItem(LaunchInflateKey.home_navigation, R.layout.home_buttom_navigation, null, null)
-//            val homeFragment = AsyncInflateItem(LaunchInflateKey.home_fragment, R.layout.fragment_home, null, null)
-//            AsyncInflateManager.instance.asyncInflate(context, homeFragment, homeNavigation)
-//            AsyncInflateManager.instance.asyncInflate(context, homeActivity, homeNavigation, homeFragment)
         }
     }
 

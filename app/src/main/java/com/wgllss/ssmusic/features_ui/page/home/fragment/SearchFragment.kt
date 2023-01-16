@@ -6,7 +6,6 @@ import android.view.inputmethod.EditorInfo
 import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.core.ex.HideSoftInputFromWindow
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
-import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
@@ -15,7 +14,7 @@ import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@FragmentDestination(pageUrl = "fmt_search", label = "搜索", iconId = R.drawable.ic_dashboard_black_24dp)
+//@FragmentDestination(pageUrl = "fmt_search", label = "搜索", iconId = R.drawable.ic_dashboard_black_24dp)
 @AndroidEntryPoint
 class SearchFragment : BaseMVVMFragment<HomeViewModel, FragmentSearchBinding>(R.layout.fragment_search) {
 

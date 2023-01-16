@@ -1,18 +1,16 @@
 package com.wgllss.ssmusic.features_ui.page.home.fragment
 
+//import com.wgllss.annotations.FragmentDestination
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.bumptech.glide.Glide
-import com.wgllss.annotations.FragmentDestination
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.launchActivity
@@ -24,7 +22,6 @@ import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import dagger.Lazy
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 //@AndroidEntryPoint
@@ -123,6 +120,7 @@ class HomeFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel, Fragm
         playListAdapterL.get().setBlockDelete {
             viewModel.deleteFromPlayList(it)
         }
+        LogTimer.LogE(this, "onActivityCreated 1")
     }
 
     override fun onResume() {

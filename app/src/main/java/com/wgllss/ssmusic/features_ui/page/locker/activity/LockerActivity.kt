@@ -21,7 +21,7 @@ class LockerActivity : BaseMVVMActivity<PlayModel, ActivityLockerBinding>(R.layo
     @Inject
     lateinit var lockerFragmentL: Lazy<LockerFragment>
 
-    override fun berforeSuperOnCreate(savedInstanceState: Bundle?) {
+    override fun beforeSuperOnCreate(savedInstanceState: Bundle?) {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
 //            //适配刘海屏
 //            val layoutParams = window.attributes

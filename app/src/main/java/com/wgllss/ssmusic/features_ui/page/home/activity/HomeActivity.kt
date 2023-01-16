@@ -1,34 +1,17 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-//import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
-import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
-import com.wgllss.ssmusic.core.asyninflater.OnInflateFinishListener
 import com.wgllss.ssmusic.core.ex.setFramgment
-import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.widget.navigation.NavGraphBuilder
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint

@@ -4,7 +4,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven{
+        maven {
             url uri('https://s01.oss.sonatype.org/service/local/repositories/iogithubwgllss-1001/content/')
         }
         maven { url 'https://jitpack.io' }
