@@ -18,44 +18,11 @@ class InitHomeInitialize : Initializer<Unit> {
     override fun dependencies(): List<Class<out Initializer<*>>> = emptyList()
 
     override fun create(context: Context) {
+        LogTimer.LogE(this, "create")
         GlobalScope.launch {
             LogTimer.LogE(this@InitHomeInitialize, "create ${Thread.currentThread().name}")
-//            NavigationConfig.getDestConfig()
             MMKV.initialize(context)
             UMHelp.umInit(context)
-            LogTimer.LogE(this@InitHomeInitialize, "create 0 ${Thread.currentThread().name}")
-            (context.applicationContext as Application).registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-                override fun onActivityCreated(p0: Activity, p1: Bundle?) {
-                    ActivityManager.instance.pushActivity(p0)
-//                    if (BuildConfig.DEBUG) {
-//                        SMFrameCallback.instance?.start()
-//                        ViewServer.get(p0).addWindow(p0);
-//                    }
-                }
-
-                override fun onActivityStarted(p0: Activity) {
-                }
-
-                override fun onActivityResumed(p0: Activity) {
-//                    if (BuildConfig.DEBUG)
-//                        ViewServer.get(p0).setFocusedWindow(p0);
-                }
-
-                override fun onActivityPaused(p0: Activity) {
-                }
-
-                override fun onActivityStopped(p0: Activity) {
-                }
-
-                override fun onActivitySaveInstanceState(p0: Activity, p1: Bundle) {
-                }
-
-                override fun onActivityDestroyed(p0: Activity) {
-                    ActivityManager.instance.popActivity(p0)
-//                    if (BuildConfig.DEBUG)
-//                        ViewServer.get(p0).removeWindow(p0);
-                }
-            })
             LogTimer.LogE(this@InitHomeInitialize, "create 1 ${Thread.currentThread().name}")
         }
     }

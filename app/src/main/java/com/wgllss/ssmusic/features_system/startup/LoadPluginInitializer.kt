@@ -15,7 +15,8 @@ import kotlinx.coroutines.launch
 class LoadPluginInitializer : Initializer<Unit> {
 
     override fun create(context: Context) {
-        GlobalScope.launch{
+        LogTimer.LogE(this, "create")
+        GlobalScope.launch {
             LogTimer.LogE(this@LoadPluginInitializer, "create ${Thread.currentThread().name}")
             try {
                 DynamicPluginHelp().initDynamicPlugin(context)

@@ -25,12 +25,12 @@ object LogTimer {
 //    }
 
     fun LogE(any: Any, tagName: String) {
-        GlobalScope.launch {
-            val cur = System.currentTimeMillis()
-            val dis = cur - time
+//        GlobalScope.launch {
+        val cur = System.currentTimeMillis()
+        val dis = cur - time
 //            time = cur
 //            if (dis > 50)
-            Log.e("${any.javaClass.simpleName}", " ${tagName} 耗时:${dis} ms")
-        }
+        Log.e("${any.javaClass.simpleName}", " ${tagName} 耗时:${dis} ms")
+//        }
     }
 }

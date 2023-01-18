@@ -26,12 +26,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layo
     }
 
     override fun initControl(savedInstanceState: Bundle?) {
-//        super.initControl(savedInstanceState)
         LogTimer.LogE(this@HomeActivity, "initControl")
         val contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
-//        setContentView(LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity))
-        LogTimer.LogE(this@HomeActivity, "getViewByKey home_activity")
         setFramgment(homeFragmentL.get(), R.id.nav_host_fragment_activity_main)
         LogTimer.LogE(this@HomeActivity, "initControl after")
 

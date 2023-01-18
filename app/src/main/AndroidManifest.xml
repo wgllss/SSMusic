@@ -37,7 +37,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/icon_launcher"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SSMusic"
+        android:theme="@style/LauncherTheme2"
         android:usesCleartextTraffic="true">
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"
@@ -51,8 +51,7 @@
         </activity>
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
-            android:exported="true"
-            android:theme="@style/LauncherTheme2">
+            android:exported="true">
             <!--            <nav-graph android:value="@navigation/nav_graph" />-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -86,13 +85,16 @@
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false">
             <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"
+                android:name="com.wgllss.ssmusic.features_system.startup.LoadPluginInitializer"
+                android:value="androidx.startup" />
+            <meta-data
+                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"
                 android:value="androidx.startup" />
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.AsynInflaterInitializer"
                 android:value="androidx.startup" />
             <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.LoadPluginInitializer"
+                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"
                 android:value="androidx.startup" />
         </provider>
 
@@ -114,12 +116,12 @@
             </intent-filter>
         </receiver>
 
-        <meta-data
-            android:name="UMENG_APPKEY"
-            android:value="634d040505844627b5672f2f" />
-        <meta-data
-            android:name="UMENG_CHANNEL"
-            android:value="Umeng" />
+        <!--        <meta-data-->
+        <!--            android:name="UMENG_APPKEY"-->
+        <!--            android:value="634d040505844627b5672f2f" />-->
+        <!--        <meta-data-->
+        <!--            android:name="UMENG_CHANNEL"-->
+        <!--            android:value="Umeng" />-->
     </application>
 
 </manifest>
