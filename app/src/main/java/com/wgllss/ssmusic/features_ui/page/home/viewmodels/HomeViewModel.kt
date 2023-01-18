@@ -133,7 +133,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     fun deleteFromPlayList(id: Long) {
         currentMediaID.value?.takeIf {
-            it.toLong() == id
+            it.isNotEmpty() && it.toLong() == id
         }?.let {
             errorMsgLiveData.postValue("当前正在播放该歌曲，不能删除")
             return
