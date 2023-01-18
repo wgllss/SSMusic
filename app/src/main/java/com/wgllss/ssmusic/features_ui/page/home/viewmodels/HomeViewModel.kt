@@ -36,6 +36,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
     val currentMediaID by lazy { MutableLiveData("") }
+    val mCurrentFragmentTAG by lazy { StringBuilder() }
 
     val rootMediaId: LiveData<String> by lazy {
         Transformations.map(musicServiceConnectionL.get().isConnected) { isConnected ->

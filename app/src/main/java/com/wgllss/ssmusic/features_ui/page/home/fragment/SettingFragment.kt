@@ -17,7 +17,7 @@ import com.wgllss.ssmusic.features_ui.page.home.viewmodels.SettingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@AndroidEntryPoint
+//@AndroidEntryPoint
 //@FragmentDestination(pageUrl = "fmt_setting", label = "设置", iconId = R.drawable.ic_notifications_black_24dp)
 class SettingFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel, FragmentSettingBinding>(R.layout.fragment_setting) {
 

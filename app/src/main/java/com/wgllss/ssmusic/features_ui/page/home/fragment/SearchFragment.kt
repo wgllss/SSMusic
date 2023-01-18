@@ -3,20 +3,19 @@ package com.wgllss.ssmusic.features_ui.page.home.fragment
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
-import com.wgllss.ssmusic.core.ex.HideSoftInputFromWindow
-import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.ex.HideSoftInputFromWindow
+import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
+import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 //@FragmentDestination(pageUrl = "fmt_search", label = "搜索", iconId = R.drawable.ic_dashboard_black_24dp)
-@AndroidEntryPoint
-class SearchFragment : BaseMVVMFragment<HomeViewModel, FragmentSearchBinding>(R.layout.fragment_search) {
+//@AndroidEntryPoint
+class SearchFragment @Inject constructor(): BaseMVVMFragment<HomeViewModel, FragmentSearchBinding>(R.layout.fragment_search) {
 
     @Inject
     lateinit var musicAdapterL: Lazy<MusicAdapter>

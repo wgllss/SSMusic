@@ -15,7 +15,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.startup.Initializer
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.asyninflater.AsyncInflateItem
+import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.getIntToDip
@@ -94,6 +97,8 @@ class AsynInflaterInitializer : Initializer<Unit> {
                 measureAndLayout(homeFragmentLayout)
                 homeFragmentLayout
             }
+            val homeNavigation = AsyncInflateItem(LaunchInflateKey.home_navigation, R.layout.home_buttom_navigation, null, null)
+            AsyncInflateManager.instance.asyncInflate(context, homeNavigation)
             LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayoutViewAwait.await())
             LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, homeFragmentLayoutAwait.await())
             LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")
