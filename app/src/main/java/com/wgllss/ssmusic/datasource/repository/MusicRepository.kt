@@ -15,6 +15,76 @@ import javax.inject.Inject
 
 class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>, private val mSSDataBaseL: Lazy<SSDataBase>) {
 
+    suspend fun homeMusic(tab_item: String = "") = flow {
+        val html = musiceApiL.get().homeMusic()
+        val document = Jsoup.parse(html, "https://www.hifini.com/")
+        val dcS = document.select(".break-all")
+        val list = mutableListOf<MusicItemBean>()
+        dcS?.forEach {
+            val links = it.select("a[href]")
+            //links:<a href="thread-5061.htm">周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]</a>
+            //links:<a href="thread-11307.htm">买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]</a>
+            WLog.e(this@MusicRepository, "links:${links}")
+            links?.first()?.attr("abs:href")?.run {
+                try {
+                    //content:买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]
+                    //content:周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]
+                    val content = links.html()//树深时见鹿dear《<em>三国</em><em>杀</em>》[FLAC/MP3-320K]
+                    WLog.e(this@MusicRepository, "content:${content}")
+                    content?.takeIf { c ->
+                        c.isNotEmpty() && !c.contains("专辑")
+                    }?.let {
+                        val startIndex = content.indexOf("《")
+                        val endIndex = content.indexOf("》")
+                        if (startIndex != -1 && endIndex != -1) {
+                            var author: String = content.substring(0, startIndex)
+                            author = author.replace("&amp;", "、")
+                                .replace("<em>", "")
+                                .replace("</em>", "")
+                                .replace("em>", "")
+                                .replace("</em", "")
+                            var samplingRate = if (content.indexOf("[") != -1) {
+                                content.substring(content.indexOf("[") + 1, content.length - 1)
+                            } else {
+                                content.substring(endIndex + 1, content.length - 1)
+                            }
+                            var musicName = content.substring(startIndex + 1, endIndex)
+                            musicName = musicName.replace("<em>", "")
+                                .replace("</em>", "")
+                                .replace("em>", "")
+                                .replace("</em", "")
+                            list.add(MusicItemBean(author, musicName, this, samplingRate))
+                        } else {
+
+                            val startIndex = content.indexOf("<")
+                            val endIndex = content.lastIndexOf(">")
+                            var author: String = content.substring(0, startIndex)
+                            author = author.replace("&amp;", "、")
+                                .replace("<em>", "")
+                                .replace("</em>", "")
+                                .replace("em>", "")
+                                .replace("</em", "")
+                            var samplingRate = if (content.indexOf("[") != -1) {
+                                content.substring(content.indexOf("[") + 1, content.length - 1)
+                            } else {
+                                content.substring(endIndex + 1, content.length - 1)
+                            }
+                            var musicName = content.substring(startIndex + 1, endIndex)
+                            musicName = musicName.replace("<em>", "")
+                                .replace("</em>", "")
+                                .replace("em>", "")
+                                .replace("</em", "")
+                            list.add(MusicItemBean(author, musicName, this, samplingRate))
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        emit(list)
+    }
+
     /**
      * 按照标题搜索
      */

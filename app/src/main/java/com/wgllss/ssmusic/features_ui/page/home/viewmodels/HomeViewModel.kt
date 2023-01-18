@@ -91,13 +91,21 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             return
         }
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
+            musicRepositoryL.get().homeMusic()
                 .onEach {
                     result.postValue(it)
                     it.forEach {
                         WLog.e(this@HomeViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
                     }
                 }
+
+//            musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
+//                .onEach {
+//                    result.postValue(it)
+//                    it.forEach {
+//                        WLog.e(this@HomeViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
+//                    }
+//                }
         }
     }
 
