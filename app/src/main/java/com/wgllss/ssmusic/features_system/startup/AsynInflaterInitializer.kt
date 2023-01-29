@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.startup.Initializer
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.asyninflater.AsyncInflateItem
 import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager

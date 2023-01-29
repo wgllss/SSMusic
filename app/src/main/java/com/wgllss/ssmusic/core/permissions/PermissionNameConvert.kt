@@ -80,8 +80,7 @@ object PermissionNameConvert {
                     }
                 }
                 Permission.ACCESS_FINE_LOCATION, Permission.ACCESS_COARSE_LOCATION, Permission.ACCESS_BACKGROUND_LOCATION -> {
-                    var hint: String
-                    hint = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    var hint: String = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
                         !permissions.contains(Permission.ACCESS_FINE_LOCATION) &&
                         !permissions.contains(Permission.ACCESS_COARSE_LOCATION)
                     ) {
