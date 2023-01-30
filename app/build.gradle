@@ -150,7 +150,7 @@ dependencies {
     //滑动删除
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 
-
+    implementation "com.gitee.wgllss888:Wgllss-Common-Library:1.0.0.6"
 //    implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
 //    implementation 'com.gitee.wgllss888:Data-Source-Dynamic-Host-lib:1.0.0.3'
 
@@ -168,4 +168,7 @@ dependencies {
 
 //    //断点续传 协程 chanle 下载
 //    implementation 'com.github.LetMeOff:SimpleDownload:v1.0.0'
+
+
+//    implementation project(":wgllsscode")
 }

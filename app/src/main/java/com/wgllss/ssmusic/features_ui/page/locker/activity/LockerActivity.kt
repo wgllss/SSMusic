@@ -4,11 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
-import com.wgllss.ssmusic.core.ex.finishActivity
-import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.core.ex.setFramgment
-import com.wgllss.ssmusic.core.widget.DrawerBack
+import com.wgllss.core.activity.BaseMVVMActivity
+import com.wgllss.core.ex.finishActivity
+import com.wgllss.core.ex.logE
+import com.wgllss.core.ex.setFramgment
+import com.wgllss.core.widget.DrawerBack
 import com.wgllss.ssmusic.databinding.ActivityLockerBinding
 import com.wgllss.ssmusic.features_ui.page.locker.fragment.LockerFragment
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel

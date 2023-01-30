@@ -3,7 +3,7 @@ package com.wgllss.ssmusic.datasource.repository
 import com.wgllss.dynamic.host.library.DynamicDataSourcePluginManagerUser
 import com.wgllss.music.datasourcelibrary.data.MusicBean
 import com.wgllss.music.datasourcelibrary.data.MusicItemBean
-import com.wgllss.ssmusic.core.units.WLog
+import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import dagger.Lazy

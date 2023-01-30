@@ -3,7 +3,7 @@ package com.wgllss.ssmusic.features_system.startup
 import android.content.Context
 import androidx.startup.Initializer
 import com.wgllss.dynamic.host.library.DynamicPluginHelp
-import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.core.units.LogTimer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

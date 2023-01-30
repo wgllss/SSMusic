@@ -11,8 +11,8 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.MutableLiveData
-import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
+import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
 import com.wgllss.ssmusic.features_system.services.MusicService

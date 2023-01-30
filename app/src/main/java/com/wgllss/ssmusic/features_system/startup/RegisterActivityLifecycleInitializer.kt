@@ -5,8 +5,8 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
-import com.wgllss.ssmusic.core.activity.ActivityManager
-import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.core.activity.ActivityManager
+import com.wgllss.core.units.LogTimer
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

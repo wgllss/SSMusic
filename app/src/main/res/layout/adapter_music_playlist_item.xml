@@ -48,7 +48,7 @@
                 android:textColor="@color/black"
                 android:textSize="22dp" />
 
-            <com.wgllss.ssmusic.core.widget.MusicVisualizerView
+            <com.wgllss.core.widget.MusicVisualizerView
                 android:id="@+id/musicVisualizerView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"

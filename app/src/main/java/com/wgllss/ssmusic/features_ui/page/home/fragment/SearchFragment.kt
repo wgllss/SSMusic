@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.HideSoftInputFromWindow
-import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
-import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
+import com.wgllss.core.ex.HideSoftInputFromWindow
+import com.wgllss.core.fragment.BaseMVVMFragment
+import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel

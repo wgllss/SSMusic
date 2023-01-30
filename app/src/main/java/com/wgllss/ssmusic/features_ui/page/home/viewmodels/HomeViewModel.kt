@@ -9,9 +9,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import com.wgllss.music.datasourcelibrary.data.MusicItemBean
-import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
+import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.WLog
+import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY

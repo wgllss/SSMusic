@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.music.datasourcelibrary.data.MusicBean
-import com.wgllss.ssmusic.core.ex.flowAsyncWorkOnLaunch
-import com.wgllss.ssmusic.core.units.WLog
+import com.wgllss.core.ex.flowAsyncWorkOnLaunch
+import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.RandomPosition
 import com.wgllss.ssmusic.datasource.repository.AppRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE

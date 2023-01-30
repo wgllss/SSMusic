@@ -1,7 +1,7 @@
 package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 
 import androidx.lifecycle.MutableLiveData
-import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
+import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 
 class SettingViewModel : BaseViewModel() {

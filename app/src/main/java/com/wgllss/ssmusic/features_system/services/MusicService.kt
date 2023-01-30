@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import androidx.media.MediaBrowserServiceCompat
-import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.core.ex.logE
+import com.wgllss.core.units.LogTimer
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.music.MusicFactory
 import dagger.Lazy
