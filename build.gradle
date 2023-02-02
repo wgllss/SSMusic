@@ -4,9 +4,10 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url uri('https://s01.oss.sonatype.org/service/local/repositories/iogithubwgllss-1001/content/')
-        }
+        maven {url uri('../wgllss-music-data-source/repo')}
+//        maven {
+//            url uri('https://s01.oss.sonatype.org/service/local/repositories/iogithubwgllss-1001/content/')
+//        }
         maven { url 'https://jitpack.io' }
         maven { url 'https://repo1.maven.org/maven2/' }
 
@@ -15,7 +16,8 @@ buildscript {
         classpath "com.android.tools.build:gradle:4.2.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.42"
-        classpath "io.github.wgllss:wgllss-music-plugin:1.0.13" //发布到中央仓库写法
+        classpath "com.wgllss.music.plugin:music-source-asm:1.0.10" //发布到本地仓库写法
+//        classpath "io.github.wgllss:wgllss-music-plugin:1.0.13" //发布到中央仓库写法
     }
 }
 

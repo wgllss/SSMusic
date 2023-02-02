@@ -64,8 +64,8 @@ repositories {
 }
 
 dependencies {
-//    implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    implementation(name: 'Dynamic-Host-Library-release', ext: 'aar')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation(name: 'Dynamic-Host-Library-release', ext: 'aar')
 
     implementation "androidx.core:core-ktx:$rootProject.ext.kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlin_version"
@@ -151,8 +151,8 @@ dependencies {
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 
     implementation "com.gitee.wgllss888:Wgllss-Common-Library:1.0.0.6"
-    implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
-    implementation 'com.gitee.wgllss888:Data-Source-Dynamic-Host-lib:1.0.0.3'
+//    implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
+//    implementation 'com.gitee.wgllss888:Data-Source-Dynamic-Host-lib:1.0.0.3'
 
     //高斯模糊
 //    implementation 'jp.wasabeef:glide-transformations:2.0.1'
