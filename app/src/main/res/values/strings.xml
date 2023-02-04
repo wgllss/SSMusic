@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">乖乖音乐</string>
+    <string name="app_name">品音乐</string>
     <!-- 异常错误提示  by Atar start -->
     <string name="ElseNetException">未知错误异常</string>
     <string name="SocketTimeoutException">网络超时</string>

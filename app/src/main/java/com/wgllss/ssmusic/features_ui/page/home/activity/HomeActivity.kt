@@ -25,7 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(R.layout.activity_home) {
+class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     @Inject
     lateinit var homeFragmentL: Lazy<HomeFragment>
