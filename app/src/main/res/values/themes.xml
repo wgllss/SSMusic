@@ -5,6 +5,7 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="windowActionBar">false</item>
+        <item name="android:statusBarColor">@color/white</item>
         <item name="windowNoTitle">true</item>
     </style>
 
@@ -55,7 +56,7 @@
         <!--        该方式看不到启动页-->
 
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
+<!--        <item name="android:windowFullscreen">true</item>-->
         <item name="android:windowBackground">@drawable/splash_preview</item>
     </style>
 
