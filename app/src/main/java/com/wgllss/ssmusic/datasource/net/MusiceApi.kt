@@ -27,7 +27,7 @@ interface MusiceApi {
     suspend fun homeMusic(@Path("tab_item") tab_item: String = ""): String
 
 
-    @GET("https://www.hifini.com/forum-{tab_item}.htm")
+    @GET("https://www.hifini.com/{tab_item}.htm")
     suspend fun homeTabMusic(@Path("tab_item") tab_item: String = ""): String
 
     /**

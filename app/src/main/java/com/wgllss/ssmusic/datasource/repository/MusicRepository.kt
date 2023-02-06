@@ -16,7 +16,7 @@ import javax.inject.Inject
 class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>, private val mSSDataBaseL: Lazy<SSDataBase>) {
 
     suspend fun homeMusic(tab_item: String = "") = flow {
-        val html = musiceApiL.get().homeTabMusic("15")
+        val html = musiceApiL.get().homeTabMusic(tab_item)
         val document = Jsoup.parse(html, "https://www.hifini.com/")
         val dcS = document.select(".break-all")
         val list = mutableListOf<MusicItemBean>()

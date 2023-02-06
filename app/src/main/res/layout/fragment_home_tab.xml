@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel" />
+
+        <variable
+            name="adapter"
+            type="com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter" />
+    </data>
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="81dp"
+            android:layout_gravity="top|left"
+            android:background="@color/colorAccent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/homeTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="36dp"
+            android:background="@color/color_translucent"
+            android:theme="@style/Theme.SSMusic"
+            app:tabGravity="center"
+            app:tabMode="scrollable"
+            app:tabTextAppearance="@style/TabLayout.TextAppearance"
+            app:tabTextColor="@color/white" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/homeViewPager2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="81dp"
+            android:background="@color/white" />
+    </FrameLayout>
+</layout>

@@ -57,7 +57,7 @@
         <!--        该方式看不到启动页-->
 
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
+<!--        <item name="android:windowFullscreen">true</item>-->
         <item name="android:windowBackground">@drawable/splash_preview</item>
 
     </style>
@@ -113,6 +113,11 @@
         <item name="colorControlActivated">@color/red</item>
         <item name="colorSwitchThumbNormal">@color/color_999999</item>
         <item name="android:colorForeground">@color/color_FFCD4339</item>
+    </style>
+
+    <style name="TabLayout.TextAppearance" parent="TextAppearance.AppCompat">
+<!--        <item name="android:textStyle">nomal</item>-->
+        <item name="android:textSize">20dp</item>
     </style>
 
 </resources>
