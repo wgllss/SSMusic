@@ -90,15 +90,9 @@
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.AsynInflaterInitializer"
                 android:value="androidx.startup" />
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.AndroidServiceInitializer"-->
-            <!--                android:value="androidx.startup" />-->
-<!--            <meta-data-->
-<!--                android:name="com.wgllss.ssmusic.features_system.startup.MMKVInitializer"-->
-<!--                android:value="androidx.startup" />-->
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.LiveDataBusInitiallzer"-->
-            <!--                android:value="androidx.startup" />-->
+            <meta-data
+                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"
+                android:value="androidx.startup" />
         </provider>
 
         <service
