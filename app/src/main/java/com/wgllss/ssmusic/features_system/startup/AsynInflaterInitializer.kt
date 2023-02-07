@@ -3,15 +3,18 @@ package com.wgllss.ssmusic.features_system.startup
 import android.content.Context
 import android.content.MutableContextWrapper
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
 import androidx.startup.Initializer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.MODE_SCROLLABLE
+import com.google.android.material.tabs.TabLayoutMediator
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.asyninflater.AsyncInflateItem
 import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
@@ -20,6 +23,7 @@ import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
+import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -82,6 +86,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
                 tabFragmentLayout.addView(viewPager2Layout)
                 tabFragmentLayout
             }
+
 //            val homeNavigation = AsyncInflateItem(LaunchInflateKey.home_navigation, R.layout.home_buttom_navigation, null, null)
 //            AsyncInflateManager.instance.asyncInflate(context, homeNavigation)
             LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayoutViewAwait.await())

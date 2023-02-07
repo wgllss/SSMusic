@@ -28,7 +28,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeFragment(val title: String, private val html: String) : BaseViewModelFragment<HomeViewModel>(0) {
 
-    private val settingViewModelL = viewModels<HomeTabViewModel>()
+    private val homeTabViewModel = viewModels<HomeTabViewModel>()
     private lateinit var rvPlList: RecyclerView
 
     @Inject
@@ -79,14 +79,14 @@ class HomeFragment(val title: String, private val html: String) : BaseViewModelF
         rvPlList?.run {
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-                    viewModel.getDetailFromSearch(position)
+                    homeTabViewModel.value.getDetailFromSearch(position)
                 }
             })
         }
-        settingViewModelL.value.result.observe(viewLifecycleOwner) {
+        homeTabViewModel.value.result.observe(viewLifecycleOwner) {
             musicAdapterL.get().notifyData(it)
         }
-        settingViewModelL.value.getData(html)
+        homeTabViewModel.value.getData(html)
     }
 
     override fun onResume() {

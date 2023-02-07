@@ -15,11 +15,10 @@ import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.fragment.BaseFragment
 import com.wgllss.ssmusic.core.units.LogTimer
-import java.lang.reflect.Field
 import javax.inject.Inject
 
 
-class HomeTabFragment @Inject constructor() : BaseFragment(R.layout.fragment_home_tab) {
+class HomeTabFragment @Inject constructor() : BaseFragment(0) {
 
     private lateinit var childAdapter: ViewPage2ChildFragmentAdapter
     private lateinit var homeTabLayout: TabLayout

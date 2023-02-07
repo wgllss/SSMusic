@@ -60,10 +60,10 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
-//        viewModel.start()
-//        viewModel.rootMediaId.observe(this) {
-//            it?.let { viewModel.subscribeByMediaID(it) }
-//        }
+        viewModel.start()
+        viewModel.rootMediaId.observe(this) {
+            it?.let { viewModel.subscribeByMediaID(it) }
+        }
     }
 
     private fun initNavigation() {
