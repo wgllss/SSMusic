@@ -253,6 +253,34 @@ class AsyncInflateManager private constructor() {
 //        remove(item.inflateKey)
     }
 
+    fun synIlateWithThreadPool(context: Context, item: AsyncInflateItem) {
+        mInflateMap[item.inflateKey] = item
+        onAsyncInflateReady(item)
+        if (!item.isInflating() && !item.isCancelled()) {
+            try {
+                onAsyncInflateStart(item)
+                item.setInflating(true)
+                mInflateLatchMap[item.inflateKey] = CountDownLatch(1)
+                val currentTimeMillis = System.currentTimeMillis()
+                item.inflatedView = BasicInflater(context).inflate(item.layoutResId, item.parent, false)
+                if (ScreenManager.screenHeight == 0 || ScreenManager.screenWidth == 0 || ScreenManager.widthSpec == 0 || ScreenManager.heightSpec == 0) {
+                    ScreenManager.initScreenSize(context)
+                }
+                item.inflatedView?.measure(ScreenManager.widthSpec, ScreenManager.heightSpec)
+                item.inflatedView?.layout(0, 0, ScreenManager.screenWidth, ScreenManager.screenHeight)
+                onAsyncInflateEnd(item, true)
+                val l = System.currentTimeMillis() - currentTimeMillis
+                LogTimer.LogE(this@AsyncInflateManager, "inflateWithThreadPool: inflateKey is ${item.inflateKey}, time is ${l}")
+//                    Log.i(TAG, "inflateWithThreadPool: inflateKey is ${item.inflateKey}, time is ${l}")
+            } catch (e: RuntimeException) {
+                e.printStackTrace()
+                LogTimer.LogE(this@AsyncInflateManager, e.message.toString())
+//                    Log.e(TAG, "Failed to inflate resource in the background! Retrying on the UI thread", e)
+                onAsyncInflateEnd(item, false)
+            }
+        }
+    }
+
     private fun inflateWithThreadPool(context: Context, item: AsyncInflateItem) {
         threadPool.execute {
             if (!item.isInflating() && !item.isCancelled()) {

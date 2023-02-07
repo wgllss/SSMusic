@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.features_ui.page.home.fragment
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -34,6 +35,16 @@ class HomeFragment(val title: String, private val html: String) : BaseViewModelF
     lateinit var musicAdapterL: Lazy<MusicAdapter>
 
     override fun activitySameViewModel() = true
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        LogTimer.LogE(this, "$title onAttach")
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        LogTimer.LogE(this, "$title onCreate")
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         LogTimer.LogE(this, "$title onCreateView")

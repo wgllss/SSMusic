@@ -59,7 +59,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     setBackgroundColor(res.getColor(R.color.colorAccent))
                 }
                 tabFragmentLayout.addView(viewTitleBg)
-                val tabLayout = TabLayout(context,null,).apply {
+                val tabLayout = TabLayout(context, null).apply {
                     id = res.getIdentifier("homeTabLayout", "id", activity.packageName)
                     val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_text_height).toInt())
                     lp.gravity = Gravity.TOP and Gravity.LEFT
@@ -68,7 +68,8 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     setBackgroundColor(Color.TRANSPARENT)
                     tabMode = MODE_SCROLLABLE
                     tabGravity = TabLayout.GRAVITY_CENTER
-                    setTabTextColors(Color.WHITE, res.getColor(R.color.colorPrimary))
+                    setTabTextColors(Color.WHITE, res.getColor(R.color.colorPrimaryDark))
+                    setSelectedTabIndicatorHeight(12)
                 }
                 tabFragmentLayout.addView(tabLayout)
                 val viewPager2Layout = ViewPager2(context).apply {
@@ -81,9 +82,8 @@ class AsynInflaterInitializer : Initializer<Unit> {
                 tabFragmentLayout.addView(viewPager2Layout)
                 tabFragmentLayout
             }
-
-            val homeNavigation = AsyncInflateItem(LaunchInflateKey.home_navigation, R.layout.home_buttom_navigation, null, null)
-            AsyncInflateManager.instance.asyncInflate(context, homeNavigation)
+//            val homeNavigation = AsyncInflateItem(LaunchInflateKey.home_navigation, R.layout.home_buttom_navigation, null, null)
+//            AsyncInflateManager.instance.asyncInflate(context, homeNavigation)
             LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayoutViewAwait.await())
             LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment, tabFragmentLayoutAwait.await())
 //            LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, homeFragmentLayoutAwait.await())
