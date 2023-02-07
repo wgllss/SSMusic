@@ -48,7 +48,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         addContentView(contentLayout, contentLayout.layoutParams)
         setCurrentFragment(homeFragmentL.get())
         LogTimer.LogE(this@HomeActivity, "initControl after")
-        initNavigation()
+        initNavigation(contentLayout.findViewById(R.id.buttom_navigation))
     }
 
     override fun initValue() {
@@ -66,31 +66,39 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         }
     }
 
-    private fun initNavigation() {
-        AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home_navigation, object : OnInflateFinishListener {
-            override fun onInflateFinished(view: View) {
-                view.takeIf {
-                    it.parent != null
-                }?.let {
-                    (it.parent as ViewGroup).removeView(it)
-                }
-                addContentView(view, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, resources.getDimension(R.dimen.navigation_height).toInt()).apply {
-                    gravity = Gravity.BOTTOM
-                })
-                view?.takeIf {
-                    it is BottomNavigationView
-                }?.let {
-                    (it as BottomNavigationView).setOnItemSelectedListener { menu ->
-                        when (menu.itemId) {
-                            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-                            R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
-                            R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
-                        }
-                        return@setOnItemSelectedListener true
-                    }
-                }
+    private fun initNavigation(bottomNavigationView: BottomNavigationView) {
+        bottomNavigationView.setOnItemSelectedListener { menu ->
+            when (menu.itemId) {
+                R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
+                R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
+                R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
             }
-        })
+            return@setOnItemSelectedListener true
+        }
+//        AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home_navigation, object : OnInflateFinishListener {
+//            override fun onInflateFinished(view: View) {
+//                view.takeIf {
+//                    it.parent != null
+//                }?.let {
+//                    (it.parent as ViewGroup).removeView(it)
+//                }
+//                addContentView(view, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, resources.getDimension(R.dimen.navigation_height).toInt()).apply {
+//                    gravity = Gravity.BOTTOM
+//                })
+//                view?.takeIf {
+//                    it is BottomNavigationView
+//                }?.let {
+//                    (it as BottomNavigationView).setOnItemSelectedListener { menu ->
+//                        when (menu.itemId) {
+//                            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
+//                            R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
+//                            R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
+//                        }
+//                        return@setOnItemSelectedListener true
+//                    }
+//                }
+//            }
+//        })
     }
 
     private fun setCurrentFragment(fragment: Fragment) {

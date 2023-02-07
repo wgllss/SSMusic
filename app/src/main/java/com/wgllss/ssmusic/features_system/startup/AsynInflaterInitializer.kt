@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
 import androidx.startup.Initializer
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.MODE_SCROLLABLE
 import com.google.android.material.tabs.TabLayoutMediator
@@ -39,58 +40,77 @@ class AsynInflaterInitializer : Initializer<Unit> {
             ScreenManager.initScreenSize(activity)
             val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
             val res = context.resources
-            val activityLayoutViewAwait = async(Dispatchers.IO) {
-                LogTimer.LogE(this@AsynInflaterInitializer, "async 1 ${Thread.currentThread().name}")
-                val activityLayoutView = FragmentContainerView(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
-                    layoutParams = lp
-                    id = res.getIdentifier("nav_host_fragment_activity_main", "id", activity.packageName)
-                }
-                measureAndLayout(activityLayoutView)
-                activityLayoutView
+//            val activityLayoutViewAwait = async(Dispatchers.IO) {
+            val activityLayout = FrameLayout(context).apply {
+                val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                layoutParams = lp
             }
+            val fragmentContainerView = FragmentContainerView(context).apply {
+                val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
+                layoutParams = lp
+                id = res.getIdentifier("nav_host_fragment_activity_main", "id", activity.packageName)
+            }
+            activityLayout.addView(fragmentContainerView)
+            val bottomNavigationView = BottomNavigationView(context).apply {
+                val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.navigation_height).toInt())
+                lp.gravity = Gravity.BOTTOM or Gravity.LEFT
+                layoutParams = lp
+                id = res.getIdentifier("buttom_navigation", "id", activity.packageName)
+            }
+            bottomNavigationView.menu.apply {
+                clear()
+                add(0, res.getIdentifier("fmt_a", "id", activity.packageName), 0, res.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
+                add(0, res.getIdentifier("fmt_b", "id", activity.packageName), 0, res.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
+                add(0, res.getIdentifier("fmt_c", "id", activity.packageName), 0, res.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
+            }
+            activityLayout.addView(bottomNavigationView)
+            ScreenManager.measureAndLayout(activityLayout)
+//                activityLayout
+//            }
 
-            val tabFragmentLayoutAwait = async(Dispatchers.IO) {
-                val tabFragmentLayout = FrameLayout(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    layoutParams = lp
-                }
-                val viewTitleBg = View(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
-                    lp.gravity = Gravity.TOP and Gravity.LEFT
-                    layoutParams = lp
-                    setBackgroundColor(res.getColor(R.color.colorAccent))
-                }
-                tabFragmentLayout.addView(viewTitleBg)
-                val tabLayout = TabLayout(context, null).apply {
-                    id = res.getIdentifier("homeTabLayout", "id", activity.packageName)
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_text_height).toInt())
-                    lp.gravity = Gravity.TOP and Gravity.LEFT
-                    lp.topMargin = res.getDimension(R.dimen.status_bar_height).toInt()
-                    layoutParams = lp
-                    setBackgroundColor(Color.TRANSPARENT)
-                    tabMode = MODE_SCROLLABLE
-                    tabGravity = TabLayout.GRAVITY_CENTER
-                    setTabTextColors(Color.WHITE, res.getColor(R.color.colorPrimaryDark))
-                    setSelectedTabIndicatorHeight(12)
-                }
-                tabFragmentLayout.addView(tabLayout)
-                val viewPager2Layout = ViewPager2(context).apply {
-                    id = res.getIdentifier("homeViewPager2", "id", activity.packageName)
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    lp.gravity = Gravity.TOP and Gravity.LEFT
-                    lp.topMargin = res.getDimension(R.dimen.title_bar_height).toInt()
-                    layoutParams = lp
-                }
-                tabFragmentLayout.addView(viewPager2Layout)
-                tabFragmentLayout
-            }
+//            val tabFragmentLayoutAwait = async(Dispatchers.IO) {
+//                val tabFragmentLayout = FrameLayout(context).apply {
+//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+//                    layoutParams = lp
+//                }
+//                val viewTitleBg = View(context).apply {
+//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
+//                    lp.gravity = Gravity.TOP or Gravity.LEFT
+//                    layoutParams = lp
+//                    setBackgroundColor(res.getColor(R.color.colorAccent))
+//                }
+//                tabFragmentLayout.addView(viewTitleBg)
+//                val tabLayout = TabLayout(context).apply {
+//                    id = res.getIdentifier("homeTabLayout", "id", activity.packageName)
+//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_text_height).toInt())
+//                    lp.gravity = Gravity.TOP or Gravity.LEFT
+//                    lp.topMargin = res.getDimension(R.dimen.status_bar_height).toInt()
+//                    layoutParams = lp
+//                    setBackgroundColor(Color.TRANSPARENT)
+//                    tabMode = MODE_SCROLLABLE
+//                    tabGravity = TabLayout.GRAVITY_CENTER
+//                    setTabTextColors(Color.WHITE, res.getColor(R.color.colorPrimaryDark))
+//                    setSelectedTabIndicatorHeight(12)
+//                }
+//                tabFragmentLayout.addView(tabLayout)
+//                val viewPager2Layout = ViewPager2(context).apply {
+//                    id = res.getIdentifier("homeViewPager2", "id", activity.packageName)
+//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+//                    lp.gravity = Gravity.TOP or Gravity.LEFT
+//                    lp.topMargin = res.getDimension(R.dimen.title_bar_height).toInt()
+//                    layoutParams = lp
+//                }
+//                tabFragmentLayout.addView(viewPager2Layout)
+//                ScreenManager.measureAndLayout(tabFragmentLayout)
+//                tabFragmentLayout
+//            }
 
 //            val homeNavigation = AsyncInflateItem(LaunchInflateKey.home_navigation, R.layout.home_buttom_navigation, null, null)
 //            AsyncInflateManager.instance.asyncInflate(context, homeNavigation)
-            LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayoutViewAwait.await())
-            LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment, tabFragmentLayoutAwait.await())
+            LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayout)
+//            LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayoutViewAwait.await())
+//            LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment, tabFragmentLayoutAwait.await())
 //            LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, homeFragmentLayoutAwait.await())
             LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")
         }
@@ -100,8 +120,8 @@ class AsynInflaterInitializer : Initializer<Unit> {
         return emptyList()
     }
 
-    private fun measureAndLayout(view: View) {
-        view?.measure(ScreenManager.widthSpec, ScreenManager.heightSpec)
-        view?.layout(0, 0, ScreenManager.screenWidth, ScreenManager.screenHeight)
-    }
+//    private fun measureAndLayout(view: View) {
+//        view?.measure(ScreenManager.widthSpec, ScreenManager.heightSpec)
+//        view?.layout(0, 0, ScreenManager.screenWidth, ScreenManager.screenHeight)
+//    }
 }

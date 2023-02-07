@@ -59,4 +59,9 @@ object ScreenManager {
         heightSpec = View.MeasureSpec.makeMeasureSpec(screenHeight, View.MeasureSpec.EXACTLY)
         LogTimer.LogE(this, "initScreenSize")
     }
+
+    fun measureAndLayout(view: View) {
+        view?.measure(ScreenManager.widthSpec, ScreenManager.heightSpec)
+        view?.layout(0, 0, ScreenManager.screenWidth, ScreenManager.screenHeight)
+    }
 }

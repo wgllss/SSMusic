@@ -4,4 +4,8 @@
     <item name="rv_pl_list" type="id" />
     <item name="homeTabLayout" type="id" />
     <item name="homeViewPager2" type="id" />
+    <item name="fmt_a" type="id" />
+    <item name="fmt_b" type="id" />
+    <item name="fmt_c" type="id" />
+    <item name="buttom_navigation" type="id" />
 </resources>
