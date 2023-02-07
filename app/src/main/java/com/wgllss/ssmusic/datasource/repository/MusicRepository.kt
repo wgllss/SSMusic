@@ -24,13 +24,13 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
             val links = it.select("a[href]")
             //links:<a href="thread-5061.htm">周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]</a>
             //links:<a href="thread-11307.htm">买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]</a>
-            WLog.e(this@MusicRepository, "links:${links}")
+//            WLog.e(this@MusicRepository, "links:${links}")
             links?.first()?.attr("abs:href")?.run {
                 try {
                     //content:买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]
                     //content:周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]
                     val content = links.html()//树深时见鹿dear《<em>三国</em><em>杀</em>》[FLAC/MP3-320K]
-                    WLog.e(this@MusicRepository, "content:${content}")
+//                    WLog.e(this@MusicRepository, "content:${content}")
                     content?.takeIf { c ->
                         c.isNotEmpty() && !c.contains("专辑")
                     }?.let {

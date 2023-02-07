@@ -12,6 +12,7 @@ import android.view.WindowManager
 import androidx.annotation.UiThread
 import com.wgllss.ssmusic.core.ex.logE
 import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.core.units.ScreenManager
 import java.util.concurrent.*
 import kotlin.system.measureTimeMillis
 
@@ -30,35 +31,38 @@ class AsyncInflateManager private constructor() {
     companion object {
         private const val TAG = "AsyncInflateManager"
 
-        private var screenWidth = 0
-        private var screenHeight = 0
-        private var widthSpec = 0
-        private var heightSpec = 0
-        private val cpuCount = Runtime.getRuntime().availableProcessors()
-        val threadPool = ThreadPoolExecutor(cpuCount, cpuCount * 2, 5, TimeUnit.SECONDS, LinkedBlockingDeque()).apply {
-            allowCoreThreadTimeOut(true)
+        //        private var screenWidth = 0
+//        private var screenHeight = 0
+//        private var widthSpec = 0
+//        private var heightSpec = 0
+//        private val cpuCount = Runtime.getRuntime().availableProcessors()
+        val threadPool by lazy {
+            val cpuCount = Runtime.getRuntime().availableProcessors()
+            ThreadPoolExecutor(cpuCount, cpuCount * 2, 5, TimeUnit.SECONDS, LinkedBlockingDeque()).apply {
+                allowCoreThreadTimeOut(true)
+            }
         }
 
         @JvmStatic
         val instance by lazy { AsyncInflateManager() }
 
-        /**
-         * 空方法，为了可以提前加载 AsyncInflateManager，并初始化 mThreadPool
-         */
-        fun init() {
+//        /**
+//         * 空方法，为了可以提前加载 AsyncInflateManager，并初始化 mThreadPool
+//         */
+//        fun init() {
+//
+//        }
 
-        }
-
-        fun initScreenSize(context: Context) {
-            val metric = DisplayMetrics()
-            val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            manager.defaultDisplay.getRealMetrics(metric)
-            screenWidth = metric.widthPixels
-            screenHeight = metric.heightPixels
-            widthSpec = View.MeasureSpec.makeMeasureSpec(screenWidth, View.MeasureSpec.EXACTLY)
-            heightSpec = View.MeasureSpec.makeMeasureSpec(screenHeight, View.MeasureSpec.EXACTLY)
-            LogTimer.LogE(this, "initScreenSize")
-        }
+//        fun initScreenSize(context: Context) {
+//            val metric = DisplayMetrics()
+//            val manager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+//            manager.defaultDisplay.getRealMetrics(metric)
+//            screenWidth = metric.widthPixels
+//            screenHeight = metric.heightPixels
+//            widthSpec = View.MeasureSpec.makeMeasureSpec(screenWidth, View.MeasureSpec.EXACTLY)
+//            heightSpec = View.MeasureSpec.makeMeasureSpec(screenHeight, View.MeasureSpec.EXACTLY)
+//            LogTimer.LogE(this, "initScreenSize")
+//        }
     }
 
     /**
@@ -258,11 +262,11 @@ class AsyncInflateManager private constructor() {
                     mInflateLatchMap[item.inflateKey] = CountDownLatch(1)
                     val currentTimeMillis = System.currentTimeMillis()
                     item.inflatedView = BasicInflater(context).inflate(item.layoutResId, item.parent, false)
-                    if (screenHeight == 0 || screenWidth == 0 || widthSpec == 0 || heightSpec == 0) {
-                        initScreenSize(context)
+                    if (ScreenManager.screenHeight == 0 || ScreenManager.screenWidth == 0 || ScreenManager.widthSpec == 0 || ScreenManager.heightSpec == 0) {
+                        ScreenManager.initScreenSize(context)
                     }
-                    item.inflatedView?.measure(widthSpec, heightSpec)
-                    item.inflatedView?.layout(0, 0, screenWidth, screenHeight)
+                    item.inflatedView?.measure(ScreenManager.widthSpec, ScreenManager.heightSpec)
+                    item.inflatedView?.layout(0, 0, ScreenManager.screenWidth, ScreenManager.screenHeight)
                     onAsyncInflateEnd(item, true)
                     val l = System.currentTimeMillis() - currentTimeMillis
                     LogTimer.LogE(this@AsyncInflateManager, "inflateWithThreadPool: inflateKey is ${item.inflateKey}, time is ${l}")

@@ -25,18 +25,7 @@ class HomeTabViewModel @Inject constructor() : BaseViewModel() {
             musicRepositoryL.get().homeMusic(html)
                 .onEach {
                     result.postValue(it)
-                    it.forEach {
-                        WLog.e(this@HomeTabViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
-                    }
                 }
-
-//            musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
-//                .onEach {
-//                    result.postValue(it)
-//                    it.forEach {
-//                        WLog.e(this@HomeViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
-//                    }
-//                }
         }
     }
 

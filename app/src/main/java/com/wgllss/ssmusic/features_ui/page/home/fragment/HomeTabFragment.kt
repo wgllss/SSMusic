@@ -46,6 +46,12 @@ class HomeTabFragment @Inject constructor() : BaseFragment(R.layout.fragment_hom
         TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
             tab.text = (childAdapter.list[position] as HomeFragment).title
         }.apply(TabLayoutMediator::attach)
+        LogTimer.LogE(this, "onActivityCreated")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LogTimer.LogE(this, "onResume")
     }
 
     private fun getList() = mutableListOf(

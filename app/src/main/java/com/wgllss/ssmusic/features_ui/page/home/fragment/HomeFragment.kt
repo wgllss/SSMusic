@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
-import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.getIntToDip
 import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
 import com.wgllss.ssmusic.core.units.LogTimer
@@ -45,7 +43,7 @@ class HomeFragment(val title: String, private val html: String) : BaseViewModelF
                 val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                 lp.gravity = Gravity.TOP and Gravity.LEFT
                 layoutParams = lp
-                setBackgroundColor(Color.GREEN)
+                setBackgroundColor(Color.WHITE)
                 layoutManager = LinearLayoutManager(context)
                 val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
                 setPadding(paddingSize, 0, paddingSize, 0)
