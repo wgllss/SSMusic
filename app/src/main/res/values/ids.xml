@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="nav_host_fragment_activity_main" type="id" />
+    <item name="rv_pl_list" type="id" />
+    <item name="homeTabLayout" type="id" />
+    <item name="homeViewPager2" type="id" />
+</resources>

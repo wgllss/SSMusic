@@ -13,10 +13,4 @@ class SSAplication : AndroidApplication() {
         LogTimer.initTime(this)
         super.attachBaseContext(base)
     }
-
-    override fun onCreate() {
-        super.onCreate()
-        UMHelp.umInit(this@SSAplication)
-    }
-
 }

@@ -11,6 +11,7 @@ import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.MutableLiveData
+import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
@@ -40,31 +41,45 @@ import javax.inject.Singleton
  */
 @Singleton
 class MusicServiceConnection @Inject constructor(@ApplicationContext context: Context) {
-    val isConnected = MutableLiveData<Boolean>()
-        .apply { postValue(false) }
-    val networkFailure = MutableLiveData<Boolean>()
-        .apply { postValue(false) }
+    val isConnected by lazy {
+        MutableLiveData<Boolean>().apply { postValue(false) }
+    }
+//    val networkFailure = MutableLiveData<Boolean>()
+//        .apply { postValue(false) }
 
-    val rootMediaId: String get() = mediaBrowser.root
+    val rootMediaId by lazy { mediaBrowser.root }
 
-    val playbackState = MutableLiveData<PlaybackStateCompat>()
-        .apply { postValue(EMPTY_PLAYBACK_STATE) }
-    val nowPlaying = MutableLiveData<MediaMetadataCompat>()
-        .apply { postValue(NOTHING_PLAYING) }
+    val playbackState by lazy {
+        MutableLiveData<PlaybackStateCompat>()
+            .apply { postValue(EMPTY_PLAYBACK_STATE) }
+    }
+    val nowPlaying by lazy {
+        MutableLiveData<MediaMetadataCompat>()
+            .apply { postValue(NOTHING_PLAYING) }
+    }
 
 //    val queueData: MutableLiveData<QueueData>
 
-    val transportControls: MediaControllerCompat.TransportControls
-        get() = mediaController.transportControls
-
-    private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
-    private val mediaBrowser = MediaBrowserCompat(context, ComponentName(context, MusicService::class.java), mediaBrowserConnectionCallback, null).apply {
-        WLog.e(this@MusicServiceConnection, "MusicService   connect() thead ${Thread.currentThread().name}")
-        connect()
+    val transportControls by lazy {
+        mediaController.transportControls
     }
+
+    private val mediaBrowserConnectionCallback by lazy { MediaBrowserConnectionCallback(context) }
+    private val mediaBrowser by lazy {
+        MediaBrowserCompat(context, ComponentName(context, MusicService::class.java), mediaBrowserConnectionCallback, null).apply {
+            LogTimer.LogE(this, "MusicService connect")
+            connect()
+        }
+    }
+
+    fun startConnect() {
+        mediaBrowser
+    }
+
     private lateinit var mediaController: MediaControllerCompat
 
     fun subscribe(parentId: String, callback: MediaBrowserCompat.SubscriptionCallback) {
+        LogTimer.LogE(this, "mediaBrowser.subscribe")
         mediaBrowser.subscribe(parentId, callback)
     }
 
@@ -92,7 +107,7 @@ class MusicServiceConnection @Inject constructor(@ApplicationContext context: Co
 
     private inner class MediaBrowserConnectionCallback(private val context: Context) : MediaBrowserCompat.ConnectionCallback() {
         override fun onConnected() {
-            WLog.e(this@MusicServiceConnection, "MusicService   onConnected() thead ${Thread.currentThread().name}")
+            LogTimer.LogE(this@MusicServiceConnection, "MusicService   onConnected() ")
             mediaController = MediaControllerCompat(context, mediaBrowser.sessionToken).apply {
                 registerCallback(MediaControllerCallback())
             }

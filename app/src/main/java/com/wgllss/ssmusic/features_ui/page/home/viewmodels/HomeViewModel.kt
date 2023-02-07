@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.MusicItemBean
@@ -35,25 +36,29 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
     val currentMediaID by lazy { MutableLiveData("") }
+    val mCurrentFragmentTAG by lazy { StringBuilder() }
 
-    val rootMediaId: LiveData<String> =
+    val rootMediaId: LiveData<String> by lazy {
         Transformations.map(musicServiceConnectionL.get().isConnected) { isConnected ->
             if (isConnected) {
-                WLog.e(this@HomeViewModel, "isConnected $isConnected   musicServiceConnection.rootMediaId：${musicServiceConnectionL.get().rootMediaId} ${Thread.currentThread().name}")
+                LogTimer.LogE(this@HomeViewModel, "isConnected")
                 musicServiceConnectionL.get().rootMediaId
             } else {
                 null
             }
         }
+    }
 
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
 
     private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
 
-    private val subscriptionCallback = object : MediaBrowserCompat.SubscriptionCallback() {
-        override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
-            liveData.value = children
+    private val subscriptionCallback by lazy {
+        object : MediaBrowserCompat.SubscriptionCallback() {
+            override fun onChildrenLoaded(parentId: String, children: MutableList<MediaBrowserCompat.MediaItem>) {
+                liveData.value = children
+            }
         }
     }
 
@@ -71,18 +76,21 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     }
 
     override fun start() {
+        musicServiceConnectionL.get().startConnect()
     }
 
     fun subscribeByMediaID(mediaId: String) {
         musicServiceConnectionL.get().run {
-            WLog.e(this@HomeViewModel, "MusicService    it.subscribe(mediaId, subscriptionCallback) ${Thread.currentThread().name} ")
+            LogTimer.LogE(this@HomeViewModel, "subscribeByMediaID")
             subscribe(mediaId, subscriptionCallback)
             playbackState.observeForever(playbackStateObserver)
         }
     }
 
-    private val playbackStateObserver = Observer<PlaybackStateCompat> {
-        currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.get().nowPlaying.value?.id ?: "" else "")
+    private val playbackStateObserver by lazy {
+        Observer<PlaybackStateCompat> {
+            currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.get().nowPlaying.value?.id ?: "" else "")
+        }
     }
 
     fun searchKeyByTitle() {
@@ -91,21 +99,10 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             return
         }
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.get().homeMusic()
+            musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
                 .onEach {
                     result.postValue(it)
-                    it.forEach {
-                        WLog.e(this@HomeViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
-                    }
                 }
-
-//            musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
-//                .onEach {
-//                    result.postValue(it)
-//                    it.forEach {
-//                        WLog.e(this@HomeViewModel, "${it.author}  ${it.musicName}  ${it.detailUrl}")
-//                    }
-//                }
         }
     }
 
@@ -133,7 +130,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     fun deleteFromPlayList(id: Long) {
         currentMediaID.value?.takeIf {
-            it.toLong() == id
+            it.isNotEmpty() && it.toLong() == id
         }?.let {
             errorMsgLiveData.postValue("当前正在播放该歌曲，不能删除")
             return

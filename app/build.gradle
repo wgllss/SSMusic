@@ -111,8 +111,8 @@ dependencies {
 
     implementation "androidx.startup:startup-runtime:1.1.1"
 
-    implementation project(path: ':annotations')
-    kapt project(path: ':annotation_compiler')
+//    implementation project(path: ':annotations')
+//    kapt project(path: ':annotation_compiler')
     implementation 'com.alibaba:fastjson:1.2.73'
 
 //    //音乐播放器 库

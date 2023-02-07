@@ -4,28 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
+import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
-import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
+import com.wgllss.ssmusic.core.asyninflater.LayoutContains
+import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
-import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
-import com.wgllss.ssmusic.features_ui.page.home.viewmodels.SettingViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-//@FragmentDestination(pageUrl = "fmt_home", asStarter = true, label = "首页", iconId = R.drawable.ic_home_black_24dp)
-class HomeFragment(val title: String, val html: String) : BaseMVVMFragment<HomeViewModel, FragmentHomeBinding>(R.layout.fragment_home) {
+class HomeFragment(val title: String, private val html: String) : BaseViewModelFragment<HomeViewModel>(0) {
 
-    val settingViewModelL = viewModels<HomeTabViewModel>()
+    private val settingViewModelL = viewModels<HomeTabViewModel>()
+    private lateinit var rvPlList: RecyclerView
 
     @Inject
     lateinit var musicAdapterL: Lazy<MusicAdapter>
@@ -33,31 +30,26 @@ class HomeFragment(val title: String, val html: String) : BaseMVVMFragment<HomeV
     override fun activitySameViewModel() = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = AsyncInflateManager.instance.getInflatedView(inflater.context, R.layout.fragment_home, container, LaunchInflateKey.home_fragment, inflater)
-        binding = DataBindingUtil.bind(view)!!
-        return binding.root
+        LogTimer.LogE(this, "$title onCreateView")
+        val view = LayoutContains.getViewByKey(inflater.context, LaunchInflateKey.home_fragment)!!
+        rvPlList = view.findViewById(inflater.context.resources.getIdentifier("rv_pl_list", "id", inflater.context.packageName))
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         LogTimer.LogE(this, "$title onViewCreated")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         LogTimer.LogE(this, "$title onActivityCreated")
-        binding?.apply {
-            model = this@HomeFragment.viewModel
-            adapter = musicAdapterL.get()
-            lifecycleOwner = this@HomeFragment
-            executePendingBindings()
-            rvPlList?.run {
-                addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
-                    override fun onItemClickListener(itemRootView: View, position: Int) {
-                        viewModel.getDetailFromSearch(position)
-                    }
-                })
-            }
+        rvPlList.adapter = musicAdapterL.get()
+        rvPlList?.run {
+            addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
+                override fun onItemClickListener(itemRootView: View, position: Int) {
+                    viewModel.getDetailFromSearch(position)
+                }
+            })
         }
         settingViewModelL.value.result.observe(viewLifecycleOwner) {
             musicAdapterL.get().notifyData(it)

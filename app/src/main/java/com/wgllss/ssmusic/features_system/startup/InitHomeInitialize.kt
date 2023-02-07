@@ -6,9 +6,9 @@ import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
 import com.tencent.mmkv.MMKV
-import com.wgllss.ssmusic.NavigationConfig
 import com.wgllss.ssmusic.core.activity.ActivityManager
 import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.features_third.um.UMHelp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -19,8 +19,8 @@ class InitHomeInitialize : Initializer<Unit> {
     override fun create(context: Context) {
         LogTimer.LogE(this, "create")
         GlobalScope.launch {
-            NavigationConfig.getDestConfig()
             MMKV.initialize(context)
+            UMHelp.umInit(context)
             (context.applicationContext as Application).registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(p0: Activity, p1: Bundle?) {
                     ActivityManager.instance.pushActivity(p0)
