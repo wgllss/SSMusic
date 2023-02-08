@@ -19,10 +19,7 @@ import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.features_third.um.UMHelp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class InitHomeInitialize : Initializer<Unit> {
 
@@ -30,7 +27,7 @@ class InitHomeInitialize : Initializer<Unit> {
 
     override fun create(context: Context) {
         LogTimer.LogE(this, "create")
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             MMKV.initialize(context)
             UMHelp.umInit(context)
             LogTimer.LogE(this, "UMHelp.umInit")

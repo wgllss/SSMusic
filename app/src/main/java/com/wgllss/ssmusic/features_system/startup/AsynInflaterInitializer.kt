@@ -25,20 +25,17 @@ import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 
 class AsynInflaterInitializer : Initializer<Unit> {
 
     override fun create(activity: Context) {
         LogTimer.LogE(this, "create")
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             LogTimer.LogE(this@AsynInflaterInitializer, "create 1 ${Thread.currentThread().name}")
 //            val initScreenAwait = async(Dispatchers.IO) {
-                ScreenManager.initScreenSize(activity)
+            ScreenManager.initScreenSize(activity)
 //            }
             val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
 //            val context: Context = MutableContextWrapper(activity)
