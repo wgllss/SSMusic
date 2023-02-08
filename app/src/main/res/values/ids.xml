@@ -2,6 +2,7 @@
 <resources>
     <item name="nav_host_fragment_activity_main" type="id" />
     <item name="rv_pl_list" type="id" />
+    <item name="rv_tab_list" type="id" />
     <item name="homeTabLayout" type="id" />
     <item name="homeViewPager2" type="id" />
     <item name="fmt_a" type="id" />

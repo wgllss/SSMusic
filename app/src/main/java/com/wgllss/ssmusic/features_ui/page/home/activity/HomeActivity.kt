@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
@@ -17,6 +18,7 @@ import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
+import com.wgllss.ssmusic.features_ui.page.home.adapter.TabAdapter
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
@@ -28,6 +30,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
+
+//    @Inject
+//    lateinit var tabAdapter: Lazy<TabAdapter>
 
     @Inject
     lateinit var homeFragmentL: Lazy<HomeTabFragment>
@@ -52,46 +57,58 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         LogTimer.LogE(this@HomeActivity, "initControl")
         contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
+//        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
+//        rvPlList.adapter = tabAdapter.get()
+//        tabAdapter.get().notifyData(
+//            mutableListOf(
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
+//                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
+//                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深"
+//            )
+//        )
 
-        homeTabLayout = contentLayout.findViewById(R.id.homeTabLayout)
-        viewPager2 = contentLayout.findViewById(R.id.homeViewPager2)
-        childAdapter = ViewPage2ChildFragmentAdapter(getList(), supportFragmentManager, lifecycle)
-        viewPager2.adapter = childAdapter
-        TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
-            val textView = TextView(this)
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-            textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
-            textView.text = tab.text
-            tab.customView = textView
-            textView.text = (childAdapter.list[position] as HomeFragment).title
-        }.apply(TabLayoutMediator::attach)
-        homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                tab?.customView?.takeIf {
-                    it is TextView
-                }?.run {
-                    (this as TextView).run {
-                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
-                        setTextColor(resources.getColor(R.color.colorPrimary))
-                    }
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                tab?.customView?.takeIf {
-                    it is TextView
-                }?.run {
-                    (this as TextView).run {
-                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                        setTextColor(resources.getColor(R.color.white))
-                    }
-                }
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab) {
-            }
-
-        })
+//        homeTabLayout = contentLayout.findViewById(R.id.homeTabLayout)
+//        viewPager2 = contentLayout.findViewById(R.id.homeViewPager2)
+//        childAdapter = ViewPage2ChildFragmentAdapter(getList(), supportFragmentManager, lifecycle)
+//        viewPager2.adapter = childAdapter
+//        TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+//            val textView = TextView(this)
+//            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+//            textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
+//            textView.text = tab.text
+//            tab.customView = textView
+//            textView.text = (childAdapter.list[position] as HomeFragment).title
+//        }.apply(TabLayoutMediator::attach)
+//        homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+//            override fun onTabSelected(tab: TabLayout.Tab) {
+//                tab?.customView?.takeIf {
+//                    it is TextView
+//                }?.run {
+//                    (this as TextView).run {
+//                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
+//                        setTextColor(resources.getColor(R.color.colorPrimary))
+//                    }
+//                }
+//            }
+//
+//            override fun onTabUnselected(tab: TabLayout.Tab) {
+//                tab?.customView?.takeIf {
+//                    it is TextView
+//                }?.run {
+//                    (this as TextView).run {
+//                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+//                        setTextColor(resources.getColor(R.color.white))
+//                    }
+//                }
+//            }
+//
+//            override fun onTabReselected(tab: TabLayout.Tab) {
+//            }
+//
+//        })
 //        setCurrentFragment(homeFragmentL.get())
         LogTimer.LogE(this@HomeActivity, "initControl after")
         initNavigation(contentLayout.findViewById(R.id.buttom_navigation))
