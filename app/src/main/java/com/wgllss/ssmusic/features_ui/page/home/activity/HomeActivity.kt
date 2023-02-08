@@ -1,18 +1,19 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
-import android.view.Gravity
+import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
-import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
+import com.wgllss.ssmusic.core.adapter.ViewPage2ChildFragmentAdapter
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
-import com.wgllss.ssmusic.core.asyninflater.OnInflateFinishListener
 import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
@@ -37,6 +38,11 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     @Inject
     lateinit var settingFragmentL: Lazy<SettingFragment>
 
+    private lateinit var childAdapter: ViewPage2ChildFragmentAdapter
+    private lateinit var homeTabLayout: TabLayout
+    private lateinit var viewPager2: ViewPager2
+    private lateinit var contentLayout: View
+
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
         super.onCreate(savedInstanceState)
@@ -44,9 +50,49 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     override fun initControl(savedInstanceState: Bundle?) {
         LogTimer.LogE(this@HomeActivity, "initControl")
-        val contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
+        contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
-        setCurrentFragment(homeFragmentL.get())
+
+        homeTabLayout = contentLayout.findViewById(R.id.homeTabLayout)
+        viewPager2 = contentLayout.findViewById(R.id.homeViewPager2)
+        childAdapter = ViewPage2ChildFragmentAdapter(getList(), supportFragmentManager, lifecycle)
+        viewPager2.adapter = childAdapter
+        TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+            val textView = TextView(this)
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+            textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
+            textView.text = tab.text
+            tab.customView = textView
+            textView.text = (childAdapter.list[position] as HomeFragment).title
+        }.apply(TabLayoutMediator::attach)
+        homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tab?.customView?.takeIf {
+                    it is TextView
+                }?.run {
+                    (this as TextView).run {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
+                        setTextColor(resources.getColor(R.color.colorPrimary))
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                tab?.customView?.takeIf {
+                    it is TextView
+                }?.run {
+                    (this as TextView).run {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+                        setTextColor(resources.getColor(R.color.white))
+                    }
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+            }
+
+        })
+//        setCurrentFragment(homeFragmentL.get())
         LogTimer.LogE(this@HomeActivity, "initControl after")
         initNavigation(contentLayout.findViewById(R.id.buttom_navigation))
     }
@@ -69,36 +115,29 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     private fun initNavigation(bottomNavigationView: BottomNavigationView) {
         bottomNavigationView.setOnItemSelectedListener { menu ->
             when (menu.itemId) {
-                R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-                R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
-                R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
+                R.id.fmt_a -> {
+//                    setCurrentFragment(homeFragmentL.get())
+                    contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
+                        visibility = View.GONE
+                    }
+                }
+                R.id.fmt_b -> {
+                    contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
+                        visibility = View.VISIBLE
+                        bringToFront()
+                    }
+                    setCurrentFragment(searchFragmentL.get())
+                }
+                R.id.fmt_c -> {
+                    contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
+                        visibility = View.VISIBLE
+                        bringToFront()
+                    }
+                    setCurrentFragment(settingFragmentL.get())
+                }
             }
             return@setOnItemSelectedListener true
         }
-//        AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home_navigation, object : OnInflateFinishListener {
-//            override fun onInflateFinished(view: View) {
-//                view.takeIf {
-//                    it.parent != null
-//                }?.let {
-//                    (it.parent as ViewGroup).removeView(it)
-//                }
-//                addContentView(view, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, resources.getDimension(R.dimen.navigation_height).toInt()).apply {
-//                    gravity = Gravity.BOTTOM
-//                })
-//                view?.takeIf {
-//                    it is BottomNavigationView
-//                }?.let {
-//                    (it as BottomNavigationView).setOnItemSelectedListener { menu ->
-//                        when (menu.itemId) {
-//                            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-//                            R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
-//                            R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
-//                        }
-//                        return@setOnItemSelectedListener true
-//                    }
-//                }
-//            }
-//        })
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
@@ -106,4 +145,14 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         viewModel.mCurrentFragmentTAG.delete(0, viewModel.mCurrentFragmentTAG.toString().length)
         viewModel.mCurrentFragmentTAG.append(fragment.javaClass.simpleName)
     }
+
+    private fun getList() = mutableListOf(
+        HomeFragment("首页", "index"),
+        HomeFragment("华语", "forum-1"),
+        HomeFragment("日韩", "forum-15"),
+        HomeFragment("欧美", "forum-10"),
+        HomeFragment("remix", "thread-21683"),
+        HomeFragment("纯音乐", "forum-12"),
+        HomeFragment("异次元", "forum-13"),
+    )
 }
