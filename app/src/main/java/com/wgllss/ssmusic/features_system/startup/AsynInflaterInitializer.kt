@@ -44,30 +44,32 @@ class AsynInflaterInitializer : Initializer<Unit> {
             val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
             val res = context.resources
             val activityLayoutViewAwait = async(Dispatchers.IO) {
-                FrameLayout(context).apply {
+                val layout = FrameLayout(context).apply {
                     val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                     layoutParams = lp
                 }
+                layout
             }
-            val viewTitleBgAwait = async(Dispatchers.IO) {
-                View(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
-                    lp.gravity = Gravity.TOP or Gravity.LEFT
-                    layoutParams = lp
-                    setBackgroundColor(res.getColor(R.color.colorAccent))
-                }
-            }
+//            val viewTitleBgAwait = async(Dispatchers.IO) {
+//                View(context).apply {
+//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
+//                    lp.gravity = Gravity.TOP or Gravity.LEFT
+//                    layoutParams = lp
+//                    setBackgroundColor(res.getColor(R.color.colorAccent))
+//                }
+//            }
 
             val textTitleViewAwait = async(Dispatchers.IO) {
                 TextView(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_text_height).toInt())
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
                     lp.gravity = Gravity.TOP and Gravity.LEFT
-                    lp.topMargin = res.getDimension(R.dimen.status_bar_height).toInt()
+//                    lp.topMargin = res.getDimension(R.dimen.status_bar_height).toInt()
                     layoutParams = lp
                     setBackgroundColor(res.getColor(R.color.colorAccent))
                     setTextColor(Color.WHITE)
                     text = "播放列表"
-                    gravity = Gravity.CENTER
+                    gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+                    setPadding(0, 0, 0, context.getIntToDip(12f).toInt())
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
                 }
             }
@@ -154,7 +156,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
             }
             ScreenManager.initScreenSize(activity)
             val activityLayout = activityLayoutViewAwait.await().apply {
-                addView(viewTitleBgAwait.await())
+//                addView(viewTitleBgAwait.await())
                 addView(textTitleViewAwait.await())
                 addView(recyclerViewAwait.await())
 //                addView(tabLayoutAwait.await())

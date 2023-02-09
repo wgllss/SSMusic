@@ -53,6 +53,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     override fun initControl(savedInstanceState: Bundle?) {
         LogTimer.LogE(this@HomeActivity, "initControl")
         contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
+        initNavigation(contentLayout.findViewById(R.id.buttom_navigation))
         addContentView(contentLayout, contentLayout.layoutParams)
         val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
         rvPlList.adapter = TabAdapter(
@@ -119,7 +120,6 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 //        })
 //        setCurrentFragment(homeFragmentL.get())
         LogTimer.LogE(this@HomeActivity, "initControl after")
-        initNavigation(contentLayout.findViewById(R.id.buttom_navigation))
     }
 
     override fun initValue() {
