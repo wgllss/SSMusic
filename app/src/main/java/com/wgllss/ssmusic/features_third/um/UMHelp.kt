@@ -4,14 +4,11 @@ import android.content.Context
 import com.umeng.commonsdk.UMConfigure
 import com.wgllss.ssmusic.BuildConfig
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 object UMHelp {
-    const val APP_KEY = "634d040505844627b5672f2f"
-    const val APP_MASTER_SECRET = "6y2akwgydlplnewzdhqczfmld5kan6xo"
-    const val UMENG_MESSAGE_SECRET = "163045f64d1a5f94f8e50cbf8bb81f65"
+    private const val APP_KEY = "634d040505844627b5672f2f"
+    private const val APP_MASTER_SECRET = "6y2akwgydlplnewzdhqczfmld5kan6xo"
+    private const val UMENG_MESSAGE_SECRET = "163045f64d1a5f94f8e50cbf8bb81f65"
 
     fun umInit(context: Context) {
 //        GlobalScope.launch(Dispatchers.IO) {

@@ -5,24 +5,16 @@ import android.content.MutableContextWrapper
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.startup.Initializer
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.MODE_SCROLLABLE
-import com.google.android.material.tabs.TabLayoutMediator
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.asyninflater.AsyncInflateItem
-import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.getIntToDip
@@ -30,9 +22,10 @@ import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
-import com.wgllss.ssmusic.features_ui.page.home.adapter.TabAdapter
-import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 
 class AsynInflaterInitializer : Initializer<Unit> {
@@ -50,20 +43,10 @@ class AsynInflaterInitializer : Initializer<Unit> {
                 }
                 layout
             }
-//            val viewTitleBgAwait = async(Dispatchers.IO) {
-//                View(context).apply {
-//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
-//                    lp.gravity = Gravity.TOP or Gravity.LEFT
-//                    layoutParams = lp
-//                    setBackgroundColor(res.getColor(R.color.colorAccent))
-//                }
-//            }
-
             val textTitleViewAwait = async(Dispatchers.IO) {
                 TextView(context).apply {
                     val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
                     lp.gravity = Gravity.TOP and Gravity.LEFT
-//                    lp.topMargin = res.getDimension(R.dimen.status_bar_height).toInt()
                     layoutParams = lp
                     setBackgroundColor(res.getColor(R.color.colorAccent))
                     setTextColor(Color.WHITE)
@@ -139,6 +122,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     visibility = View.GONE
                 }
             }
+            ScreenManager.initScreenSize(activity)
             val bottomNavigationViewAwait = async(Dispatchers.IO) {
                 val bottomNavigationView = BottomNavigationView(context).apply {
                     val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.navigation_height).toInt())
@@ -146,26 +130,24 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     layoutParams = lp
                     id = res.getIdentifier("buttom_navigation", "id", activity.packageName)
                 }
-//                bottomNavigationView.menu.apply {
-//                    clear()
-//                    add(0, res.getIdentifier("fmt_a", "id", activity.packageName), 0, res.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
-//                    add(0, res.getIdentifier("fmt_b", "id", activity.packageName), 0, res.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
-//                    add(0, res.getIdentifier("fmt_c", "id", activity.packageName), 0, res.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
-//                }
+                bottomNavigationView.menu.apply {
+                    clear()
+                    add(0, res.getIdentifier("fmt_a", "id", activity.packageName), 0, res.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
+                    add(0, res.getIdentifier("fmt_b", "id", activity.packageName), 0, res.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
+                    add(0, res.getIdentifier("fmt_c", "id", activity.packageName), 0, res.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
+                }
+                ScreenManager.measureAndLayout(bottomNavigationView)
                 bottomNavigationView
             }
-            ScreenManager.initScreenSize(activity)
             val activityLayout = activityLayoutViewAwait.await().apply {
-//                addView(viewTitleBgAwait.await())
                 addView(textTitleViewAwait.await())
                 addView(recyclerViewAwait.await())
-//                addView(tabLayoutAwait.await())
                 addView(fragmentContainerViewAwait.await())
-//                addView(viewPager2LayoutAwait.await())
-                addView(bottomNavigationViewAwait.await())
             }
             ScreenManager.measureAndLayout(activityLayout)
             LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayout)
+            LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains 0")
+            LayoutContains.putViewByKey(LaunchInflateKey.home_navigation, bottomNavigationViewAwait.await())
             LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")
         }
     }

@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -53,20 +54,20 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     override fun initControl(savedInstanceState: Bundle?) {
         LogTimer.LogE(this@HomeActivity, "initControl")
         contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
-        initNavigation(contentLayout.findViewById(R.id.buttom_navigation))
         addContentView(contentLayout, contentLayout.layoutParams)
-        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
-        rvPlList.adapter = TabAdapter(
-            mutableListOf(
-                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-//                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
-//                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
-                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
-                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-                "周杰伦", "林俊杰", "许嵩", "胡彦斌",
-                "张学友"
-            )
-        )
+//        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
+//        rvPlList.adapter = TabAdapter(
+//            mutableListOf(
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+////                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
+////                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
+//                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌",
+//                "张学友"
+//            )
+//        )
+
 //        rvPlList.adapter = tabAdapter.get()
 //        tabAdapter.get().notifyData(
 //            mutableListOf(
@@ -131,6 +132,22 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
+        val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!!
+        addContentView(navigationView, navigationView.layoutParams)
+        initNavigation(navigationView as BottomNavigationView)
+        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
+        rvPlList.adapter = TabAdapter(
+            mutableListOf(
+                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
+//                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
+                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
+                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+                "周杰伦", "林俊杰", "许嵩", "胡彦斌",
+                "张学友"
+            )
+        )
+
         viewModel.start()
         viewModel.rootMediaId.observe(this) {
             it?.let { viewModel.subscribeByMediaID(it) }
@@ -139,12 +156,15 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     private fun initNavigation(bottomNavigationView: BottomNavigationView) {
         bottomNavigationView.apply {
-            with(menu) {
-//                clear()
-                add(0, R.id.fmt_a, 0, resources.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
-                add(0, R.id.fmt_b, 0, resources.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
-                add(0, R.id.fmt_c, 0, resources.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
-            }
+//            with(menu) {
+////                clear()
+//                get(0).setIcon(R.drawable.ic_home_black_24dp)
+//                get(1).setIcon(R.drawable.ic_dashboard_black_24dp)
+//                get(2).setIcon(R.drawable.ic_notifications_black_24dp)
+////                add(0, R.id.fmt_a, 0, resources.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
+////                add(0, R.id.fmt_b, 0, resources.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
+////                add(0, R.id.fmt_c, 0, resources.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
+//            }
             setOnItemSelectedListener { menu ->
                 when (menu.itemId) {
                     R.id.fmt_a -> {
