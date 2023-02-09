@@ -17,7 +17,7 @@ class TabAdapter(list: MutableList<String>) : BaseRecyclerAdapter<String>(list) 
         val textView = TextView(parent.context).apply {
             val lp = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, parent.context.getIntToDip(50f).toInt())
             layoutParams = lp
-            setBackgroundColor(Color.BLUE)
+            setBackgroundColor(parent.context.resources.getColor(R.color.color_FFCD4339))
             setTextColor(Color.WHITE)
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
             gravity = Gravity.CENTER
