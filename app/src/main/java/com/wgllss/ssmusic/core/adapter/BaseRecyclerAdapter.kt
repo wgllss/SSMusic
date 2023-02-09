@@ -5,26 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 
 
 abstract class BaseRecyclerAdapter<T>(val list: MutableList<T>) : RecyclerView.Adapter<BaseRecyclerAdapter.BaseBindingViewHolder>() {
     var context: Context? = null
 
-
     fun removeItem(position: Int) {
-        if (list != null && list!!.size > position) {
-            list!!.removeAt(position)
+        list?.takeIf {
+            it.size > position
+        }?.run {
+            removeAt(position)
             notifyDataSetChanged()
         }
     }
 
     fun clearList() {
-        if (list != null) {
-            list!!.clear()
+        list?.run {
+            clear()
+            notifyDataSetChanged()
         }
-        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
@@ -55,5 +55,5 @@ abstract class BaseRecyclerAdapter<T>(val list: MutableList<T>) : RecyclerView.A
 
     protected abstract fun onBindItem(item: T, holder: RecyclerView.ViewHolder, position: Int)
 
-    class BaseBindingViewHolder internal constructor(itemView: View?) : RecyclerView.ViewHolder(itemView!!)
+    class BaseBindingViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

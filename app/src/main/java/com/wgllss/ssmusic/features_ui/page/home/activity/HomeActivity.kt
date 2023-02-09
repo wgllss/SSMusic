@@ -1,15 +1,12 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.View
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
 import com.wgllss.ssmusic.core.adapter.ViewPage2ChildFragmentAdapter
@@ -57,7 +54,18 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         LogTimer.LogE(this@HomeActivity, "initControl")
         contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
-//        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
+        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
+        rvPlList.adapter = TabAdapter(
+            mutableListOf(
+                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
+//                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
+                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
+                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+                "周杰伦", "林俊杰", "许嵩", "胡彦斌",
+                "张学友"
+            )
+        )
 //        rvPlList.adapter = tabAdapter.get()
 //        tabAdapter.get().notifyData(
 //            mutableListOf(
@@ -130,30 +138,38 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     }
 
     private fun initNavigation(bottomNavigationView: BottomNavigationView) {
-        bottomNavigationView.setOnItemSelectedListener { menu ->
-            when (menu.itemId) {
-                R.id.fmt_a -> {
-//                    setCurrentFragment(homeFragmentL.get())
-                    contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
-                        visibility = View.GONE
-                    }
-                }
-                R.id.fmt_b -> {
-                    contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
-                        visibility = View.VISIBLE
-                        bringToFront()
-                    }
-                    setCurrentFragment(searchFragmentL.get())
-                }
-                R.id.fmt_c -> {
-                    contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
-                        visibility = View.VISIBLE
-                        bringToFront()
-                    }
-                    setCurrentFragment(settingFragmentL.get())
-                }
+        bottomNavigationView.apply {
+            with(menu) {
+//                clear()
+                add(0, R.id.fmt_a, 0, resources.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
+                add(0, R.id.fmt_b, 0, resources.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
+                add(0, R.id.fmt_c, 0, resources.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
             }
-            return@setOnItemSelectedListener true
+            setOnItemSelectedListener { menu ->
+                when (menu.itemId) {
+                    R.id.fmt_a -> {
+//                    setCurrentFragment(homeFragmentL.get())
+                        contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
+                            visibility = View.GONE
+                        }
+                    }
+                    R.id.fmt_b -> {
+                        contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
+                            visibility = View.VISIBLE
+                            bringToFront()
+                        }
+                        setCurrentFragment(searchFragmentL.get())
+                    }
+                    R.id.fmt_c -> {
+                        contentLayout.findViewById<View>(R.id.nav_host_fragment_activity_main).apply {
+                            visibility = View.VISIBLE
+                            bringToFront()
+                        }
+                        setCurrentFragment(settingFragmentL.get())
+                    }
+                }
+                return@setOnItemSelectedListener true
+            }
         }
     }
 

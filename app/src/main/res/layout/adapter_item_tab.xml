@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
-    android:layout_height="28dp"
-    android:layout_gravity="top|left"
-    android:layout_marginRight="150dp"
+    android:layout_height="50dp"
     android:background="@color/color_ff2B9E62"
     android:gravity="center"
-    android:text="@{bean}"
     android:textColor="@color/white"
     android:textSize="20dp" />

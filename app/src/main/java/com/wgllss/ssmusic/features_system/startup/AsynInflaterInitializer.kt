@@ -80,26 +80,26 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     lp.topMargin = res.getDimension(R.dimen.title_bar_height).toInt()
                     layoutParams = lp
                     setBackgroundColor(Color.WHITE)
-                    layoutManager = GridLayoutManager(context, 3)
+                    layoutManager = GridLayoutManager(context, 5)
                     val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
                     setPadding(paddingSize, 0, paddingSize, 0)
                     val itemDecoration = View(context)
-                    val size = context.getIntToDip(1.0f).toInt()
+                    val size = context.getIntToDip(5.0f).toInt()
                     itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
                     itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
                     addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
 //                    val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
-                    adapter = TabAdapter(
-                            mutableListOf(
-                                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-//                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
-//                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
-//                                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
-//                                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-//                                "周杰伦", "林俊杰", "许嵩", "胡彦斌",
-                                "张学友"
-                            )
-                        )
+//                    adapter = TabAdapter(
+//                        mutableListOf(
+//                            "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+////                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
+////                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
+//                            "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                            "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                            "周杰伦", "林俊杰", "许嵩", "胡彦斌",
+//                            "张学友"
+//                        )
+//                    )
 
                 }
             }
@@ -144,12 +144,12 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     layoutParams = lp
                     id = res.getIdentifier("buttom_navigation", "id", activity.packageName)
                 }
-                bottomNavigationView.menu.apply {
-                    clear()
-                    add(0, res.getIdentifier("fmt_a", "id", activity.packageName), 0, res.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
-                    add(0, res.getIdentifier("fmt_b", "id", activity.packageName), 0, res.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
-                    add(0, res.getIdentifier("fmt_c", "id", activity.packageName), 0, res.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
-                }
+//                bottomNavigationView.menu.apply {
+//                    clear()
+//                    add(0, res.getIdentifier("fmt_a", "id", activity.packageName), 0, res.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
+//                    add(0, res.getIdentifier("fmt_b", "id", activity.packageName), 0, res.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
+//                    add(0, res.getIdentifier("fmt_c", "id", activity.packageName), 0, res.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
+//                }
                 bottomNavigationView
             }
             ScreenManager.initScreenSize(activity)
