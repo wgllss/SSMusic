@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -16,6 +17,7 @@ import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
+import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.page.home.adapter.TabAdapter
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
@@ -24,6 +26,8 @@ import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -151,6 +155,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         viewModel.start()
         viewModel.rootMediaId.observe(this) {
             it?.let { viewModel.subscribeByMediaID(it) }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            UMHelp.umInit(this@HomeActivity)
         }
     }
 

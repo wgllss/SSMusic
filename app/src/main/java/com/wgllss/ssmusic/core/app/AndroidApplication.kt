@@ -8,7 +8,7 @@ open class AndroidApplication : Application() {
 
     private val proxies = listOf<ApplicationProxy>(CommonApplicationProxy)
 
-    override fun attachBaseContext(base: Context?) {
+    override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         AppGlobals.sApplication = this
     }

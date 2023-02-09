@@ -39,16 +39,16 @@
         android:supportsRtl="true"
         android:theme="@style/LauncherTheme2"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"
-            android:exported="true"
-            android:theme="@style/LauncherTheme">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN" />-->
+        <!--        <activity-->
+        <!--            android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"-->
+        <!--            android:exported="true"-->
+        <!--            android:theme="@style/LauncherTheme">-->
+        <!--            &lt;!&ndash;            <intent-filter>&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <action android:name="android.intent.action.MAIN" />&ndash;&gt;-->
 
-            <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-            <!--            </intent-filter>-->
-        </activity>
+        <!--            &lt;!&ndash;                <category android:name="android.intent.category.LAUNCHER" />&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </intent-filter>&ndash;&gt;-->
+        <!--        </activity>-->
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
             android:exported="true">
@@ -79,20 +79,21 @@
             android:theme="@style/Transparent"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
-        <provider
-            android:name="androidx.startup.InitializationProvider"
-            android:authorities="${applicationId}.androidx-startup"
-            android:exported="false">
-            <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"
-                android:value="androidx.startup" />
-            <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.AsynInflaterInitializer"
-                android:value="androidx.startup" />
-<!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"-->
-            <!--                android:value="androidx.startup" />-->
-        </provider>
+        <!--        <provider-->
+        <!--            android:name="androidx.startup.InitializationProvider"-->
+        <!--            android:authorities="${applicationId}.androidx-startup"-->
+        <!--            android:exported="false">-->
+
+        <!--            <meta-data-->
+        <!--                android:name="com.wgllss.ssmusic.features_system.startup.AsynInflaterInitializer"-->
+        <!--                android:value="androidx.startup" />-->
+        <!--            <meta-data-->
+        <!--                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"-->
+        <!--                android:value="androidx.startup" />-->
+        <!--                    <meta-data-->
+        <!--                        android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"-->
+        <!--                        android:value="androidx.startup" />-->
+        <!--        </provider>-->
 
         <service
             android:name="com.wgllss.ssmusic.features_system.services.MusicService"

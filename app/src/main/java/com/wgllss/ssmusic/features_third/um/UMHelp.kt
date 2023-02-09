@@ -4,6 +4,9 @@ import android.content.Context
 import com.umeng.commonsdk.UMConfigure
 import com.wgllss.ssmusic.BuildConfig
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 object UMHelp {
     private const val APP_KEY = "634d040505844627b5672f2f"
@@ -27,6 +30,6 @@ object UMHelp {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-//        }
     }
+//    }
 }

@@ -1,13 +1,13 @@
 package com.wgllss.ssmusic.core.activity
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.wgllss.ssmusic.core.dialog.CommonLoadingView
 import com.wgllss.ssmusic.core.ex.finishActivity
 import com.wgllss.ssmusic.core.units.StatusBarUtil
 import com.wgllss.ssmusic.core.widget.CommonToast
 
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : FragmentActivity() {
     private var loading: CommonLoadingView? = null
     private var initFlag = false
     open fun hasNavigationBarStatusBarTranslucent() = true
