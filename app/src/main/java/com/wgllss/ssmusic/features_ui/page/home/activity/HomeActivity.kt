@@ -156,15 +156,15 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     private fun initNavigation(bottomNavigationView: BottomNavigationView) {
         bottomNavigationView.apply {
-//            with(menu) {
-////                clear()
-//                get(0).setIcon(R.drawable.ic_home_black_24dp)
-//                get(1).setIcon(R.drawable.ic_dashboard_black_24dp)
-//                get(2).setIcon(R.drawable.ic_notifications_black_24dp)
-////                add(0, R.id.fmt_a, 0, resources.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
-////                add(0, R.id.fmt_b, 0, resources.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
-////                add(0, R.id.fmt_c, 0, resources.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
-//            }
+            with(menu) {
+//                clear()
+                get(0).setIcon(R.drawable.ic_home_black_24dp)
+                get(1).setIcon(R.drawable.ic_dashboard_black_24dp)
+                get(2).setIcon(R.drawable.ic_notifications_black_24dp)
+//                add(0, R.id.fmt_a, 0, resources.getString(R.string.title_home)).setIcon(R.drawable.ic_home_black_24dp)
+//                add(0, R.id.fmt_b, 0, resources.getString(R.string.title_search)).setIcon(R.drawable.ic_dashboard_black_24dp)
+//                add(0, R.id.fmt_c, 0, resources.getString(R.string.title_setting)).setIcon(R.drawable.ic_notifications_black_24dp)
+            }
             setOnItemSelectedListener { menu ->
                 when (menu.itemId) {
                     R.id.fmt_a -> {
