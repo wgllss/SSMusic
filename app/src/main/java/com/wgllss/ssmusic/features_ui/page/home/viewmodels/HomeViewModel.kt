@@ -38,6 +38,8 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     val currentMediaID by lazy { MutableLiveData("") }
     val mCurrentFragmentTAG by lazy { StringBuilder() }
 
+    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
+
     val rootMediaId: LiveData<String> by lazy {
         Transformations.map(musicServiceConnectionL.get().isConnected) { isConnected ->
             if (isConnected) {
@@ -76,6 +78,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     }
 
     override fun start() {
+        lazyTabViewPager2.value = true
         musicServiceConnectionL.get().startConnect()
     }
 

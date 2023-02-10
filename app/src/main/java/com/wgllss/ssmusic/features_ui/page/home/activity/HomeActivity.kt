@@ -1,22 +1,16 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
-import com.wgllss.ssmusic.core.asyninflater.AsyncInflateManager
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
-import com.wgllss.ssmusic.core.asyninflater.OnInflateFinishListener
 import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
-import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
@@ -48,7 +42,6 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         addContentView(contentLayout, contentLayout.layoutParams)
         setCurrentFragment(homeFragmentL.get())
         LogTimer.LogE(this@HomeActivity, "initControl after")
-        initNavigation(contentLayout.findViewById(R.id.buttom_navigation))
     }
 
     override fun initValue() {
@@ -61,44 +54,30 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
         viewModel.start()
+        val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!!
+        addContentView(navigationView, navigationView.layoutParams)
+        initNavigation(navigationView as BottomNavigationView)
         viewModel.rootMediaId.observe(this) {
             it?.let { viewModel.subscribeByMediaID(it) }
         }
     }
 
     private fun initNavigation(bottomNavigationView: BottomNavigationView) {
-        bottomNavigationView.setOnItemSelectedListener { menu ->
-            when (menu.itemId) {
-                R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-                R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
-                R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
+        bottomNavigationView.apply {
+            with(menu) {
+                get(0).setIcon(R.drawable.ic_home_black_24dp)
+                get(1).setIcon(R.drawable.ic_dashboard_black_24dp)
+                get(2).setIcon(R.drawable.ic_notifications_black_24dp)
             }
-            return@setOnItemSelectedListener true
+            setOnItemSelectedListener { menu ->
+                when (menu.itemId) {
+                    R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
+                    R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
+                    R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
+                }
+                return@setOnItemSelectedListener true
+            }
         }
-//        AsyncInflateManager.instance.getAsynInflatedView(this, LaunchInflateKey.home_navigation, object : OnInflateFinishListener {
-//            override fun onInflateFinished(view: View) {
-//                view.takeIf {
-//                    it.parent != null
-//                }?.let {
-//                    (it.parent as ViewGroup).removeView(it)
-//                }
-//                addContentView(view, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, resources.getDimension(R.dimen.navigation_height).toInt()).apply {
-//                    gravity = Gravity.BOTTOM
-//                })
-//                view?.takeIf {
-//                    it is BottomNavigationView
-//                }?.let {
-//                    (it as BottomNavigationView).setOnItemSelectedListener { menu ->
-//                        when (menu.itemId) {
-//                            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-//                            R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
-//                            R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
-//                        }
-//                        return@setOnItemSelectedListener true
-//                    }
-//                }
-//            }
-//        })
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
