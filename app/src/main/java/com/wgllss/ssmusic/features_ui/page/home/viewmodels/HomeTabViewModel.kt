@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.wgllss.ssmusic.core.data.DialogBean
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.MusicItemBean
@@ -24,7 +25,9 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
 
     private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
 
-    val liveDataLoadSuccessCount by lazy { MutableLiveData<Int>(0) }
+    val liveDataLoadSuccessCount by lazy { MutableLiveData(0) }
+
+    var isClick = false
 
     val result by lazy { mutableMapOf<String, MutableLiveData<MutableList<MusicItemBean>>>() }
 
@@ -36,6 +39,7 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
     }
 
     fun getData(key: String) {
+        isClick = false
         flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.get().homeMusic(key)
                 .onEach {
@@ -57,6 +61,7 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
         result[key]?.value?.takeIf {
             it.size > position
         }?.run {
+            isClick = true
             flowAsyncWorkOnViewModelScopeLaunch {
                 val detailUrl = get(position).detailUrl
                 musicRepositoryL.get().getPlayUrl(detailUrl)

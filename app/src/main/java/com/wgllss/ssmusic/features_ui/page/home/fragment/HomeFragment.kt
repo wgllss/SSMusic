@@ -114,8 +114,11 @@ class HomeFragment(val title: String, private val key: String) : BaseViewModelFr
         super.initObserve()
         homeTabViewModel.value?.run {
             showUIDialog.observe(viewLifecycleOwner) { it ->
-                swipeRefreshLayout.isRefreshing = it.isShow
-//                if (it.isShow) showloading(it.msg) else hideLoading()
+                if (!isClick) {
+                    swipeRefreshLayout.isRefreshing = it.isShow
+                } else {
+                    if (it.isShow) showloading(it.msg) else hideLoading()
+                }
             }
             errorMsgLiveData.observe(viewLifecycleOwner) {
                 onToast(it)
@@ -124,13 +127,5 @@ class HomeFragment(val title: String, private val key: String) : BaseViewModelFr
                 if (it > 1) swipeRefreshLayout.isRefreshing = false
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        viewModel.currentMediaID.observe(viewLifecycleOwner) {
-//            playListAdapterL.get().currentMediaID = it
-//            playListAdapterL.get().notifyDataSetChanged()
-//        }
     }
 }

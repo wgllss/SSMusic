@@ -6,7 +6,7 @@ import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
 
-open class OnRecyclerViewItemClickListener constructor(val recyclerView: RecyclerView) : RecyclerView.OnItemTouchListener {
+open class OnRecyclerViewItemClickListener constructor(val recyclerView: RecyclerView) : RecyclerView.OnItemTouchListener, View.OnClickListener {
 
     private lateinit var gestureDetectorCompat: GestureDetectorCompat
 
@@ -20,6 +20,11 @@ open class OnRecyclerViewItemClickListener constructor(val recyclerView: Recycle
                 trasfomerItemEvent(e, 0)
                 return true
             }
+
+//            override fun onDown(e: MotionEvent): Boolean {
+//                trasfomerItemEvent(e, 0)
+//                return true
+//            }
         })
     }
 
@@ -27,7 +32,9 @@ open class OnRecyclerViewItemClickListener constructor(val recyclerView: Recycle
         recyclerView?.let {
             it.findChildViewUnder(e.x, e.y)
         }?.apply {
-            val viewHolder = recyclerView.getChildViewHolder(this)
+//            val viewHolder = recyclerView.getChildViewHolder(this)
+//            viewHolder.itemView.setOnClickListener()
+            setOnClickListener(this@OnRecyclerViewItemClickListener)
             val position = recyclerView.getChildPosition(this)
             if (type == 0) {
                 onItemClickListener(this, position)
@@ -55,5 +62,6 @@ open class OnRecyclerViewItemClickListener constructor(val recyclerView: Recycle
     }
 
     override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-
+    override fun onClick(v: View?) {
+    }
 }
