@@ -3,12 +3,14 @@ package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
@@ -21,6 +23,8 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
     lateinit var musicRepositoryL: Lazy<MusicRepository>
 
     private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
+
+    val liveDataLoadSuccessCount by lazy { MutableLiveData<Int>(0) }
 
     val result by lazy { mutableMapOf<String, MutableLiveData<MutableList<MusicItemBean>>>() }
 
@@ -43,6 +47,8 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
                     } else {
                         result[key]?.postValue(it)
                     }
+                    var c = liveDataLoadSuccessCount.value?.plus(1)
+                    liveDataLoadSuccessCount.postValue(c)
                 }
         }
     }

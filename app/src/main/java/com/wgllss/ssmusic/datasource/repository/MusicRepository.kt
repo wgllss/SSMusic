@@ -1,5 +1,7 @@
 package com.wgllss.ssmusic.datasource.repository
 
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
@@ -7,6 +9,7 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -16,6 +19,12 @@ import javax.inject.Inject
 class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>, private val mSSDataBaseL: Lazy<SSDataBase>) {
 
     suspend fun homeMusic(tab_item: String = "") = flow {
+        if ("index" == tab_item) {
+            val json = MMKVHelp.getHomeTab1Data()
+            json?.let {
+                emit(Gson().fromJson(json, object : TypeToken<MutableList<MusicItemBean>>() {}.type))
+            }
+        }
         val html = musiceApiL.get().homeTabMusic(tab_item)
         val document = Jsoup.parse(html, "https://www.hifini.com/")
         val dcS = document.select(".break-all")
@@ -29,7 +38,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
                 //content:买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]
                 //content:周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]
                 val content = links.html()//树深时见鹿dear《<em>三国</em><em>杀</em>》[FLAC/MP3-320K]
-                    WLog.e(this@MusicRepository, "content:${content}")
+                WLog.e(this@MusicRepository, "content:${content}")
                 content?.takeIf { c ->
                     c.isNotEmpty() && !c.contains("专辑")
                 }?.let {
@@ -83,6 +92,9 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
             }
         }
         emit(list)
+        if ("index" == tab_item) {
+            MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
+        }
     }
 
     /**

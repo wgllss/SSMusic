@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -92,6 +91,9 @@ class HomeFragment(val title: String, private val key: String) : BaseViewModelFr
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         LogTimer.LogE(this, "$title onActivityCreated")
+        swipeRefreshLayout.setOnRefreshListener {
+            homeTabViewModel.value.getData(key)
+        }
         rvPlList.adapter = musicAdapterL.get()
         rvPlList?.run {
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
@@ -104,12 +106,8 @@ class HomeFragment(val title: String, private val key: String) : BaseViewModelFr
         homeTabViewModel.value.result[key]?.observe(viewLifecycleOwner) {
             WLog.e(this@HomeFragment, key)
             musicAdapterL.get().notifyData(it)
-            swipeRefreshLayout.isRefreshing = false
         }
         homeTabViewModel.value.getData(key)
-        swipeRefreshLayout.setOnRefreshListener {
-            homeTabViewModel.value.getData(key)
-        }
     }
 
     override fun initObserve() {
@@ -121,6 +119,9 @@ class HomeFragment(val title: String, private val key: String) : BaseViewModelFr
             }
             errorMsgLiveData.observe(viewLifecycleOwner) {
                 onToast(it)
+            }
+            liveDataLoadSuccessCount.observe(viewLifecycleOwner) {
+                if (it > 1) swipeRefreshLayout.isRefreshing = false
             }
         }
     }
