@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.startup.Initializer
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
@@ -23,6 +24,7 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.getIntToDip
+import com.wgllss.ssmusic.core.ex.initColors
 import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
@@ -108,24 +110,30 @@ class AsynInflaterInitializer : Initializer<Unit> {
                 ScreenManager.measureAndLayout(tabFragmentLayout)
                 LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment, tabFragmentLayout)
             }
-//            async(Dispatchers.IO) {
-//                val homeFragmentView = RecyclerView(context).apply {
-//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-//                    lp.gravity = Gravity.TOP or Gravity.LEFT
-//                    layoutParams = lp
-//                    setBackgroundColor(Color.WHITE)
-//                    layoutManager = LinearLayoutManager(context)
-//                    val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
-//                    setPadding(paddingSize, 0, paddingSize, 0)
-//                    val itemDecoration = View(context)
-//                    val size = context.getIntToDip(1.0f).toInt()
-//                    itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-//                    itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
-//                    addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
-//                }
-//                ScreenManager.measureAndLayout(homeFragmentView)
-//                LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, homeFragmentView)
-//            }
+            async(Dispatchers.IO) {
+                val swipeRefreshLayout = SwipeRefreshLayout(context).apply {
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                    initColors()
+                }
+                val homeFragmentView = RecyclerView(context).apply {
+                    id = res.getIdentifier("home_recycle_view", "id", activity.packageName)
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                    lp.gravity = Gravity.TOP or Gravity.LEFT
+                    layoutParams = lp
+                    setBackgroundColor(Color.WHITE)
+                    layoutManager = LinearLayoutManager(context)
+                    val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
+                    setPadding(paddingSize, 0, paddingSize, 0)
+                    val itemDecoration = View(context)
+                    val size = context.getIntToDip(1.0f).toInt()
+                    itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
+                    itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
+                    addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
+                }
+                swipeRefreshLayout.addView(homeFragmentView)
+                ScreenManager.measureAndLayout(swipeRefreshLayout)
+                LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, swipeRefreshLayout)
+            }
             LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")
         }
     }
