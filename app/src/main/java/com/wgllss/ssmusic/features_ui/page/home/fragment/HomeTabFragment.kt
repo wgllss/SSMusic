@@ -43,8 +43,6 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        childAdapter = ViewPage2ChildFragmentAdapter(mutableListOf(), childFragmentManager, lifecycle)
-//        viewPager2.adapter = childAdapter
         viewModel.lazyTabViewPager2.observe(viewLifecycleOwner) {
 //            childAdapter.notifyData(getList()
             childAdapter = ViewPage2ChildFragmentAdapter(getList(), childFragmentManager, lifecycle)
@@ -97,7 +95,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
         HomeFragment("华语", "forum-1"),
         HomeFragment("日韩", "forum-15"),
         HomeFragment("欧美", "forum-10"),
-        HomeFragment("remix", "thread-21683"),
+        HomeFragment("remix", "forum-11"),
         HomeFragment("纯音乐", "forum-12"),
         HomeFragment("异次元", "forum-13"),
     )

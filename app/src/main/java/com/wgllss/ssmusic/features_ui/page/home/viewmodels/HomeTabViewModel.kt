@@ -22,22 +22,33 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
 
     private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
 
-    val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
+    val result by lazy { mutableMapOf<String, MutableLiveData<MutableList<MusicItemBean>>>() }
 
     override fun start() {
     }
 
-    fun getData(html: String) {
+    fun initKey(key: String) {
+        result[key] = MutableLiveData<MutableList<MusicItemBean>>()
+    }
+
+    fun getData(key: String) {
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.get().homeMusic(html)
+            musicRepositoryL.get().homeMusic(key)
                 .onEach {
-                    result.postValue(it)
+                    if (result[key] == null) {
+                        WLog.e(this@HomeTabViewModel, key)
+                        val list = MutableLiveData<MutableList<MusicItemBean>>()
+                        list.postValue(it)
+                        result[key] = list
+                    } else {
+                        result[key]?.postValue(it)
+                    }
                 }
         }
     }
 
-    fun getDetailFromSearch(position: Int) {
-        result?.value?.takeIf {
+    fun getDetailFromSearch(key: String, position: Int) {
+        result[key]?.value?.takeIf {
             it.size > position
         }?.run {
             flowAsyncWorkOnViewModelScopeLaunch {

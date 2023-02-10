@@ -17,7 +17,7 @@ import retrofit2.http.Url
  * 华语: https://www.hifini.com/forum-1.htm
  * 日韩: https://www.hifini.com/forum-15.htm
  * 欧美: https://www.hifini.com/forum-10.htm
- * remix: https://www.hifini.com/thread-21683.htm
+ * remix: https://www.hifini.com/forum-11.htm
  * 纯音乐: https://www.hifini.com/forum-12.htm
  * 异次元: https://www.hifini.com/forum-13.htm
  */

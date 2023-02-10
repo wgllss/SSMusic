@@ -13,17 +13,17 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel : ViewModel() {
-    val ViewModel.errorMsgLiveData by lazy { MutableLiveData<String>() }
-    val ViewModel.showUIDialog by lazy { MutableLiveData<DialogBean>() }
+    open val errorMsgLiveData by lazy { MutableLiveData<String>() }
+    open val showUIDialog by lazy { MutableLiveData<DialogBean>() }
 
-    fun ViewModel.show(strMessage: String = "正在请求数据") {
+    fun show(strMessage: String = "正在请求数据") {
         val showBean = showUIDialog.value ?: DialogBean(strMessage, true)
         showBean.isShow = true
         showBean.msg = strMessage
         showUIDialog.postValue(showBean)
     }
 
-    fun ViewModel.hide() {
+    fun hide() {
         val showBean = showUIDialog.value ?: DialogBean("", true)
         showBean.isShow = false
         showUIDialog.postValue(showBean)

@@ -9,13 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
+import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.getIntToDip
 import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
 import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
@@ -26,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment(val title: String, private val html: String) : BaseViewModelFragment<HomeViewModel>(0) {
+class HomeFragment(val title: String, private val key: String) : BaseViewModelFragment<HomeViewModel>(0) {
 
     private val homeTabViewModel = viewModels<HomeTabViewModel>()
     private lateinit var rvPlList: RecyclerView
@@ -79,14 +83,28 @@ class HomeFragment(val title: String, private val html: String) : BaseViewModelF
         rvPlList?.run {
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-                    homeTabViewModel.value.getDetailFromSearch(position)
+                    homeTabViewModel.value.getDetailFromSearch(key, position)
                 }
             })
         }
-        homeTabViewModel.value.result.observe(viewLifecycleOwner) {
+        homeTabViewModel.value.initKey(key)
+        homeTabViewModel.value.result[key]?.observe(viewLifecycleOwner) {
+            WLog.e(this@HomeFragment, key)
             musicAdapterL.get().notifyData(it)
         }
-        homeTabViewModel.value.getData(html)
+        homeTabViewModel.value.getData(key)
+    }
+
+    override fun initObserve() {
+        super.initObserve()
+        homeTabViewModel.value?.run {
+            showUIDialog.observe(viewLifecycleOwner) { it ->
+                if (it.isShow) showloading(it.msg) else hideLoading()
+            }
+            errorMsgLiveData.observe(viewLifecycleOwner) {
+                onToast(it)
+            }
+        }
     }
 
     override fun onResume() {

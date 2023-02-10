@@ -6,9 +6,13 @@ import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.startup.Initializer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,9 +22,11 @@ import com.tencent.mmkv.MMKV
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
+import com.wgllss.ssmusic.core.ex.getIntToDip
 import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
+import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -102,6 +108,24 @@ class AsynInflaterInitializer : Initializer<Unit> {
                 ScreenManager.measureAndLayout(tabFragmentLayout)
                 LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment, tabFragmentLayout)
             }
+//            async(Dispatchers.IO) {
+//                val homeFragmentView = RecyclerView(context).apply {
+//                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+//                    lp.gravity = Gravity.TOP or Gravity.LEFT
+//                    layoutParams = lp
+//                    setBackgroundColor(Color.WHITE)
+//                    layoutManager = LinearLayoutManager(context)
+//                    val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
+//                    setPadding(paddingSize, 0, paddingSize, 0)
+//                    val itemDecoration = View(context)
+//                    val size = context.getIntToDip(1.0f).toInt()
+//                    itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
+//                    itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
+//                    addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
+//                }
+//                ScreenManager.measureAndLayout(homeFragmentView)
+//                LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, homeFragmentView)
+//            }
             LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")
         }
     }

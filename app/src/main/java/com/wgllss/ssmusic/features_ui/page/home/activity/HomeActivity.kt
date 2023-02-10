@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.features_ui.page.home.activity
 import android.os.Bundle
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
@@ -11,12 +12,15 @@ import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
+import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -59,6 +63,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         initNavigation(navigationView as BottomNavigationView)
         viewModel.rootMediaId.observe(this) {
             it?.let { viewModel.subscribeByMediaID(it) }
+        }
+        lifecycleScope.launch(Dispatchers.IO) {
+            UMHelp.umInit(this@HomeActivity)
         }
     }
 
