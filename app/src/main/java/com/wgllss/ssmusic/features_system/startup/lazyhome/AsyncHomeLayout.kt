@@ -124,11 +124,11 @@ object AsyncHomeLayout {
             itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
             itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
             addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
-            val homeMusicAdapter = HomeMusicAdapter()
-            adapter = homeMusicAdapter
             val json = MMKVHelp.getHomeTab1Data()
             json?.let {
-                WLog.e(this@AsyncHomeLayout," json json")
+                val homeMusicAdapter = HomeMusicAdapter()
+                adapter = homeMusicAdapter
+                WLog.e(this@AsyncHomeLayout, " json json")
                 homeMusicAdapter.notifyData(Gson().fromJson(json, object : TypeToken<MutableList<MusicItemBean>>() {}.type))
             }
         }

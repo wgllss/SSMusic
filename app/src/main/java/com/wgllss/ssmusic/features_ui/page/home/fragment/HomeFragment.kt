@@ -129,8 +129,8 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
         } else {
             WLog.e(this," json json 11")
             musicAdapter = rvPlList.adapter as HomeMusicAdapter
-//            homeTabViewModel.value.getData(key)
         }
+        homeTabViewModel.value.getData(key)
     }
 
     override fun initObserve() {

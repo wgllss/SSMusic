@@ -19,12 +19,12 @@ import javax.inject.Inject
 class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>, private val mSSDataBaseL: Lazy<SSDataBase>) {
 
     suspend fun homeMusic(tab_item: String = "") = flow {
-        if ("index" == tab_item) {
-            val json = MMKVHelp.getHomeTab1Data()
-            json?.let {
-                emit(Gson().fromJson(json, object : TypeToken<MutableList<MusicItemBean>>() {}.type))
-            }
-        }
+//        if ("index" == tab_item) {
+//            val json = MMKVHelp.getHomeTab1Data()
+//            json?.let {
+//                emit(Gson().fromJson(json, object : TypeToken<MutableList<MusicItemBean>>() {}.type))
+//            }
+//        }
         val html = musiceApiL.get().homeTabMusic(tab_item)
         val document = Jsoup.parse(html, "https://www.hifini.com/")
         val dcS = document.select(".break-all")
