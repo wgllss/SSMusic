@@ -45,6 +45,7 @@ android {
     buildFeatures {
 //        viewBinding true
         dataBinding = true
+        viewBinding true
     }
 
     kapt {
@@ -65,6 +66,7 @@ dependencies {
     //navigation 修改后的 FixFragmentNavigator 2.3.0有效
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

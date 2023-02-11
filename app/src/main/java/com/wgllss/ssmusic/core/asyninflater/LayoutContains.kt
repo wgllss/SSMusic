@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.core.asyninflater
 import android.content.Context
 import android.content.MutableContextWrapper
 import android.view.View
+import android.view.ViewGroup
 import java.util.concurrent.ConcurrentHashMap
 
 object LayoutContains {
@@ -12,6 +13,11 @@ object LayoutContains {
 //        val view = map.remove(key)
         val view = map[key]
         replaceContextForView(view, context)
+        view?.takeIf {
+            it.parent != null
+        }?.let {
+            (it.parent as ViewGroup).removeView(it)
+        }
         return view
     }
 

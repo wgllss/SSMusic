@@ -5,28 +5,15 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-<!--        <item name="android:colorBackground">?colorSurface</item>-->
-<!--        <item name="android:statusBarColor">?colorSurface</item>-->
-<!--        <item name="android:windowLightStatusBar">true</item>-->
+        <!--        <item name="android:colorBackground">?colorSurface</item>-->
+        <!--        <item name="android:statusBarColor">?colorSurface</item>-->
+        <!--        <item name="android:windowLightStatusBar">true</item>-->
     </style>
 
     <style name="Theme.SSMusic" parent="Base.Theme.SSMusic">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>
-    </style>
-
-    <style name="home_theme" parent="Base.Theme.SSMusic">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@drawable/splash_preview</item>
-        <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>
-    </style>
-
-    <style name="dialog_Animation_Translucent">
-        <item name="android:windowEnterAnimation">@anim/anim_alpha_121</item>
-        <item name="android:windowExitAnimation">@anim/anim_alpha_121</item>
+        <!--        <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>-->
     </style>
 
     <style name="Loading" parent="@android:style/Theme.Dialog">
@@ -49,15 +36,14 @@
 
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowBackground">@drawable/splash_preview</item>
-
+        <item name="android:windowBackground">@color/white</item>
     </style>
 
     <style name="LauncherTheme2" parent="Base.Theme.SSMusic">
         <!--        该方式看不到启动页-->
 
         <item name="android:windowNoTitle">true</item>
-<!--        <item name="android:windowFullscreen">true</item>-->
+        <!--        <item name="android:windowFullscreen">true</item>-->
         <item name="android:windowBackground">@drawable/splash_preview</item>
 
     </style>
@@ -71,30 +57,10 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
     </style>
 
-    <style name="MyHintText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/colorPrimary</item>
-    </style>
 
-    <!--Error label text style-->
-    <style name="MyErrorText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
-
-    <!--Overflow label text style-->
-    <style name="MyOverflowText" parent="TextAppearance.AppCompat.Small">
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-    </style>
-
-    <!--ShapeableImageView 圆 -->
     <style name="CircleStyle">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
-    </style>
-
-    <!--ShapeableImageView 切角 -->
-    <style name="CutStyle">
-        <item name="cornerFamily">cut</item>
-        <item name="cornerSize">10dp</item>
     </style>
 
     <style name="RippleWhite80" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -116,7 +82,7 @@
     </style>
 
     <style name="TabLayout.TextAppearance" parent="TextAppearance.AppCompat">
-<!--        <item name="android:textStyle">nomal</item>-->
+        <!--        <item name="android:textStyle">nomal</item>-->
         <item name="android:textSize">20dp</item>
     </style>
 

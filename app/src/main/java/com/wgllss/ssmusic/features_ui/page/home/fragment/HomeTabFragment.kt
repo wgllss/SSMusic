@@ -25,6 +25,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
     private lateinit var childAdapter: ViewPage2ChildFragmentAdapter
     private lateinit var homeTabLayout: TabLayout
     private lateinit var viewPager2: ViewPager2
+    private var mTabLayoutMediator: TabLayoutMediator? = null
 
     override fun activitySameViewModel() = true
 
@@ -44,10 +45,9 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.lazyTabViewPager2.observe(viewLifecycleOwner) {
-//            childAdapter.notifyData(getList()
             childAdapter = ViewPage2ChildFragmentAdapter(getList(), childFragmentManager, lifecycle)
             viewPager2.adapter = childAdapter
-            TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+            mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
                 val textView = TextView(requireContext())
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
                 textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
@@ -81,6 +81,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
                 }
 
             })
+            childAdapter.notifyDataSetChanged()
         }
         LogTimer.LogE(this, "onActivityCreated")
     }
@@ -91,12 +92,17 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
     }
 
     private fun getList() = mutableListOf<Fragment>(
-        HomeFragment("首页", "index"),
-        HomeFragment("华语", "forum-1"),
-        HomeFragment("日韩", "forum-15"),
-        HomeFragment("欧美", "forum-10"),
-        HomeFragment("remix", "forum-11"),
-        HomeFragment("纯音乐", "forum-12"),
-        HomeFragment("异次元", "forum-13"),
+        HomeFragment.newInstance("首页", "index"),
+        HomeFragment.newInstance("华语", "forum-1"),
+        HomeFragment.newInstance("日韩", "forum-15"),
+        HomeFragment.newInstance("欧美", "forum-10"),
+        HomeFragment.newInstance("remix", "forum-11"),
+        HomeFragment.newInstance("纯音乐", "forum-12"),
+        HomeFragment.newInstance("异次元", "forum-13"),
     )
+
+    override fun onDetach() {
+        super.onDetach()
+        mTabLayoutMediator?.detach()
+    }
 }

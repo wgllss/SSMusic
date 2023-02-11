@@ -105,6 +105,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     lp.topMargin = res.getDimension(R.dimen.title_bar_height).toInt()
                     layoutParams = lp
                     setBackgroundColor(Color.WHITE)
+                    isSaveEnabled = false
                 }
                 tabFragmentLayout.addView(viewPager2Layout)
                 ScreenManager.measureAndLayout(tabFragmentLayout)

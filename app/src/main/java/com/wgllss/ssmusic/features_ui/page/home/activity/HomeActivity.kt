@@ -1,6 +1,7 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope

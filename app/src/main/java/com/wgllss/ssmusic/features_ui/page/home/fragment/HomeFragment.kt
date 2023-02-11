@@ -31,7 +31,21 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment(val title: String, private val key: String) : BaseViewModelFragment<HomeViewModel>(0) {
+class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
+
+    var title: String = ""
+    private var key: String = ""
+
+    companion object {
+        fun newInstance(titleS: String, keyS: String): HomeFragment {
+            val fragment = HomeFragment().apply {
+                title = titleS
+                key = keyS
+            }
+            return fragment
+        }
+    }
+
 
     private val homeTabViewModel = viewModels<HomeTabViewModel>()
     private lateinit var rvPlList: RecyclerView

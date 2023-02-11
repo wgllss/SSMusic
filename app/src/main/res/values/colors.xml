@@ -15,5 +15,5 @@
     <color name="color_999999">#999999</color>
     <color name="color_translucent30">#30000000</color>
     <color name="color_translucent90">#F44336</color>
-    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_500">#F44336</color>
 </resources>
