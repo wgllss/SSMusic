@@ -81,7 +81,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
                 }
 
             })
-            childAdapter.notifyDataSetChanged()
+//            childAdapter.notifyDataSetChanged()
         }
         LogTimer.LogE(this, "onActivityCreated")
     }

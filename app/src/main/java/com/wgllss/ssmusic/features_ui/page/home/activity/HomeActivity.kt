@@ -12,6 +12,7 @@ import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
@@ -41,15 +42,20 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         super.onCreate(savedInstanceState)
     }
 
-    override fun initControl(savedInstanceState: Bundle?) {
-        LogTimer.LogE(this@HomeActivity, "initControl")
-        val contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
-        addContentView(contentLayout, contentLayout.layoutParams)
-        setCurrentFragment(homeFragmentL.get())
-        LogTimer.LogE(this@HomeActivity, "initControl after")
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        LogTimer.LogE(this, "onRestoreInstanceState ${viewModel.mCurrentFragmentTAG.toString()}")
     }
 
-    override fun initValue() {
+    override fun initControl(savedInstanceState: Bundle?) {
+        LogTimer.LogE(this@HomeActivity, "initControl savedInstanceState $savedInstanceState")
+        val contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
+        addContentView(contentLayout, contentLayout.layoutParams)
+        if (savedInstanceState == null) {
+            setCurrentFragment(homeFragmentL.get())
+        }
+        viewModel.lazyTabView()
+        LogTimer.LogE(this@HomeActivity, "initControl after")
     }
 
     override fun onBackPressed() {
@@ -58,10 +64,10 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
-        viewModel.start()
         val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!!
         addContentView(navigationView, navigationView.layoutParams)
         initNavigation(navigationView as BottomNavigationView)
+        viewModel.start()
         viewModel.rootMediaId.observe(this) {
             it?.let { viewModel.subscribeByMediaID(it) }
         }
@@ -77,18 +83,32 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
                 get(1).setIcon(R.drawable.ic_dashboard_black_24dp)
                 get(2).setIcon(R.drawable.ic_notifications_black_24dp)
             }
-            setOnItemSelectedListener { menu ->
-                when (menu.itemId) {
-                    R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-                    R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
-                    R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
-                }
-                return@setOnItemSelectedListener true
+            if (viewModel.isFirst) viewModel.isFirst = false else selectedItemId = menu.getItem(getItemId()).itemId
+            setOnItemSelectedListener {
+                return@setOnItemSelectedListener onNavBarItemSelected(it.itemId)
             }
         }
+
+    }
+
+    private fun getItemId() = when (viewModel.mCurrentFragmentTAG.toString()) {
+        HomeTabFragment::class.java.simpleName -> 0
+        SearchFragment::class.java.simpleName -> 1
+        SettingFragment::class.java.simpleName -> 2
+        else -> 0
+    }
+
+    private fun onNavBarItemSelected(itemId: Int): Boolean {
+        when (itemId) {
+            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
+            R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
+            R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
+        }
+        return true
     }
 
     private fun setCurrentFragment(fragment: Fragment) {
+        LogTimer.LogE(this, "setCurrentFragment fragment:${fragment.javaClass.simpleName}")
         switchFragment(fragment, viewModel.mCurrentFragmentTAG, R.id.nav_host_fragment_activity_main)
         viewModel.mCurrentFragmentTAG.delete(0, viewModel.mCurrentFragmentTAG.toString().length)
         viewModel.mCurrentFragmentTAG.append(fragment.javaClass.simpleName)

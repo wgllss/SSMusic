@@ -29,6 +29,7 @@ import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
+import com.wgllss.ssmusic.features_system.startup.lazyhome.AsyncHomeLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -48,92 +49,16 @@ class AsynInflaterInitializer : Initializer<Unit> {
             val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
             val res = context.resources
             async(Dispatchers.IO) {
-                val activityLayout = FragmentContainerView(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
-                    layoutParams = lp
-                    id = res.getIdentifier("nav_host_fragment_activity_main", "id", activity.packageName)
-                }
-                ScreenManager.measureAndLayout(activityLayout)
-                LayoutContains.putViewByKey(LaunchInflateKey.home_activity, activityLayout)
+                LayoutContains.putViewByKey(LaunchInflateKey.home_activity, AsyncHomeLayout.syncCreateHomeActivityLayout(context, res))
             }
             async(Dispatchers.IO) {
-                val bottomNavigationView = BottomNavigationView(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.navigation_height).toInt())
-                    lp.gravity = Gravity.BOTTOM or Gravity.LEFT
-                    layoutParams = lp
-                    id = res.getIdentifier("buttom_navigation", "id", activity.packageName)
-                    menu.apply {
-                        clear()
-                        add(0, res.getIdentifier("fmt_a", "id", activity.packageName), 0, res.getString(R.string.title_home))//.setIcon(R.drawable.ic_home_black_24dp)
-                        add(0, res.getIdentifier("fmt_b", "id", activity.packageName), 0, res.getString(R.string.title_search))//.setIcon(R.drawable.ic_dashboard_black_24dp)
-                        add(0, res.getIdentifier("fmt_c", "id", activity.packageName), 0, res.getString(R.string.title_setting))//.setIcon(R.drawable.ic_notifications_black_24dp)
-                    }
-                }
-                ScreenManager.measureAndLayout(bottomNavigationView)
-                LayoutContains.putViewByKey(LaunchInflateKey.home_navigation, bottomNavigationView)
+                LayoutContains.putViewByKey(LaunchInflateKey.home_navigation, AsyncHomeLayout.syncCreateHomeNavigationLayout(context, res))
             }
             async(Dispatchers.IO) {
-                val tabFragmentLayout = FrameLayout(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    layoutParams = lp
-                }
-                val viewTitleBg = View(context).apply {
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
-                    lp.gravity = Gravity.TOP or Gravity.LEFT
-                    layoutParams = lp
-                    setBackgroundColor(res.getColor(R.color.colorAccent))
-                }
-                tabFragmentLayout.addView(viewTitleBg)
-                val tabLayout = TabLayout(context).apply {
-                    id = res.getIdentifier("homeTabLayout", "id", activity.packageName)
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_text_height).toInt())
-                    lp.gravity = Gravity.TOP or Gravity.LEFT
-                    lp.topMargin = res.getDimension(R.dimen.status_bar_height).toInt()
-                    layoutParams = lp
-                    setBackgroundColor(Color.TRANSPARENT)
-                    tabMode = MODE_SCROLLABLE
-                    tabGravity = TabLayout.GRAVITY_CENTER
-                    setTabTextColors(Color.WHITE, res.getColor(R.color.colorPrimaryDark))
-                    setSelectedTabIndicatorHeight(12)
-                }
-                tabFragmentLayout.addView(tabLayout)
-                val viewPager2Layout = ViewPager2(context).apply {
-                    id = res.getIdentifier("homeViewPager2", "id", activity.packageName)
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    lp.gravity = Gravity.TOP or Gravity.LEFT
-                    lp.topMargin = res.getDimension(R.dimen.title_bar_height).toInt()
-                    layoutParams = lp
-                    setBackgroundColor(Color.WHITE)
-                    isSaveEnabled = false
-                }
-                tabFragmentLayout.addView(viewPager2Layout)
-                ScreenManager.measureAndLayout(tabFragmentLayout)
-                LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment, tabFragmentLayout)
+                LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment, AsyncHomeLayout.syncCreateHomeTabFragmentLayout(context, res))
             }
             async(Dispatchers.IO) {
-                val swipeRefreshLayout = SwipeRefreshLayout(context).apply {
-                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    initColors()
-                }
-                val homeFragmentView = RecyclerView(context).apply {
-                    id = res.getIdentifier("home_recycle_view", "id", activity.packageName)
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                    lp.gravity = Gravity.TOP or Gravity.LEFT
-                    layoutParams = lp
-                    setBackgroundColor(Color.WHITE)
-                    layoutManager = LinearLayoutManager(context)
-                    val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
-                    setPadding(paddingSize, 0, paddingSize, 0)
-                    val itemDecoration = View(context)
-                    val size = context.getIntToDip(1.0f).toInt()
-                    itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-                    itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
-                    addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
-                }
-                swipeRefreshLayout.addView(homeFragmentView)
-                ScreenManager.measureAndLayout(swipeRefreshLayout)
-                LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, swipeRefreshLayout)
+                LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, AsyncHomeLayout.syncCreateHomeFragmentLayout(context, res))
             }
             LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")
         }

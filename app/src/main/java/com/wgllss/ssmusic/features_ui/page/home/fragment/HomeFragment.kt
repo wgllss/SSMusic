@@ -23,6 +23,7 @@ import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
+import com.wgllss.ssmusic.features_ui.page.home.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
@@ -51,8 +52,9 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
     private lateinit var rvPlList: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    @Inject
-    lateinit var musicAdapterL: Lazy<MusicAdapter>
+    //    @Inject
+//    lateinit var musicAdapterL: Lazy<MusicAdapter>
+    lateinit var musicAdapter: HomeMusicAdapter
 
     override fun activitySameViewModel() = true
 
@@ -85,6 +87,7 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
                     setBackgroundColor(Color.WHITE)
                     layoutManager = LinearLayoutManager(context)
                     val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
+                    setHasFixedSize(true)
                     setPadding(paddingSize, 0, paddingSize, 0)
                     val itemDecoration = View(context)
                     val size = context.getIntToDip(1.0f).toInt()
@@ -108,7 +111,6 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
         swipeRefreshLayout.setOnRefreshListener {
             homeTabViewModel.value.getData(key)
         }
-        rvPlList.adapter = musicAdapterL.get()
         rvPlList?.run {
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
@@ -119,9 +121,16 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
         homeTabViewModel.value.initKey(key)
         homeTabViewModel.value.result[key]?.observe(viewLifecycleOwner) {
             WLog.e(this@HomeFragment, key)
-            musicAdapterL.get().notifyData(it)
+            musicAdapter.notifyData(it)
         }
-        homeTabViewModel.value.getData(key)
+        if (rvPlList.adapter == null) {
+            musicAdapter = HomeMusicAdapter()
+            rvPlList.adapter = musicAdapter
+        } else {
+            WLog.e(this," json json 11")
+            musicAdapter = rvPlList.adapter as HomeMusicAdapter
+//            homeTabViewModel.value.getData(key)
+        }
     }
 
     override fun initObserve() {
