@@ -48,44 +48,42 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.lazyTabViewPager2.observe(viewLifecycleOwner) {
-            lifecycleScope.launch {
-                childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
-                viewPager2.adapter = childAdapter
-                mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
-                    val textView = TextView(requireContext())
-                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                    textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
-                    tab.customView = textView
-                    textView.text = (childAdapter.list[position] as HomeFragment).title
-                }.apply(TabLayoutMediator::attach)
-                homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab) {
-                        tab?.customView?.takeIf {
-                            it is TextView
-                        }?.run {
-                            (this as TextView).run {
-                                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
-                                setTextColor(resources.getColor(R.color.colorPrimary))
-                            }
+            childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
+            viewPager2.adapter = childAdapter
+            mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+                val textView = TextView(requireContext())
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+                textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
+                tab.customView = textView
+                textView.text = (childAdapter.list[position] as HomeFragment).title
+            }.apply(TabLayoutMediator::attach)
+            homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    tab?.customView?.takeIf {
+                        it is TextView
+                    }?.run {
+                        (this as TextView).run {
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
+                            setTextColor(resources.getColor(R.color.colorPrimary))
                         }
                     }
+                }
 
-                    override fun onTabUnselected(tab: TabLayout.Tab) {
-                        tab?.customView?.takeIf {
-                            it is TextView
-                        }?.run {
-                            (this as TextView).run {
-                                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                                setTextColor(resources.getColor(R.color.white))
-                            }
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    tab?.customView?.takeIf {
+                        it is TextView
+                    }?.run {
+                        (this as TextView).run {
+                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+                            setTextColor(resources.getColor(R.color.white))
                         }
                     }
+                }
 
-                    override fun onTabReselected(tab: TabLayout.Tab) {
-                    }
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                }
 
-                })
-            }
+            })
             childAdapter.notifyData(getList())
         }
         LogTimer.LogE(this, "onActivityCreated")
