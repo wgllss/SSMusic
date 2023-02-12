@@ -9,14 +9,13 @@
 
         <variable
             name="adapter"
-            type="com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter" />
+            type="com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <View
             android:layout_width="match_parent"
@@ -24,43 +23,26 @@
             android:layout_gravity="top|left"
             android:background="?colorPrimary" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_name"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="@dimen/title_bar_text_height"
-            android:layout_gravity="top"
             android:layout_marginTop="@dimen/status_bar_height"
-            android:background="@color/color_translucent"
-            android:gravity="center_vertical"
-            android:hint="@string/hint_name"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingLeft="50dp"
-            android:text="@={model.searchContent}"
+            android:gravity="center"
+            android:layout_gravity="top|left"
+            android:text="听歌列表"
             android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="18dp" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/shapeable_search"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="top|right"
-            android:layout_marginTop="@dimen/status_bar_height"
-            android:layout_marginRight="20dp"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_search_24"
-            android:theme="@style/RippleWhite80" />
+            android:textSize="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_result"
-            itemColorStr="@{`#30000000`}"
+            android:id="@+id/rv_pl_list"
+            itemColorStr="@{`#60000000`}"
             itemWidth="@{1.0f}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="top|left"
             android:layout_marginTop="@dimen/title_bar_height"
             android:adapter="@{adapter}"
             android:background="@color/white"
@@ -68,6 +50,5 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
     </FrameLayout>
 </layout>

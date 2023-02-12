@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
-    private val currentMediaID by lazy { MutableLiveData("") }
+    val currentMediaID by lazy { MutableLiveData("") }
     val mCurrentFragmentTAG by lazy { StringBuilder() }
 
     val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }

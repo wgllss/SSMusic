@@ -8,5 +8,7 @@
     <item name="fmt_a" type="id" />
     <item name="fmt_b" type="id" />
     <item name="fmt_c" type="id" />
+    <item name="fmt_d" type="id" />
+    <item name="fmt_e" type="id" />
     <item name="buttom_navigation" type="id" />
 </resources>

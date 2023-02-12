@@ -13,6 +13,7 @@ import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_third.um.UMHelp
+import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
@@ -29,6 +30,8 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     @Inject
     lateinit var homeFragmentL: Lazy<HomeTabFragment>
 
+    @Inject
+    lateinit var historyFragmentL: Lazy<HistoryFragment>
     @Inject
     lateinit var searchFragmentL: Lazy<SearchFragment>
 
@@ -78,8 +81,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         bottomNavigationView.apply {
             with(menu) {
                 get(0).setIcon(R.drawable.ic_home_black_24dp)
-                get(1).setIcon(R.drawable.ic_dashboard_black_24dp)
-                get(2).setIcon(R.drawable.ic_notifications_black_24dp)
+                get(1).setIcon(R.drawable.ic_round_queue_music_24)
+                get(2).setIcon(R.drawable.ic_dashboard_black_24dp)
+                get(3).setIcon(R.drawable.ic_notifications_black_24dp)
             }
             if (viewModel.isFirst) viewModel.isFirst = false else selectedItemId = menu.getItem(getItemId()).itemId
             setOnItemSelectedListener {
@@ -99,8 +103,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     private fun onNavBarItemSelected(itemId: Int): Boolean {
         when (itemId) {
             R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-            R.id.fmt_b -> setCurrentFragment(searchFragmentL.get())
-            R.id.fmt_c -> setCurrentFragment(settingFragmentL.get())
+            R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
+            R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
+            R.id.fmt_d -> setCurrentFragment(settingFragmentL.get())
         }
         return true
     }

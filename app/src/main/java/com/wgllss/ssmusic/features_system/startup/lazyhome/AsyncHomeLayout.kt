@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomnavigation.LabelVisibilityMode
+import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -64,11 +66,13 @@ object AsyncHomeLayout {
             lp.gravity = Gravity.BOTTOM or Gravity.LEFT
             layoutParams = lp
             id = res.getIdentifier("buttom_navigation", "id", context.packageName)
+            labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
             menu.apply {
                 clear()
                 add(0, res.getIdentifier("fmt_a", "id", context.packageName), 0, res.getString(R.string.title_home))//.setIcon(R.drawable.ic_home_black_24dp)
-                add(0, res.getIdentifier("fmt_b", "id", context.packageName), 0, res.getString(R.string.title_search))//.setIcon(R.drawable.ic_dashboard_black_24dp)
-                add(0, res.getIdentifier("fmt_c", "id", context.packageName), 0, res.getString(R.string.title_setting))//.setIcon(R.drawable.ic_notifications_black_24dp)
+                add(0, res.getIdentifier("fmt_b", "id", context.packageName), 0, res.getString(R.string.title_history))//.setIcon(R.drawable.ic_dashboard_black_24dp)
+                add(0, res.getIdentifier("fmt_c", "id", context.packageName), 0, res.getString(R.string.title_search))//.setIcon(R.drawable.ic_dashboard_black_24dp)
+                add(0, res.getIdentifier("fmt_d", "id", context.packageName), 0, res.getString(R.string.title_setting))//.setIcon(R.drawable.ic_notifications_black_24dp)
             }
         }
         ScreenManager.measureAndLayout(bottomNavigationView)
