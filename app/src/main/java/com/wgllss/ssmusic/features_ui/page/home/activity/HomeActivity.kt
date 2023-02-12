@@ -1,7 +1,6 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
-import android.view.ViewGroup
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -12,7 +11,6 @@ import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
