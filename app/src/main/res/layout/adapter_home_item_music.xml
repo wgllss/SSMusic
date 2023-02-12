@@ -29,7 +29,7 @@
         android:layout_height="20dp"
         android:layout_gravity="top|left"
         android:layout_marginLeft="90dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:gravity="center_vertical"
         android:textColor="@color/color_999999"
         android:textSize="15dp" />

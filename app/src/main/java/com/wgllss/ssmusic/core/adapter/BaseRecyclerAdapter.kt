@@ -58,10 +58,10 @@ abstract class BaseRecyclerAdapter<T> : RecyclerView.Adapter<BaseRecyclerAdapter
 
     override fun onBindViewHolder(holder: BaseBindingViewHolder, position: Int) {
         val item = getItem(position)
-        onBindItem(item, holder, position)
+        onBindItem(context!!, item, holder, position)
     }
 
-    protected abstract fun onBindItem(item: T, holder: RecyclerView.ViewHolder, position: Int)
+    protected abstract fun onBindItem(context: Context, item: T, holder: RecyclerView.ViewHolder, position: Int)
 
     class BaseBindingViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
