@@ -38,10 +38,16 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
     private var key: String = ""
 
     companion object {
+        private const val TITLE_KEY = "TITLE_KEY"
+        private const val KEY = "KEY"
+
         fun newInstance(titleS: String, keyS: String): HomeFragment {
             val fragment = HomeFragment().apply {
+                arguments = Bundle().apply {
+                    putString(TITLE_KEY, titleS)
+                    putString(KEY, keyS)
+                }
                 title = titleS
-                key = keyS
             }
             return fragment
         }
@@ -65,6 +71,8 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        title = arguments?.getString(TITLE_KEY, "") ?: ""
+        key = arguments?.getString(KEY, "") ?: ""
         LogTimer.LogE(this, "$title onCreate")
     }
 
@@ -114,7 +122,7 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
         rvPlList?.run {
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-                    homeTabViewModel.value.getDetailFromSearch(key, position)
+                    homeTabViewModel.value.getDetailFromSearch(musicAdapter.getItem(position))
                 }
             })
         }
@@ -127,7 +135,7 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
             musicAdapter = HomeMusicAdapter()
             rvPlList.adapter = musicAdapter
         } else {
-            WLog.e(this," json json 11")
+            WLog.e(this, " json json 11")
             musicAdapter = rvPlList.adapter as HomeMusicAdapter
         }
         homeTabViewModel.value.getData(key)

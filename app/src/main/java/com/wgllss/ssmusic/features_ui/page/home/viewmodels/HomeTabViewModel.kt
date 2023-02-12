@@ -57,27 +57,27 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
         }
     }
 
-    fun getDetailFromSearch(key: String, position: Int) {
-        result[key]?.value?.takeIf {
-            it.size > position
-        }?.run {
-            isClick = true
-            flowAsyncWorkOnViewModelScopeLaunch {
-                val detailUrl = get(position).detailUrl
-                musicRepositoryL.get().getPlayUrl(detailUrl)
-                    .onEach {
-                        val extras = Bundle().apply {
-                            putString(Constants.MEDIA_ID_KEY, it.id.toString())
-                            putString(Constants.MEDIA_TITLE_KEY, it.title)
-                            putString(Constants.MEDIA_AUTHOR_KEY, it.author)
-                            putString(Constants.MEDIA_ARTNETWORK_URL_KEY, it.pic)
-                            putString(Constants.MEDIA_URL_KEY, it.url)
-                        }
-                        transportControls.prepareFromUri(it.url.toUri(), extras)
-                        musicRepositoryL.get().addToPlayList(it).collect()
+    fun getDetailFromSearch(musicItemBean: MusicItemBean) {
+//        result[key]?.value?.takeIf {
+//            it.size > position
+//        }?.run {
+        isClick = true
+        flowAsyncWorkOnViewModelScopeLaunch {
+            val detailUrl = musicItemBean.detailUrl
+            musicRepositoryL.get().getPlayUrl(detailUrl)
+                .onEach {
+                    val extras = Bundle().apply {
+                        putString(Constants.MEDIA_ID_KEY, it.id.toString())
+                        putString(Constants.MEDIA_TITLE_KEY, it.title)
+                        putString(Constants.MEDIA_AUTHOR_KEY, it.author)
+                        putString(Constants.MEDIA_ARTNETWORK_URL_KEY, it.pic)
+                        putString(Constants.MEDIA_URL_KEY, it.url)
                     }
-            }
+                    transportControls.prepareFromUri(it.url.toUri(), extras)
+                    musicRepositoryL.get().addToPlayList(it).collect()
+                }
         }
+//        }
     }
 
 }

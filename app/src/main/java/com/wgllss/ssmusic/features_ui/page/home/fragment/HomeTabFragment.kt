@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -17,6 +18,8 @@ import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -45,43 +48,45 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.lazyTabViewPager2.observe(viewLifecycleOwner) {
-            childAdapter = ViewPage2ChildFragmentAdapter(getList(), childFragmentManager, lifecycle)
-            viewPager2.adapter = childAdapter
-            mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
-                val textView = TextView(requireContext())
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
-                tab.customView = textView
-                textView.text = (childAdapter.list[position] as HomeFragment).title
-            }.apply(TabLayoutMediator::attach)
-            homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    tab?.customView?.takeIf {
-                        it is TextView
-                    }?.run {
-                        (this as TextView).run {
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
-                            setTextColor(resources.getColor(R.color.colorPrimary))
+            lifecycleScope.launch {
+                childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
+                viewPager2.adapter = childAdapter
+                mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+                    val textView = TextView(requireContext())
+                    textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+                    textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
+                    tab.customView = textView
+                    textView.text = (childAdapter.list[position] as HomeFragment).title
+                }.apply(TabLayoutMediator::attach)
+                homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab) {
+                        tab?.customView?.takeIf {
+                            it is TextView
+                        }?.run {
+                            (this as TextView).run {
+                                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
+                                setTextColor(resources.getColor(R.color.colorPrimary))
+                            }
                         }
                     }
-                }
 
-                override fun onTabUnselected(tab: TabLayout.Tab) {
-                    tab?.customView?.takeIf {
-                        it is TextView
-                    }?.run {
-                        (this as TextView).run {
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                            setTextColor(resources.getColor(R.color.white))
+                    override fun onTabUnselected(tab: TabLayout.Tab) {
+                        tab?.customView?.takeIf {
+                            it is TextView
+                        }?.run {
+                            (this as TextView).run {
+                                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+                                setTextColor(resources.getColor(R.color.white))
+                            }
                         }
                     }
-                }
 
-                override fun onTabReselected(tab: TabLayout.Tab) {
-                }
+                    override fun onTabReselected(tab: TabLayout.Tab) {
+                    }
 
-            })
-//            childAdapter.notifyDataSetChanged()
+                })
+            }
+            childAdapter.notifyData(getList())
         }
         LogTimer.LogE(this, "onActivityCreated")
     }

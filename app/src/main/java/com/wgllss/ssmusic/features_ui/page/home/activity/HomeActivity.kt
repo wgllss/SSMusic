@@ -54,7 +54,6 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         if (savedInstanceState == null) {
             setCurrentFragment(homeFragmentL.get())
         }
-        viewModel.lazyTabView()
         LogTimer.LogE(this@HomeActivity, "initControl after")
     }
 
@@ -64,6 +63,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
+        viewModel.lazyTabView()
         val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!!
         addContentView(navigationView, navigationView.layoutParams)
         initNavigation(navigationView as BottomNavigationView)
