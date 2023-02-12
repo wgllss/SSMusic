@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.features_system.startup.lazyhome
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_ui.page.home.adapter.HomeMusicAdapter
 
+
 object AsyncHomeLayout {
 
     fun getCreateViewByKey(context: Context, key: String) = when (key) {
@@ -38,11 +40,18 @@ object AsyncHomeLayout {
         else -> null
     }
 
+    private fun getColorPrimary(context: Context): Int {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+        return typedValue.data
+    }
+
     fun syncCreateHomeActivityLayout(context: Context, res: Resources): View {
         val activityLayout = FragmentContainerView(context).apply {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
             lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
             layoutParams = lp
+            setBackgroundColor(Color.WHITE)
             id = res.getIdentifier("nav_host_fragment_activity_main", "id", context.packageName)
         }
         ScreenManager.measureAndLayout(activityLayout)
@@ -75,7 +84,7 @@ object AsyncHomeLayout {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
             lp.gravity = Gravity.TOP or Gravity.LEFT
             layoutParams = lp
-            setBackgroundColor(res.getColor(R.color.colorAccent))
+            setBackgroundColor(getColorPrimary(context))
         }
         tabFragmentLayout.addView(viewTitleBg)
         val tabLayout = TabLayout(context).apply {
@@ -87,8 +96,10 @@ object AsyncHomeLayout {
             setBackgroundColor(Color.TRANSPARENT)
             tabMode = TabLayout.MODE_SCROLLABLE
             tabGravity = TabLayout.GRAVITY_CENTER
-            setTabTextColors(Color.WHITE, res.getColor(R.color.colorPrimaryDark))
-            setSelectedTabIndicatorHeight(12)
+//            setTabTextColors(res.getColor(R.color.colorPrimaryDark), Color.WHITE)
+//            setSelectedTabIndicatorColor(res.getColor(R.color.color_select))
+            setSelectedTabIndicatorColor(Color.WHITE)
+            setSelectedTabIndicatorHeight(8)
         }
         tabFragmentLayout.addView(tabLayout)
         val viewPager2Layout = ViewPager2(context).apply {
@@ -97,7 +108,6 @@ object AsyncHomeLayout {
             lp.gravity = Gravity.TOP or Gravity.LEFT
             lp.topMargin = res.getDimension(R.dimen.title_bar_height).toInt()
             layoutParams = lp
-            setBackgroundColor(Color.WHITE)
         }
         tabFragmentLayout.addView(viewPager2Layout)
         ScreenManager.measureAndLayout(tabFragmentLayout)

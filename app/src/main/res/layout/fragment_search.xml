@@ -17,11 +17,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <View
             android:layout_width="match_parent"
             android:layout_height="81dp"
             android:layout_gravity="top|left"
-            android:background="@color/colorAccent" />
+            android:background="?colorPrimary" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_name"
@@ -30,29 +31,29 @@
             android:layout_gravity="top"
             android:layout_marginTop="36dp"
             android:background="@color/color_translucent"
-            android:hint="@string/hint_name"
-            android:paddingLeft="50dp"
             android:gravity="center_vertical"
-            android:maxLines="1"
+            android:hint="@string/hint_name"
             android:imeOptions="actionSearch"
             android:inputType="text"
+            android:maxLines="1"
+            android:paddingLeft="50dp"
+            android:text="@={model.searchContent}"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:text="@={model.searchContent}"
             android:textSize="18dp" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shapeable_search"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:layout_marginTop="36dp"
             android:layout_gravity="top|right"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:theme="@style/RippleWhite80"
-            android:padding="8dp"
+            android:layout_marginTop="36dp"
             android:layout_marginRight="20dp"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="8dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_search_24" />
+            android:src="@drawable/ic_baseline_search_24"
+            android:theme="@style/RippleWhite80" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_result"
@@ -60,12 +61,12 @@
             itemWidth="@{1.0f}"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:background="@color/white"
             android:layout_marginTop="81dp"
             android:adapter="@{adapter}"
+            android:background="@color/white"
             android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     </FrameLayout>

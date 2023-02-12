@@ -53,7 +53,8 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
             mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
                 val textView = TextView(requireContext())
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
+//                textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
+                textView.setTextColor(resources.getColor(R.color.white))
                 tab.customView = textView
                 textView.text = (childAdapter.list[position] as HomeFragment).title
             }.apply(TabLayoutMediator::attach)
@@ -64,7 +65,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
                     }?.run {
                         (this as TextView).run {
                             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
-                            setTextColor(resources.getColor(R.color.colorPrimary))
+//                            setTextColor(resources.getColor(R.color.colorPrimary))
                         }
                     }
                 }
@@ -75,7 +76,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
                     }?.run {
                         (this as TextView).run {
                             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                            setTextColor(resources.getColor(R.color.white))
+//                            setTextColor(resources.getColor(R.color.white))
                         }
                     }
                 }
