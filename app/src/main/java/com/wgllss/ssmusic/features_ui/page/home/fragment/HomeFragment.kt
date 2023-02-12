@@ -58,8 +58,6 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
     private lateinit var rvPlList: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    //    @Inject
-//    lateinit var musicAdapterL: Lazy<MusicAdapter>
     lateinit var musicAdapter: HomeMusicAdapter
 
     override fun activitySameViewModel() = true
