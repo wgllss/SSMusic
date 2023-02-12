@@ -27,6 +27,7 @@ import com.wgllss.ssmusic.core.ex.initColors
 import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
+import com.wgllss.ssmusic.core.widget.clearLongClickToast
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_ui.page.home.adapter.HomeMusicAdapter
@@ -74,6 +75,12 @@ object AsyncHomeLayout {
                 add(0, res.getIdentifier("fmt_c", "id", context.packageName), 0, res.getString(R.string.title_search))//.setIcon(R.drawable.ic_dashboard_black_24dp)
                 add(0, res.getIdentifier("fmt_d", "id", context.packageName), 0, res.getString(R.string.title_setting))//.setIcon(R.drawable.ic_notifications_black_24dp)
             }
+            clearLongClickToast(
+                res.getIdentifier("fmt_a", "id", context.packageName),
+                res.getIdentifier("fmt_b", "id", context.packageName),
+                res.getIdentifier("fmt_c", "id", context.packageName),
+                res.getIdentifier("fmt_d", "id", context.packageName)
+            )
         }
         ScreenManager.measureAndLayout(bottomNavigationView)
         return bottomNavigationView
