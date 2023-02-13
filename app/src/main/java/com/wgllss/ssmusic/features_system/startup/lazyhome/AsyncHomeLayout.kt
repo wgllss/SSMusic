@@ -24,6 +24,7 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.ex.getIntToDip
 import com.wgllss.ssmusic.core.ex.initColors
+import com.wgllss.ssmusic.core.material.ThemeUtils
 import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
@@ -43,24 +44,24 @@ object AsyncHomeLayout {
         else -> null
     }
 
-    private fun getColorPrimary(context: Context): Int {
-        val typedValue = TypedValue()
-        context.theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
-        return typedValue.data
-    }
-
-    private fun getAndroidColorBackground(context: Context):Int{
-        val typedValue = TypedValue()
-        context.theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
-        return typedValue.data
-    }
+//    private fun getColorPrimary(context: Context): Int {
+//        val typedValue = TypedValue()
+//        context.theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+//        return typedValue.data
+//    }
+//
+//    private fun getAndroidColorBackground(context: Context): Int {
+//        val typedValue = TypedValue()
+//        context.theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+//        return typedValue.data
+//    }
 
     fun syncCreateHomeActivityLayout(context: Context, res: Resources): View {
         val activityLayout = FragmentContainerView(context).apply {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
             lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
             layoutParams = lp
-            setBackgroundColor(getAndroidColorBackground(context))
+            setBackgroundColor(ThemeUtils.getAndroidColorBackground(context))
             id = res.getIdentifier("nav_host_fragment_activity_main", "id", context.packageName)
         }
         ScreenManager.measureAndLayout(activityLayout)
@@ -101,7 +102,7 @@ object AsyncHomeLayout {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.title_bar_height).toInt())
             lp.gravity = Gravity.TOP or Gravity.LEFT
             layoutParams = lp
-            setBackgroundColor(getColorPrimary(context))
+            setBackgroundColor(ThemeUtils.getColorPrimary(context))
         }
         tabFragmentLayout.addView(viewTitleBg)
         val tabLayout = TabLayout(context).apply {

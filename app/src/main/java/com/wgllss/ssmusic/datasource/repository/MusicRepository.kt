@@ -1,7 +1,6 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
