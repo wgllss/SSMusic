@@ -38,7 +38,7 @@
                 android:layout_marginLeft="95dp"
                 android:gravity="center_vertical"
                 android:text="@{bean.description.subtitle}"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="22dp" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -49,7 +49,7 @@
                 android:layout_marginTop="40dp"
                 android:gravity="center_vertical"
                 android:text="@{bean.description.title}"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="22dp" />
 
             <com.wgllss.ssmusic.core.widget.MusicVisualizerView

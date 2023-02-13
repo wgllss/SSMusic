@@ -90,7 +90,6 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
                     val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                     lp.gravity = Gravity.TOP and Gravity.LEFT
                     layoutParams = lp
-                    setBackgroundColor(Color.WHITE)
                     layoutManager = LinearLayoutManager(context)
                     val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
                     setHasFixedSize(true)

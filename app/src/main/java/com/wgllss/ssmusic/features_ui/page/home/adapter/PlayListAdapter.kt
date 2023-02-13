@@ -1,7 +1,9 @@
 package com.wgllss.ssmusic.features_ui.page.home.adapter
 
+import android.content.Context
 import android.graphics.Color
 import android.support.v4.media.MediaBrowserCompat
+import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.ssmusic.core.adapter.BaseDataBindingAdapter
@@ -13,6 +15,17 @@ import javax.inject.Inject
 class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowserCompat.MediaItem, AdapterMusicPlaylistItemBinding>() {
 
     var currentMediaID: String = ""
+
+    var colorInt: Int = 0
+
+    private fun getAndroidColorBackground(context: Context): Int {
+        if (colorInt == 0) {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+            colorInt = typedValue.data
+        }
+        return colorInt
+    }
 
     private var blockDelete: ((id: Long) -> Unit)? = null
 
@@ -26,8 +39,8 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowse
             bean = item
             musicIcon.loadUrl(item.description.iconUri.toString())
             musicVisualizerView.setColor(Color.RED)
-            author.setTextColor(if (currentMediaID == item.mediaId) Color.RED else Color.BLACK)
-            title.setTextColor(if (currentMediaID == item.mediaId) Color.RED else Color.BLACK)
+            author.setTextColor(if (currentMediaID == item.mediaId) Color.RED else getAndroidColorBackground(context!!))
+            title.setTextColor(if (currentMediaID == item.mediaId) Color.RED else getAndroidColorBackground(context!!))
             musicVisualizerView.visibility = if (currentMediaID == item.mediaId) View.VISIBLE else View.GONE
             deleteRightTv.setOnClickListener {
                 blockDelete?.invoke(item.mediaId?.toLong() ?: 0L)

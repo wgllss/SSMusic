@@ -43,6 +43,6 @@
         android:maxLines="1"
         android:layout_marginTop="40dp"
         android:gravity="center_vertical"
-        android:textColor="@color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="20dp" />
 </FrameLayout>

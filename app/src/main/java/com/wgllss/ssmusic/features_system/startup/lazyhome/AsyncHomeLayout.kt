@@ -49,12 +49,18 @@ object AsyncHomeLayout {
         return typedValue.data
     }
 
+    private fun getAndroidColorBackground(context: Context):Int{
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(android.R.attr.colorBackground, typedValue, true)
+        return typedValue.data
+    }
+
     fun syncCreateHomeActivityLayout(context: Context, res: Resources): View {
         val activityLayout = FragmentContainerView(context).apply {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
             lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
             layoutParams = lp
-            setBackgroundColor(Color.WHITE)
+            setBackgroundColor(getAndroidColorBackground(context))
             id = res.getIdentifier("nav_host_fragment_activity_main", "id", context.packageName)
         }
         ScreenManager.measureAndLayout(activityLayout)
@@ -135,7 +141,6 @@ object AsyncHomeLayout {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
             lp.gravity = Gravity.TOP or Gravity.LEFT
             layoutParams = lp
-            setBackgroundColor(Color.WHITE)
             layoutManager = LinearLayoutManager(context)
             val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
             setPadding(paddingSize, 0, paddingSize, 0)
