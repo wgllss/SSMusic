@@ -37,7 +37,6 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/LauncherTheme2"
         android:usesCleartextTraffic="true">
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"
@@ -51,6 +50,7 @@
         </activity>
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
+            android:theme="@style/LauncherTheme2"
             android:exported="true">
             <nav-graph android:value="@navigation/nav_graph" />
             <intent-filter>
@@ -61,13 +61,14 @@
         </activity>
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity"
+            android:theme="@style/Theme.SSMusic"
             android:exported="false" />
 
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.NotificationTargetActivity"
             android:exported="false"
             android:launchMode="singleTask"
-            android:theme="@style/LauncherTheme" />
+            android:theme="@style/Transparent" />
 
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"

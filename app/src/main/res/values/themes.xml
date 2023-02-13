@@ -13,6 +13,7 @@
     <style name="Theme.SSMusic" parent="Base.Theme.SSMusic">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/white</item>
         <!--        <item name="android:windowAnimationStyle">@style/dialog_Animation_Translucent</item>-->
     </style>
 

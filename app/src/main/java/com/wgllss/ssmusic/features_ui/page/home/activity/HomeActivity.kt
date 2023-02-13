@@ -32,6 +32,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     @Inject
     lateinit var historyFragmentL: Lazy<HistoryFragment>
+
     @Inject
     lateinit var searchFragmentL: Lazy<SearchFragment>
 
