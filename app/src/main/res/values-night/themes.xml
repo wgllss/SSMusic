@@ -3,6 +3,7 @@
     <style name="Base.Theme.SSMusic" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/colorPrimaryDark</item>
+        <item name="android:textColorHighlight">@color/colorOnPrimary</item>
         <item name="android:colorBackground">@color/colorBackground</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="windowActionBar">false</item>

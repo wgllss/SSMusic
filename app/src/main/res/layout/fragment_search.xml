@@ -38,8 +38,8 @@
             android:maxLines="1"
             android:paddingLeft="50dp"
             android:text="@={model.searchContent}"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
+            android:textColor="?android:textColorHighlight"
+            android:textColorHint="?android:textColorHighlight"
             android:textSize="18dp" />
 
         <androidx.appcompat.widget.AppCompatImageView

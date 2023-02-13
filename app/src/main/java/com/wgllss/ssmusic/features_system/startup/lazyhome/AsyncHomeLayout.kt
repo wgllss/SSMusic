@@ -116,7 +116,7 @@ object AsyncHomeLayout {
             tabGravity = TabLayout.GRAVITY_CENTER
 //            setTabTextColors(res.getColor(R.color.colorPrimaryDark), Color.WHITE)
 //            setSelectedTabIndicatorColor(res.getColor(R.color.color_select))
-            setSelectedTabIndicatorColor(Color.WHITE)
+            setSelectedTabIndicatorColor(ThemeUtils.getColorOnPrimary(context))
             setSelectedTabIndicatorHeight(8)
         }
         tabFragmentLayout.addView(tabLayout)

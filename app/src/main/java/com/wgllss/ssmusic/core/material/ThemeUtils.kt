@@ -14,6 +14,13 @@ object ThemeUtils {
     }
 
     @JvmStatic
+    fun getColorOnPrimary(context: Context): Int {
+        val typedValue = TypedValue()
+        context.theme.resolveAttribute(android.R.attr.textColorHighlight, typedValue, true)
+        return typedValue.data
+    }
+
+    @JvmStatic
     fun getTextColorPrimary(context: Context): Int {
         val typedValue = TypedValue()
         context.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)

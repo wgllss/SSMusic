@@ -28,6 +28,6 @@ class HomeMusicAdapter : BaseRecyclerAdapter<MusicItemBean>() {
             background.setTint(context.getColor(array[Random.nextInt(array.size)]))
         }
         holder.itemView.findViewById<MaterialTextView>(R.id.mater_music_name).text = item.musicName
-        holder.itemView.findViewById<MaterialTextView>(R.id.sample_hz).text = item.samplingRate
+        holder.itemView.findViewById<MaterialTextView>(R.id.sample_hz).text = item.author
     }
 }

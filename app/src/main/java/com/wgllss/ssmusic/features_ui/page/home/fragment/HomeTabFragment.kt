@@ -16,6 +16,7 @@ import com.wgllss.ssmusic.core.adapter.ViewPage2ChildFragmentAdapter
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
+import com.wgllss.ssmusic.core.material.ThemeUtils
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import kotlinx.coroutines.async
@@ -54,7 +55,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
                 val textView = TextView(requireContext())
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
 //                textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
-                textView.setTextColor(resources.getColor(R.color.white))
+                textView.setTextColor(ThemeUtils.getColorOnPrimary(requireContext()))
                 tab.customView = textView
                 textView.text = (childAdapter.list[position] as HomeFragment).title
             }.apply(TabLayoutMediator::attach)
