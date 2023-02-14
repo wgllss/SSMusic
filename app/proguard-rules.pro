@@ -44,7 +44,6 @@
 -keep class com.wgllss.music.datasourcelibrary.** { *; }
 -keep class okhttp3.** { *; }
 -keep class retrofit2.** { *; }
-#-keep class org.jsoup.Jsoup{ }
 # 动态插件相关不能被混淆 end
 # keepclassmembers :防止类成员被移除或被混淆
 -keepclassmembers class * {
