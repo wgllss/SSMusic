@@ -127,16 +127,16 @@
 -dontwarn kotlin.**
 -keep class kotlin.** { *; }
 -keep interface kotlin.** { *; }
--keepclassmembers class kotlin.Metadata {
-    public <methods>;
-}
--keepclasseswithmembers @kotlin.Metadata class * { *; }
--keepclassmembers class **.WhenMappings {
-    <fields>;
-}
--assumenosideeffects class kotlin.jvm.internal.Intrinsics {
-    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
-}
+#-keepclassmembers class kotlin.Metadata {
+#    public <methods>;
+#}
+#-keepclasseswithmembers @kotlin.Metadata class * { *; }
+#-keepclassmembers class **.WhenMappings {
+#    <fields>;
+#}
+#-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+#    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+#}
 
 ################ 第三方库中的混淆规则start ##############################
 # Glide混淆
