@@ -46,8 +46,6 @@
             android:layout_marginTop="@dimen/title_bar_height"
             android:adapter="@{adapter}"
             android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </FrameLayout>
 </layout>

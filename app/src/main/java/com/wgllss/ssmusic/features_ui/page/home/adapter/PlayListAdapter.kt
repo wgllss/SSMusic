@@ -16,7 +16,8 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowse
 
     var currentMediaID: String = ""
 
-    var colorInt: Int = 0
+    private var colorInt: Int = 0
+    private var colorPrimary: Int = 0
 
     private fun getAndroidColorBackground(context: Context): Int {
         if (colorInt == 0) {
@@ -25,6 +26,15 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowse
             colorInt = typedValue.data
         }
         return colorInt
+    }
+
+    private fun getColorPrimary(context: Context): Int {
+        if (colorPrimary == 0) {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+            colorPrimary = typedValue.data
+        }
+        return colorPrimary
     }
 
     private var blockDelete: ((id: Long) -> Unit)? = null
@@ -38,9 +48,9 @@ class PlayListAdapter @Inject constructor() : BaseDataBindingAdapter<MediaBrowse
         binding?.apply {
             bean = item
             musicIcon.loadUrl(item.description.iconUri.toString())
-            musicVisualizerView.setColor(Color.RED)
-            author.setTextColor(if (currentMediaID == item.mediaId) Color.RED else getAndroidColorBackground(context!!))
-            title.setTextColor(if (currentMediaID == item.mediaId) Color.RED else getAndroidColorBackground(context!!))
+            musicVisualizerView.setColor(getColorPrimary(context!!))
+            author.setTextColor(if (currentMediaID == item.mediaId) getColorPrimary(context!!) else getAndroidColorBackground(context!!))
+            title.setTextColor(if (currentMediaID == item.mediaId) getColorPrimary(context!!) else getAndroidColorBackground(context!!))
             musicVisualizerView.visibility = if (currentMediaID == item.mediaId) View.VISIBLE else View.GONE
             deleteRightTv.setOnClickListener {
                 blockDelete?.invoke(item.mediaId?.toLong() ?: 0L)

@@ -143,8 +143,8 @@ object AsyncHomeLayout {
             lp.gravity = Gravity.TOP or Gravity.LEFT
             layoutParams = lp
             layoutManager = LinearLayoutManager(context)
-            val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
-            setPadding(paddingSize, 0, paddingSize, 0)
+//            val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
+//            setPadding(paddingSize, 0, paddingSize, 0)
             setHasFixedSize(true)
             val itemDecoration = View(context)
             val size = context.getIntToDip(1.0f).toInt()

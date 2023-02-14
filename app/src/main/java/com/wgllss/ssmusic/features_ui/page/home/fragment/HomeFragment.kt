@@ -91,9 +91,9 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
                     lp.gravity = Gravity.TOP and Gravity.LEFT
                     layoutParams = lp
                     layoutManager = LinearLayoutManager(context)
-                    val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
+//                    val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
                     setHasFixedSize(true)
-                    setPadding(paddingSize, 0, paddingSize, 0)
+//                    setPadding(paddingSize, 0, paddingSize, 0)
                     val itemDecoration = View(context)
                     val size = context.getIntToDip(1.0f).toInt()
                     itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)

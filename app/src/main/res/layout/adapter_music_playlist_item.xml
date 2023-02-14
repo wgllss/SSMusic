@@ -18,6 +18,8 @@
             android:layout_height="80dp"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="1dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -39,14 +41,14 @@
                 android:gravity="center_vertical"
                 android:text="@{bean.description.subtitle}"
                 android:textColor="?android:textColorPrimary"
-                android:textSize="22dp" />
+                android:textSize="16dp" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginLeft="95dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="35dp"
                 android:gravity="center_vertical"
                 android:text="@{bean.description.title}"
                 android:textColor="?android:textColorPrimary"
@@ -64,10 +66,10 @@
             android:id="@+id/delete_right_tv"
             android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:background="@color/red"
+            android:background="?colorPrimary"
             android:gravity="center"
             android:text="删除"
-            android:textColor="@color/white"
+            android:textColor="?android:textColorPrimary"
             android:textSize="16dp" />
 
     </com.mcxtzhang.swipemenulib.SwipeMenuLayout>
