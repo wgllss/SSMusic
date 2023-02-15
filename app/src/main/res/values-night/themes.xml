@@ -8,6 +8,7 @@
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/black</item>
         <!--        <item name="android:colorBackground">?colorSurface</item>-->
         <!--        <item name="android:statusBarColor">?colorSurface</item>-->
         <!--        <item name="android:windowLightStatusBar">true</item>-->
@@ -47,7 +48,7 @@
 
         <item name="android:windowNoTitle">true</item>
         <!--        <item name="android:windowFullscreen">true</item>-->
-        <item name="android:windowBackground">@drawable/splash_preview</item>
+        <item name="android:windowBackground">@drawable/splash_preview_dark</item>
 
     </style>
 

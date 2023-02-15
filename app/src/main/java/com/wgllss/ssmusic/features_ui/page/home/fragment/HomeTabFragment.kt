@@ -35,7 +35,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         LogTimer.LogE(this, "onCreateView")
-        val view = LayoutContains.getViewByKey(inflater.context, LaunchInflateKey.home_tab_fragment)!!
+        val view = LayoutContains.getViewByKey(inflater.context, LaunchInflateKey.home_tab_fragment_layout)!!
         homeTabLayout = view.findViewById(inflater.context.resources.getIdentifier("homeTabLayout", "id", inflater.context.packageName))
         viewPager2 = view.findViewById(inflater.context.resources.getIdentifier("homeViewPager2", "id", inflater.context.packageName))
         return view
@@ -84,7 +84,6 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
 
                 override fun onTabReselected(tab: TabLayout.Tab) {
                 }
-
             })
             childAdapter.notifyData(getList())
         }

@@ -27,8 +27,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
-    @Inject
-    lateinit var homeFragmentL: Lazy<HomeTabFragment>
+    //    @Inject
+//    lateinit var homeFragmentL: Lazy<HomeTabFragment>
+    lateinit var homeFragment: HomeTabFragment
 
     @Inject
     lateinit var historyFragmentL: Lazy<HistoryFragment>
@@ -38,6 +39,8 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     @Inject
     lateinit var settingFragmentL: Lazy<SettingFragment>
+
+//    private lateinit var navigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
@@ -54,7 +57,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         val contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
         if (savedInstanceState == null) {
-            setCurrentFragment(homeFragmentL.get())
+//            setCurrentFragment(homeFragmentL.get())
+            homeFragment = LayoutContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) as HomeTabFragment
+            setCurrentFragment(homeFragment)
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
     }
@@ -66,9 +71,9 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
         viewModel.lazyTabView()
-        val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!!
+        val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
         addContentView(navigationView, navigationView.layoutParams)
-        initNavigation(navigationView as BottomNavigationView)
+        initNavigation(navigationView)
         viewModel.start()
         viewModel.rootMediaId.observe(this) {
             it?.let { viewModel.subscribeByMediaID(it) }
@@ -103,7 +108,8 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 
     private fun onNavBarItemSelected(itemId: Int): Boolean {
         when (itemId) {
-            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
+//            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
+            R.id.fmt_a -> setCurrentFragment(homeFragment)
             R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
             R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
             R.id.fmt_d -> setCurrentFragment(settingFragmentL.get())

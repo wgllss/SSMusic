@@ -4,12 +4,16 @@ import android.content.Context
 import android.content.MutableContextWrapper
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.startup.lazyhome.AsyncHomeLayout
+import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
+import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import java.util.concurrent.ConcurrentHashMap
 
 object LayoutContains {
     private val map = ConcurrentHashMap<String, View>()
+    private val mapFragment = ConcurrentHashMap<String, Fragment>()
 
     fun getViewByKey(context: Context, key: String): View? {
         val view = map.remove(key)
@@ -30,6 +34,13 @@ object LayoutContains {
     fun putViewByKey(key: String, view: View) {
         map[key] = view
     }
+
+    fun putFragmentByKey(key: String, fragment: Fragment) {
+        mapFragment[key] = fragment
+    }
+
+    fun getFragmentByKey(key: String) = mapFragment.remove(key) ?: HomeTabFragment()
+
 
     /**
      * 如果  inflater初始化时是传进来的application，inflate出来的 view 的 context 没法用来 startActivity，
