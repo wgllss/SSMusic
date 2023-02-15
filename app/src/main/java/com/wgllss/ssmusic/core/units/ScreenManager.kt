@@ -61,7 +61,7 @@ object ScreenManager {
     }
 
     fun measureAndLayout(view: View) {
-//        view?.measure(widthSpec, heightSpec)
-//        view?.layout(0, 0, screenWidth, screenHeight)
+        view?.measure(widthSpec, heightSpec)
+        view?.layout(0, 0, screenWidth, screenHeight)
     }
 }

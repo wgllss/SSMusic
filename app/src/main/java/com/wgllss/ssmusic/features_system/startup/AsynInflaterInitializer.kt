@@ -27,7 +27,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
         LogTimer.LogE(this, "create")
         CoroutineScope(Dispatchers.IO).launch {
             LogTimer.LogE(this@AsynInflaterInitializer, "create ${Thread.currentThread().name}")
-//            ScreenManager.initScreenSize(activity)
+            ScreenManager.initScreenSize(activity)
             MMKV.initialize(activity)
             val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
             val res = context.resources
