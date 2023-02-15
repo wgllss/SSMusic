@@ -2,7 +2,7 @@ package com.wgllss.ssmusic.core.ex
 
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.JsonSyntaxException
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.core.units.AppGlobals
 import isNetWorkActive
 import kotlinx.coroutines.Dispatchers

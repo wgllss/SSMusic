@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.core.adapter.ViewPage2ChildFragmentAdapter
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains

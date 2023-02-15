@@ -2,17 +2,14 @@ package com.wgllss.ssmusic.features_system.startup
 
 import android.content.Context
 import android.content.MutableContextWrapper
-import androidx.fragment.app.Fragment
 import androidx.startup.Initializer
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.tencent.mmkv.MMKV
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.ScreenManager
-import com.wgllss.ssmusic.core.widget.clearLongClickToast
 import com.wgllss.ssmusic.features_system.startup.lazyhome.AsyncHomeLayout
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import kotlinx.coroutines.CoroutineScope

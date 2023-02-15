@@ -5,7 +5,7 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Build
 import com.hjq.permissions.*
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.core.widget.CommonToast
 
 open class PermissionInterceptor : IPermissionInterceptor {

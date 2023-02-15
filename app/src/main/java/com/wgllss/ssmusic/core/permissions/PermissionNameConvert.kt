@@ -3,7 +3,7 @@ package com.wgllss.ssmusic.core.permissions
 import android.content.Context
 import android.os.Build
 import com.hjq.permissions.Permission
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 
 object PermissionNameConvert {
     /**

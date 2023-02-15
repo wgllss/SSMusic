@@ -25,7 +25,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.core.units.SdkIntUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.features_system.globle.Constants

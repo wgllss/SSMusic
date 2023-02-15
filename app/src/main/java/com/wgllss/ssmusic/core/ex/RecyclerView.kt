@@ -1,7 +1,7 @@
 package com.wgllss.ssmusic.core.ex
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 
 fun SwipeRefreshLayout.initColors() {
     setColorSchemeResources(

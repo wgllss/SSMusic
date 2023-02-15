@@ -2,3 +2,4 @@ rootProject.name = "SSMusic"
 include ':app'
 //include ':annotations'
 //include ':annotation_compiler'
+include ':music-skin-resource'

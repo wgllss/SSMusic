@@ -10,7 +10,7 @@ package com.wgllss.ssmusic.features_system.startup
 //import androidx.viewpager2.widget.ViewPager2
 //import com.google.android.material.tabs.TabLayout
 //import com.tencent.mmkv.MMKV
-//import com.wgllss.ssmusic.R
+//import com.wgllss.music.skin.R
 //import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 //import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 //import com.wgllss.ssmusic.core.ex.toTheme

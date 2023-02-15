@@ -1,7 +1,7 @@
 package com.wgllss.ssmusic.features_system.music.impl.exoplayer
 
 import android.content.Context
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 
 object ExoPlayerUtils {
     fun timestampToMSS(context: Context, position: Long): String {

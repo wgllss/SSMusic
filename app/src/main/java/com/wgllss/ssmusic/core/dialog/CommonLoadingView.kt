@@ -10,7 +10,7 @@ import com.wgllss.ssmusic.R
 class CommonLoadingView : AppCompatDialog {
     private lateinit var txt_loading_text: TextView
 
-    constructor (context: Context) : super(context, R.style.Loading) {
+    constructor (context: Context) : super(context, com.wgllss.music.skin.R.style.Loading) {
         setContentView(R.layout.common_loading)
         window?.run {
             txt_loading_text = findViewById(R.id.txt_loading_text)

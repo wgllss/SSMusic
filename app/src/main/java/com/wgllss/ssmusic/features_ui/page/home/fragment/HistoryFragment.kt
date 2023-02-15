@@ -13,7 +13,6 @@ import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.databinding.FragmentHistoryBinding
-import com.wgllss.ssmusic.databinding.FragmentHomeBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity

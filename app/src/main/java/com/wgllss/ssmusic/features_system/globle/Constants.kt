@@ -2,7 +2,7 @@ package com.wgllss.ssmusic.features_system.globle
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
-import com.wgllss.ssmusic.R
+import com.wgllss.music.skin.R
 
 object Constants {
     const val MEDIA_ID_ROOT = "-1"
