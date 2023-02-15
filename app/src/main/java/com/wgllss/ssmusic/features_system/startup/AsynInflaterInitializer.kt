@@ -9,7 +9,6 @@ import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
 import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.toTheme
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.features_system.startup.lazyhome.AsyncHomeLayout
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +23,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
         LogTimer.LogE(this, "create")
         CoroutineScope(Dispatchers.IO).launch {
             LogTimer.LogE(this@AsynInflaterInitializer, "create ${Thread.currentThread().name}")
-            ScreenManager.initScreenSize(activity)
+//            ScreenManager.initScreenSize(activity)
             MMKV.initialize(activity)
             val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
             val res = context.resources

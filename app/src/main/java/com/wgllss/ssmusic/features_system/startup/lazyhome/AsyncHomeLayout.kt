@@ -24,7 +24,6 @@ import com.wgllss.ssmusic.core.ex.getIntToDip
 import com.wgllss.ssmusic.core.ex.initColors
 import com.wgllss.ssmusic.core.material.ThemeUtils
 import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.ScreenManager
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
 import com.wgllss.ssmusic.core.widget.clearLongClickToast
@@ -51,7 +50,7 @@ object AsyncHomeLayout {
             setBackgroundColor(ThemeUtils.getAndroidColorBackground(context))
             id = R.id.nav_host_fragment_activity_main
         }
-        ScreenManager.measureAndLayout(activityLayout)
+//        ScreenManager.measureAndLayout(activityLayout)
         return activityLayout
     }
 
@@ -71,7 +70,7 @@ object AsyncHomeLayout {
             }
             clearLongClickToast(R.id.fmt_a, R.id.fmt_b, R.id.fmt_c, R.id.fmt_d)
         }
-        ScreenManager.measureAndLayout(bottomNavigationView)
+//        ScreenManager.measureAndLayout(bottomNavigationView)
         return bottomNavigationView
     }
 
@@ -110,7 +109,7 @@ object AsyncHomeLayout {
             layoutParams = lp
         }
         tabFragmentLayout.addView(viewPager2Layout)
-        ScreenManager.measureAndLayout(tabFragmentLayout)
+//        ScreenManager.measureAndLayout(tabFragmentLayout)
         LogTimer.LogE(this, "LayoutContains tabFragmentLayout")
         return tabFragmentLayout
     }
@@ -141,7 +140,7 @@ object AsyncHomeLayout {
             }
         }
         swipeRefreshLayout.addView(homeFragmentView)
-        ScreenManager.measureAndLayout(swipeRefreshLayout)
+//        ScreenManager.measureAndLayout(swipeRefreshLayout)
         return swipeRefreshLayout
     }
 }
