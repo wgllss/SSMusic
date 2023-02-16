@@ -28,7 +28,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     //    @Inject
 //    lateinit var homeFragmentL: Lazy<HomeTabFragment>
-    lateinit var homeFragment: HomeTabFragment
+    lateinit var homeFragment: Fragment
 
     @Inject
     lateinit var historyFragmentL: Lazy<HistoryFragment>
@@ -108,7 +108,12 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     private fun onNavBarItemSelected(itemId: Int): Boolean {
         when (itemId) {
 //            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
-            R.id.fmt_a -> setCurrentFragment(homeFragment)
+            R.id.fmt_a -> {
+                if (!this::homeFragment.isInitialized || homeFragment == null) {
+                    homeFragment = LayoutContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
+                }
+                setCurrentFragment(homeFragment)
+            }
             R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
             R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
             R.id.fmt_d -> setCurrentFragment(settingFragmentL.get())

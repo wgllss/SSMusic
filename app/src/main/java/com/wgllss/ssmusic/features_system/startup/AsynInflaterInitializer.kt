@@ -25,8 +25,11 @@ class AsynInflaterInitializer : Initializer<Unit> {
             LogTimer.LogE(this@AsynInflaterInitializer, "create ${Thread.currentThread().name}")
 //            ScreenManager.initScreenSize(activity)
             MMKV.initialize(activity)
-            val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
+            val themeID = activity.resources.getIdentifier("Theme.SSMusic", "style", activity.packageName)
+//            val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))
+            val context: Context = MutableContextWrapper(activity.toTheme(themeID))
             val res = context.resources
+
             async(Dispatchers.IO) {
                 LayoutContains.putViewByKey(LaunchInflateKey.home_activity, AsyncHomeLayout.syncCreateHomeActivityLayout(context, res))
             }
