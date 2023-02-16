@@ -13,7 +13,6 @@ import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
-import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
@@ -57,7 +56,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         addContentView(contentLayout, contentLayout.layoutParams)
         if (savedInstanceState == null) {
 //            setCurrentFragment(homeFragmentL.get())
-            homeFragment = LayoutContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) as HomeTabFragment
+            homeFragment = LayoutContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
             setCurrentFragment(homeFragment)
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
@@ -99,7 +98,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     }
 
     private fun getItemId() = when (viewModel.mCurrentFragmentTAG.toString()) {
-        HomeTabFragment::class.java.simpleName -> 0
+        "HomeTabFragment" -> 0
         SearchFragment::class.java.simpleName -> 1
         SettingFragment::class.java.simpleName -> 2
         else -> 0

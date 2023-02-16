@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 abstract class BaseRecyclerAdapter<T> : RecyclerView.Adapter<BaseRecyclerAdapter.BaseBindingViewHolder>() {
-    var context: Context? = null
+    open var context: Context? = null
     private lateinit var mData: MutableList<T>
 
     fun notifyData(mData: MutableList<T>) {
