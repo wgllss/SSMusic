@@ -6,7 +6,7 @@ import com.wgllss.core.units.LogTimer
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class SSAplication : AndroidApplication() {
+class SSApplication : AndroidApplication() {
 
     override fun attachBaseContext(base: Context?) {
         LogTimer.initTime(this)

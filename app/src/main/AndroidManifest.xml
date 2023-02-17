@@ -26,7 +26,7 @@
 
 
     <application
-        android:name=".features_system.app.SSAplication"
+        android:name="com.wgllss.ssmusic.features_system.app.SSApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -37,7 +37,8 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:ignore="MissingClass">
         <!--        <activity-->
         <!--            android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"-->
         <!--            android:exported="true"-->
