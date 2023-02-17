@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.core.activity.BaseViewModelActivity
 import com.wgllss.core.ex.switchFragment
@@ -24,10 +25,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
-
-    //    @Inject
-//    lateinit var homeFragmentL: Lazy<HomeTabFragment>
-    lateinit var homeFragment: Fragment
+    private lateinit var homeFragment: Fragment
 
     @Inject
     lateinit var historyFragmentL: Lazy<HistoryFragment>
@@ -55,7 +53,6 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         val contentLayout = HomeContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
         if (savedInstanceState == null) {
-//            setCurrentFragment(homeFragmentL.get())
             homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
             setCurrentFragment(homeFragment)
         }

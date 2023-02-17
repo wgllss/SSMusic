@@ -65,7 +65,7 @@ class HomeMusicAdapter : BaseRecyclerAdapter<MusicItemBean>() {
         R.color.color_random_9, R.color.color_random_10, R.color.color_random_11,
     )
 
-    //        override fun getLayoutResId(viewType: Int) = com.wgllss.ssmusic.R.layout.adapter_home_item_music
+    //            override fun getLayoutResId(viewType: Int) = com.wgllss.ssmusic.R.layout.adapter_home_item_music
     override fun getLayoutResId(viewType: Int) = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseBindingViewHolder {
         if (context == null) {
