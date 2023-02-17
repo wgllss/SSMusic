@@ -5,7 +5,7 @@ import com.wgllss.core.app.AndroidApplication
 import com.wgllss.core.units.LogTimer
 import dagger.hilt.android.HiltAndroidApp
 
-//@HiltAndroidApp
+@HiltAndroidApp
 class SSApplication : AndroidApplication() {
 
     override fun attachBaseContext(base: Context?) {
