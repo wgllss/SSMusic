@@ -4,16 +4,16 @@ import android.os.Bundle
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.core.activity.BaseViewModelActivity
 import com.wgllss.core.ex.switchFragment
 import com.wgllss.core.units.LogTimer
 import com.wgllss.music.skin.R
-import com.wgllss.ssmusic.features_system.startup.lazyhome.HomeContains
-import com.wgllss.ssmusic.features_system.startup.lazyhome.LaunchInflateKey
+import com.wgllss.ssmusic.features_system.startup.HomeContains
+import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
+import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
@@ -53,7 +53,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         val contentLayout = HomeContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
         if (savedInstanceState == null) {
-            homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
+            homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) ?: HomeTabFragment()
             setCurrentFragment(homeFragment)
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
@@ -106,7 +106,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 //            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
             R.id.fmt_a -> {
                 if (!this::homeFragment.isInitialized || homeFragment == null) {
-                    homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
+                    homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)?:HomeTabFragment()
                 }
                 setCurrentFragment(homeFragment)
             }

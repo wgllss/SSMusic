@@ -14,8 +14,8 @@ import com.wgllss.core.adapter.ViewPage2ChildFragmentAdapter
 import com.wgllss.core.fragment.BaseViewModelFragment
 import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.units.LogTimer
-import com.wgllss.ssmusic.features_system.startup.lazyhome.HomeContains
-import com.wgllss.ssmusic.features_system.startup.lazyhome.LaunchInflateKey
+import com.wgllss.ssmusic.features_system.startup.HomeContains
+import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import javax.inject.Inject
 

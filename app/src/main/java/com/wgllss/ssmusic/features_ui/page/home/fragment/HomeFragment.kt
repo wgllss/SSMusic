@@ -20,10 +20,10 @@ import com.wgllss.core.units.WLog
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.music.skin.R
-import com.wgllss.ssmusic.core.ex.initColors
-import com.wgllss.ssmusic.features_system.startup.lazyhome.HomeContains
-import com.wgllss.ssmusic.features_system.startup.lazyhome.LaunchInflateKey
-import com.wgllss.ssmusic.features_ui.page.home.adapter.HomeMusicAdapter
+import com.wgllss.ssmusic.ex.initColors
+import com.wgllss.ssmusic.features_system.startup.HomeContains
+import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
+import com.wgllss.ssmusic.features_ui.home.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint

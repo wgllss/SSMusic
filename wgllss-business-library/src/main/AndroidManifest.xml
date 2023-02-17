@@ -40,7 +40,7 @@
             <!--                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"-->
             <!--                android:value="androidx.startup" />-->
             <meta-data
-                android:name="com.wgllss.ssmusic.features_system.startup.AsynInflaterInitializer"
+                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeFirstInitialize"
                 android:value="androidx.startup" />
             <!--            <meta-data-->
             <!--                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"-->

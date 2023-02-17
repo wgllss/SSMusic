@@ -360,9 +360,13 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                 }
                 Intent.ACTION_SCREEN_OFF, Intent.ACTION_POWER_CONNECTED, Intent.ACTION_SCREEN_ON -> {//锁屏显示歌词等等
                     if (MMKVHelp.isOpenLockerUI() && player!!.isPlaying) {
-                        val intent = Intent(context, Class.forName("com.wgllss.ssmusic.features_ui.locker.activity.LockerActivity"))
-                        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-                        context.startActivity(intent)
+                        try {
+                            val intent = Intent(context, Class.forName("com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"))
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                            context.startActivity(intent)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
                     }
                 }
                 ACTION_CONTENT -> {

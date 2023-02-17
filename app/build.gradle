@@ -73,6 +73,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation(name: 'wgllss-common-library-release', ext: 'aar')
     implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
+    implementation project(path: ':wgllss-business-home')
+    implementation project(path: ':wgllss-business-library')
 
     implementation "androidx.core:core-ktx:$rootProject.ext.kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlin_version"

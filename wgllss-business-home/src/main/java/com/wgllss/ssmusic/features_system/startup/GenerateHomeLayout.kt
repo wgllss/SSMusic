@@ -16,12 +16,19 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.tabs.TabLayout
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.wgllss.core.ex.getIntToDip
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.clearLongClickToast
 import com.wgllss.music.skin.R
 import com.wgllss.core.material.ThemeUtils
+import com.wgllss.core.units.WLog
+import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.ex.initColors
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
+import com.wgllss.ssmusic.features_ui.home.adapter.HomeMusicAdapter
 
 object GenerateHomeLayout {
 
@@ -106,7 +113,7 @@ object GenerateHomeLayout {
     fun syncCreateHomeFragmentLayout(context: Context, res: Resources): View {
         val swipeRefreshLayout = SwipeRefreshLayout(context).apply {
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-//            initColors()
+            initColors()
         }
         val homeFragmentView = RecyclerView(context).apply {
             id = R.id.home_recycle_view
@@ -120,13 +127,13 @@ object GenerateHomeLayout {
             itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
             itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
             addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
-//            val json = MMKVHelp.getHomeTab1Data()
-//            json?.let {
-////                val homeMusicAdapter = HomeMusicAdapter()
-////                adapter = homeMusicAdapter
-////                WLog.e(this@GenerateHomeLayout, " json json")
-////                homeMusicAdapter.notifyData(Gson().fromJson(json, object : TypeToken<MutableList<MusicItemBean>>() {}.type))
-//            }
+            val json = MMKVHelp.getHomeTab1Data()
+            json?.let {
+                val homeMusicAdapter = HomeMusicAdapter()
+                adapter = homeMusicAdapter
+                WLog.e(this@GenerateHomeLayout, " json json")
+                homeMusicAdapter.notifyData(Gson().fromJson(json, object : TypeToken<MutableList<MusicItemBean>>() {}.type))
+            }
         }
         swipeRefreshLayout.addView(homeFragmentView)
         return swipeRefreshLayout
