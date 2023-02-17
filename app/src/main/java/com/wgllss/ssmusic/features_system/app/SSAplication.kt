@@ -94,6 +94,7 @@ class SSAplication : AndroidApplication() {
                     lp.gravity = Gravity.TOP or Gravity.LEFT
                     lp.topMargin = res.getDimension(R.dimen.title_bar_height).toInt()
                     layoutParams = lp
+                    setBackgroundColor(Color.WHITE)
                 }
             }
 
@@ -186,6 +187,7 @@ class SSAplication : AndroidApplication() {
                     }
                 }
                 swipeRefreshLayout.addView(homeFragmentView)
+                ScreenManager.measureAndLayout(swipeRefreshLayout)
                 LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, swipeRefreshLayout)
             }
             val activityLayout = activityLayoutViewAwait.await().apply {

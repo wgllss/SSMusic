@@ -3,9 +3,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#FF3300</color>
-    <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#005e91</color>
-    <color name="textColorPrimary">#333333</color>
+    <color name="colorOnPrimary">#B0B0B0</color>
+    <color name="colorPrimaryDark">#007A00</color>
+    <color name="colorBackground">#222222</color>
+    <color name="textColorPrimary">#B0B0B0</color>
 
     <color name="color_ff2B9E62">#2B9E62</color>
     <color name="colorAccent">#FF0000</color>
@@ -20,7 +21,7 @@
     <color name="color_translucent90">#F44336</color>
     <color name="purple_500">#F44336</color>
     <!--    <color name="color_select">#0066C0</color>-->
-    <color name="colorBackground">#008e99</color>
+
 
     <color name="color_random_1">#CD4339</color>
     <color name="color_random_2">#158bb8</color>

@@ -95,7 +95,7 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
             textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
             textView.text = tab.text
             tab.customView = textView
-            textView.text = (childAdapter.list[position] as HomeFragment).key
+            textView.text = (childAdapter.list[position] as HomeFragment).title
         }.apply(TabLayoutMediator::attach)
         homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

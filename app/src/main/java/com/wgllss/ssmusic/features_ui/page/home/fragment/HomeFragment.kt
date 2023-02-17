@@ -31,7 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment(val key: String, private val html: String) : BaseViewModelFragment<HomeViewModel>(0) {
+class HomeFragment(val title: String, private val key: String) : BaseViewModelFragment<HomeViewModel>(0) {
 
     private val homeTabViewModel = viewModels<HomeTabViewModel>()
     private lateinit var rvPlList: RecyclerView
@@ -43,16 +43,16 @@ class HomeFragment(val key: String, private val html: String) : BaseViewModelFra
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        LogTimer.LogE(this, "$key onAttach")
+        LogTimer.LogE(this, "$title onAttach")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogTimer.LogE(this, "$key onCreate")
+        LogTimer.LogE(this, "$title onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        LogTimer.LogE(this, "$key onCreateView")
+        LogTimer.LogE(this, "$title onCreateView")
         if (!this::swipeRefreshLayout.isInitialized) {
             if ("index" == key) {
                 swipeRefreshLayout = LayoutContains.getViewByKey(inflater.context, LaunchInflateKey.home_fragment)!! as SwipeRefreshLayout
@@ -84,12 +84,12 @@ class HomeFragment(val key: String, private val html: String) : BaseViewModelFra
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        LogTimer.LogE(this, "$key onViewCreated")
+        LogTimer.LogE(this, "$title onViewCreated")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        LogTimer.LogE(this, "$key onActivityCreated")
+        LogTimer.LogE(this, "$title onActivityCreated")
         swipeRefreshLayout.setOnRefreshListener {
             homeTabViewModel.value.getData(key)
         }
