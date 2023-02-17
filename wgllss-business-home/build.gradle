@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
+//    id 'kotlin-kapt'
 //    id 'dagger.hilt.android.plugin'
 }
 
@@ -30,11 +30,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-//        viewBinding true
-        dataBinding = true
-//        viewBinding true
-    }
+//    buildFeatures {
+////        viewBinding true
+//        dataBinding = true
+////        viewBinding true
+//    }
 //    kapt {
 //        generateStubs = true
 //    }
@@ -65,11 +65,11 @@ dependencies {
     //navigation 修改后的 FixFragmentNavigator 2.3.0有效
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
-    implementation 'androidx.annotation:annotation:1.2.0'
+//    implementation 'androidx.annotation:annotation:1.2.0'
 
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+//    testImplementation 'junit:junit:4.13.2'
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+//    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 
 //    implementation 'com.google.dagger:hilt-android:2.42'
@@ -82,33 +82,33 @@ dependencies {
     implementation 'androidx.activity:activity-ktx:1.3.0-rc01'
     implementation 'androidx.fragment:fragment-ktx:1.4.0-alpha04'
 
-    implementation 'com.wang.avi:library:2.1.3'
+//    implementation 'com.wang.avi:library:2.1.3'
 
 
     //解析html
-    implementation 'org.jsoup:jsoup:1.15.3'
+//    implementation 'org.jsoup:jsoup:1.15.3'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
-    implementation 'com.squareup.okio:okio:2.10.0'
-//    implementation 'com.squareup.moshi:moshi:1.14.0'
-//    implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
-//    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
+//    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+//    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.3'
+//    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+//    implementation 'com.squareup.okio:okio:2.10.0'
+////    implementation 'com.squareup.moshi:moshi:1.14.0'
+////    implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
+////    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+//    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
 
     //mmkv
     implementation 'com.tencent:mmkv:1.2.14'
 
     // Paging库依赖
-    implementation 'androidx.paging:paging-runtime:2.1.0'
+//    implementation 'androidx.paging:paging-runtime:2.1.0'
 
     //datastore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
-    implementation "androidx.datastore:datastore-preferences-core:1.0.0-alpha05"
+//    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
+//    implementation "androidx.datastore:datastore-preferences-core:1.0.0-alpha05"
 
-    implementation 'com.github.bumptech.glide:glide:4.13.2'
+//    implementation 'com.github.bumptech.glide:glide:4.13.2'
 
     implementation "androidx.startup:startup-runtime:1.1.1"
     implementation project(path: ':wgllss-music-skin-resource')
@@ -127,22 +127,22 @@ dependencies {
     //LiveEventBus
 //    implementation 'io.github.jeremyliao:live-event-bus-x:1.8.0'
     //room 数据库
-    def room_version = "2.4.3"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"
+//    def room_version = "2.4.3"
+//    implementation "androidx.room:room-runtime:$room_version"
+//    kapt "androidx.room:room-compiler:$room_version"
 
 //    implementation 'com.umeng.umsdk:common:9.4.7'// 必选
 //    implementation 'com.umeng.umsdk:asms:1.4.0'// 必选
 //    implementation 'com.umeng.umsdk:apm:1.7.0'// U-APM产品包依赖(必选) 异常监控性能集成
 //    implementation 'com.umeng.umsdk:push:6.5.5' //友盟Push依赖
 
-    implementation "androidx.palette:palette-ktx:1.0.0"
+//    implementation "androidx.palette:palette-ktx:1.0.0"
 
     //权限申请框架
-    implementation 'com.github.getActivity:XXPermissions:16.2'
+//    implementation 'com.github.getActivity:XXPermissions:16.2'
 
     //滑动删除
-    implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
+//    implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 
     //高斯模糊
 //    implementation 'jp.wasabeef:glide-transformations:2.0.1'
@@ -150,9 +150,9 @@ dependencies {
 //    implementation 'com.danikula:videocache:2.7.0'
 
 
-    def exoplayer_version = '2.18.0'
-    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
+//    def exoplayer_version = '2.18.0'
+//    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
 //    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayer_version"
-    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
+//    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayer_version"
 //    implementation "com.google.android.exoplayer:extension-cast:$exoplayer_version"
 }

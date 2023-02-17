@@ -30,11 +30,11 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-//        viewBinding true
-        dataBinding = true
-//        viewBinding true
-    }
+//    buildFeatures {
+////        viewBinding true
+//        dataBinding = true
+////        viewBinding true
+//    }
     kapt {
         generateStubs = true
     }
@@ -51,11 +51,12 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation(name: 'wgllss-common-library-release', ext: 'aar')
     implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
+    implementation project(path: ':wgllss-music-skin-resource')
 
     implementation "androidx.core:core-ktx:$rootProject.ext.kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlin_version"
 
-    implementation libSupportAppcompat
+//    implementation libSupportAppcompat
 //    implementation libSupportRecyclerView
 //    implementation libSupportdesign
 //    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -103,13 +104,13 @@ dependencies {
 //    implementation 'androidx.paging:paging-runtime:2.1.0'
 
     //datastore
-    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
-    implementation "androidx.datastore:datastore-preferences-core:1.0.0-alpha05"
+//    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha05"
+//    implementation "androidx.datastore:datastore-preferences-core:1.0.0-alpha05"
 
     implementation 'com.github.bumptech.glide:glide:4.13.2'
 
     implementation "androidx.startup:startup-runtime:1.1.1"
-    implementation project(path: ':wgllss-music-skin-resource')
+
 
     //    compile project(path: ':wgllss-common-library')
 //    implementation project(path: ':Dynamic-Host-Library')
