@@ -6,12 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.wgllss.core.ex.launchActivity
+import com.wgllss.core.fragment.BaseMVVMFragment
+import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.WLog
+import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.launchActivity
-import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
-import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.databinding.FragmentHistoryBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel

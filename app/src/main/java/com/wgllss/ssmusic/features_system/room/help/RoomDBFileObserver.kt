@@ -2,7 +2,7 @@ package com.wgllss.ssmusic.features_system.room.help
 
 import android.content.Context
 import android.os.FileObserver
-import com.wgllss.ssmusic.core.ex.logE
+import com.wgllss.core.ex.logE
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

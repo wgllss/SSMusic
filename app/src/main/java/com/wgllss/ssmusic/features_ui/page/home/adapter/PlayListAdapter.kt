@@ -1,13 +1,12 @@
 package com.wgllss.ssmusic.features_ui.page.home.adapter
 
 import android.content.Context
-import android.graphics.Color
 import android.support.v4.media.MediaBrowserCompat
 import android.util.TypedValue
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.wgllss.ssmusic.core.adapter.BaseDataBindingAdapter
-import com.wgllss.ssmusic.core.ex.loadUrl
+import com.wgllss.core.adapter.BaseDataBindingAdapter
+import com.wgllss.core.ex.loadUrl
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.AdapterMusicPlaylistItemBinding
 import javax.inject.Inject

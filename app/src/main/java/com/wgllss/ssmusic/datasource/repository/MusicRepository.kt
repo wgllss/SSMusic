@@ -1,10 +1,10 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import com.google.gson.Gson
-import com.wgllss.ssmusic.core.units.ChineseUtils
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.data.MusicBean
-import com.wgllss.ssmusic.data.MusicItemBean
+import com.wgllss.core.units.WLog
+import com.wgllss.music.datasourcelibrary.core.units.ChineseUtils
+import com.wgllss.music.datasourcelibrary.data.MusicBean
+import com.wgllss.music.datasourcelibrary.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean

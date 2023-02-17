@@ -1,9 +1,8 @@
 package com.wgllss.ssmusic.features_system.app
 
 import android.content.Context
-import com.wgllss.ssmusic.core.app.AndroidApplication
-import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.features_third.um.UMHelp
+import com.wgllss.core.app.AndroidApplication
+import com.wgllss.core.units.LogTimer
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

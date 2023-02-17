@@ -1,9 +1,9 @@
 package com.wgllss.ssmusic.features_ui.page.home.adapter
 
 import androidx.recyclerview.widget.RecyclerView
-import com.wgllss.ssmusic.core.adapter.BaseDataBindingAdapter
+import com.wgllss.core.adapter.BaseDataBindingAdapter
+import com.wgllss.music.datasourcelibrary.data.MusicItemBean
 import com.wgllss.ssmusic.databinding.AdapterItemMusicBinding
-import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.R
 import javax.inject.Inject
 

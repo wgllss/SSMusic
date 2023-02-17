@@ -7,20 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.wgllss.music.skin.R
-import com.wgllss.ssmusic.core.adapter.ViewPage2ChildFragmentAdapter
-import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
-import com.wgllss.ssmusic.core.asyninflater.LayoutContains
-import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
-import com.wgllss.ssmusic.core.material.ThemeUtils
-import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.core.adapter.ViewPage2ChildFragmentAdapter
+import com.wgllss.core.fragment.BaseViewModelFragment
+import com.wgllss.core.material.ThemeUtils
+import com.wgllss.core.units.LogTimer
+import com.wgllss.ssmusic.features_system.startup.lazyhome.HomeContains
+import com.wgllss.ssmusic.features_system.startup.lazyhome.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -35,7 +31,7 @@ class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         LogTimer.LogE(this, "onCreateView")
-        val view = LayoutContains.getViewByKey(inflater.context, LaunchInflateKey.home_tab_fragment_layout)!!
+        val view = HomeContains.getViewByKey(inflater.context, LaunchInflateKey.home_tab_fragment_layout)!!
         homeTabLayout = view.findViewById(inflater.context.resources.getIdentifier("homeTabLayout", "id", inflater.context.packageName))
         viewPager2 = view.findViewById(inflater.context.resources.getIdentifier("homeViewPager2", "id", inflater.context.packageName))
         return view

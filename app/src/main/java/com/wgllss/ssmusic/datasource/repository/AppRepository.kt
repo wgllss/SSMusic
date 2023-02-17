@@ -1,8 +1,8 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import androidx.lifecycle.LiveData
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.core.units.WLog
+import com.wgllss.music.datasourcelibrary.data.MusicBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.features_system.music.MusicCachePlayUrl
 import com.wgllss.ssmusic.features_system.room.SSDataBase

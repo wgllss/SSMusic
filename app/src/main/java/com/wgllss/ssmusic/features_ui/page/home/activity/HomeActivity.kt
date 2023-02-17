@@ -5,12 +5,12 @@ import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.wgllss.core.activity.BaseViewModelActivity
+import com.wgllss.core.ex.switchFragment
+import com.wgllss.core.units.LogTimer
 import com.wgllss.music.skin.R
-import com.wgllss.ssmusic.core.activity.BaseViewModelActivity
-import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
-import com.wgllss.ssmusic.core.asyninflater.LayoutContains
-import com.wgllss.ssmusic.core.ex.switchFragment
-import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.features_system.startup.lazyhome.HomeContains
+import com.wgllss.ssmusic.features_system.startup.lazyhome.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
@@ -52,11 +52,11 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     override fun initControl(savedInstanceState: Bundle?) {
         LogTimer.LogE(this@HomeActivity, "initControl savedInstanceState $savedInstanceState")
-        val contentLayout = LayoutContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
+        val contentLayout = HomeContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
         if (savedInstanceState == null) {
 //            setCurrentFragment(homeFragmentL.get())
-            homeFragment = LayoutContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
+            homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
             setCurrentFragment(homeFragment)
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
@@ -69,7 +69,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
         viewModel.lazyTabView()
-        val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
+        val navigationView = HomeContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
         addContentView(navigationView, navigationView.layoutParams)
         initNavigation(navigationView)
         viewModel.start()
@@ -109,7 +109,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 //            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
             R.id.fmt_a -> {
                 if (!this::homeFragment.isInitialized || homeFragment == null) {
-                    homeFragment = LayoutContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
+                    homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)
                 }
                 setCurrentFragment(homeFragment)
             }

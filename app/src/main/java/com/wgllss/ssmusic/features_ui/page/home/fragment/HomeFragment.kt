@@ -13,23 +13,20 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.wgllss.core.ex.getIntToDip
+import com.wgllss.core.fragment.BaseViewModelFragment
+import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.WLog
+import com.wgllss.core.widget.DividerGridItemDecoration
+import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.music.skin.R
-import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
-import com.wgllss.ssmusic.core.asyninflater.LayoutContains
-import com.wgllss.ssmusic.core.ex.getIntToDip
-import com.wgllss.ssmusic.core.ex.initColors
-import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
-import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.core.units.WLog
-import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
-import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
+import com.wgllss.ssmusic.ex.initColors
+import com.wgllss.ssmusic.features_system.startup.lazyhome.HomeContains
+import com.wgllss.ssmusic.features_system.startup.lazyhome.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.page.home.adapter.HomeMusicAdapter
-import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
-import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
@@ -78,7 +75,7 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
         LogTimer.LogE(this, "$title onCreateView")
         if (!this::swipeRefreshLayout.isInitialized) {
             if ("index" == key) {
-                swipeRefreshLayout = LayoutContains.getViewByKey(inflater.context, LaunchInflateKey.home_fragment)!! as SwipeRefreshLayout
+                swipeRefreshLayout = HomeContains.getViewByKey(inflater.context, LaunchInflateKey.home_fragment)!! as SwipeRefreshLayout
                 rvPlList = swipeRefreshLayout.findViewById(R.id.home_recycle_view)
             } else {
                 swipeRefreshLayout = SwipeRefreshLayout(inflater.context).apply {

@@ -7,9 +7,9 @@ import androidx.fragment.app.viewModels
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
+import com.wgllss.core.fragment.BaseMVVMFragment
+import com.wgllss.core.permissions.PermissionInterceptor
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
-import com.wgllss.ssmusic.core.permissions.PermissionInterceptor
 import com.wgllss.ssmusic.databinding.FragmentSettingBinding
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.SettingViewModel

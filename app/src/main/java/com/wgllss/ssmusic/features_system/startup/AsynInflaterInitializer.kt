@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.MutableContextWrapper
 import androidx.startup.Initializer
 import com.tencent.mmkv.MMKV
-import com.wgllss.music.skin.R
-import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
-import com.wgllss.ssmusic.core.asyninflater.LayoutContains
-import com.wgllss.ssmusic.core.ex.toTheme
-import com.wgllss.ssmusic.core.units.LogTimer
-import com.wgllss.ssmusic.features_system.startup.lazyhome.AsyncHomeLayout
+import com.wgllss.core.ex.toTheme
+import com.wgllss.core.units.LogTimer
+import com.wgllss.ssmusic.features_system.startup.lazyhome.GenerateHomeLayout
+import com.wgllss.ssmusic.features_system.startup.lazyhome.HomeContains
+import com.wgllss.ssmusic.features_system.startup.lazyhome.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,20 +30,20 @@ class AsynInflaterInitializer : Initializer<Unit> {
             val res = context.resources
 
             async(Dispatchers.IO) {
-                LayoutContains.putViewByKey(LaunchInflateKey.home_activity, AsyncHomeLayout.syncCreateHomeActivityLayout(context, res))
+                HomeContains.putViewByKey(LaunchInflateKey.home_activity, GenerateHomeLayout.syncCreateHomeActivityLayout(context, res))
             }
             async(Dispatchers.IO) {
-                LayoutContains.putViewByKey(LaunchInflateKey.home_navigation, AsyncHomeLayout.syncCreateHomeNavigationLayout(context, res))
+                HomeContains.putViewByKey(LaunchInflateKey.home_navigation, GenerateHomeLayout.syncCreateHomeNavigationLayout(context, res))
             }
             async(Dispatchers.IO) {
-                LayoutContains.putFragmentByKey(LaunchInflateKey.home_tab_fragment, HomeTabFragment())
+                HomeContains.putFragmentByKey(LaunchInflateKey.home_tab_fragment, HomeTabFragment())
                 LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains fragment")
             }
             async(Dispatchers.IO) {
-                LayoutContains.putViewByKey(LaunchInflateKey.home_tab_fragment_layout, AsyncHomeLayout.syncCreateHomeTabFragmentLayout(context, res))
+                HomeContains.putViewByKey(LaunchInflateKey.home_tab_fragment_layout, GenerateHomeLayout.syncCreateHomeTabFragmentLayout(context, res))
             }
             async(Dispatchers.IO) {
-                LayoutContains.putViewByKey(LaunchInflateKey.home_fragment, AsyncHomeLayout.syncCreateHomeFragmentLayout(context, res))
+                HomeContains.putViewByKey(LaunchInflateKey.home_fragment, GenerateHomeLayout.syncCreateHomeFragmentLayout(context, res))
             }
         }
         LogTimer.LogE(this@AsynInflaterInitializer, "LayoutContains")

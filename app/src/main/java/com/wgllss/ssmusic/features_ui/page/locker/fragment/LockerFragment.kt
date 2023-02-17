@@ -7,10 +7,10 @@ import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.wgllss.core.ex.loadUrl
+import com.wgllss.core.ex.logE
+import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.core.ex.loadUrl
-import com.wgllss.ssmusic.core.ex.logE
-import com.wgllss.ssmusic.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.databinding.FragmentLockerBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.artist

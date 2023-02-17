@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.core.ex
+package com.wgllss.ssmusic.ex
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.wgllss.music.skin.R
