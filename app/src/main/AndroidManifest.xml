@@ -7,14 +7,10 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <uses-permission android:name="android.permission.REORDER_TASKS" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-
-
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
@@ -39,21 +35,10 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         tools:ignore="MissingClass">
-        <!--        <activity-->
-        <!--            android:name="com.wgllss.ssmusic.features_ui.page.loadding.LoadingActivity"-->
-        <!--            android:exported="true"-->
-        <!--            android:theme="@style/LauncherTheme">-->
-        <!--            <intent-filter>-->
-        <!--                <action android:name="android.intent.action.MAIN" />-->
-
-        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
-        <!--            </intent-filter>-->
-        <!--        </activity>-->
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
             android:exported="true"
             android:theme="@style/LauncherTheme2">
-            />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
