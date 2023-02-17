@@ -1,7 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-android-extensions'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
 }
@@ -75,6 +74,7 @@ dependencies {
     implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
     implementation project(path: ':wgllss-business-home')
     implementation project(path: ':wgllss-business-library')
+    implementation project(path: ':wgllss-music-skin-resource')
 
     implementation "androidx.core:core-ktx:$rootProject.ext.kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlin_version"
@@ -134,7 +134,6 @@ dependencies {
 
     implementation "androidx.startup:startup-runtime:1.1.1"
 
-    implementation project(path: ':music-skin-resource')
 
 //    implementation project(path: ':annotations')
 //    kapt project(path: ':annotation_compiler')

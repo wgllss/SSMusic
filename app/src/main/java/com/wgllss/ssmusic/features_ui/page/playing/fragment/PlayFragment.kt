@@ -27,7 +27,6 @@ import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
-import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
 
 class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentPlayBinding>(R.layout.fragment_play) {
@@ -55,7 +54,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             lifecycleOwner = this@PlayFragment
             executePendingBindings()
         }
-        sb_progress.setOnSeekBarChangeListener(
+        binding.sbProgress.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 }
@@ -67,14 +66,14 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                     viewModel.seek(seekBar.progress.toLong())
                 }
             })
-        img_back.setOnClickListener {
+        binding.imgBack.setOnClickListener {
             activity?.let { it.finishActivity() }
         }
         initPointAnimat()
         initCDAnimat()
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
-            mater_music_name.text = it!!.title
+            binding.materMusicName.text = it!!.title
             iv_center.loadUrl(it.albumArtUri)
             Glide.with(this).asBitmap()
                 .load(it.albumArtUri)
@@ -84,9 +83,9 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                             Palette.from(it).generate { p ->
                                 p?.lightMutedSwatch?.let { s ->
                                     binding.layoutPlayBg.setBackgroundColor(s.rgb)
-                                    mater_music_name.setTextColor(s.titleTextColor)
-                                    tv_total_time.setTextColor(s.bodyTextColor)
-                                    tv_current_time.setTextColor(s.bodyTextColor)
+                                    binding.materMusicName.setTextColor(s.titleTextColor)
+                                    binding.tvTotalTime.setTextColor(s.bodyTextColor)
+                                    binding.tvCurrentTime.setTextColor(s.bodyTextColor)
                                 }
                             }
                         }
@@ -97,24 +96,24 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         viewModel.playbackState.observe(viewLifecycleOwner) {
             when (it.state) {
                 STATE_BUFFERING -> {
-                    pb_load.visibility = View.VISIBLE
-                    iv_play.visibility = View.GONE
+                    binding.pbLoad.visibility = View.VISIBLE
+                    binding.ivPlay.visibility = View.GONE
                 }
                 STATE_PLAYING -> {
-                    pb_load.visibility = View.GONE
-                    iv_play.visibility = View.VISIBLE
+                    binding.pbLoad.visibility = View.GONE
+                    binding.ivPlay.visibility = View.VISIBLE
                     if (iv_point.rotation == -40f) {
-                        iv_play.isSelected = true
+                        binding.ivPlay.isSelected = true
                         viewModel.isPlaying = true
                         startPointAnimat(-40f, 0f)
                     }
                     it.extras?.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)?.let { d ->
-                        tv_total_time.text = timestampToMSS(requireContext(), d)
-                        sb_progress.max = d.toInt()
+                        binding.tvTotalTime.text = timestampToMSS(requireContext(), d)
+                        binding.sbProgress.max = d.toInt()
                     }
                 }
                 STATE_PAUSED -> {
-                    iv_play.isSelected = false
+                    binding.ivPlay.isSelected = false
                     viewModel.isPlaying = false
                     if (iv_point.rotation == 0f) {
                         startPointAnimat(0f, -40f)
@@ -123,8 +122,8 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             }
         }
         viewModel.mediaPosition.observe(viewLifecycleOwner) {
-            sb_progress.progress = it.toInt()
-            tv_current_time.text = timestampToMSS(requireContext(), it)
+            binding.sbProgress.progress = it.toInt()
+            binding.tvCurrentTime.text = timestampToMSS(requireContext(), it)
         }
         viewModel.currentPlayMode.observe(viewLifecycleOwner) {
             binding.ivMode.setImageLevel(it)
@@ -140,7 +139,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         iv_point.rotation = -40f
         views.add(coverView)
         val pagerAdapter = BasePagerAdapter(views)
-        view_pager.adapter = pagerAdapter
+        binding.viewPager.adapter = pagerAdapter
     }
 
     /**

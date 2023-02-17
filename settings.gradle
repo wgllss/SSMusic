@@ -2,6 +2,6 @@ rootProject.name = "SSMusic"
 include ':app'
 //include ':annotations'
 //include ':annotation_compiler'
-include ':music-skin-resource'
+include ':wgllss-music-skin-resource'
 include ':wgllss-business-home'
 include ':wgllss-business-library'
