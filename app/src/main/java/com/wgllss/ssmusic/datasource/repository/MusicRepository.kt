@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.datasource.repository
 
+import com.google.gson.Gson
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
@@ -7,6 +8,7 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -83,6 +85,9 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
             }
         }
         emit(list)
+        if ("index" == tab_item) {
+            MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
+        }
     }
 
     /**

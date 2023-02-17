@@ -12,12 +12,17 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.asyninflater.LaunchInflateKey
+import com.wgllss.ssmusic.core.asyninflater.LayoutContains
 import com.wgllss.ssmusic.core.ex.getIntToDip
 import com.wgllss.ssmusic.core.fragment.BaseViewModelFragment
 import com.wgllss.ssmusic.core.units.LogTimer
+import com.wgllss.ssmusic.core.units.WLog
 import com.wgllss.ssmusic.core.widget.DividerGridItemDecoration
 import com.wgllss.ssmusic.core.widget.OnRecyclerViewItemClickListener
+import com.wgllss.ssmusic.features_ui.page.home.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
@@ -26,67 +31,88 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HomeFragment(val title: String, private val html: String) : BaseViewModelFragment<HomeViewModel>(0) {
+class HomeFragment(val key: String, private val html: String) : BaseViewModelFragment<HomeViewModel>(0) {
 
     private val homeTabViewModel = viewModels<HomeTabViewModel>()
     private lateinit var rvPlList: RecyclerView
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    @Inject
-    lateinit var musicAdapterL: Lazy<MusicAdapter>
+    lateinit var musicAdapter: HomeMusicAdapter
 
     override fun activitySameViewModel() = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        LogTimer.LogE(this, "$title onAttach")
+        LogTimer.LogE(this, "$key onAttach")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        LogTimer.LogE(this, "$title onCreate")
+        LogTimer.LogE(this, "$key onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        LogTimer.LogE(this, "$title onCreateView")
-        if (!this::rvPlList.isInitialized) {
-            val res = inflater.context.resources
-            rvPlList = RecyclerView(inflater.context).apply {
-                val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                lp.gravity = Gravity.TOP and Gravity.LEFT
-                layoutParams = lp
-                setBackgroundColor(Color.WHITE)
-                layoutManager = LinearLayoutManager(context)
-                val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
-                setPadding(paddingSize, 0, paddingSize, 0)
-                val itemDecoration = View(context)
-                val size = context.getIntToDip(1.0f).toInt()
-                itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-                itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
-                addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
+        LogTimer.LogE(this, "$key onCreateView")
+        if (!this::swipeRefreshLayout.isInitialized) {
+            if ("index" == key) {
+                swipeRefreshLayout = LayoutContains.getViewByKey(inflater.context, LaunchInflateKey.home_fragment)!! as SwipeRefreshLayout
+                rvPlList = swipeRefreshLayout.findViewById(R.id.home_recycle_view)
+            } else {
+                swipeRefreshLayout = SwipeRefreshLayout(inflater.context).apply {
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+//                    initColors()
+                }
+                val res = inflater.context.resources
+                rvPlList = RecyclerView(inflater.context).apply {
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                    lp.gravity = Gravity.TOP and Gravity.LEFT
+                    layoutParams = lp
+                    layoutManager = LinearLayoutManager(context)
+//                    val paddingSize = res.getDimension(R.dimen.recycler_padding).toInt()
+                    setHasFixedSize(true)
+//                    setPadding(paddingSize, 0, paddingSize, 0)
+                    val itemDecoration = View(context)
+                    val size = context.getIntToDip(1.0f).toInt()
+                    itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
+                    itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
+                    addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
+                }
+                swipeRefreshLayout.addView(rvPlList)
             }
         }
         return rvPlList
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        LogTimer.LogE(this, "$title onViewCreated")
+        LogTimer.LogE(this, "$key onViewCreated")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        LogTimer.LogE(this, "$title onActivityCreated")
-        rvPlList.adapter = musicAdapterL.get()
+        LogTimer.LogE(this, "$key onActivityCreated")
+        swipeRefreshLayout.setOnRefreshListener {
+            homeTabViewModel.value.getData(key)
+        }
         rvPlList?.run {
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-                    homeTabViewModel.value.getDetailFromSearch(position)
+                    homeTabViewModel.value.getDetailFromSearch(musicAdapter.getItem(position))
                 }
             })
         }
-        homeTabViewModel.value.result.observe(viewLifecycleOwner) {
-            musicAdapterL.get().notifyData(it)
+        homeTabViewModel.value.initKey(key)
+        homeTabViewModel.value.result[key]?.observe(viewLifecycleOwner) {
+            WLog.e(this@HomeFragment, key)
+            musicAdapter.notifyData(it)
         }
-        homeTabViewModel.value.getData(html)
+        if (rvPlList.adapter == null) {
+            musicAdapter = HomeMusicAdapter()
+            rvPlList.adapter = musicAdapter
+        } else {
+            WLog.e(this, " json json 11")
+            musicAdapter = rvPlList.adapter as HomeMusicAdapter
+        }
+        homeTabViewModel.value.getData(key)
     }
 
     override fun onResume() {

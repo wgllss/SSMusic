@@ -58,7 +58,7 @@ class AsynInflaterInitializer : Initializer<Unit> {
                 }
             }
             val recyclerViewAwait = async(Dispatchers.IO) {
-                RecyclerView(context).apply {
+                val recyclerView = RecyclerView(context).apply {
                     LogTimer.LogE(this@AsynInflaterInitializer, "async 2 ${Thread.currentThread().name}")
                     id = res.getIdentifier("rv_tab_list", "id", activity.packageName)
                     val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
@@ -76,19 +76,22 @@ class AsynInflaterInitializer : Initializer<Unit> {
                     itemDecoration.setBackgroundColor(Color.TRANSPARENT)
                     addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
 //                    val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
-//                    adapter = TabAdapter(
-//                        mutableListOf(
-//                            "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-////                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
-////                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
-//                            "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
-//                            "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-//                            "周杰伦", "林俊杰", "许嵩", "胡彦斌",
-//                            "张学友"
-//                        )
-//                    )
-
+                    val tabAdapter = TabAdapter()
+                    adapter = tabAdapter
+                    tabAdapter.notifyData(
+                        mutableListOf(
+                            "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                                 "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
+//                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
+                            "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
+                            "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+                            "周杰伦", "林俊杰", "许嵩", "胡彦斌",
+                            "张学友"
+                        )
+                    )
                 }
+                LogTimer.LogE(this@AsynInflaterInitializer, "dfdfff--->>")
+                recyclerView
             }
             val fragmentContainerViewAwait = async(Dispatchers.IO) {
                 FragmentContainerView(context).apply {

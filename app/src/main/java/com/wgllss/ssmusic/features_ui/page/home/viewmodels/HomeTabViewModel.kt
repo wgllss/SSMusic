@@ -22,40 +22,59 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
 
     private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
 
-    val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
+    val liveDataLoadSuccessCount by lazy { MutableLiveData(0) }
+
+    var isClick = false
+
+    val result by lazy { mutableMapOf<String, MutableLiveData<MutableList<MusicItemBean>>>() }
 
     override fun start() {
     }
 
-    fun getData(html: String) {
+    fun initKey(key: String) {
+        result[key] = MutableLiveData<MutableList<MusicItemBean>>()
+    }
+
+    fun getData(key: String) {
+        isClick = false
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.get().homeMusic(html)
+            musicRepositoryL.get().homeMusic(key)
                 .onEach {
-                    result.postValue(it)
+                    if (result[key] == null) {
+                        WLog.e(this@HomeTabViewModel, key)
+                        val list = MutableLiveData<MutableList<MusicItemBean>>()
+                        list.postValue(it)
+                        result[key] = list
+                    } else {
+                        result[key]?.postValue(it)
+                    }
+                    var c = liveDataLoadSuccessCount.value?.plus(1)
+                    liveDataLoadSuccessCount.postValue(c)
                 }
         }
     }
 
-    fun getDetailFromSearch(position: Int) {
-        result?.value?.takeIf {
-            it.size > position
-        }?.run {
-            flowAsyncWorkOnViewModelScopeLaunch {
-                val detailUrl = get(position).detailUrl
-                musicRepositoryL.get().getPlayUrl(detailUrl)
-                    .onEach {
-                        val extras = Bundle().apply {
-                            putString(Constants.MEDIA_ID_KEY, it.id.toString())
-                            putString(Constants.MEDIA_TITLE_KEY, it.title)
-                            putString(Constants.MEDIA_AUTHOR_KEY, it.author)
-                            putString(Constants.MEDIA_ARTNETWORK_URL_KEY, it.pic)
-                            putString(Constants.MEDIA_URL_KEY, it.url)
-                        }
-                        transportControls.prepareFromUri(it.url.toUri(), extras)
-                        musicRepositoryL.get().addToPlayList(it).collect()
+    fun getDetailFromSearch(musicItemBean: MusicItemBean) {
+//        result[key]?.value?.takeIf {
+//            it.size > position
+//        }?.run {
+        isClick = true
+        flowAsyncWorkOnViewModelScopeLaunch {
+            val detailUrl = musicItemBean.detailUrl
+            musicRepositoryL.get().getPlayUrl(detailUrl)
+                .onEach {
+                    val extras = Bundle().apply {
+                        putString(Constants.MEDIA_ID_KEY, it.id.toString())
+                        putString(Constants.MEDIA_TITLE_KEY, it.title)
+                        putString(Constants.MEDIA_AUTHOR_KEY, it.author)
+                        putString(Constants.MEDIA_ARTNETWORK_URL_KEY, it.pic)
+                        putString(Constants.MEDIA_URL_KEY, it.url)
                     }
-            }
+                    transportControls.prepareFromUri(it.url.toUri(), extras)
+                    musicRepositoryL.get().addToPlayList(it).collect()
+                }
         }
+//        }
     }
 
 }

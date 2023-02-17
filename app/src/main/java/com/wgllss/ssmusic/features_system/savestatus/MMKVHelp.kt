@@ -28,4 +28,8 @@ object MMKVHelp {
      * 得到播放模式
      */
     fun getPlayMode() = mmkv.decodeInt("PlayMode")
+
+    fun saveHomeTab1Data(data: String) = mmkv.encode("home_fragment_tab1", data)
+
+    fun getHomeTab1Data()= mmkv.decodeString("home_fragment_tab1")
 }

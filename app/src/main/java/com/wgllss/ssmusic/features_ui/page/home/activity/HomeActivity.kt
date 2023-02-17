@@ -1,14 +1,16 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
+import android.widget.TextView
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.activity.BaseMVVMActivity
 import com.wgllss.ssmusic.core.adapter.ViewPage2ChildFragmentAdapter
@@ -18,7 +20,6 @@ import com.wgllss.ssmusic.core.ex.switchFragment
 import com.wgllss.ssmusic.core.units.LogTimer
 import com.wgllss.ssmusic.databinding.ActivityHomeBinding
 import com.wgllss.ssmusic.features_third.um.UMHelp
-import com.wgllss.ssmusic.features_ui.page.home.adapter.TabAdapter
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
@@ -84,45 +85,45 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
 //            )
 //        )
 
-//        homeTabLayout = contentLayout.findViewById(R.id.homeTabLayout)
-//        viewPager2 = contentLayout.findViewById(R.id.homeViewPager2)
-//        childAdapter = ViewPage2ChildFragmentAdapter(getList(), supportFragmentManager, lifecycle)
-//        viewPager2.adapter = childAdapter
-//        TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
-//            val textView = TextView(this)
-//            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-//            textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
-//            textView.text = tab.text
-//            tab.customView = textView
-//            textView.text = (childAdapter.list[position] as HomeFragment).title
-//        }.apply(TabLayoutMediator::attach)
-//        homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-//            override fun onTabSelected(tab: TabLayout.Tab) {
-//                tab?.customView?.takeIf {
-//                    it is TextView
-//                }?.run {
-//                    (this as TextView).run {
-//                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
-//                        setTextColor(resources.getColor(R.color.colorPrimary))
-//                    }
-//                }
-//            }
-//
-//            override fun onTabUnselected(tab: TabLayout.Tab) {
-//                tab?.customView?.takeIf {
-//                    it is TextView
-//                }?.run {
-//                    (this as TextView).run {
-//                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-//                        setTextColor(resources.getColor(R.color.white))
-//                    }
-//                }
-//            }
-//
-//            override fun onTabReselected(tab: TabLayout.Tab) {
-//            }
-//
-//        })
+        homeTabLayout = contentLayout.findViewById(R.id.homeTabLayout)
+        viewPager2 = contentLayout.findViewById(R.id.homeViewPager2)
+        childAdapter = ViewPage2ChildFragmentAdapter(getList(), supportFragmentManager, lifecycle)
+        viewPager2.adapter = childAdapter
+        TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+            val textView = TextView(this)
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+            textView.setTextColor(resources.getColor(if (position == 0) R.color.colorPrimary else R.color.white))
+            textView.text = tab.text
+            tab.customView = textView
+            textView.text = (childAdapter.list[position] as HomeFragment).key
+        }.apply(TabLayoutMediator::attach)
+        homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tab?.customView?.takeIf {
+                    it is TextView
+                }?.run {
+                    (this as TextView).run {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
+                        setTextColor(resources.getColor(R.color.colorPrimary))
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                tab?.customView?.takeIf {
+                    it is TextView
+                }?.run {
+                    (this as TextView).run {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+                        setTextColor(resources.getColor(R.color.white))
+                    }
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+            }
+
+        })
 //        setCurrentFragment(homeFragmentL.get())
         LogTimer.LogE(this@HomeActivity, "initControl after")
     }
@@ -139,18 +140,18 @@ class HomeActivity : BaseMVVMActivity<HomeViewModel, ActivityHomeBinding>(0) {
         val navigationView = LayoutContains.getViewByKey(this, LaunchInflateKey.home_navigation)!!
         addContentView(navigationView, navigationView.layoutParams)
         initNavigation(navigationView as BottomNavigationView)
-        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
-        rvPlList.adapter = TabAdapter(
-            mutableListOf(
-                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-//                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
-//                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
-                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
-                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
-                "周杰伦", "林俊杰", "许嵩", "胡彦斌",
-                "张学友"
-            )
-        )
+//        val rvPlList = contentLayout.findViewById<RecyclerView>(R.id.rv_tab_list)
+//        rvPlList.adapter = TabAdapter(
+//            mutableListOf(
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+////                                "张学友", "陈奕迅", "刘德华", "张杰", "谭咏麟",
+////                                "Yanni", "梁静茹", "半吨兄弟", "汪苏泷", "Beyond",
+//                "王菲", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌", "周深",
+//                "周杰伦", "林俊杰", "许嵩", "胡彦斌",
+//                "张学友"
+//            )
+//        )
 
         viewModel.start()
         viewModel.rootMediaId.observe(this) {

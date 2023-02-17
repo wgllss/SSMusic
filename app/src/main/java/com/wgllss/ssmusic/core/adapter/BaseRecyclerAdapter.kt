@@ -8,11 +8,21 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 
 
-abstract class BaseRecyclerAdapter<T>(val list: MutableList<T>) : RecyclerView.Adapter<BaseRecyclerAdapter.BaseBindingViewHolder>() {
-    var context: Context? = null
+abstract class BaseRecyclerAdapter<T> : RecyclerView.Adapter<BaseRecyclerAdapter.BaseBindingViewHolder>() {
+    open var context: Context? = null
+    private lateinit var mData: MutableList<T>
+
+    fun notifyData(mData: MutableList<T>) {
+        if (mData == null) {
+            this.mData = mutableListOf()
+        } else {
+            this.mData = mData
+        }
+        notifyDataSetChanged()
+    }
 
     fun removeItem(position: Int) {
-        list?.takeIf {
+        mData?.takeIf {
             it.size > position
         }?.run {
             removeAt(position)
@@ -21,21 +31,19 @@ abstract class BaseRecyclerAdapter<T>(val list: MutableList<T>) : RecyclerView.A
     }
 
     fun clearList() {
-        list?.run {
+        mData?.run {
             clear()
             notifyDataSetChanged()
         }
     }
 
-    override fun getItemCount(): Int {
-        return if (list == null) 0 else list!!.size
-    }
+    override fun getItemCount(): Int = if (!this::mData.isInitialized) 0 else mData.size
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
-    fun getItem(position: Int): T = list[position]
+    fun getItem(position: Int): T = mData[position]
 
     @LayoutRes
     protected abstract fun getLayoutResId(viewType: Int): Int
@@ -50,10 +58,10 @@ abstract class BaseRecyclerAdapter<T>(val list: MutableList<T>) : RecyclerView.A
 
     override fun onBindViewHolder(holder: BaseBindingViewHolder, position: Int) {
         val item = getItem(position)
-        onBindItem(item, holder, position)
+        onBindItem(context!!, item, holder, position)
     }
 
-    protected abstract fun onBindItem(item: T, holder: RecyclerView.ViewHolder, position: Int)
+    protected abstract fun onBindItem(context: Context, item: T, holder: RecyclerView.ViewHolder, position: Int)
 
     class BaseBindingViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
