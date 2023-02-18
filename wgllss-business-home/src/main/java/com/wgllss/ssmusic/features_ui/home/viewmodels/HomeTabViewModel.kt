@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.features_ui.page.home.viewmodels
+package com.wgllss.ssmusic.features_ui.home.viewmodels
 
 import android.os.Bundle
 import androidx.core.net.toUri

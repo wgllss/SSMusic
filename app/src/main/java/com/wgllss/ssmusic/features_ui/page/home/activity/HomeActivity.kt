@@ -12,11 +12,11 @@ import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
+import com.wgllss.ssmusic.features_ui.home.fragment.HomeTabFragment
+import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
-import com.wgllss.ssmusic.features_ui.page.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
-import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers

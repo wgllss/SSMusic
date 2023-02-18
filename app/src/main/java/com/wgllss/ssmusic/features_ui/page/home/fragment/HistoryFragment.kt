@@ -14,14 +14,14 @@ import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentHistoryBinding
 import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
-import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
+import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class HistoryFragment @Inject constructor(): BaseMVVMFragment<HomeViewModel, FragmentHistoryBinding>(R.layout.fragment_history) {
+class HistoryFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, FragmentHistoryBinding>(R.layout.fragment_history) {
 
     @Inject
     lateinit var playListAdapterL: Lazy<PlayListAdapter>

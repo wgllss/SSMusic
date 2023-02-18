@@ -11,13 +11,13 @@ import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.permissions.PermissionInterceptor
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentSettingBinding
-import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
+import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.SettingViewModel
 import javax.inject.Inject
 
 //@AndroidEntryPoint
 //@FragmentDestination(pageUrl = "fmt_setting", label = "设置", iconId = R.drawable.ic_notifications_black_24dp)
-class SettingFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel, FragmentSettingBinding>(R.layout.fragment_setting) {
+class SettingFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, FragmentSettingBinding>(R.layout.fragment_setting) {
 
     private val settingViewModelL = viewModels<SettingViewModel>()
 
