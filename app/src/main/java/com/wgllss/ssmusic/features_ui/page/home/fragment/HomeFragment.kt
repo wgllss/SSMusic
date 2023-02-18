@@ -26,9 +26,7 @@ import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.home.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
 
     var title: String = ""

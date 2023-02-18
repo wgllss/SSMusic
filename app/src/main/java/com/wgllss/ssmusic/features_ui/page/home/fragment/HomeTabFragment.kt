@@ -17,10 +17,9 @@ import com.wgllss.core.units.LogTimer
 import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel
-import javax.inject.Inject
 
 
-class HomeTabFragment @Inject constructor() : BaseViewModelFragment<HomeViewModel>(0) {
+class HomeTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
 
     private lateinit var childAdapter: ViewPage2ChildFragmentAdapter
     private lateinit var homeTabLayout: TabLayout

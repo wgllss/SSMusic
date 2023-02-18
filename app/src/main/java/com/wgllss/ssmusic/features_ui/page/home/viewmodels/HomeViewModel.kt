@@ -23,14 +23,11 @@ import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.extensions.isPlaying
 import com.wgllss.ssmusic.features_system.music.extensions.isPrepared
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
-import dagger.Lazy
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor() : BaseViewModel() {
+//@HiltViewModel
+class HomeViewModel : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
     private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
 

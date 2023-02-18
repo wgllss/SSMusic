@@ -307,11 +307,15 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
         private suspend fun resolveUriAsBitmap(uri: String): Bitmap? {
             return withContext(Dispatchers.IO) {
                 // Block on downloading artwork.
-                Glide.with(context).applyDefaultRequestOptions(glideOptions)
-                    .asBitmap()
-                    .load(uri)
-                    .submit(NOTIFICATION_LARGE_ICON_SIZE, NOTIFICATION_LARGE_ICON_SIZE)
-                    .get()
+                try {
+                    Glide.with(context).applyDefaultRequestOptions(glideOptions)
+                        .asBitmap()
+                        .load(uri)
+                        .submit(NOTIFICATION_LARGE_ICON_SIZE, NOTIFICATION_LARGE_ICON_SIZE)
+                        .get()
+                } catch (e: Exception) {
+                    null
+                }
             }
         }
     }

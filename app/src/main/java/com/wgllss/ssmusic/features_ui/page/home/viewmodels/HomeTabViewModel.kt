@@ -10,14 +10,10 @@ import com.wgllss.music.datasourcelibrary.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
-import dagger.Lazy
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeTabViewModel @Inject constructor() : BaseViewModel() {
+class HomeTabViewModel : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
 
     //    @Inject
