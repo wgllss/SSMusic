@@ -10,7 +10,7 @@ import com.wgllss.ssmusic.features_system.music.MusicFactory
 
 class MusicService : MediaBrowserServiceCompat() {
 
-    private val musicFactory by lazy { MusicFactory(this, AppViewModel(this.application)) }
+    private val musicFactory by lazy { MusicFactory(this, AppViewModel.getInstance(this.application)) }
 
     override fun onCreate() {
         super.onCreate()

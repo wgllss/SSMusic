@@ -31,8 +31,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor() : BaseViewModel() {
-    private val musicServiceConnectionL by lazy { MusicServiceConnection(AppGlobals.sApplication) }
-    private val musicRepositoryL by lazy { MusicRepository(AppGlobals.sApplication) }
+    private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
+    private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
 
     val searchContent by lazy { MutableLiveData<String>() }
 

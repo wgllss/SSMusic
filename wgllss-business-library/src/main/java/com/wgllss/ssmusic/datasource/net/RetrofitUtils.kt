@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
-class RetrofitUtils constructor(val context: Context) {
+class RetrofitUtils private constructor(val context: Context) {
 
     companion object {
         const val base_url = "https://www.hifini.com/"

@@ -3,7 +3,7 @@ package com.wgllss.ssmusic.features_system.music
 import java.util.concurrent.ConcurrentHashMap
 
 //@Singleton
-class MusicCachePlayUrl {
+class MusicCachePlayUrl private constructor() {
 
 
     companion object {

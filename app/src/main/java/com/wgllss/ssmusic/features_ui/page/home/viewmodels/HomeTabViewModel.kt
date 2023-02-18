@@ -18,10 +18,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeTabViewModel @Inject constructor() : BaseViewModel() {
-    private val musicServiceConnectionL by lazy { MusicServiceConnection(AppGlobals.sApplication) }
+    private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
 
     //    @Inject
-    val musicRepositoryL by lazy { MusicRepository(AppGlobals.sApplication) }//: Lazy<MusicRepository>
+    val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicRepository>
 
     private val transportControls by lazy { musicServiceConnectionL.transportControls }
 

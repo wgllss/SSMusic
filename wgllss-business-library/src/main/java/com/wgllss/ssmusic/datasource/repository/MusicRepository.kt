@@ -16,9 +16,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
 
-class MusicRepository constructor(private val context: Context) {
+class MusicRepository private constructor(private val context: Context) {
     private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
     private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
+
+    companion object {
+
+        @Volatile
+        private var instance: MusicRepository? = null
+
+        fun getInstance(context: Context) = instance ?: synchronized(this) {
+            instance ?: MusicRepository(context).also { instance = it }
+        }
+    }
 
     suspend fun homeMusic(tab_item: String = "") = flow {
         val html = musiceApiL.homeTabMusic(tab_item)

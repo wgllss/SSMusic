@@ -15,11 +15,21 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.transform
 import org.jsoup.Jsoup
 
-class AppRepository(private val context: Context) {
+class AppRepository private constructor(private val context: Context) {
 
     private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
     private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
-    private val cache by lazy { MusicCachePlayUrl() } //Lazy<MusicCachePlayUrl>
+    private val cache by lazy { MusicCachePlayUrl.instance } //Lazy<MusicCachePlayUrl>
+
+    companion object {
+
+        @Volatile
+        private var instance: AppRepository? = null
+
+        fun getInstance(context: Context) = instance ?: synchronized(this) {
+            instance ?: AppRepository(context).also { instance = it }
+        }
+    }
 
     suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> {
         return flow {

@@ -13,6 +13,7 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.MutableLiveData
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
+import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
 import com.wgllss.ssmusic.features_system.services.MusicService
@@ -36,7 +37,18 @@ import com.wgllss.ssmusic.features_system.services.MusicService
  *  parameters, rather than private properties. They're only required to build the
  *  [MediaBrowserConnectionCallback] and [MediaBrowserCompat] objects.
  */
-class MusicServiceConnection constructor(context: Context) {
+class MusicServiceConnection private constructor(context: Context) {
+
+    companion object {
+
+        @Volatile
+        private var instance: MusicServiceConnection? = null
+
+        fun getInstance(context: Context) = instance ?: synchronized(this) {
+            instance ?: MusicServiceConnection(context).also { instance = it }
+        }
+    }
+
     val isConnected by lazy {
         MutableLiveData<Boolean>().apply { postValue(false) }
     }

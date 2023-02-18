@@ -1,6 +1,7 @@
 package com.wgllss.ssmusic.features_system.app
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import com.wgllss.core.units.WLog
 import com.wgllss.music.datasourcelibrary.data.MusicBean
 import com.wgllss.ssmusic.data.RandomPosition
 import com.wgllss.ssmusic.datasource.repository.AppRepository
+import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_SONG
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
@@ -21,8 +23,18 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.random.Random
 
-class AppViewModel constructor(application: Application) : AndroidViewModel(application) {
-    private val appRepository by lazy { AppRepository(application) }
+class AppViewModel private constructor(application: Application) : AndroidViewModel(application) {
+    private val appRepository by lazy { AppRepository.getInstance(application) }
+
+    companion object {
+
+        @Volatile
+        private var instance: AppViewModel? = null
+
+        fun getInstance(context: Application) = instance ?: synchronized(this) {
+            instance ?: AppViewModel(context).also { instance = it }
+        }
+    }
 
     //播放列表
     lateinit var liveData: LiveData<MutableList<MusicTabeBean>>

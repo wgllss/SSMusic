@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlayModel @Inject constructor() : BaseViewModel() {
-    private val musicServiceConnectionL by lazy { MusicServiceConnection(AppGlobals.sApplication) }
+    private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
 
 
     var isPlaying: Boolean = false
