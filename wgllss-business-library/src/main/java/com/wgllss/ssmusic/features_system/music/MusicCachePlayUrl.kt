@@ -1,16 +1,17 @@
 package com.wgllss.ssmusic.features_system.music
 
 import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class MusicCachePlayUrl @Inject constructor() {
+//@Singleton
+class MusicCachePlayUrl {
+
 
     companion object {
         private const val maxAge: Long = 60 * 60 * 1000//缓存一小时
         private val map by lazy { ConcurrentHashMap<String, String>() }
         private val loadingDates by lazy { ConcurrentHashMap<String, Long>() }
+
+        val instance by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { MusicCachePlayUrl() }
     }
 
 

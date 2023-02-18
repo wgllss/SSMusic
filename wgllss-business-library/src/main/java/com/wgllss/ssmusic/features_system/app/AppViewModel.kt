@@ -15,16 +15,15 @@ import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_SONG
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
 import kotlin.random.Random
 
-@HiltViewModel
-class AppViewModel @Inject constructor(application: Application, private val appRepository: AppRepository) : AndroidViewModel(application) {
+class AppViewModel constructor(application: Application) : AndroidViewModel(application) {
+    private val appRepository by lazy { AppRepository(application) }
+
     //播放列表
     lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }

@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.features_ui.page.home.viewmodels
 import android.os.Bundle
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
+import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.music.datasourcelibrary.data.MusicItemBean
@@ -16,11 +17,13 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
-    @Inject
-    lateinit var musicRepositoryL: Lazy<MusicRepository>
+class HomeTabViewModel @Inject constructor() : BaseViewModel() {
+    private val musicServiceConnectionL by lazy { MusicServiceConnection(AppGlobals.sApplication) }
 
-    private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
+    //    @Inject
+    val musicRepositoryL by lazy { MusicRepository(AppGlobals.sApplication) }//: Lazy<MusicRepository>
+
+    private val transportControls by lazy { musicServiceConnectionL.transportControls }
 
     val liveDataLoadSuccessCount by lazy { MutableLiveData(0) }
 
@@ -38,7 +41,7 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
     fun getData(key: String) {
         isClick = false
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.get().homeMusic(key)
+            musicRepositoryL.homeMusic(key)
                 .onEach {
                     if (result[key] == null) {
                         WLog.e(this@HomeTabViewModel, key)
@@ -61,7 +64,7 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
         isClick = true
         flowAsyncWorkOnViewModelScopeLaunch {
             val detailUrl = musicItemBean.detailUrl
-            musicRepositoryL.get().getPlayUrl(detailUrl)
+            musicRepositoryL.getPlayUrl(detailUrl)
                 .onEach {
                     val extras = Bundle().apply {
                         putString(Constants.MEDIA_ID_KEY, it.id.toString())
@@ -71,7 +74,7 @@ class HomeTabViewModel @Inject constructor(private val musicServiceConnectionL: 
                         putString(Constants.MEDIA_URL_KEY, it.url)
                     }
                     transportControls.prepareFromUri(it.url.toUri(), extras)
-                    musicRepositoryL.get().addToPlayList(it).collect()
+                    musicRepositoryL.addToPlayList(it).collect()
                 }
         }
 //        }

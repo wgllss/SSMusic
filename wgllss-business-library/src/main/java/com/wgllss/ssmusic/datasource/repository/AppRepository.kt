@@ -1,24 +1,29 @@
 package com.wgllss.ssmusic.datasource.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import com.wgllss.core.units.WLog
 import com.wgllss.music.datasourcelibrary.data.MusicBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
+import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.music.MusicCachePlayUrl
 import com.wgllss.ssmusic.features_system.room.SSDataBase
+import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
-import dagger.Lazy
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.transform
 import org.jsoup.Jsoup
-import javax.inject.Inject
 
-class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>, private val mSSDataBaseL: Lazy<SSDataBase>, private val cache: Lazy<MusicCachePlayUrl>) {
+class AppRepository(private val context: Context) {
+
+    private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
+    private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
+    private val cache by lazy { MusicCachePlayUrl() } //Lazy<MusicCachePlayUrl>
 
     suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> {
         return flow {
-            emit(mSSDataBaseL.get().musicDao().getList())
+            emit(mSSDataBaseL.musicDao().getList())
         }
     }
 
@@ -26,7 +31,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
      * 得到播放地址
      */
     suspend fun getPlayUrl(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = ""): Flow<MusicBean> {
-        cache.get()?.get(mediaID)?.let {
+        cache.get(mediaID)?.let {
             return flow {
                 WLog.e(this@AppRepository, "拿到缓存: $title")
                 val musicBean = MusicBean(title, author, it, pic)
@@ -37,7 +42,7 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
         return flow {
             WLog.e(this@AppRepository, "当前线程: ${Thread.currentThread().name}")
             val startTime = System.currentTimeMillis()
-            val html = musiceApiL.get().getPlayUrl(htmlUrl)
+            val html = musiceApiL.getPlayUrl(htmlUrl)
             val baseUrl = "https://www.hifini.com/"
             val document = Jsoup.parse(html, baseUrl)
             val element = document.select("script")
@@ -88,9 +93,9 @@ class AppRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>,
                 it.url.isNotEmpty()
             }?.let {
                 it.requestRealUrl = htmlUrl
-                musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
+                musiceApiL.getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
                     it.url = this@run.toString().replace("http://", "https://")
-                    cache.get()?.put(it.id.toString(), it.url)
+                    cache.put(it.id.toString(), it.url)
                 }
             }
             emit(it)

@@ -1,24 +1,27 @@
 package com.wgllss.ssmusic.datasource.repository
 
+import android.content.Context
 import com.google.gson.Gson
 import com.wgllss.core.units.WLog
 import com.wgllss.music.datasourcelibrary.core.units.ChineseUtils
 import com.wgllss.music.datasourcelibrary.data.MusicBean
 import com.wgllss.music.datasourcelibrary.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
+import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.room.SSDataBase
+import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
 import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
-import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
-import javax.inject.Inject
 
-class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi>, private val mSSDataBaseL: Lazy<SSDataBase>) {
+class MusicRepository constructor(private val context: Context) {
+    private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
+    private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
 
     suspend fun homeMusic(tab_item: String = "") = flow {
-        val html = musiceApiL.get().homeTabMusic(tab_item)
+        val html = musiceApiL.homeTabMusic(tab_item)
         val document = Jsoup.parse(html, "https://www.hifini.com/")
         val dcS = document.select(".break-all")
         val list = mutableListOf<MusicItemBean>()
@@ -95,7 +98,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
      */
     suspend fun searchKeyByTitle(keyword: String): Flow<MutableList<MusicItemBean>> = flow {
         val keywordL = ChineseUtils.urlencode(keyword)
-        val html = musiceApiL.get().searchKeyByTitle(keywordL)
+        val html = musiceApiL.searchKeyByTitle(keywordL)
         val document = Jsoup.parse(html, "https://www.hifini.com/")
         val dcS = document.select(".break-all")
         val list = mutableListOf<MusicItemBean>()
@@ -169,7 +172,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
      */
     suspend fun getPlayUrl(htmlUrl: String): Flow<MusicBean> = flow {
         val startTime = System.currentTimeMillis()
-        val html = musiceApiL.get().getPlayUrl(htmlUrl)
+        val html = musiceApiL.getPlayUrl(htmlUrl)
         val baseUrl = "https://www.hifini.com/"
         val document = Jsoup.parse(html, baseUrl)
         val element = document.select("script")
@@ -220,7 +223,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
             it.url.isNotEmpty()
         }?.let {
             it.requestRealUrl = htmlUrl
-            musiceApiL.get().getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
+            musiceApiL.getMusicFileUrl(it.url)?.raw()?.request?.url?.run {
                 it.url = this@run.toString().replace("http://", "https://")
             }
         }
@@ -231,12 +234,12 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
         return flow {
             it.run {
                 WLog.e(this@MusicRepository, "addToPlayList id: ${it.id} requestRealUrl $requestRealUrl")
-                val count = mSSDataBaseL.get().musicDao().queryByUUID(it.id)
+                val count = mSSDataBaseL.musicDao().queryByUUID(it.id)
                 if (count > 0) {
                     WLog.e(this@MusicRepository, "已经在播放列表里面")
                 } else {
                     val bean = MusicTabeBean(it.id, title, author, requestRealUrl, pic, System.currentTimeMillis())
-                    mSSDataBaseL.get().musicDao().insertMusicBean(bean)
+                    mSSDataBaseL.musicDao().insertMusicBean(bean)
                 }
                 emit(it.id)
             }
@@ -245,7 +248,7 @@ class MusicRepository @Inject constructor(private val musiceApiL: Lazy<MusiceApi
 
     suspend fun deledeFromId(id: Long) = flow {
         WLog.e(this, "deledeFromId id: $id")
-        mSSDataBaseL.get().musicDao().deleteFromID(id)
+        mSSDataBaseL.musicDao().deleteFromID(id)
         emit(0)
     }
 }

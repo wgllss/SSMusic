@@ -16,9 +16,6 @@ import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
 import com.wgllss.ssmusic.features_system.services.MusicService
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Class that manages a connection to a [MediaBrowserServiceCompat] instance, typically a
@@ -39,8 +36,7 @@ import javax.inject.Singleton
  *  parameters, rather than private properties. They're only required to build the
  *  [MediaBrowserConnectionCallback] and [MediaBrowserCompat] objects.
  */
-@Singleton
-class MusicServiceConnection @Inject constructor(@ApplicationContext context: Context) {
+class MusicServiceConnection constructor(context: Context) {
     val isConnected by lazy {
         MutableLiveData<Boolean>().apply { postValue(false) }
     }

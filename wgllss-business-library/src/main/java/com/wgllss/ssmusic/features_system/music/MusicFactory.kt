@@ -10,24 +10,21 @@ import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.services.MusicService
-import dagger.Lazy
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 /**
  * 音乐播放工厂，处理多音乐功能，主要负责 播放列表取数据源 ，处理上下一曲数据源
  * appViewModel:主持提供各种数据
  */
 
-class MusicFactory @Inject constructor(@ApplicationContext context: Context, private val appViewModel: Lazy<AppViewModel>) : MusicComponent(context) {
+class MusicFactory constructor(context: Context, private val appViewModel: AppViewModel) : MusicComponent(context) {
 
     override fun onCreate(musicService: MusicService) {
         super.onCreate(musicService)
-        appViewModel.get().queryPlayList()
-        appViewModel.get().metadataPrepareCompletion.observe(this) {
+        appViewModel.queryPlayList()
+        appViewModel.metadataPrepareCompletion.observe(this) {
             preparePlay(it.id.toString(), it.title, it.author, it.pic, it.url)
         }
     }
@@ -37,11 +34,11 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
     override fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         if (MEDIA_ID_ROOT == parentId) {
             WLog.e(this, "onLoadChildren parentId 333: $parentId")
-            appViewModel.get().isInitSuccess.observe(this) {
+            appViewModel.isInitSuccess.observe(this) {
                 it.takeIf {
                     it == true
                 }?.let {
-                    appViewModel.get().liveData.observe(this@MusicFactory) { list ->
+                    appViewModel.liveData.observe(this@MusicFactory) { list ->
                         serviceScope.launch {
                             if (!mSendResultCalled) {
                                 val child = withContext(IO) {
@@ -81,20 +78,20 @@ class MusicFactory @Inject constructor(@ApplicationContext context: Context, pri
 
     override fun onPrepareFromMediaId(mediaId: String, playWhenReady: Boolean, extras: Bundle?) {
         WLog.e(this, "onPrepareFromMediaId mediaId: $mediaId playWhenReady: $playWhenReady  extras:${Thread.currentThread().name}")
-        appViewModel.get().getPlayUrlFromMediaID(mediaId)
+        appViewModel.getPlayUrlFromMediaID(mediaId)
     }
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
         super.onPrepareFromUri(uri, playWhenReady, extras)
-        appViewModel.get().getCacheURL()
+        appViewModel.getCacheURL()
     }
 
     override fun playNext() {
-        appViewModel.get().playNext()
+        appViewModel.playNext()
     }
 
     override fun playPrevious() {
-        appViewModel.get().playPrevious()
+        appViewModel.playPrevious()
     }
 
 }

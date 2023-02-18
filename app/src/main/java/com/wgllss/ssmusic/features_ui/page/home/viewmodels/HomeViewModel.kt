@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
@@ -29,7 +30,9 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<MusicRepository>, private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
+class HomeViewModel @Inject constructor() : BaseViewModel() {
+    private val musicServiceConnectionL by lazy { MusicServiceConnection(AppGlobals.sApplication) }
+    private val musicRepositoryL by lazy { MusicRepository(AppGlobals.sApplication) }
 
     val searchContent by lazy { MutableLiveData<String>() }
 
@@ -42,10 +45,10 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     var isFirst = true
 
     val rootMediaId: LiveData<String> by lazy {
-        Transformations.map(musicServiceConnectionL.get().isConnected) { isConnected ->
+        Transformations.map(musicServiceConnectionL.isConnected) { isConnected ->
             if (isConnected) {
                 LogTimer.LogE(this@HomeViewModel, "isConnected")
-                musicServiceConnectionL.get().rootMediaId
+                musicServiceConnectionL.rootMediaId
             } else {
                 null
             }
@@ -55,7 +58,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
 
-    private val transportControls by lazy { musicServiceConnectionL.get().transportControls }
+    private val transportControls by lazy { musicServiceConnectionL.transportControls }
 
     private val subscriptionCallback by lazy {
         object : MediaBrowserCompat.SubscriptionCallback() {
@@ -67,9 +70,9 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     fun mediaItemClicked(clickedItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
         clickedItem.mediaId?.let {
-            val nowPlaying = musicServiceConnectionL.get().nowPlaying.value
-            val transportControls = musicServiceConnectionL.get().transportControls
-            val isPrepared = musicServiceConnectionL.get().playbackState.value?.isPrepared ?: false
+            val nowPlaying = musicServiceConnectionL.nowPlaying.value
+            val transportControls = musicServiceConnectionL.transportControls
+            val isPrepared = musicServiceConnectionL.playbackState.value?.isPrepared ?: false
             if (isPrepared && it == nowPlaying?.id) {
                 //当前正在播放 or 准备播放
             } else {
@@ -83,11 +86,11 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
     }
 
     override fun start() {
-        musicServiceConnectionL.get().startConnect()
+        musicServiceConnectionL.startConnect()
     }
 
     fun subscribeByMediaID(mediaId: String) {
-        musicServiceConnectionL.get().run {
+        musicServiceConnectionL.run {
             LogTimer.LogE(this@HomeViewModel, "subscribeByMediaID")
             subscribe(mediaId, subscriptionCallback)
             playbackState.observeForever(playbackStateObserver)
@@ -96,7 +99,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
 
     private val playbackStateObserver by lazy {
         Observer<PlaybackStateCompat> {
-            currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.get().nowPlaying.value?.id ?: "" else "")
+            currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.nowPlaying.value?.id ?: "" else "")
         }
     }
 
@@ -106,7 +109,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             return
         }
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.get().searchKeyByTitle(searchContent.value!!)
+            musicRepositoryL.searchKeyByTitle(searchContent.value!!)
                 .onEach {
                     result.postValue(it)
                 }
@@ -119,7 +122,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
         }?.run {
             flowAsyncWorkOnViewModelScopeLaunch {
                 val detailUrl = get(position).detailUrl
-                musicRepositoryL.get().getPlayUrl(detailUrl)
+                musicRepositoryL.getPlayUrl(detailUrl)
                     .onEach {
                         val extras = Bundle().apply {
                             putString(MEDIA_ID_KEY, it.id.toString())
@@ -129,7 +132,7 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
                             putString(MEDIA_URL_KEY, it.url)
                         }
                         transportControls.prepareFromUri(it.url.toUri(), extras)
-                        musicRepositoryL.get().addToPlayList(it).collect()
+                        musicRepositoryL.addToPlayList(it).collect()
                     }
             }
         }
@@ -143,12 +146,12 @@ class HomeViewModel @Inject constructor(private val musicRepositoryL: Lazy<Music
             return
         }
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.get().deledeFromId(id)
+            musicRepositoryL.deledeFromId(id)
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnectionL.get().playbackState.removeObserver(playbackStateObserver)
+        musicServiceConnectionL.playbackState.removeObserver(playbackStateObserver)
     }
 }

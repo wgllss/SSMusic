@@ -4,47 +4,43 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.wgllss.ssmusic.features_system.app.AppViewModel
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
 import com.wgllss.ssmusic.features_system.music.MusicFactory
-import dagger.Lazy
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
-@AndroidEntryPoint
 class MusicService : MediaBrowserServiceCompat() {
 
-    @Inject
-    lateinit var musicFactory: Lazy<MusicFactory>
+    private val musicFactory by lazy { MusicFactory(this, AppViewModel(this.application)) }
 
     override fun onCreate() {
         super.onCreate()
-        musicFactory.get().onCreate(this)
-        sessionToken = musicFactory.get().mediaSession.sessionToken
+        musicFactory.onCreate(this)
+        sessionToken = musicFactory.mediaSession.sessionToken
 
     }
 
     override fun onStart(intent: Intent?, startId: Int) {
-        musicFactory.get().onStart()
+        musicFactory.onStart()
         super.onStart(intent, startId)
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        musicFactory?.get()?.onStop()
+        musicFactory?.onStop()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        musicFactory?.get()?.onDestory()
+        musicFactory?.onDestory()
     }
 
     override fun onGetRoot(clientPackageName: String, clientUid: Int, rootHints: Bundle?): BrowserRoot? {
-        musicFactory?.get()?.onGetRoot()
+        musicFactory?.onGetRoot()
         return BrowserRoot(MEDIA_ID_ROOT, null)
     }
 
     override fun onLoadChildren(parentId: String, result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         result.detach()
-        musicFactory?.get()?.onLoadChildren(parentId, result)
+        musicFactory?.onLoadChildren(parentId, result)
     }
 }

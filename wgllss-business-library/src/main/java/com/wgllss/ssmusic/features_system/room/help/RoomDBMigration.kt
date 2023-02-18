@@ -1,9 +1,12 @@
 package com.wgllss.ssmusic.features_system.room.help
 
 import androidx.room.migration.Migration
-import javax.inject.Inject
 
-class RoomDBMigration @Inject constructor() {
+class RoomDBMigration {
+
+    companion object {
+        val instance by lazy { RoomDBMigration() }
+    }
 
     fun createMigration(): Array<Migration> {
         val migrations = arrayListOf<Migration>()

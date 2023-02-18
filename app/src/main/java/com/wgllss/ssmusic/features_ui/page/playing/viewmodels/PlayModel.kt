@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
+import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_SONG
@@ -22,7 +23,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<MusicServiceConnection>) : BaseViewModel() {
+class PlayModel @Inject constructor() : BaseViewModel() {
+    private val musicServiceConnectionL by lazy { MusicServiceConnection(AppGlobals.sApplication) }
+
+
     var isPlaying: Boolean = false
     val nowPlaying by lazy { MutableLiveData<MediaMetadataCompat>() }
     val playbackState by lazy { MutableLiveData<PlaybackStateCompat>() }
@@ -33,7 +37,7 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
 
     override fun start() {
         currentPlayMode.postValue(MMKVHelp.getPlayMode())
-        musicServiceConnectionL.get().run {
+        musicServiceConnectionL.run {
             playbackState.observeForever(playbackStateObserver)
             nowPlaying.observeForever(mediaMetadataObserver)
         }
@@ -42,22 +46,22 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
 
     //从指定位置开始播放
     fun seek(pos: Long) {
-        musicServiceConnectionL.get().transportControls.seekTo(pos)
+        musicServiceConnectionL.transportControls.seekTo(pos)
     }
 
     val onPlay = View.OnClickListener {//true 暂停 false 继续播放
         isPlaying = !it.isSelected
-        musicServiceConnectionL.get().transportControls.run {
+        musicServiceConnectionL.transportControls.run {
             if (it.isSelected) pause() else play()
         }
     }
 
     val onPlayNext = View.OnClickListener {
-        musicServiceConnectionL.get().transportControls.skipToNext()
+        musicServiceConnectionL.transportControls.skipToNext()
     }
 
     val onPlayPrevious = View.OnClickListener {
-        musicServiceConnectionL.get().transportControls.skipToPrevious()
+        musicServiceConnectionL.transportControls.skipToPrevious()
     }
 
     val switchMode = View.OnClickListener {
@@ -108,8 +112,8 @@ class PlayModel @Inject constructor(private val musicServiceConnectionL: Lazy<Mu
 
     override fun onCleared() {
         super.onCleared()
-        musicServiceConnectionL.get().playbackState.removeObserver(playbackStateObserver)
-        musicServiceConnectionL.get().nowPlaying.removeObserver(mediaMetadataObserver)
+        musicServiceConnectionL.playbackState.removeObserver(playbackStateObserver)
+        musicServiceConnectionL.nowPlaying.removeObserver(mediaMetadataObserver)
         updatePosition = false
     }
 }
