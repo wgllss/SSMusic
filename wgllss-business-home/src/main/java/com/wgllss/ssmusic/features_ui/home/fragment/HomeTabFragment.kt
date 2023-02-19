@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.wgllss.core.adapter.ViewPage2ChildFragmentAdapter
+import com.wgllss.core.fragment.BaseViewModelClassFragment
 import com.wgllss.core.fragment.BaseViewModelFragment
 import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.units.LogTimer
@@ -19,7 +20,7 @@ import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
 
 
-class HomeTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
+class HomeTabFragment : BaseViewModelClassFragment<HomeViewModel>(0) {
 
     private lateinit var childAdapter: ViewPage2ChildFragmentAdapter
     private lateinit var homeTabLayout: TabLayout

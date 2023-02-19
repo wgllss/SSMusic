@@ -36,10 +36,10 @@ class HomeViewModel2 : BaseViewModel() {
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
     val currentMediaID by lazy { MutableLiveData("") }
-    val mCurrentFragmentTAG by lazy { StringBuilder() }
+//    val mCurrentFragmentTAG by lazy { StringBuilder() }
 
-    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
-    var isFirst = true
+//    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
+//    var isFirst = true
 
     val rootMediaId: LiveData<String> by lazy {
         Transformations.map(musicServiceConnectionL.isConnected) { isConnected ->
@@ -78,12 +78,12 @@ class HomeViewModel2 : BaseViewModel() {
         }
     }
 
-    fun lazyTabView() {
-        lazyTabViewPager2.value = true
-    }
+//    fun lazyTabView() {
+//        lazyTabViewPager2.value = true
+//    }
 
     override fun start() {
-        musicServiceConnectionL.startConnect()
+//        musicServiceConnectionL.startConnect()
     }
 
     fun subscribeByMediaID(mediaId: String) {

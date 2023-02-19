@@ -6,9 +6,9 @@ import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 
 class SettingViewModel : BaseViewModel() {
 
-    val isOpenLockerUI by lazy { MutableLiveData<Boolean>() }
+    private val isOpenLockerUI by lazy { MutableLiveData<Boolean>() }
 
-    val isNotificationOpen by lazy { MutableLiveData<Boolean>() }
+    private val isNotificationOpen by lazy { MutableLiveData<Boolean>() }
 
     override fun start() {
         isOpenLockerUI.postValue(MMKVHelp.isOpenLockerUI())

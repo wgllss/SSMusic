@@ -14,7 +14,6 @@ import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-//@FragmentDestination(pageUrl = "fmt_search", label = "搜索", iconId = R.drawable.ic_dashboard_black_24dp)
 @AndroidEntryPoint
 class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, FragmentSearchBinding>(R.layout.fragment_search) {
 

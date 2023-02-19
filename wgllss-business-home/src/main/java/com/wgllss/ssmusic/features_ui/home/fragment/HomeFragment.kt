@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.wgllss.core.ex.getIntToDip
+import com.wgllss.core.fragment.BaseViewModelClassFragment
 import com.wgllss.core.fragment.BaseViewModelFragment
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
@@ -27,7 +28,7 @@ import com.wgllss.ssmusic.features_ui.home.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
 
-class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
+class HomeFragment : BaseViewModelClassFragment<HomeViewModel>(0) {
 
     var title: String = ""
     private var key: String = ""

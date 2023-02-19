@@ -37,6 +37,10 @@
                 RuntimeVisibleTypeAnnotations,
                 Signature # 避免混淆泛型
 
+-keep class com.wgllss.plugin.library.** { *; }
+-keep class com.wgllss.dynamic.sample.** { *; }
+-keep class com.wgllss.music.datasourcelibrary.** { *; }
+
 # Fragment
 -keep class * extends androidx.fragment.app.Fragment{}
 
@@ -116,6 +120,22 @@
 # Databinding
 -dontwarn android.databinding.**
 -keep class android.databinding.** { *; }
+
+# kotlin 相关
+-dontwarn kotlin.**
+-keep class kotlin.** { *; }
+-keep interface kotlin.** { *; }
+#-keepclassmembers class kotlin.Metadata {
+#    public <methods>;
+#}
+#-keepclasseswithmembers @kotlin.Metadata class * { *; }
+#-keepclassmembers class **.WhenMappings {
+#    <fields>;
+#}
+#-assumenosideeffects class kotlin.jvm.internal.Intrinsics {
+#    static void checkParameterIsNotNull(java.lang.Object, java.lang.String);
+#}
+
 ################ 第三方库中的混淆规则start ##############################
 # Glide混淆
 #-keep public class * implements com.bumptech.glide.module.GlideModule
