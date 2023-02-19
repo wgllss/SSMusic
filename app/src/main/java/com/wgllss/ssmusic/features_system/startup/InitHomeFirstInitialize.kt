@@ -16,7 +16,6 @@ class InitHomeFirstInitialize : Initializer<Unit> {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 HomePluginHelp(SampleHomeDownLoadFace()).initDynamicPlugin(activity)
-                MMKV.initialize(activity)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
