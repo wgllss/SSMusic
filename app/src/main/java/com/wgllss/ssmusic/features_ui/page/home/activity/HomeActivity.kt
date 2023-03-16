@@ -56,7 +56,6 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
             homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) ?: HomeTabFragment()
             setCurrentFragment(homeFragment)
         }
-        viewModel.lazyTabView()
         LogTimer.LogE(this@HomeActivity, "initControl after")
     }
 
@@ -66,7 +65,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
-
+        viewModel.lazyTabView()
         val navigationView = HomeContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
         addContentView(navigationView, navigationView.layoutParams)
         initNavigation(navigationView)
