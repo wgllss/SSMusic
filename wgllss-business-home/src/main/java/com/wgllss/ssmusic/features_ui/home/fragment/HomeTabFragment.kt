@@ -43,16 +43,19 @@ class HomeTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
+        childAdapter.notifyData(getList())
+        mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+            val textView = TextView(requireContext())
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+            textView.setTextColor(ThemeUtils.getColorOnPrimary(requireContext()))
+            tab.customView = textView
+            textView.text = (childAdapter.list[position] as HomeFragment).title
+        }
+//            .apply(TabLayoutMediator::attach)
+        viewPager2.adapter = childAdapter
         viewModel.lazyTabViewPager2.observe(viewLifecycleOwner) {
-            childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
-            viewPager2.adapter = childAdapter
-            mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
-                val textView = TextView(requireContext())
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                textView.setTextColor(ThemeUtils.getColorOnPrimary(requireContext()))
-                tab.customView = textView
-                textView.text = (childAdapter.list[position] as HomeFragment).title
-            }.apply(TabLayoutMediator::attach)
+            mTabLayoutMediator?.attach()
             homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     tab?.customView?.takeIf {
@@ -79,7 +82,6 @@ class HomeTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
                 override fun onTabReselected(tab: TabLayout.Tab) {
                 }
             })
-            childAdapter.notifyData(getList())
         }
         LogTimer.LogE(this, "onActivityCreated")
     }
