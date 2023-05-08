@@ -43,7 +43,8 @@ object GenerateHomeLayout {
     fun syncCreateHomeActivityLayout(context: Context, res: Resources): View {
         val activityLayout = FragmentContainerView(context).apply {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-            lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
+//            lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
+            setPadding(0, 0, 0, res.getDimension(R.dimen.navigation_height).toInt())
             layoutParams = lp
             setBackgroundColor(ThemeUtils.getAndroidColorBackground(context))
             id = R.id.nav_host_fragment_activity_main
@@ -59,6 +60,7 @@ object GenerateHomeLayout {
             layoutParams = lp
             id = R.id.buttom_navigation
             labelVisibilityMode = NavigationBarView.LABEL_VISIBILITY_LABELED
+            setBackgroundColor(Color.TRANSPARENT)
             menu.apply {
                 clear()
                 add(0, R.id.fmt_a, 0, res.getString(R.string.title_home))//.setIcon(R.drawable.ic_home_black_24dp)
