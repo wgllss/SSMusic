@@ -53,7 +53,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         val contentLayout = HomeContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
         if (savedInstanceState == null) {
-            homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) ?: HomeTabFragment()
+            homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) //?: HomeTabFragment()
             setCurrentFragment(homeFragment)
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
@@ -65,6 +65,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
+        window.setBackgroundDrawable(null)//去掉主题背景颜色
         viewModel.lazyTabView()
         val navigationView = HomeContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
         addContentView(navigationView, navigationView.layoutParams)
@@ -106,7 +107,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 //            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
             R.id.fmt_a -> {
                 if (!this::homeFragment.isInitialized || homeFragment == null) {
-                    homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment)?:HomeTabFragment()
+                    homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) ?: HomeTabFragment()
                 }
                 setCurrentFragment(homeFragment)
             }
