@@ -57,6 +57,7 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
             setCurrentFragment(homeFragment)
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
+        window.setBackgroundDrawable(null)//去掉主题背景颜色
     }
 
     override fun onBackPressed() {
@@ -65,7 +66,6 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
-        window.setBackgroundDrawable(null)//去掉主题背景颜色
         viewModel.lazyTabView()
         val navigationView = HomeContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
         addContentView(navigationView, navigationView.layoutParams)
