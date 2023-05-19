@@ -82,6 +82,12 @@ class HomeTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
                 override fun onTabReselected(tab: TabLayout.Tab) {
                 }
             })
+            viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    if (position > 0 && viewPager2.offscreenPageLimit != childAdapter.itemCount)
+                        viewPager2.offscreenPageLimit = childAdapter.itemCount
+                }
+            })
         }
         LogTimer.LogE(this, "onActivityCreated")
     }

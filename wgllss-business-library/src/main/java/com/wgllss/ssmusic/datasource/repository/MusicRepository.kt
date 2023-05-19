@@ -46,7 +46,7 @@ class MusicRepository private constructor(private val context: Context) {
                 val content = links.html()//树深时见鹿dear《<em>三国</em><em>杀</em>》[FLAC/MP3-320K]
 //                WLog.e(this@MusicRepository, "content:${content}")
                 content?.takeIf { c ->
-                    c.isNotEmpty() && !c.contains("专辑")
+                    c.isNotEmpty() && !c.contains("专辑") && !c.contains("<span style=")
                 }?.let {
                     try {
                         val startIndex = content.indexOf("《")
@@ -70,26 +70,27 @@ class MusicRepository private constructor(private val context: Context) {
                                 .replace("</em", "")
                             list.add(MusicItemBean(author, musicName, this, samplingRate))
                         } else {
-
                             val startIndex = content.indexOf("<")
                             val endIndex = content.lastIndexOf(">")
-                            var author: String = content.substring(0, startIndex)
-                            author = author.replace("&amp;", "、")
-                                .replace("<em>", "")
-                                .replace("</em>", "")
-                                .replace("em>", "")
-                                .replace("</em", "")
-                            var samplingRate = if (content.indexOf("[") != -1) {
-                                content.substring(content.indexOf("[") + 1, content.length - 1)
-                            } else {
-                                content.substring(endIndex + 1, content.length - 1)
+                            if (startIndex != -1 && endIndex != -1) {
+                                var author: String = content.substring(0, startIndex)
+                                author = author.replace("&amp;", "、")
+                                    .replace("<em>", "")
+                                    .replace("</em>", "")
+                                    .replace("em>", "")
+                                    .replace("</em", "")
+                                var samplingRate = if (content.indexOf("[") != -1) {
+                                    content.substring(content.indexOf("[") + 1, content.length - 1)
+                                } else {
+                                    content.substring(endIndex + 1, content.length - 1)
+                                }
+                                var musicName = content.substring(startIndex + 1, endIndex)
+                                musicName = musicName.replace("<em>", "")
+                                    .replace("</em>", "")
+                                    .replace("em>", "")
+                                    .replace("</em", "")
+                                list.add(MusicItemBean(author, musicName, this, samplingRate))
                             }
-                            var musicName = content.substring(startIndex + 1, endIndex)
-                            musicName = musicName.replace("<em>", "")
-                                .replace("</em>", "")
-                                .replace("em>", "")
-                                .replace("</em", "")
-                            list.add(MusicItemBean(author, musicName, this, samplingRate))
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
