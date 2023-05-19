@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
-    private lateinit var homeFragment: Fragment
+    private val homeFragment by lazy { HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) }
 
     @Inject
     lateinit var historyFragmentL: Lazy<HistoryFragment>
@@ -36,16 +36,15 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     @Inject
     lateinit var settingFragmentL: Lazy<SettingFragment>
 
-//    private lateinit var navigationView: BottomNavigationView
+    private lateinit var navigationView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
         super.onCreate(savedInstanceState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        LogTimer.LogE(this, "onRestoreInstanceState ${viewModel.mCurrentFragmentTAG.toString()}")
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(Bundle())
     }
 
     override fun initControl(savedInstanceState: Bundle?) {
@@ -53,8 +52,10 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         val contentLayout = HomeContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
         if (savedInstanceState == null) {
-            homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) //?: HomeTabFragment()
             setCurrentFragment(homeFragment)
+        } else {
+            setNavigation()
+            onNavBarItemSelected(navigationView.menu.getItem(getItemId()).itemId)
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
         window.setBackgroundDrawable(null)//去掉主题背景颜色
@@ -64,10 +65,18 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         exitApp()
     }
 
+    private fun setNavigation() {
+        if (!this::navigationView.isInitialized)
+            navigationView = HomeContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
+    }
+
     override fun lazyInitValue() {
         LogTimer.LogE(this, "lazyInitValue")
-        viewModel.lazyTabView()
-        val navigationView = HomeContains.getViewByKey(this, LaunchInflateKey.home_navigation)!! as BottomNavigationView
+        if (viewModel.isFirst) {
+            viewModel.lazyTabView()
+            viewModel.isFirst = false
+            setNavigation()
+        }
         addContentView(navigationView, navigationView.layoutParams)
         initNavigation(navigationView)
         viewModel.start()
@@ -97,18 +106,15 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     private fun getItemId() = when (viewModel.mCurrentFragmentTAG.toString()) {
         "HomeTabFragment" -> 0
-        SearchFragment::class.java.simpleName -> 1
-        SettingFragment::class.java.simpleName -> 2
+        HistoryFragment::class.java.simpleName -> 1
+        SearchFragment::class.java.simpleName -> 2
+        SettingFragment::class.java.simpleName -> 3
         else -> 0
     }
 
     private fun onNavBarItemSelected(itemId: Int): Boolean {
         when (itemId) {
-//            R.id.fmt_a -> setCurrentFragment(homeFragmentL.get())
             R.id.fmt_a -> {
-                if (!this::homeFragment.isInitialized || homeFragment == null) {
-                    homeFragment = HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) ?: HomeTabFragment()
-                }
                 setCurrentFragment(homeFragment)
             }
             R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
