@@ -50,12 +50,6 @@
             android:exported="false"
             android:theme="@style/Theme.SSMusic" />
 
-<!--        <activity-->
-<!--            android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.NotificationTargetActivity"-->
-<!--            android:exported="false"-->
-<!--            android:launchMode="singleTask"-->
-<!--            android:theme="@style/Transparent" />-->
-
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -67,45 +61,6 @@
             android:theme="@style/Transparent"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
 
-<!--        <provider-->
-<!--            android:name="androidx.startup.InitializationProvider"-->
-<!--            android:authorities="${applicationId}.androidx-startup"-->
-<!--            android:exported="false">-->
-<!--            &lt;!&ndash;            <meta-data&ndash;&gt;-->
-<!--            &lt;!&ndash;                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"&ndash;&gt;-->
-<!--            &lt;!&ndash;                android:value="androidx.startup" />&ndash;&gt;-->
-<!--            <meta-data-->
-<!--                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeFirstInitialize"-->
-<!--                android:value="androidx.startup" />-->
-<!--            &lt;!&ndash;            <meta-data&ndash;&gt;-->
-<!--            &lt;!&ndash;                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"&ndash;&gt;-->
-<!--            &lt;!&ndash;                android:value="androidx.startup" />&ndash;&gt;-->
-<!--        </provider>-->
-
-<!--        <service-->
-<!--            android:name="com.wgllss.ssmusic.features_system.services.MusicService"-->
-<!--            android:enabled="true"-->
-<!--            android:exported="true"-->
-<!--            tools:ignore="ExportedService">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.media.browse.MediaBrowserService" />-->
-<!--            </intent-filter>-->
-<!--        </service>-->
-
-<!--        <receiver-->
-<!--            android:name="androidx.media.session.MediaButtonReceiver"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MEDIA_BUTTON" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
-<!--        <meta-data-->
-<!--            android:name="UMENG_APPKEY"-->
-<!--            android:value="634d040505844627b5672f2f" />-->
-<!--        <meta-data-->
-<!--            android:name="UMENG_CHANNEL"-->
-<!--            android:value="Umeng" />-->
     </application>
 
 </manifest>

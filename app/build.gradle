@@ -28,6 +28,29 @@ android {
 //        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        def password = "ss_music"
+        def alias = "ss_music"
+        def filePath = "./sign/ss_music.jks"
+
+        debug {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(password)
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+        release {
+            keyAlias alias
+            keyPassword password
+            storeFile file(filePath)
+            storePassword(password)
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
     buildTypes {
         debug {
             // 假如打包后运行闪退，可以在调试模式下打开混淆查看日志找出混淆问题
@@ -35,6 +58,7 @@ android {
             shrinkResources true // 启动资源压缩
             zipAlignEnabled true // 开启zipalign优化
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
 
         release {
@@ -42,6 +66,13 @@ android {
             shrinkResources true // 启动资源压缩
             zipAlignEnabled true // 开启zipalign优化
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        applicationVariants.all {
+            variant ->
+                variant.outputs.all {
+                    outputFileName = "ss_music_${variant.buildType.name}.apk"
+                }
         }
     }
     compileOptions {
