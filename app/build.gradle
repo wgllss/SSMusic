@@ -91,6 +91,11 @@ android {
     kapt {
         generateStubs = true
     }
+
+    lintOptions {
+        abortOnError true
+        checkReleaseBuilds false
+    }
 }
 
 repositories {

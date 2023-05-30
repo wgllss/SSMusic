@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
-    <uses-permission android:name="android.permission.GET_TOP" />、
+    <uses-permission android:name="android.permission.GET_TOP" />
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -37,15 +37,9 @@
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false">
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.InitHomeInitialize"-->
-            <!--                android:value="androidx.startup" />-->
             <meta-data
                 android:name="com.wgllss.ssmusic.features_system.startup.InitHomeFirstInitialize"
                 android:value="androidx.startup" />
-            <!--            <meta-data-->
-            <!--                android:name="com.wgllss.ssmusic.features_system.startup.RegisterActivityLifecycleInitializer"-->
-            <!--                android:value="androidx.startup" />-->
         </provider>
 
         <service
