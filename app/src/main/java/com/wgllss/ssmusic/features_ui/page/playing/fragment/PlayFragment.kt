@@ -10,7 +10,6 @@ import android.support.v4.media.session.PlaybackStateCompat.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.LinearInterpolator
-import com.wgllss.core.ex.finishActivity
 import android.widget.ImageView
 import android.widget.SeekBar
 import androidx.palette.graphics.Palette
@@ -19,13 +18,16 @@ import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wgllss.core.adapter.BasePagerAdapter
 import com.wgllss.core.ex.dpToPx
+import com.wgllss.core.ex.finishActivity
 import com.wgllss.core.ex.loadUrl
 import com.wgllss.core.fragment.BaseMVVMFragment
+import com.wgllss.dynamic.lrclibrary.LrcView
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
+import com.wgllss.ssmusic.features_ui.page.playing.TestLrc
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import javax.inject.Inject
 
@@ -39,6 +41,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
     lateinit var iv_center: ImageView
     lateinit var iv_point: View
     lateinit var cd_layout: View
+    lateinit var lrcView: LrcView
 
     override fun activitySameViewModel() = true
 
@@ -64,6 +67,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
                     viewModel.seek(seekBar.progress.toLong())
+                    lrcView.updateTime(seekBar.progress.toLong())
                 }
             })
         binding.imgBack.setOnClickListener {
@@ -74,6 +78,11 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             binding.materMusicName.text = it!!.title
+            it?.title?.takeIf {
+                "可能" == it
+            }?.let {
+                lrcView.loadLrc(TestLrc.lrcStr)
+            }
             iv_center.loadUrl(it.albumArtUri)
             Glide.with(this).asBitmap()
                 .load(it.albumArtUri)
@@ -84,6 +93,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                                 p?.lightMutedSwatch?.let { s ->
                                     binding.layoutPlayBg.setBackgroundColor(s.rgb)
                                     binding.materMusicName.setTextColor(s.titleTextColor)
+                                    lrcView?.setNormalColor(s.bodyTextColor)
                                     binding.tvTotalTime.setTextColor(s.bodyTextColor)
                                     binding.tvCurrentTime.setTextColor(s.bodyTextColor)
                                 }
@@ -122,6 +132,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             }
         }
         viewModel.mediaPosition.observe(viewLifecycleOwner) {
+            lrcView.updateTime(it)
             binding.sbProgress.progress = it.toInt()
             binding.tvCurrentTime.text = timestampToMSS(requireContext(), it)
         }
@@ -137,9 +148,21 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         cd_layout = coverView.findViewById(R.id.cd_layout)
         iv_center = coverView.findViewById(R.id.iv_center)
         iv_point.rotation = -40f
+        val lrcLayout: View = LayoutInflater.from(context).inflate(R.layout.lrclayout, null)
+        lrcView = lrcLayout.findViewById(R.id.lrc_view)
         views.add(coverView)
+        views.add(lrcLayout)
         val pagerAdapter = BasePagerAdapter(views)
         binding.viewPager.adapter = pagerAdapter
+
+
+        // 加载歌词文本
+        lrcView.setDraggable(true, object : LrcView.OnPlayClickListener {
+            override fun onPlayClick(view: LrcView?, time: Long): Boolean {
+                viewModel.seek(time)
+                return true
+            }
+        })
     }
 
     /**

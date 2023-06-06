@@ -111,6 +111,7 @@ dependencies {
     implementation project(path: ':wgllss-business-home')
     implementation project(path: ':wgllss-business-library')
     implementation project(path: ':wgllss-music-skin-resource')
+    implementation project(path: ':LRCLIbrary')
 
     implementation "androidx.core:core-ktx:$rootProject.ext.kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlin_version"

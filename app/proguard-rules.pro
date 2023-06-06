@@ -116,6 +116,7 @@
 # Databinding
 -dontwarn android.databinding.**
 -keep class android.databinding.** { *; }
+-keep class com.wgllss.dynamic.lrclibrary.** { *; }
 ################ 第三方库中的混淆规则start ##############################
 # Glide混淆
 #-keep public class * implements com.bumptech.glide.module.GlideModule
