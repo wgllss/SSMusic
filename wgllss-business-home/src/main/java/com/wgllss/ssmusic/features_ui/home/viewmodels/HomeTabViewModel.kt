@@ -24,7 +24,7 @@ class HomeTabViewModel : BaseViewModel() {
     val liveDataLoadSuccessCount by lazy { MutableLiveData(0) }
 
     var isClick = false
-
+    var isLoadOffine = false
     val result by lazy { mutableMapOf<String, MutableLiveData<MutableList<MusicItemBean>>>() }
 
     override fun start() {
@@ -39,14 +39,16 @@ class HomeTabViewModel : BaseViewModel() {
         flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.homeMusic(key)
                 .onEach {
-                    if (result[key] == null) {
-                        WLog.e(this@HomeTabViewModel, key)
-                        val list = MutableLiveData<MutableList<MusicItemBean>>()
-                        list.postValue(it)
-                        result[key] = list
-                    } else {
-                        result[key]?.postValue(it)
-                    }
+                    if (!isLoadOffine)
+                        if (result[key] == null) {
+                            WLog.e(this@HomeTabViewModel, key)
+                            val list = MutableLiveData<MutableList<MusicItemBean>>()
+                            list.postValue(it)
+                            result[key] = list
+                        } else {
+                            result[key]?.postValue(it)
+                        }
+                    else isLoadOffine = false
                     var c = liveDataLoadSuccessCount.value?.plus(1)
                     liveDataLoadSuccessCount.postValue(c)
                 }

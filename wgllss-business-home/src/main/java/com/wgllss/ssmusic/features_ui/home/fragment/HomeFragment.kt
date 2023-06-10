@@ -130,18 +130,24 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel>(0) {
             WLog.e(this, " json json 11")
             musicAdapter = rvPlList.adapter as HomeMusicAdapter
         }
+        musicAdapter?.itemCount?.takeIf {
+            it > 0
+        }?.let {
+            homeTabViewModel.value.isLoadOffine = true
+        }
         homeTabViewModel.value.getData(key)
     }
 
     override fun initObserve() {
         super.initObserve()
         homeTabViewModel.value?.run {
-            showUIDialog.observe(viewLifecycleOwner) { it ->
-                if (!isClick) {
-                    swipeRefreshLayout.isRefreshing = it.isShow
-                } else {
-                    if (it.isShow) showloading(it.msg) else hideLoading()
-                }
+            showUIDialog.observe(viewLifecycleOwner) {
+                if (!isLoadOffine)
+                    if (!isClick) {
+                        swipeRefreshLayout.isRefreshing = it.isShow
+                    } else {
+                        if (it.isShow) showloading(it.msg) else hideLoading()
+                    }
             }
             errorMsgLiveData.observe(viewLifecycleOwner) {
                 onToast(it)
