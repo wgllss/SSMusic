@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.wgllss.core.ex.launchActivity
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.units.LogTimer
@@ -62,6 +64,20 @@ class HistoryFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, F
                         viewModel.mediaItemClicked(this, this.description.extras)
                     }
                     activity?.let { it.launchActivity(Intent(it, PlayActivity::class.java)) }
+                }
+            })
+            rvPlList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    when (newState) {
+                        //滑动停止
+                        RecyclerView.SCROLL_STATE_IDLE -> activity?.let {
+                            Glide.with(it).resumeRequests()
+                        }
+                        else -> activity?.let {
+                            Glide.with(it).pauseRequests()
+                        }
+                    }
                 }
             })
         }
