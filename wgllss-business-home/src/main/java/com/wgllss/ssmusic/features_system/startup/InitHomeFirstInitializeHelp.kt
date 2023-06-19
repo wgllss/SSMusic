@@ -5,11 +5,18 @@ import android.content.MutableContextWrapper
 import com.tencent.mmkv.MMKV
 import com.wgllss.core.ex.toTheme
 import com.wgllss.core.units.LogTimer
+import com.wgllss.ssmusic.data.DataContains
+import com.wgllss.ssmusic.datasource.repository.KRepository
+import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import com.wgllss.ssmusic.features_ui.home.fragment.HomeTabFragment
+import com.wgllss.ssmusic.features_ui.home.fragment.KHomeTabFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.lang.StringBuilder
 
 object InitHomeFirstInitializeHelp {
 
@@ -30,7 +37,7 @@ object InitHomeFirstInitializeHelp {
                 HomeContains.putViewByKey(LaunchInflateKey.home_navigation, GenerateHomeLayout.syncCreateHomeNavigationLayout(context, res))
             }
             async(Dispatchers.IO) {
-                HomeContains.putFragmentByKey(LaunchInflateKey.home_tab_fragment, HomeTabFragment())
+                HomeContains.putFragmentByKey(LaunchInflateKey.home_tab_fragment, KHomeTabFragment())
                 LogTimer.LogE(this@InitHomeFirstInitializeHelp, "LayoutContains fragment")
             }
             async(Dispatchers.IO) {
@@ -38,6 +45,28 @@ object InitHomeFirstInitializeHelp {
             }
             async(Dispatchers.IO) {
                 HomeContains.putViewByKey(LaunchInflateKey.home_fragment, GenerateHomeLayout.syncCreateHomeFragmentLayout(context, res))
+            }
+
+            async(Dispatchers.IO) {
+                KRepository.getInstance(activity).homeKMusic()
+                    .onEach {
+                        DataContains.list.postValue(it)
+                    }.collect()
+            }
+            async(Dispatchers.IO) {
+                val am = activity.assets
+                try {
+                    val resJs = am.list("js")
+                    val strOfflineResources = StringBuilder()
+                    if (resJs != null && resJs.isNotEmpty()) {
+                        for (i in resJs.indices) {
+                            strOfflineResources.append(resJs[i])
+                        }
+                    }
+                    LrcHelp.saveJsPath(strOfflineResources.toString())
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

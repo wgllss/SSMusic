@@ -23,8 +23,8 @@ import retrofit2.http.Url
  */
 interface MusiceApi {
 
-    @GET("https://www.hifini.com/index{tab_item}.htm")
-    suspend fun homeMusic(@Path("tab_item") tab_item: String = ""): String
+//    @GET("https://www.hifini.com/index{tab_item}.htm")
+//    suspend fun homeMusic(@Path("tab_item") tab_item: String = ""): String
 
 
     @GET("https://www.hifini.com/{tab_item}.htm")

@@ -25,8 +25,10 @@ import com.wgllss.dynamic.lrclibrary.LrcView
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
+import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
+import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import com.wgllss.ssmusic.features_ui.page.playing.TestLrc
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import javax.inject.Inject
@@ -77,12 +79,14 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         initCDAnimat()
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
-            binding.materMusicName.text = it!!.title
-            it?.title?.takeIf {
-                "可能" == it
-            }?.let {
-                lrcView.loadLrc(TestLrc.lrcStr)
+            it.id?.let { id ->
+                LrcHelp.getLrc(id)?.takeIf { l ->
+                    l.isNotEmpty()
+                }?.let { lrc ->
+                    lrcView.loadLrc(lrc)
+                }
             }
+            binding.materMusicName.text = it!!.title
             iv_center.loadUrl(it.albumArtUri)
             Glide.with(this).asBitmap()
                 .load(it.albumArtUri)

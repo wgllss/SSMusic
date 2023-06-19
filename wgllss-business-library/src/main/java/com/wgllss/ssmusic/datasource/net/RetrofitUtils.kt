@@ -5,6 +5,7 @@ import okhttp3.Cache
 import okhttp3.OkHttpClient
 //import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
@@ -44,6 +45,7 @@ class RetrofitUtils private constructor(val context: Context) {
             return Retrofit.Builder()
                 .client(okHttpClient)
                 .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(base_url)
                 .build()
         }

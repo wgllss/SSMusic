@@ -25,10 +25,13 @@ import com.wgllss.core.widget.clearLongClickToast
 import com.wgllss.music.skin.R
 import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.units.WLog
+import com.wgllss.ssmusic.data.HomeItemBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.ex.initColors
+import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_ui.home.adapter.HomeMusicAdapter
+import com.wgllss.ssmusic.features_ui.home.adapter.KHomeAdapter
 
 object GenerateHomeLayout {
 
@@ -129,12 +132,12 @@ object GenerateHomeLayout {
             itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
             itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
             addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
-            val json = MMKVHelp.getHomeTab1Data()
-            json?.let {
-                val homeMusicAdapter = HomeMusicAdapter()
-                adapter = homeMusicAdapter
-                WLog.e(this@GenerateHomeLayout, " json json")
-                homeMusicAdapter.notifyData(Gson().fromJson(json, object : TypeToken<MutableList<MusicItemBean>>() {}.type))
+            val kHomeAdapter = KHomeAdapter()
+            adapter = kHomeAdapter
+            LrcHelp.getHomeData()?.takeIf {
+                it.isNotEmpty()
+            }?.let {
+                kHomeAdapter.notifyData(Gson().fromJson(it, object : TypeToken<MutableList<HomeItemBean>>() {}.type))
             }
         }
         swipeRefreshLayout.addView(homeFragmentView)
