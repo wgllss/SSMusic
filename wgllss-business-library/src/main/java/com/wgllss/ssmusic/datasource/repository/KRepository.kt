@@ -6,6 +6,7 @@ import android.webkit.*
 import com.google.gson.Gson
 import com.wgllss.ssmusic.data.HomeItemBean
 import com.wgllss.ssmusic.data.HomeLableBean
+import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.KMusicApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
@@ -65,7 +66,7 @@ class KRepository private constructor(private val context: Context) {
 //                    log("musicName ###### :$musicName")
                     val author = it.select(".m_cm_i1w_d1_a2_p2").first()?.html()
                     if (musicName != null && author != null) {
-                        listNew.add(MusicItemBean(author, musicName, url, "", img))
+                        listNew.add(MusicItemBean(author, musicName, url, "", img, dataSourceType = 1))
 //                        log("url:$url img:$img musicName:$musicName author:$author")
                     }
                 }
@@ -154,9 +155,9 @@ class KRepository private constructor(private val context: Context) {
     /**
      * 获取歌词
      */
-    suspend fun getMusicInfo(url: String): Flow<KMusicInfoBean> {
+    suspend fun getMusicInfo(musicItemBean: MusicItemBean): Flow<MusicBean> {
         val implWeb = ImplWebViewClient()
-        loadWebViewUrl(url, implWeb)
+        loadWebViewUrl(musicItemBean.detailUrl, implWeb)
         return flow {
             var musicFileUrl: String
             while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
@@ -180,8 +181,13 @@ class KRepository private constructor(private val context: Context) {
                     lrcStr = lrcStr.replace("\r", "")
                 }
             }
-            val kMusicInfoBean = KMusicInfoBean(musicFileUrl, lrcStr, sTdMusicUrl)
-            emit(kMusicInfoBean)
+            musicItemBean.run {
+                val musicBean = MusicBean(musicName, author, musicFileUrl, album_sizable_cover.ifEmpty { sTdMusicUrl }, dataSourceType, privilege, mvhash).apply {
+                    requestRealUrl = detailUrl
+                    musicLrcStr = lrcStr
+                }
+                emit(musicBean)
+            }
         }.catch { it.printStackTrace() }
             .flowOn(Dispatchers.IO)
     }

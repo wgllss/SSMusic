@@ -6,10 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.core.ex.flowAsyncWorkOnLaunch
+import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.RandomPosition
 import com.wgllss.ssmusic.datasource.repository.AppRepository
+import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
 import com.wgllss.ssmusic.features_system.room.table.MusicExtraTableBean
@@ -23,6 +26,7 @@ import kotlin.random.Random
 
 class AppViewModel private constructor(application: Application) : AndroidViewModel(application) {
     private val appRepository by lazy { AppRepository.getInstance(application) }
+    private val kRepository by lazy { KRepository.getInstance(application) }
 
     companion object {
 
@@ -116,22 +120,47 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
             } else
                 mapRuningRequest[id] = true
             viewModelScope.launch {
-                appRepository.getPlayUrl(id.toString(), url, title, author, pic)
-                    .onEach {
-                        if (currentMediaID == it.id) {
-                            metadataPrepareCompletion.postValue(it)
-                            WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
-                        }
-                        mapRuningRequest.remove(it.id)
-                    }
-                    .catch {
-                        mapRuningRequest.remove(id)
-                        it.printStackTrace()
-                    }.flowOn(Dispatchers.IO)
-                    .collect()
+                getPlaySwitch(this@run, position)
             }
         }
         getCacheURL(position)
+    }
+
+    private suspend fun getPlaySwitch(it: MusicTableBean, position: Int) {
+        if (it.dataSourceType == 0)
+            getPlayUrl(it, position)
+        else
+            getMusicInfo(it, position)
+    }
+
+    private suspend fun getMusicInfo(it: MusicTableBean, position: Int) {
+        it.run {
+            val musicItemBean = MusicItemBean(author, title, url, "", pic, mvhash, dataSourceType, privilege)
+            doFlow(it, position, kRepository.getMusicInfo(musicItemBean))
+        }
+    }
+
+    private suspend fun getPlayUrl(it: MusicTableBean, position: Int) {
+        it.run {
+            doFlow(it, position, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
+        }
+    }
+
+    private suspend fun doFlow(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
+        it.run {
+            flow.onEach {
+                if (currentMediaID == it.id) {
+                    metadataPrepareCompletion.postValue(it)
+                    WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
+                } else
+                    WLog.e(this@AppViewModel, "缓存了:${title}")
+                mapRuningRequest.remove(it.id)
+            }.catch {
+                mapRuningRequest.remove(id)
+                it.printStackTrace()
+            }.flowOn(Dispatchers.IO)
+                .collect()
+        }
     }
 
     /**
@@ -249,20 +278,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
             } else
                 mapRuningRequest[id] = true
             viewModelScope.launch {
-                appRepository.getPlayUrl(id.toString(), url, title, author, pic)
-                    .onEach {
-                        if (currentMediaID == it.id) {
-                            metadataPrepareCompletion.postValue(it)
-                            WLog.e(this@AppViewModel, "当前该播放 cache  position:$position  ${title}")
-                        } else
-                            WLog.e(this@AppViewModel, "缓存了:${title}")
-                        mapRuningRequest.remove(it.id)
-                    }
-                    .catch {
-                        mapRuningRequest.remove(id)
-                        it.printStackTrace()
-                    }.flowOn(Dispatchers.IO)
-                    .collect()
+                getPlaySwitch(this@run, position)
             }
         }
     }

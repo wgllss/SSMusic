@@ -13,6 +13,7 @@ data class MusicBean(
     val mvhash: String = ""
 ) {
     var requestRealUrl: String = ""
+    var musicLrcStr: String = ""
     inline val id: Long
         get() = UUIDHelp.getMusicUUID(title, author)
 }

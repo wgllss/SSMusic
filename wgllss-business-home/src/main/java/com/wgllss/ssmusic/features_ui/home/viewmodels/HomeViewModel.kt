@@ -13,10 +13,12 @@ import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
+import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_KEY
@@ -80,34 +82,31 @@ class HomeViewModel : BaseViewModel() {
 //        }
 //    }
 
-    fun getMusicInfo(kMusicItemBean: MusicItemBean) {
+    fun getMusicInfo(musicItemBean: MusicItemBean) {
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = kMusicItemBean.detailUrl.hashCode().toString()
-        if (nowPlaying?.id == id) {
+        val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
+        if (nowPlaying?.id?.toLong() == id) {
             nowPlay.postValue(true)
             return
         }
         flowAsyncWorkOnViewModelScopeLaunch {
-            kRepository.getMusicInfo(kMusicItemBean.detailUrl)
+            kRepository.getMusicInfo(musicItemBean)
                 .onEach {
                     logE("lrc-11111->${it.musicLrcStr}")
                     it.musicLrcStr?.takeIf {
                         it.isNotEmpty()
                     }?.let { lrc ->
-                        LrcHelp.savve(id, lrc)
+                        LrcHelp.savve(id.toString(), lrc)
                     }
-                    kMusicItemBean.run {
-                        transportControls.prepareFromUri(it.musicFileUrl.toUri(), Bundle().apply {
-                            putString(MEDIA_ID_KEY, id)
-                            putString(MEDIA_TITLE_KEY, musicName)
-                            putString(MEDIA_AUTHOR_KEY, author)
-                            putString(MEDIA_ARTNETWORK_URL_KEY, album_sizable_cover)
-                            putString(MEDIA_URL_KEY, it.musicFileUrl)
-                        })
-                        nowPlay.postValue(true)
-                        musicRepositoryL.addToPlayList(MusicBean(musicName, author, detailUrl, album_sizable_cover, dataSourceType, privilege, mvhash))
-                            .collect()
-                    }
+                    transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
+                        putString(MEDIA_ID_KEY, it.id.toString())
+                        putString(MEDIA_TITLE_KEY, it.title)
+                        putString(MEDIA_AUTHOR_KEY, it.author)
+                        putString(MEDIA_ARTNETWORK_URL_KEY, it.pic)
+                        putString(MEDIA_URL_KEY, it.url)
+                    })
+                    nowPlay.postValue(true)
+                    musicRepositoryL.addToPlayList(it).collect()
                 }
         }
     }
