@@ -13,7 +13,6 @@ import android.support.v4.media.session.PlaybackStateCompat
 import androidx.lifecycle.MutableLiveData
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
-import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection.MediaBrowserConnectionCallback
 import com.wgllss.ssmusic.features_system.services.MusicService

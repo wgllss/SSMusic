@@ -1,21 +1,19 @@
 package com.wgllss.ssmusic.features_system.app
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.core.ex.flowAsyncWorkOnLaunch
 import com.wgllss.core.units.WLog
-import com.wgllss.music.datasourcelibrary.data.MusicBean
+import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.RandomPosition
 import com.wgllss.ssmusic.datasource.repository.AppRepository
-import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
-import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_SONG
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
-import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.room.table.MusicExtraTableBean
+import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -37,7 +35,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
     }
 
     //播放列表
-    lateinit var liveData: LiveData<MutableList<MusicTabeBean>>
+    lateinit var liveData: LiveData<MutableList<MusicTableBean>>
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     private var currentPosition: Int = 0
     private var currentMediaID = 0L
@@ -80,7 +78,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
     /**
      * 查找位置是否在列表中可用
      */
-    private fun findBeanByPosition(position: Int): MusicTabeBean? {
+    private fun findBeanByPosition(position: Int): MusicTableBean? {
         liveData?.value?.takeIf {
             it.size > position && position >= 0
         }?.run {

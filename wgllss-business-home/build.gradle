@@ -50,7 +50,7 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation(name: 'wgllss-common-library-release', ext: 'aar')
-    implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
+//    implementation 'com.gitee.wgllss888:DataSourceLibrary:1.0.0.7'
 
     implementation project(path: ':wgllss-business-library')
 

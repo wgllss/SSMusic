@@ -6,12 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.wgllss.core.ex.logE
-import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.room.dao.MusicDao
 import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
-import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.room.table.MusicExtraTableBean
+import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
 
-@Database(entities = [MusicTabeBean::class], version = 1, exportSchema = false)
+@Database(entities = [MusicTableBean::class, MusicExtraTableBean::class], version = 1, exportSchema = false)
 abstract class SSDataBase : RoomDatabase() {
 
     companion object {

@@ -132,15 +132,15 @@ class LrcView : View {
         ta.recycle()
         mDrawableWidth = resources.getDimension(R.dimen.lrc_drawable_width).toInt()
         mTimeTextWidth = resources.getDimension(R.dimen.lrc_time_width).toInt()
-        mLrcPaint.setAntiAlias(true)
-        mLrcPaint.setTextSize(mCurrentTextSize)
-        mLrcPaint.setTextAlign(Paint.Align.LEFT)
-        mTimePaint.setAntiAlias(true)
-        mTimePaint.setTextSize(timeTextSize)
-        mTimePaint.setTextAlign(Paint.Align.CENTER)
-        mTimePaint.setStrokeWidth(timelineHeight)
-        mTimePaint.setStrokeCap(Paint.Cap.ROUND)
-        mTimeFontMetrics = mTimePaint.getFontMetrics()
+        mLrcPaint.isAntiAlias = true
+        mLrcPaint.textSize = mCurrentTextSize
+        mLrcPaint.textAlign = Paint.Align.LEFT
+        mTimePaint.isAntiAlias = true
+        mTimePaint.textSize = timeTextSize
+        mTimePaint.textAlign = Paint.Align.CENTER
+        mTimePaint.strokeWidth = timelineHeight
+        mTimePaint.strokeCap = Paint.Cap.ROUND
+        mTimeFontMetrics = mTimePaint.fontMetrics
         mGestureDetector = GestureDetector(context, mSimpleOnGestureListener)
         mGestureDetector.setIsLongpressEnabled(false)
         mScroller = Scroller(context)

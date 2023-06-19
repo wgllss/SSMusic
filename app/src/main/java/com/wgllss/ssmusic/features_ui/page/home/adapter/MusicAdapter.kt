@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.TypedValue
 import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.core.adapter.BaseDataBindingAdapter
-import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.databinding.AdapterItemMusicBinding
 import com.wgllss.ssmusic.R
 import javax.inject.Inject

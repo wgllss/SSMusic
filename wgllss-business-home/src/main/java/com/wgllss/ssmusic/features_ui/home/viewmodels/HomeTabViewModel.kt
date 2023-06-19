@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
-import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection

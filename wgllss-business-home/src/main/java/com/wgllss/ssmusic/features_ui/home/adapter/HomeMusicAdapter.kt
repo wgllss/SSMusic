@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.wgllss.core.adapter.BaseRecyclerAdapter
 import com.wgllss.core.ex.getIntToDip
-import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.music.skin.R
 import kotlin.random.Random
 

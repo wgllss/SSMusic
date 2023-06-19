@@ -25,7 +25,7 @@ import com.wgllss.core.widget.clearLongClickToast
 import com.wgllss.music.skin.R
 import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.units.WLog
-import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.ex.initColors
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_ui.home.adapter.HomeMusicAdapter

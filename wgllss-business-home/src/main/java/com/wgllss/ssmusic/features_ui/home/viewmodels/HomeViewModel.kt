@@ -12,7 +12,7 @@ import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
-import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY

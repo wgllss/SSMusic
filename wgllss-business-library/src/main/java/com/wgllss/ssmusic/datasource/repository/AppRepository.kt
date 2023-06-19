@@ -3,13 +3,14 @@ package com.wgllss.ssmusic.datasource.repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import com.wgllss.core.units.WLog
-import com.wgllss.music.datasourcelibrary.data.MusicBean
+import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.music.MusicCachePlayUrl
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
-import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.room.table.MusicExtraTableBean
+import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.transform
@@ -31,7 +32,7 @@ class AppRepository private constructor(private val context: Context) {
         }
     }
 
-    suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTabeBean>>> {
+    suspend fun getMusicList(): Flow<LiveData<MutableList<MusicTableBean>>> {
         return flow {
             emit(mSSDataBaseL.musicDao().getList())
         }

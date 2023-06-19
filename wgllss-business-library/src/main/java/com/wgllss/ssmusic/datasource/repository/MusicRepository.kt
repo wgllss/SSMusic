@@ -3,14 +3,14 @@ package com.wgllss.ssmusic.datasource.repository
 import android.content.Context
 import com.google.gson.Gson
 import com.wgllss.core.units.WLog
-import com.wgllss.music.datasourcelibrary.core.units.ChineseUtils
-import com.wgllss.music.datasourcelibrary.data.MusicBean
-import com.wgllss.music.datasourcelibrary.data.MusicItemBean
+import com.wgllss.ssmusic.core.units.ChineseUtils
+import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
-import com.wgllss.ssmusic.features_system.room.table.MusicTabeBean
+import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -108,7 +108,7 @@ class MusicRepository private constructor(private val context: Context) {
      * 按照标题搜索
      */
     suspend fun searchKeyByTitle(keyword: String): Flow<MutableList<MusicItemBean>> = flow {
-        val keywordL = ChineseUtils.urlencode(keyword)
+        val keywordL = ChineseUtils.urlEncode(keyword)
         val html = musiceApiL.searchKeyByTitle(keywordL)
         val document = Jsoup.parse(html, "https://www.hifini.com/")
         val dcS = document.select(".break-all")
@@ -249,7 +249,7 @@ class MusicRepository private constructor(private val context: Context) {
                 if (count > 0) {
                     WLog.e(this@MusicRepository, "已经在播放列表里面")
                 } else {
-                    val bean = MusicTabeBean(it.id, title, author, requestRealUrl, pic, System.currentTimeMillis())
+                    val bean = MusicTableBean(it.id, title, author, requestRealUrl, pic, mvhash, dataSourceType, privilege, System.currentTimeMillis())
                     mSSDataBaseL.musicDao().insertMusicBean(bean)
                 }
                 emit(it.id)
