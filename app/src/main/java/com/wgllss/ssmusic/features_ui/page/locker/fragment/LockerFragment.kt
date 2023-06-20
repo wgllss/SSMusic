@@ -14,7 +14,10 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentLockerBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.artist
+import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.extensions.title
+import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils
+import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import javax.inject.Inject
 
@@ -32,7 +35,14 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             it?.let {
-                logE("nowPlaying nowPlaying nowPlaying")
+                it.id?.let { id ->
+                    LrcHelp.getLrc(id)?.takeIf { l ->
+                        l.isNotEmpty()
+                    }?.let { lrc ->
+                        binding.lrcView.loadLrc(lrc)
+//                        binding   lrcView.loadLrc(lrc)
+                    }
+                }
                 binding.materMusicName.text = it.title
                 binding.musicAutor.text = it.artist
                 binding.ivCenter.loadUrl(it.albumArtUri)
@@ -48,6 +58,8 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
                                     binding.txtTime.setTextColor(s.bodyTextColor)
                                     binding.txtWeek.setTextColor(s.bodyTextColor)
                                     binding.txtButtom.setTextColor(s.bodyTextColor)
+                                    binding.lrcView?.setCurrentColor(p.getMutedColor(s.titleTextColor))
+                                    binding.lrcView?.setNormalColor(s.bodyTextColor)
                                 }
                             }
                         }
@@ -67,6 +79,9 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
                     viewModel.isPlaying = true
                 }
             }
+        }
+        viewModel.mediaPosition.observe(viewLifecycleOwner) {
+            binding.lrcView.updateTime(it)
         }
         viewModel.start()
     }

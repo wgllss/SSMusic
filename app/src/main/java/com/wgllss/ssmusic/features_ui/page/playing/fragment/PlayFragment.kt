@@ -29,7 +29,6 @@ import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
-import com.wgllss.ssmusic.features_ui.page.playing.TestLrc
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import javax.inject.Inject
 
@@ -97,6 +96,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                                 p?.lightMutedSwatch?.let { s ->
                                     binding.layoutPlayBg.setBackgroundColor(s.rgb)
                                     binding.materMusicName.setTextColor(s.titleTextColor)
+                                    lrcView?.setCurrentColor(p.getMutedColor(s.titleTextColor))
                                     lrcView?.setNormalColor(s.bodyTextColor)
                                     binding.tvTotalTime.setTextColor(s.bodyTextColor)
                                     binding.tvCurrentTime.setTextColor(s.bodyTextColor)

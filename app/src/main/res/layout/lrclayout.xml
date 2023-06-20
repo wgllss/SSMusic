@@ -13,10 +13,10 @@
         app:lrcDividerHeight="20dp"
         app:lrcLabel="找不到歌词(@_@)"
         app:lrcNormalTextColor="@color/textColorPrimary"
-        app:lrcNormalTextSize="15dp"
+        app:lrcNormalTextSize="14dp"
         app:lrcPadding="16dp"
         app:lrcTextGravity="center"
-        app:lrcTextSize="15sp"
+        app:lrcTextSize="17dp"
         app:lrcTimeTextColor="#BDBDBD"
         app:lrcTimelineColor="#80BDBDBD"
         app:lrcTimelineTextColor="#9FA8DA" />

@@ -102,6 +102,26 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/music_autor" />
 
+        <com.wgllss.dynamic.lrclibrary.LrcView
+            android:id="@+id/lrc_view"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:lrcAnimationDuration="1000"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/iv_play"
+            android:layout_marginBottom="20dp"
+            app:lrcCurrentTextColor="@color/colorPrimary"
+            app:lrcDividerHeight="20dp"
+            app:lrcLabel="找不到歌词(@_@)"
+            app:lrcNormalTextColor="@color/textColorPrimary"
+            app:lrcNormalTextSize="14dp"
+            app:lrcPadding="16dp"
+            app:lrcTextGravity="center"
+            app:lrcTextSize="17dp"
+            app:lrcTimeTextColor="#BDBDBD"
+            app:lrcTimelineColor="#80BDBDBD"
+            app:lrcTimelineTextColor="#9FA8DA" />
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_prev"
@@ -142,8 +162,8 @@
             android:id="@+id/txt_buttom"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="26dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
             android:gravity="center"
             android:text=">>>滑动解锁"
             android:textColor="@color/white"
