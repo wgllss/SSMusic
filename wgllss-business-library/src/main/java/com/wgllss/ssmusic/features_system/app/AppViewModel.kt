@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedDeque
 import kotlin.random.Random
 
 class AppViewModel private constructor(application: Application) : AndroidViewModel(application) {
@@ -132,7 +133,17 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
 
     private suspend fun getMusicInfo(it: MusicTableBean, position: Int) {
         it.run {
-            doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash))
+            appRepository.containsKey(id.toString())?.let {
+                doFlow(this, position, flow {
+                    WLog.e(this@AppViewModel, "拿到缓存: $title")
+                    val musicBean = MusicBean(title, author, it, pic, 1, 0, mvhash).apply {
+                        requestRealUrl = url
+                    }
+                    emit(musicBean)
+                })
+                return
+            }
+            doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
         }
     }
 
@@ -142,9 +153,12 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         }
     }
 
-    private suspend fun doFlow(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
+    private var webviewIsRequest = false
+    private val quare = ConcurrentLinkedDeque<Flow<MusicBean>>()
+
+    private suspend fun doFLowEx(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
         it.run {
-            flow.onEach {
+            val flowEx = flow.onEach {
                 if (currentMediaID == it.id) {
                     metadataPrepareCompletion.postValue(it)
                     WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
@@ -153,9 +167,47 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 mapRuningRequest.remove(it.id)
             }.catch {
                 mapRuningRequest.remove(id)
+                webviewIsRequest = false
                 it.printStackTrace()
             }.flowOn(Dispatchers.IO)
-                .collect()
+                .onCompletion {
+                    webviewIsRequest = false
+                    quare.takeIf {
+                        it.size > 0
+                    }?.let {
+                        webviewIsRequest = true
+                        it.poll().collect()
+                        WLog.e(this@AppViewModel, "取出一个 队列长度: ${quare.size}")
+                    }
+                }
+            if (!webviewIsRequest) {
+                webviewIsRequest = true
+                flowEx.collect()
+            } else {
+                quare.add(flowEx)
+                WLog.e(this@AppViewModel, "加入队列:${title} 队列长度:${quare.size}")
+            }
+        }
+    }
+
+    private suspend fun doFlow(it: MusicTableBean, position: Int, flow: Flow<MusicBean>, type: Int = 0) {
+        it.run {
+            if (type == 1) {
+                doFLowEx(it, position, flow)
+            } else {
+                flow.onEach {
+                    if (currentMediaID == it.id) {
+                        metadataPrepareCompletion.postValue(it)
+                        WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
+                    } else
+                        WLog.e(this@AppViewModel, "缓存了:${title}")
+                    mapRuningRequest.remove(it.id)
+                }.catch {
+                    mapRuningRequest.remove(id)
+                    it.printStackTrace()
+                }.flowOn(Dispatchers.IO)
+                    .collect()
+            }
         }
     }
 

@@ -20,12 +20,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
+import java.util.concurrent.ConcurrentHashMap
 
 class AppRepository private constructor(private val context: Context) {
 
     private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
     private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
     private val cache by lazy { MusicCachePlayUrl.instance } //Lazy<MusicCachePlayUrl>
+    private val mapRuningRequest by lazy { ConcurrentHashMap<Long, Boolean>() }
 
     companion object {
 
@@ -132,33 +134,29 @@ class AppRepository private constructor(private val context: Context) {
         }
     }
 
+    fun containsKey(mediaID: String) = cache.get(mediaID)
+
     /**
      * 获取歌词
      */
     suspend fun getMusicInfo(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", mvhash: String): Flow<MusicBean> {
-        cache.get(mediaID)?.let {
-            return flow {
-                WLog.e(this@AppRepository, "拿到缓存: $title")
-                val musicBean = MusicBean(title, author, it, pic, 1, 0, mvhash).apply {
-                    requestRealUrl = htmlUrl
-                }
-                emit(musicBean)
-            }
-        }
         val implWeb = ImplWebViewClient()
+        WLog.e(this, "Thread.currentThread().name:${Thread.currentThread().name}")
         loadWebViewUrl(htmlUrl, implWeb)
         return flow {
             var musicFileUrl: String
             while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
                     musicFileUrl = it
                 })) {
-                delay(10)
+                delay(16)
             }
             WLog.e(this@AppRepository, "####################################")
             val lrcUrl = implWeb.getMusicLrcUrl()
             WLog.e(this@AppRepository, "lrcUrl 00000 :${lrcUrl}")
             var lrcStr = ""
             var sTdMusicUrl = implWeb.getSTdMusicUrl()
+//            webView?.stopLoading()
+//            webView?.destroy()
             if (!TextUtils.isEmpty(lrcUrl)) {
                 val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)
                 WLog.e(this@AppRepository, "kLrcDto status : ${kLrcDto.status}")
