@@ -27,6 +27,8 @@ import javax.inject.Inject
 class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     private val homeFragment by lazy { HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) }
 
+
+
     @Inject
     lateinit var historyFragmentL: Lazy<HistoryFragment>
 
