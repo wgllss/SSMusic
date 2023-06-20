@@ -25,7 +25,6 @@ import kotlin.random.Random
 
 class AppViewModel private constructor(application: Application) : AndroidViewModel(application) {
     private val appRepository by lazy { AppRepository.getInstance(application) }
-//    private val kRepository by lazy { KRepository.getInstance(application) }
 
     companion object {
 
@@ -48,6 +47,10 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
 
     //当前播放 数据源 准备完成
     val metadataPrepareCompletion by lazy { MutableLiveData<MusicBean>() }
+
+    private var webViewIsRequest = false
+    private val queue = ConcurrentLinkedDeque<FlowEXData>()
+    private val queueMap = ConcurrentHashMap<Long, String>()
 
     //缓存随机位置
     private val randomPosition by lazy { RandomPosition() }
@@ -146,13 +149,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 })
                 return
             }
-            if (!webviewIsRequest) {
-                webviewIsRequest = true
+            if (!webViewIsRequest) {
+                webViewIsRequest = true
                 doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
             } else {
-                if (!quareMap.containsKey(id)) {
+                if (!queueMap.containsKey(id)) {
                     queue.add(FlowEXData(this, position))
-                    quareMap[it.id] = ""
+                    queueMap[it.id] = ""
                 }
                 WLog.e(this@AppViewModel, "加入队列:${title}:队列长度:${queue.size}")
             }
@@ -165,14 +168,11 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         }
     }
 
-    private var webviewIsRequest = false
-    private val queue = ConcurrentLinkedDeque<FlowEXData>()
-    private val quareMap = ConcurrentHashMap<Long, String>()
 
     private suspend fun doFLowEx(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
         it.run {
             WLog.e(this@AppViewModel, "正在获取0:${title}")
-            webviewIsRequest = true
+            webViewIsRequest = true
             flow.onEach {
                 if (currentMediaID == it.id) {
                     metadataPrepareCompletion.postValue(it)
@@ -180,17 +180,17 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 } else
                     WLog.e(this@AppViewModel, "缓存了:${title}")
             }.catch {
-                quareMap.remove(id)
-                webviewIsRequest = false
+                queueMap.remove(id)
+                webViewIsRequest = false
                 it.printStackTrace()
             }.flowOn(Dispatchers.IO)
                 .onCompletion {
-                    webviewIsRequest = false
-                    quareMap.remove(id)
+                    webViewIsRequest = false
+                    queueMap.remove(id)
                     queue.takeIf {
                         it.size > 0
                     }?.let {
-                        webviewIsRequest = true
+                        webViewIsRequest = true
                         val first = it.removeFirst()
                         WLog.e(this@AppViewModel, "取出一个:${first.item.title}:获取 剩余长度: ${it.size}")
                         first.run {
