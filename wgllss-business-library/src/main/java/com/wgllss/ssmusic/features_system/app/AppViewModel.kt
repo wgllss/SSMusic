@@ -6,16 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.core.ex.flowAsyncWorkOnLaunch
-import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.RandomPosition
 import com.wgllss.ssmusic.datasource.repository.AppRepository
-import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
-import com.wgllss.ssmusic.features_system.room.table.MusicExtraTableBean
 import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +23,7 @@ import kotlin.random.Random
 
 class AppViewModel private constructor(application: Application) : AndroidViewModel(application) {
     private val appRepository by lazy { AppRepository.getInstance(application) }
-    private val kRepository by lazy { KRepository.getInstance(application) }
+//    private val kRepository by lazy { KRepository.getInstance(application) }
 
     companion object {
 
@@ -135,8 +132,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
 
     private suspend fun getMusicInfo(it: MusicTableBean, position: Int) {
         it.run {
-            val musicItemBean = MusicItemBean(author, title, url, "", pic, mvhash, dataSourceType, privilege)
-            doFlow(it, position, kRepository.getMusicInfo(musicItemBean))
+            doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash))
         }
     }
 

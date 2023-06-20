@@ -1,19 +1,24 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import android.content.Context
+import android.text.TextUtils
+import android.webkit.WebSettings
+import android.webkit.WebView
 import androidx.lifecycle.LiveData
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.music.MusicCachePlayUrl
+import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
 import com.wgllss.ssmusic.features_system.room.table.MusicExtraTableBean
 import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
 
 class AppRepository private constructor(private val context: Context) {
@@ -110,6 +115,67 @@ class AppRepository private constructor(private val context: Context) {
                 }
             }
             emit(it)
+        }
+    }
+
+    private fun loadWebViewUrl(url: String, implWeb: ImplWebViewClient) {
+        WebView(context).apply {
+            settings.apply {
+                defaultTextEncodingName = "UTF-8"
+                allowFileAccess = true
+                cacheMode = WebSettings.LOAD_NO_CACHE
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                webViewClient = implWeb
+            }
+            loadUrl(url)
+        }
+    }
+
+    /**
+     * 获取歌词
+     */
+    suspend fun getMusicInfo(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", mvhash: String): Flow<MusicBean> {
+        cache.get(mediaID)?.let {
+            return flow {
+                WLog.e(this@AppRepository, "拿到缓存: $title")
+                val musicBean = MusicBean(title, author, it, pic, 1, 0, mvhash).apply {
+                    requestRealUrl = htmlUrl
+                }
+                emit(musicBean)
+            }
+        }
+        val implWeb = ImplWebViewClient()
+        loadWebViewUrl(htmlUrl, implWeb)
+        return flow {
+            var musicFileUrl: String
+            while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
+                    musicFileUrl = it
+                })) {
+                delay(10)
+            }
+            WLog.e(this@AppRepository, "####################################")
+            val lrcUrl = implWeb.getMusicLrcUrl()
+            WLog.e(this@AppRepository, "lrcUrl 00000 :${lrcUrl}")
+            var lrcStr = ""
+            var sTdMusicUrl = implWeb.getSTdMusicUrl()
+            if (!TextUtils.isEmpty(lrcUrl)) {
+                val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)
+                WLog.e(this@AppRepository, "kLrcDto status : ${kLrcDto.status}")
+                WLog.e(this@AppRepository, "kLrcDto data lrc : ${kLrcDto.data?.lrc}")
+                kLrcDto?.takeIf {
+                    it.status == 1
+                }?.let {
+                    lrcStr = it.data?.lrc ?: ""
+                    lrcStr = lrcStr.replace("\r", "")
+                }
+            }
+            val musicBean = MusicBean(title, author, musicFileUrl, pic.ifEmpty { sTdMusicUrl }, 1, 0, mvhash).apply {
+                requestRealUrl = htmlUrl
+                musicLrcStr = lrcStr
+            }
+            cache.put(mediaID, musicFileUrl)
+            emit(musicBean)
         }
     }
 }
