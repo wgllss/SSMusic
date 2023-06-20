@@ -1,8 +1,8 @@
 package com.wgllss.ssmusic.data
 
-import kotlinx.coroutines.flow.Flow
+import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
 
 data class FlowEXData(
-    val title: String,
-    val flow: Flow<MusicBean>
+    val item: MusicTableBean,
+    val position: Int
 )

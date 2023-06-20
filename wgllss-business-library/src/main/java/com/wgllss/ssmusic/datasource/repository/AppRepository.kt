@@ -21,13 +21,26 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeoutException
 
 class AppRepository private constructor(private val context: Context) {
 
     private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
     private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
     private val cache by lazy { MusicCachePlayUrl.instance } //Lazy<MusicCachePlayUrl>
-    private val mapRuningRequest by lazy { ConcurrentHashMap<Long, Boolean>() }
+    private val implWeb = ImplWebViewClient()
+    private val webView by lazy {
+        WebView(context).apply {
+            settings.apply {
+                defaultTextEncodingName = "UTF-8"
+                allowFileAccess = true
+                cacheMode = WebSettings.LOAD_NO_CACHE
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                webViewClient = implWeb
+            }
+        }
+    }
 
     companion object {
 
@@ -120,43 +133,33 @@ class AppRepository private constructor(private val context: Context) {
         }
     }
 
-    private fun loadWebViewUrl(url: String, implWeb: ImplWebViewClient) {
-        WebView(context).apply {
-            settings.apply {
-                defaultTextEncodingName = "UTF-8"
-                allowFileAccess = true
-                cacheMode = WebSettings.LOAD_NO_CACHE
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                webViewClient = implWeb
-            }
-            loadUrl(url)
-        }
-    }
-
     fun containsKey(mediaID: String) = cache.get(mediaID)
 
     /**
      * 获取歌词
      */
     suspend fun getMusicInfo(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", mvhash: String): Flow<MusicBean> {
-        val implWeb = ImplWebViewClient()
-        loadWebViewUrl(htmlUrl, implWeb)
+        webView.loadUrl(htmlUrl)
         return flow {
             var musicFileUrl: String
+            WLog.e(this@AppRepository, "########## 0  $title")
+            val startTime = System.currentTimeMillis()
             while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
                     musicFileUrl = it
                 })) {
                 delay(16)
+                if (System.currentTimeMillis() - startTime > 15000) {
+                    throw TimeoutException("获取播放链接超时")
+                }
             }
-            WLog.e(this@AppRepository, "####################################")
+            WLog.e(this@AppRepository, "########## 1  $title")
             val lrcUrl = implWeb.getMusicLrcUrl()
             WLog.e(this@AppRepository, "lrcUrl 00000 :${lrcUrl}")
             var lrcStr = ""
             var sTdMusicUrl = implWeb.getSTdMusicUrl()
             if (!TextUtils.isEmpty(lrcUrl)) {
                 val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)
-                WLog.e(this@AppRepository, "kLrcDto status : ${kLrcDto.status}")
+//                WLog.e(this@AppRepository, "kLrcDto status : ${kLrcDto.status}")
                 WLog.e(this@AppRepository, "kLrcDto data lrc : ${kLrcDto.data?.lrc}")
                 kLrcDto?.takeIf {
                     it.status == 1

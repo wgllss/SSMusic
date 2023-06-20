@@ -146,7 +146,16 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 })
                 return
             }
-            doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
+            if (!webviewIsRequest) {
+                webviewIsRequest = true
+                doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
+            } else {
+                if (!quareMap.containsKey(id)) {
+                    queue.add(FlowEXData(this, position))
+                    quareMap[it.id] = ""
+                }
+                WLog.e(this@AppViewModel, "加入队列:${title}:队列长度:${queue.size}")
+            }
         }
     }
 
@@ -162,7 +171,9 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
 
     private suspend fun doFLowEx(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
         it.run {
-            val flowEx = flow.onEach {
+            WLog.e(this@AppViewModel, "正在获取0:${title}")
+            webviewIsRequest = true
+            flow.onEach {
                 if (currentMediaID == it.id) {
                     metadataPrepareCompletion.postValue(it)
                     WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
@@ -181,21 +192,12 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                     }?.let {
                         webviewIsRequest = true
                         val first = it.removeFirst()
-                        WLog.e(this@AppViewModel, "取出一个:${first.title}:获取 剩余长度: ${it.size}")
-                        first.flow.collect()
+                        WLog.e(this@AppViewModel, "取出一个:${first.item.title}:获取 剩余长度: ${it.size}")
+                        first.run {
+                            doFLowEx(item, this.position, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
+                        }
                     }
-                }
-            if (!webviewIsRequest) {
-                webviewIsRequest = true
-                WLog.e(this@AppViewModel, "正在获取:${title}")
-                flowEx.collect()
-            } else {
-                if (!quareMap.containsKey(it.id)) {
-                    queue.add(FlowEXData(title, flowEx))
-                    quareMap[it.id] = ""
-                }
-                WLog.e(this@AppViewModel, "加入队列:${title}:队列长度:${queue.size}")
-            }
+                }.collect()
         }
     }
 
