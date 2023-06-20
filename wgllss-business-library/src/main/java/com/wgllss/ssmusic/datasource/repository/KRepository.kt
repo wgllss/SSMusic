@@ -265,14 +265,18 @@ class KRepository private constructor(private val context: Context) {
         val requestUrl = if (encodeID.contains("https://")) "$encodeID?json=true" else "https://m.kugou.com/plist/list/$encodeID/?json=true"
         val dto = musiceApiL.kSongSheetDetail1(requestUrl)
         dto?.run {
+            val listSong = mutableListOf<MusicItemBean>()
             list?.list?.info?.forEach {
                 it?.run {
                     val index = it.filename.indexOf("-")
                     it.author_name = it.filename.substring(0, index)
                     it.songname = it.filename.substring(index + 1, it.filename.length)
                     it.album_sizable_cover = ""
+                    listSong.add(MusicItemBean(it.filename.substring(0, index), it.filename.substring(index + 1, it.filename.length), it.song_url, "", "", it.mvhash, 1, it.privilege))
                 }
             }
+            list = null
+            listData = listSong
             info?.list?.run {
                 imgurl = imgurl.replace("{size}", "400")
                 user_avatar = user_avatar.replace("{size}", "400")

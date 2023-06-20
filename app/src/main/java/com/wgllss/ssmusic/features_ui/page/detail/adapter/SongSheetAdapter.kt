@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.wgllss.core.adapter.BaseRecyclerAdapter
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetSongBean
 import kotlin.random.Random
 
-class SongSheetAdapter : BaseRecyclerAdapter<KSheetSongBean>() {
+class SongSheetAdapter : BaseRecyclerAdapter<MusicItemBean>() {
     private var cornerRadiusInt: Int = 0
     private var textColorHighlight: Int = 0
 
@@ -42,7 +43,7 @@ class SongSheetAdapter : BaseRecyclerAdapter<KSheetSongBean>() {
         return holder
     }
 
-    override fun onBindItem(context: Context, item: KSheetSongBean, holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindItem(context: Context, item: MusicItemBean, holder: RecyclerView.ViewHolder, position: Int) {
         holder?.itemView?.run {
             findViewById<MaterialButton>(R.id.music_no).apply {
                 setTextColor(getTextHightColorPrimary(context))
@@ -53,8 +54,8 @@ class SongSheetAdapter : BaseRecyclerAdapter<KSheetSongBean>() {
                 background.setTint(context.getColor(array[Random.nextInt(array.size)]))
                 text = "${position + 1}"
             }
-            findViewById<TextView>(R.id.author).text = item.author_name
-            findViewById<TextView>(R.id.title).text = item.songname
+            findViewById<TextView>(R.id.author).text = item.author
+            findViewById<TextView>(R.id.title).text = item.musicName
         }
     }
 }

@@ -36,6 +36,7 @@ import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.features_ui.page.detail.adapter.SongSheetAdapter
 import com.wgllss.ssmusic.features_ui.page.detail.viewmodel.SongSheetViewModel
+import com.wgllss.ssmusic.features_ui.page.mv.activity.KMVActivity
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 
 class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<SongSheetViewModel>(0) {
@@ -105,7 +106,6 @@ class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<So
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.kSongSheetDetail(encodeID)
         toolbar2?.setNavigationOnClickListener {
             requireActivity().finishActivity()
         }
@@ -115,7 +115,7 @@ class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<So
             (layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-//                    viewModel.doPlay(homeItem1Adapter.getItem(position))
+                    viewModel.doPlay(homeItem1Adapter.getItem(position))
                 }
             })
         }
@@ -124,6 +124,7 @@ class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<So
     override fun initObserve() {
         super.initObserve()
         viewModel.run {
+            kSongSheetDetail(encodeID)
             nowPlay.observe(viewLifecycleOwner) {
                 it?.takeIf {
                     it
@@ -135,7 +136,7 @@ class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<So
             }
             liveDataMV.observe(viewLifecycleOwner) {
                 activity?.run {
-//                    KMVActivity.startKMVActivity(this, it.url, it.title)
+                    KMVActivity.startKMVActivity(this, it.url, it.title)
                 }
             }
 
@@ -164,7 +165,7 @@ class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<So
                             }
                         }
                     })
-                homeItem1Adapter.notifyData(it.list.list.info)
+                homeItem1Adapter.notifyData(it.listData)
             }
         }
     }
