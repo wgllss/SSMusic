@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.core.ex.flowAsyncWorkOnLaunch
 import com.wgllss.core.units.WLog
+import com.wgllss.ssmusic.data.FlowEXData
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.RandomPosition
@@ -112,11 +113,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         currentPosition = position
         findBeanByPosition(position)?.run {
             currentMediaID = id
-            if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
-                WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
-                return@run
-            } else
-                mapRuningRequest[id] = true
+            if (dataSourceType == 0) {
+                if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
+                    WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
+                    return@run
+                } else
+                    mapRuningRequest[id] = true
+            }
             viewModelScope.launch {
                 getPlaySwitch(this@run, position)
             }
@@ -154,7 +157,8 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
     }
 
     private var webviewIsRequest = false
-    private val quare = ConcurrentLinkedDeque<Flow<MusicBean>>()
+    private val queue = ConcurrentLinkedDeque<FlowEXData>()
+    private val quareMap = ConcurrentHashMap<Long, String>()
 
     private suspend fun doFLowEx(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
         it.run {
@@ -164,28 +168,33 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                     WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
                 } else
                     WLog.e(this@AppViewModel, "缓存了:${title}")
-                mapRuningRequest.remove(it.id)
             }.catch {
-                mapRuningRequest.remove(id)
+                quareMap.remove(id)
                 webviewIsRequest = false
                 it.printStackTrace()
             }.flowOn(Dispatchers.IO)
                 .onCompletion {
                     webviewIsRequest = false
-                    quare.takeIf {
+                    quareMap.remove(id)
+                    queue.takeIf {
                         it.size > 0
                     }?.let {
                         webviewIsRequest = true
-                        it.poll().collect()
-                        WLog.e(this@AppViewModel, "取出一个 队列长度: ${quare.size}")
+                        val first = it.removeFirst()
+                        WLog.e(this@AppViewModel, "取出一个:${first.title}:获取 剩余长度: ${it.size}")
+                        first.flow.collect()
                     }
                 }
             if (!webviewIsRequest) {
                 webviewIsRequest = true
+                WLog.e(this@AppViewModel, "正在获取:${title}")
                 flowEx.collect()
             } else {
-                quare.add(flowEx)
-                WLog.e(this@AppViewModel, "加入队列:${title} 队列长度:${quare.size}")
+                if (!quareMap.containsKey(it.id)) {
+                    queue.add(FlowEXData(title, flowEx))
+                    quareMap[it.id] = ""
+                }
+                WLog.e(this@AppViewModel, "加入队列:${title}:队列长度:${queue.size}")
             }
         }
     }
@@ -320,11 +329,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
      */
     private fun getCache(position: Int) {
         findBeanByPosition(position)?.run {
-            if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
-                WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
-                return@run
-            } else
-                mapRuningRequest[id] = true
+            if (dataSourceType == 0) {
+                if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
+                    WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
+                    return@run
+                } else
+                    mapRuningRequest[id] = true
+            }
             viewModelScope.launch {
                 getPlaySwitch(this@run, position)
             }

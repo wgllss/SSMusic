@@ -141,7 +141,6 @@ class AppRepository private constructor(private val context: Context) {
      */
     suspend fun getMusicInfo(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", mvhash: String): Flow<MusicBean> {
         val implWeb = ImplWebViewClient()
-        WLog.e(this, "Thread.currentThread().name:${Thread.currentThread().name}")
         loadWebViewUrl(htmlUrl, implWeb)
         return flow {
             var musicFileUrl: String
@@ -155,8 +154,6 @@ class AppRepository private constructor(private val context: Context) {
             WLog.e(this@AppRepository, "lrcUrl 00000 :${lrcUrl}")
             var lrcStr = ""
             var sTdMusicUrl = implWeb.getSTdMusicUrl()
-//            webView?.stopLoading()
-//            webView?.destroy()
             if (!TextUtils.isEmpty(lrcUrl)) {
                 val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)
                 WLog.e(this@AppRepository, "kLrcDto status : ${kLrcDto.status}")
