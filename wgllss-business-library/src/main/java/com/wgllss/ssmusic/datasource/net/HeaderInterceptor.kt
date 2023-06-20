@@ -13,7 +13,7 @@ class HeaderInterceptor : Interceptor {
         val authorised = request
             .newBuilder()
             .addHeader("Connection", "keep-alive") //
-            .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36") //
+            .addHeader("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1") //
             .addHeader("Accept-Language", "zh-CN,zh;q=0.9") //
             .addHeader("Upgrade-insecure-Requests", "1") //
 //            .addHeader("X-ZZ-Device-Sn", Build.SERIAL)

@@ -48,7 +48,10 @@
             android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity"
             android:exported="false"
             android:theme="@style/Theme.SSMusic" />
-
+        <activity
+            android:name="com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.SSMusic" />
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

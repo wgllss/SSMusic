@@ -3,6 +3,7 @@ package com.wgllss.ssmusic.datasource.net
 import android.content.Context
 import okhttp3.Cache
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 //import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -24,13 +25,13 @@ class RetrofitUtils private constructor(val context: Context) {
 
     private inline val retrofit: Retrofit
         get() {
-//            val logging = HttpLoggingInterceptor().apply {
-//                level = HttpLoggingInterceptor.Level.NONE
-//            }
+            val logging = HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            }
             val timeout = 30000L
             val okHttpClient = OkHttpClient.Builder()
                 .addInterceptor(HeaderInterceptor())
-//                .addInterceptor(logging)
+                .addInterceptor(logging)
 //            .addInterceptor(RetrofitClient.BaseUrlInterceptor())
                 .callTimeout(timeout, TimeUnit.MILLISECONDS)
                 //设置连接超时

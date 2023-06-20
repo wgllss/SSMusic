@@ -113,7 +113,7 @@
             android:layout_marginBottom="20dp"
             app:lrcCurrentTextColor="@color/colorPrimary"
             app:lrcDividerHeight="20dp"
-            app:lrcLabel="找不到歌词(@_@)"
+            app:lrcLabel=""
             app:lrcNormalTextColor="@color/textColorPrimary"
             app:lrcNormalTextSize="14dp"
             app:lrcPadding="16dp"
