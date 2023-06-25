@@ -15,6 +15,7 @@ import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
 import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
+import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeMVTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
 import dagger.Lazy
@@ -28,9 +29,10 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     private val homeFragment by lazy { HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) }
 
 
+    private val kHomeMVTabFragment by lazy { KHomeMVTabFragment() }
 
-    @Inject
-    lateinit var historyFragmentL: Lazy<HistoryFragment>
+//    @Inject
+//    lateinit var historyFragmentL: Lazy<HistoryFragment>
 
     @Inject
     lateinit var searchFragmentL: Lazy<SearchFragment>
@@ -108,7 +110,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     private fun getItemId() = when (viewModel.mCurrentFragmentTAG.toString()) {
         "HomeTabFragment" -> 0
-        HistoryFragment::class.java.simpleName -> 1
+        KHomeMVTabFragment::class.java.simpleName -> 1
+//        HistoryFragment::class.java.simpleName -> 1
         SearchFragment::class.java.simpleName -> 2
         SettingFragment::class.java.simpleName -> 3
         else -> 0
@@ -119,7 +122,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
             R.id.fmt_a -> {
                 setCurrentFragment(homeFragment)
             }
-            R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
+//            R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
+            R.id.fmt_b -> setCurrentFragment(kHomeMVTabFragment)
             R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
             R.id.fmt_d -> setCurrentFragment(settingFragmentL.get())
         }

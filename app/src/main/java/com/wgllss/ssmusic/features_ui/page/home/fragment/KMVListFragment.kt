@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.features_ui.page.mv.fragment
+package com.wgllss.ssmusic.features_ui.page.home.fragment
 
 import android.graphics.Color
 import android.os.Bundle
@@ -15,10 +15,10 @@ import com.wgllss.core.ex.logE
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.features_ui.page.mv.activity.KMVActivity
-import com.wgllss.ssmusic.features_ui.page.mv.adapter.MVListAdapter
+import com.wgllss.ssmusic.features_ui.page.home.adapter.MVListAdapter
 import com.wgllss.ssmusic.ex.initColors
 import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
-import com.wgllss.ssmusic.features_ui.page.mv.viewmodel.KMVListViewModel
+import com.wgllss.ssmusic.features_ui.page.home.viewmodels.KMVListViewModel
 
 class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -68,6 +68,9 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.kmvList(key)
+        }
         recyclerView?.apply {
             adapter = mvListAdapter
             layoutManager = GridLayoutManager(context, 2).apply {
@@ -100,11 +103,11 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
     override fun initObserve() {
         super.initObserve()
         viewModel.run {
+            initKey(key)
             kmvList(key)
-            liveDataList.observe(viewLifecycleOwner) {
+            result[key]?.observe(viewLifecycleOwner) {
                 mvListAdapter.notifyData(it)
                 if (key == "9" || key == "13") {
-                    logE("###### enableLoadeMore: $enableLoadeMore ")
                     if (enableLoadeMore)
                         mvListAdapter.addFooter()
                 }
@@ -115,10 +118,17 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
                 }
             }
             showUIDialog.observe(viewLifecycleOwner) {
-                swipeRefreshLayout.isRefreshing = it.isShow
+                if (!isClick) {
+                    swipeRefreshLayout.isRefreshing = it.isShow
+                } else {
+                    if (it.isShow) showloading(it.msg) else hideLoading()
+                }
             }
             errorMsgLiveData.observe(viewLifecycleOwner) {
                 onToast(it)
+            }
+            liveDataLoadSuccessCount.observe(viewLifecycleOwner) {
+                if (it > 1) swipeRefreshLayout.isRefreshing = false
             }
         }
     }

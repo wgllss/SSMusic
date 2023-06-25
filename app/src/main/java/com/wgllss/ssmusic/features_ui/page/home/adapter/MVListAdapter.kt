@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.features_ui.page.mv.adapter
+package com.wgllss.ssmusic.features_ui.page.home.adapter
 
 
 import android.content.Context
