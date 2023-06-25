@@ -1,6 +1,7 @@
 package com.wgllss.ssmusic.features_ui.home.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -72,7 +74,7 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                         adapter = homeItem2Adapter
                         addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                             override fun onItemClickListener(itemRootView: View, position: Int) {
-//                                SongSheetDetailActivity.startSongSheetDetailActivity(context, homeItem2Adapter.getItem(position).detailUrl)
+                                startToDetail(0, homeItem2Adapter.getItem(position).detailUrl)
                             }
                         })
                     }
@@ -87,7 +89,7 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                     adapter = homeItem3Adapter
                     addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                         override fun onItemClickListener(itemRootView: View, position: Int) {
-//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, homeItem3Adapter.getItem(position).linkUrl, 1)
+                            startToDetail(1, homeItem3Adapter.getItem(position).linkUrl)
                         }
                     })
                 }
@@ -203,19 +205,20 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                     holder.itemView.findViewById<ShapeableImageView>(img_singer1).apply {
                         loadUrl(it[0].imgUrl)
                         setOnClickListener { _ ->
-//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, it[0].encodeID, 2, it[0].name)
+                            startToDetail(2, it[0].encodeID, it[0].name)
                         }
                     }
                     holder.itemView.findViewById<ShapeableImageView>(img_singer2).apply {
                         loadUrl(it[1].imgUrl)
                         setOnClickListener { _ ->
+                            startToDetail(2, it[1].encodeID, it[1].name)
 //                            SongSheetDetailActivity.startSongSheetDetailActivity(context, it[1].encodeID, 2, it[0].name)
                         }
                     }
                     holder.itemView.findViewById<ShapeableImageView>(img_singer3).apply {
                         loadUrl(it[2].imgUrl)
                         setOnClickListener { _ ->
-//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, it[2].encodeID, 2, it[0].name)
+                            startToDetail(2, it[2].encodeID, it[2].name)
                         }
                     }
 
@@ -225,6 +228,16 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 }
 
             }
+        }
+    }
+
+    private fun startToDetail(type: Int, encode: String, authorName: String = "") {
+        context?.let {
+            val intent = Intent(it, Class.forName("com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity"))
+                .putExtra("ENCODE_ID_KEY", encode)
+                .putExtra("TYPE_KEY", type)
+                .putExtra("AUTHOR_NAME_KEY", authorName)
+            it.startActivity(intent)
         }
     }
 }
