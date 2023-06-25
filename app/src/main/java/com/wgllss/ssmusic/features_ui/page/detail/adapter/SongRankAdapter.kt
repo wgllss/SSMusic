@@ -14,10 +14,10 @@ import com.wgllss.core.adapter.BaseRecyclerAdapter
 import com.wgllss.core.ex.getIntToDip
 import com.wgllss.core.ex.loadUrl
 import com.wgllss.ssmusic.R
-import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetSongBean
+import com.wgllss.ssmusic.data.MusicItemBean
 import kotlin.random.Random
 
-class SongRankAdapter : BaseRecyclerAdapter<KSheetSongBean>() {
+class SongRankAdapter : BaseRecyclerAdapter<MusicItemBean>() {
     private var cornerRadiusInt: Int = 0
     private var textColorHighlight: Int = 0
 
@@ -47,7 +47,7 @@ class SongRankAdapter : BaseRecyclerAdapter<KSheetSongBean>() {
         return holder
     }
 
-    override fun onBindItem(context: Context, item: KSheetSongBean, holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindItem(context: Context, item: MusicItemBean, holder: RecyclerView.ViewHolder, position: Int) {
         holder?.itemView?.run {
             findViewById<MaterialButton>(R.id.music_no).apply {
                 setTextColor(getTextHightColorPrimary(context))
@@ -58,8 +58,8 @@ class SongRankAdapter : BaseRecyclerAdapter<KSheetSongBean>() {
                 background.setTint(context.getColor(array[Random.nextInt(array.size)]))
                 text = "${position + 1}"
             }
-            findViewById<TextView>(R.id.author).text = item.author_name
-            findViewById<TextView>(R.id.title).text = item.songname
+            findViewById<TextView>(R.id.author).text = item.author
+            findViewById<TextView>(R.id.title).text = item.musicName
             findViewById<ShapeableImageView>(R.id.img_song).run {
                 loadUrl(item.album_sizable_cover)
                 shapeAppearanceModel = ShapeAppearanceModel.builder().apply {

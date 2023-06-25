@@ -98,6 +98,7 @@ class KHomeTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
     private fun getList() = mutableListOf<Fragment>(
         KHomeFragment.newInstance("首页", ""),
         KSongSheetFragment.newInstance("歌单", ""),
+        RankFragment.newInstance("榜单", ""),
         KNewLisFragment.newInstance("华语", "https://m.kugou.com/newsong/index"),
         KNewLisFragment.newInstance("欧美", "https://m.kugou.com/newsong/index/2"),
         KNewLisFragment.newInstance("韩国", "https://m.kugou.com/newsong/index/4"),

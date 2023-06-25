@@ -286,18 +286,19 @@ class KRepository private constructor(private val context: Context) {
     }
 
     suspend fun kSongRankDetail2(encodeID: String) = flow {
+        val listSong = mutableListOf<MusicItemBean>()
         val data = musiceApiL.kSongSheetDetail2("$encodeID?json").apply {
             info.img_cover = info.img_cover.replace("\\", "")
                 .replace("{size}", "400")
             info.imgurl = info.imgurl.replace("\\", "")
                 .replace("{size}", "400")
-            songs.list.forEach {
-                it.album_sizable_cover = it.album_sizable_cover.replace("\\", "")
-                    .replace("{size}", "400")
-                it.author_name = it.filename.substring(0, it.filename.indexOf("-"))
-//                it.authors[0].sizable_avatar = it.authors[0].sizable_avatar.replace("\\", "")
-//                    .replace("{size}", "400")
+
+            songs?.list?.forEach {
+                val index = it.filename.indexOf("-")
+                listSong.add(MusicItemBean(it.filename.substring(0, index), it.filename.substring(index + 1, it.filename.length), it.song_url, "", it.album_sizable_cover.replace("\\", "").replace("{size}", "400"), it.mvhash, 1, it.privilege))
             }
+            listData = listSong
+            songs = null
         }
         emit(data)
     }

@@ -25,6 +25,8 @@ import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.features_ui.page.detail.adapter.SongRankAdapter
 import com.wgllss.ssmusic.features_ui.page.detail.viewmodel.SongRankDetailtViewModel
+import com.wgllss.ssmusic.features_ui.page.mv.activity.KMVActivity
+import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 
 class SongRankFragment(private val encodeID: String) : BaseViewModelFragment<SongRankDetailtViewModel>(0) {
 
@@ -36,7 +38,7 @@ class SongRankFragment(private val encodeID: String) : BaseViewModelFragment<Son
 
     private val homeItem1Adapter by lazy { SongRankAdapter() }
 
-    override fun activitySameViewModel() = true
+//    override fun activitySameViewModel() = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (!this::rootView.isInitialized) {
@@ -81,7 +83,7 @@ class SongRankFragment(private val encodeID: String) : BaseViewModelFragment<Son
             (layoutParams as CoordinatorLayout.LayoutParams).behavior = AppBarLayout.ScrollingViewBehavior()
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-//                    viewModel.doPlay(homeItem1Adapter.getItem(position))
+                    viewModel.doPlay(homeItem1Adapter.getItem(position))
                 }
             })
         }
@@ -96,7 +98,7 @@ class SongRankFragment(private val encodeID: String) : BaseViewModelFragment<Son
                     it
                 }?.let {
                     activity?.run {
-//                        launchActivity(Intent(this, PlayActivity::class.java))
+                        launchActivity(Intent(this, PlayActivity::class.java))
                     }
                 }
             }
@@ -106,11 +108,11 @@ class SongRankFragment(private val encodeID: String) : BaseViewModelFragment<Son
                     img_bg.loadUrl(img_cover.ifEmpty { imgurl })
                     toolbar_layout.title = rankname
                 }
-                homeItem1Adapter.notifyData(it.songs.list)
+                homeItem1Adapter.notifyData(it.listData)
             }
             liveDataMV.observe(viewLifecycleOwner) {
                 activity?.run {
-//                    KMVActivity.startKMVActivity(this, it.url, it.title)
+                    KMVActivity.startKMVActivity(this, it.url, it.title)
                 }
             }
         }
