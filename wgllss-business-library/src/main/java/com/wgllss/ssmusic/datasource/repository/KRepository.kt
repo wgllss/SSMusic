@@ -219,7 +219,7 @@ class KRepository private constructor(private val context: Context) {
                         val img = album_sizable_cover
                             .replace("\\", "")
                             .replace("{size}", "100")
-                        listNew.add(MusicItemBean(author, musicName, url, "", img))
+                        listNew.add(MusicItemBean(author, musicName, url, "", img, mvhash = mvhash, dataSourceType = 1, privilege = privilege))
                     }
                 } catch (e: Exception) {
                     log("musicName:$musicName ")
