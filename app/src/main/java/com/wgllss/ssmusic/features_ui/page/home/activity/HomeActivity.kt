@@ -109,10 +109,10 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     private fun getItemId() = when (viewModel.mCurrentFragmentTAG.toString()) {
         "HomeTabFragment" -> 0
-        KHomeMVTabFragment::class.java.simpleName -> 1
+        KHomeSingerTabFragment::class.java.simpleName -> 1
 //        HistoryFragment::class.java.simpleName -> 1
 //        SearchFragment::class.java.simpleName -> 2
-        KHomeSingerTabFragment::class.java.simpleName -> 2
+        KHomeMVTabFragment::class.java.simpleName -> 2
         HistoryFragment::class.java.simpleName -> 3
         SettingFragment::class.java.simpleName -> 4
         else -> 0
@@ -124,9 +124,9 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
                 setCurrentFragment(homeFragment)
             }
 //            R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
-            R.id.fmt_b -> setCurrentFragment(kHomeMVTabFragment)
+            R.id.fmt_b -> setCurrentFragment(kHomeSingerTabFragment)
 //            R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
-            R.id.fmt_c -> setCurrentFragment(kHomeSingerTabFragment)
+            R.id.fmt_c -> setCurrentFragment(kHomeMVTabFragment)
             R.id.fmt_d -> setCurrentFragment(historyFragmentL.get())
             R.id.fmt_e -> setCurrentFragment(settingFragmentL.get())
         }
