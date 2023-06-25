@@ -14,10 +14,7 @@ import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
-import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
-import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeMVTabFragment
-import com.wgllss.ssmusic.features_ui.page.home.fragment.SearchFragment
-import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
+import com.wgllss.ssmusic.features_ui.page.home.fragment.*
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -31,11 +28,12 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     private val kHomeMVTabFragment by lazy { KHomeMVTabFragment() }
 
-//    @Inject
+    //    @Inject
 //    lateinit var historyFragmentL: Lazy<HistoryFragment>
+    private val kHomeSingerTabFragment by lazy { KHomeSingerTabFragment() }
 
-    @Inject
-    lateinit var searchFragmentL: Lazy<SearchFragment>
+//    @Inject
+//    lateinit var searchFragmentL: Lazy<SearchFragment>
 
     @Inject
     lateinit var settingFragmentL: Lazy<SettingFragment>
@@ -112,7 +110,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         "HomeTabFragment" -> 0
         KHomeMVTabFragment::class.java.simpleName -> 1
 //        HistoryFragment::class.java.simpleName -> 1
-        SearchFragment::class.java.simpleName -> 2
+//        SearchFragment::class.java.simpleName -> 2
+        KHomeSingerTabFragment::class.java.simpleName -> 2
         SettingFragment::class.java.simpleName -> 3
         else -> 0
     }
@@ -124,7 +123,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
             }
 //            R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
             R.id.fmt_b -> setCurrentFragment(kHomeMVTabFragment)
-            R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
+//            R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
+            R.id.fmt_c -> setCurrentFragment(kHomeSingerTabFragment)
             R.id.fmt_d -> setCurrentFragment(settingFragmentL.get())
         }
         return true

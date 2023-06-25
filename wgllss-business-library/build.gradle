@@ -56,7 +56,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$rootProject.ext.kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$rootProject.ext.kotlin_version"
 
-//    implementation libSupportAppcompat
+    implementation libSupportAppcompat
 //    implementation libSupportRecyclerView
 //    implementation libSupportdesign
 //    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
