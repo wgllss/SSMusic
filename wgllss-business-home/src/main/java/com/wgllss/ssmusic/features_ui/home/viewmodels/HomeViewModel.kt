@@ -11,14 +11,13 @@ import androidx.lifecycle.Transformations
 import com.wgllss.core.ex.logE
 import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.LogTimer
-import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.core.units.UUIDHelp
-import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.ssmusic.data.DataContains
+import com.wgllss.ssmusic.data.HomeItemBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
-import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_KEY
@@ -26,7 +25,6 @@ import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_TITLE_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_URL_KEY
 import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.extensions.isPlaying
-import com.wgllss.ssmusic.features_system.music.extensions.isPrepared
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import kotlinx.coroutines.flow.collect
@@ -41,7 +39,7 @@ class HomeViewModel : BaseViewModel() {
     val mCurrentFragmentTAG by lazy { StringBuilder() }
 
     val nowPlay by lazy { MutableLiveData<Boolean>() }
-
+    var isClick = false
     val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
     var isFirst = true
 
@@ -58,7 +56,7 @@ class HomeViewModel : BaseViewModel() {
 
     //播放列表
     val liveData: MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>> by lazy { MutableLiveData<MutableList<MediaBrowserCompat.MediaItem>>() }
-
+    val list by lazy { MutableLiveData<MutableList<HomeItemBean>>() }
     private val transportControls by lazy { musicServiceConnectionL.transportControls }
 
     private val subscriptionCallback by lazy {
@@ -69,20 +67,8 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-//    fun mediaItemClicked(clickedItem: MediaBrowserCompat.MediaItem, extras: Bundle?) {
-//        clickedItem.mediaId?.let {
-//            val nowPlaying = musicServiceConnectionL.nowPlaying.value
-//            val transportControls = musicServiceConnectionL.transportControls
-//            val isPrepared = musicServiceConnectionL.playbackState.value?.isPrepared ?: false
-//            if (isPrepared && it == nowPlaying?.id) {
-//                //当前正在播放 or 准备播放
-//            } else {
-//                transportControls.playFromMediaId(it, extras)
-//            }
-//        }
-//    }
-
     fun getMusicInfo(musicItemBean: MusicItemBean) {
+        isClick = true
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
         val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
         if (nowPlaying?.id?.toLong() == id) {
@@ -130,6 +116,15 @@ class HomeViewModel : BaseViewModel() {
     private val playbackStateObserver by lazy {
         Observer<PlaybackStateCompat> {
             currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.nowPlaying.value?.id ?: "" else "")
+        }
+    }
+
+    fun homeKMusic() {
+        isClick = false
+        flowAsyncWorkOnViewModelScopeLaunch {
+            kRepository.homeKMusic().onEach {
+                list.postValue(it)
+            }
         }
     }
 

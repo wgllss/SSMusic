@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.data.DataContains
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
@@ -14,6 +16,8 @@ import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.home.adapter.KHomeAdapter
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class KHomeFragment : TabTitleFragment<HomeViewModel>() {
     private lateinit var recyclerView: RecyclerView
@@ -48,7 +52,7 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         swipeRefreshLayout.setOnRefreshListener {
-//            homeTabViewModel.value.getData(key)
+            viewModel.homeKMusic()
         }
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -72,14 +76,19 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
         (recyclerView.adapter as KHomeAdapter).setOnItemClickNewList {
             viewModel.getMusicInfo(it)
         }
-//        viewModel.nowPlay.observe(viewLifecycleOwner) {
-//            it?.takeIf {
-//                it
-//            }?.let {
-//                activity?.run {
-//                    launchActivity(Intent(this, PlayActivity::class.java))
-//                }
-//            }
-//        }
+
+        viewModel.list.observe(viewLifecycleOwner) {
+            (recyclerView.adapter as KHomeAdapter).notifyData(it)
+        }
+
+    }
+
+    override fun initObserve() {
+//        super.initObserve()
+        viewModel?.run {
+            showUIDialog.observe(viewLifecycleOwner) {
+                swipeRefreshLayout.isRefreshing = it.isShow
+            }
+        }
     }
 }
