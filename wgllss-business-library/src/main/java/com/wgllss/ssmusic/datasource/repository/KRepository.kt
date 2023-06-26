@@ -81,9 +81,13 @@ class KRepository private constructor(private val context: Context) {
                 }
             }
             list.add(HomeItemBean(0, HomeLableBean("新歌首发")))
-            list.add(HomeItemBean(1, listNew = listNew))
+            listNew.forEach {
+                list.add(HomeItemBean(1, kMusicItemBean = it))
+            }
             list.add(HomeItemBean(0, HomeLableBean("热门歌单")))
-            list.add(HomeItemBean(2, listHot = listHot))
+            listHot?.forEach {
+                list.add(HomeItemBean(2, kKMusicHotSongBean = it))
+            }
             list.add(HomeItemBean(0, HomeLableBean("热歌榜单")))
 
             val rankList = mutableListOf<KRankExBean>()
@@ -109,7 +113,9 @@ class KRepository private constructor(private val context: Context) {
 
                 rankList.add(kRankBean)
             }
-            list.add(HomeItemBean(3, rankList = rankList))
+            rankList?.forEach {
+                list.add(HomeItemBean(3, kRankExBean = it))
+            }
             val hotSingers = document.select(".singer")
             //todo 热门歌手
             val singers = mutableListOf<KSingerBean>()
@@ -126,8 +132,9 @@ class KRepository private constructor(private val context: Context) {
                 singers.add(KSingerBean(name, url, img, encodeID))
             }
             list.add(0, HomeItemBean(0, HomeLableBean("热门歌手")))
-            list.add(1, HomeItemBean(4, singers = singers))
-//            val dataBean = KuGouHomeDataBean(listNew, listHot, rankList, singers)
+            singers?.forEach {
+                list.add(1, HomeItemBean(4, kSingerBean = it))
+            }
             emit(list)
             LrcHelp.saveHomeData(Gson().toJson(list))
         }.catch { it.printStackTrace() }

@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,18 +28,20 @@ import com.wgllss.ssmusic.data.MusicItemBean
 
 class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
     private val img_singer1 = 1
-    private val img_singer2 = 2
-    private val img_singer3 = 3
 
     private val txt_author1 = 5
-    private val txt_author2 = 6
-    private val txt_author3 = 7
 
-    var block: ((MusicItemBean) -> Any)? = null
+    private val img = 1
+    private val music_name = 2
+    private val name = 3
 
-    fun setOnItemClickNewList(block: (MusicItemBean) -> Any) {
-        this.block = block
-    }
+    private val img2 = 1
+    private val music_name2 = 2
+
+    private val img3 = 1
+    private val txt1 = 2
+    private val txt2 = 3
+    private val txt3 = 4
 
     override fun getItemViewType(position: Int): Int {
         return mData[position].itemType
@@ -51,59 +54,167 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
             context = parent.context
         }
         return when (viewType) {
-            1, 2 -> {
-                val recyclerView = RecyclerView(parent.context).apply {
-                    layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                    layoutManager = GridLayoutManager(context, 3)
-                    val itemDecoration = View(context)
-                    val size = context.getIntToDip(5.0f).toInt()
-                    itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-                    itemDecoration.setBackgroundColor(Color.parseColor("#30000000"))
-                    addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
-                    if (viewType == 1) {
-                        val homeItem1Adapter = KHomeItem1Adapter()
-                        adapter = homeItem1Adapter
-                        addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
-                            override fun onItemClickListener(itemRootView: View, position: Int) {
-                                block?.invoke(homeItem1Adapter.getItem(position))
-                            }
-                        })
-                    }
-                    if (viewType == 2) {
-                        val homeItem2Adapter = KHomeItem2Adapter()
-                        adapter = homeItem2Adapter
-                        addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
-                            override fun onItemClickListener(itemRootView: View, position: Int) {
-                                startToDetail(0, homeItem2Adapter.getItem(position).detailUrl)
-                            }
-                        })
-                    }
+            1 -> {
+                val linearLayout = LinearLayout(context).apply {
+                    layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(180f).toInt())
+                    val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
+                    val typedValue = TypedValue()
+                    val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
+                    foreground = attr.getDrawable(0)!!
+                    attr.recycle()
+                    val size = context.getIntToDip(8f).toInt()
+                    setPadding(size, size, size, size)
+                    isClickable = true
+                    isFocusable = true
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    orientation = LinearLayout.VERTICAL
                 }
-                BaseBindingViewHolder(recyclerView)
+                val image = ShapeableImageView(parent.context).apply {
+                    id = img
+                    scaleType = ImageView.ScaleType.FIT_XY
+                    val size = context.getIntToDip(120f).toInt()
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, size)
+                    layoutParams = lp
+                    shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
+                        setAllCorners(RoundedCornerTreatment())
+                        setAllCornerSizes(context.getIntToDip(8f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
+                    }.build()
+                }
+                linearLayout.addView(image)
+                val textViewMusicName = TextView(context).apply {
+                    id = music_name
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    maxLines = 1
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                    layoutParams = lp
+                }
+                linearLayout.addView(textViewMusicName)
+
+                val textName = TextView(context).apply {
+                    id = name
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    lp.topMargin = context.getIntToDip(5f).toInt()
+                    maxLines = 1
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                    layoutParams = lp
+                }
+                linearLayout.addView(textName)
+                BaseBindingViewHolder(linearLayout)
+            }
+            2 -> {
+                val linearLayout = LinearLayout(context).apply {
+                    layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(180f).toInt())
+                    val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
+                    val typedValue = TypedValue()
+                    val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
+                    foreground = attr.getDrawable(0)!!
+                    attr.recycle()
+                    val size = context.getIntToDip(8f).toInt()
+                    setPadding(size, size, size, size)
+                    isClickable = true
+                    isFocusable = true
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    orientation = LinearLayout.VERTICAL
+                }
+                val image = ShapeableImageView(parent.context).apply {
+                    id = img2
+                    val size = context.getIntToDip(120f).toInt()
+                    scaleType = ImageView.ScaleType.FIT_XY
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, size)
+                    layoutParams = lp
+                    shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
+                        setAllCorners(RoundedCornerTreatment())
+                        setAllCornerSizes(context.getIntToDip(8f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
+                    }.build()
+                }
+                linearLayout.addView(image)
+                val textViewMusicName = TextView(context).apply {
+                    id = music_name2
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                    lp.gravity = Gravity.CENTER_HORIZONTAL
+                    maxLines = 2
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                    layoutParams = lp
+                }
+                linearLayout.addView(textViewMusicName)
+                BaseBindingViewHolder(linearLayout)
             }
             3 -> {
-                val recyclerView = RecyclerView(parent.context).apply {
-                    layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
-                    layoutManager = LinearLayoutManager(context)
-                    val homeItem3Adapter = KHomeItem3Adapter()
-                    adapter = homeItem3Adapter
-                    addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
-                        override fun onItemClickListener(itemRootView: View, position: Int) {
-                            startToDetail(1, homeItem3Adapter.getItem(position).linkUrl)
-                        }
-                    })
+                val frameLayout = FrameLayout(parent.context).apply {
+                    layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(110f).toInt())
+                    val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
+                    val typedValue = TypedValue()
+                    val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
+                    foreground = attr.getDrawable(0)!!
+                    attr.recycle()
+                    isClickable = true
+                    isFocusable = true
                 }
-                BaseBindingViewHolder(recyclerView)
+                val image = ShapeableImageView(parent.context).apply {
+                    id = img
+                    val size = context.getIntToDip(90f).toInt()
+                    val lp = LinearLayout.LayoutParams(size, size)
+                    lp.gravity = Gravity.TOP or Gravity.LEFT
+                    layoutParams = lp
+                }
+                frameLayout.addView(image)
+
+                val textView1 = TextView(context).apply {
+                    id = txt1
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
+                    lp.leftMargin = context.getIntToDip(100f).toInt()
+                    maxLines = 1
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                    gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = lp
+                }
+                frameLayout.addView(textView1)
+
+                val textView2 = TextView(context).apply {
+                    id = txt2
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
+                    lp.leftMargin = context.getIntToDip(100f).toInt()
+                    lp.topMargin = context.getIntToDip(30f).toInt()
+                    maxLines = 1
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                    gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = lp
+                }
+                frameLayout.addView(textView2)
+
+                val textView3 = TextView(context).apply {
+                    id = txt3
+                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
+                    lp.leftMargin = context.getIntToDip(100f).toInt()
+                    lp.topMargin = context.getIntToDip(60f).toInt()
+                    maxLines = 1
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                    gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = lp
+                }
+                frameLayout.addView(textView3)
+                BaseBindingViewHolder(frameLayout)
             }
             4 -> {
                 val frameLayout = FrameLayout(parent.context).apply {
                     layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, RecyclerView.LayoutParams.WRAP_CONTENT)
+                    val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
+                    val typedValue = TypedValue()
+                    val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
+                    foreground = attr.getDrawable(0)!!
+                    attr.recycle()
+                    isClickable = true
+                    isFocusable = true
+                    val size = context.getIntToDip(8f).toInt()
+                    setPadding(size, size, size, size)
                 }
                 val imgSinger1 = ShapeableImageView(parent.context).apply {
                     id = img_singer1
                     val size = context.getIntToDip(120f).toInt()
-                    val lp = FrameLayout.LayoutParams(size, size)
-                    lp.gravity = Gravity.LEFT or Gravity.TOP;
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size)
+                    lp.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP;
                     layoutParams = lp
                     scaleType = ImageView.ScaleType.FIT_XY
                     shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
@@ -115,62 +226,13 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 val txtAuthor1 = TextView(parent.context).apply {
                     id = txt_author1
                     val size = context.getIntToDip(10f).toInt()
-                    val lp = FrameLayout.LayoutParams(8 * size, 3 * size)
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 3 * size)
                     lp.gravity = Gravity.LEFT or Gravity.TOP
                     lp.topMargin = context.getIntToDip(125f).toInt()
                     gravity = Gravity.CENTER_HORIZONTAL
                     layoutParams = lp
                 }
                 frameLayout.addView(txtAuthor1)
-
-                val imgSinger2 = ShapeableImageView(parent.context).apply {
-                    id = img_singer2
-                    val size = context.getIntToDip(120f).toInt()
-                    val lp = FrameLayout.LayoutParams(size, size)
-                    lp.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                    layoutParams = lp
-                    scaleType = ImageView.ScaleType.FIT_XY
-                    shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
-                        setAllCorners(RoundedCornerTreatment())
-                        setAllCornerSizes(context.getIntToDip(8f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
-                    }.build()
-                }
-                frameLayout.addView(imgSinger2)
-                val txtAuthor2 = TextView(parent.context).apply {
-                    id = txt_author2
-                    val size = context.getIntToDip(10f).toInt()
-                    val lp = FrameLayout.LayoutParams(8 * size, 3 * size)
-                    lp.gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                    lp.topMargin = context.getIntToDip(125f).toInt()
-                    gravity = Gravity.CENTER_HORIZONTAL
-                    layoutParams = lp
-                }
-                frameLayout.addView(txtAuthor2)
-
-                val imgSinger3 = ShapeableImageView(parent.context).apply {
-                    id = img_singer3
-                    val size = context.getIntToDip(120f).toInt()
-                    val lp = FrameLayout.LayoutParams(size, size)
-                    lp.gravity = Gravity.RIGHT or Gravity.TOP
-                    layoutParams = lp
-                    layoutParams = lp
-                    scaleType = ImageView.ScaleType.FIT_XY
-                    shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
-                        setAllCorners(RoundedCornerTreatment())
-                        setAllCornerSizes(context.getIntToDip(8f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
-                    }.build()
-                }
-                frameLayout.addView(imgSinger3)
-                val txtAuthor3 = TextView(parent.context).apply {
-                    id = txt_author3
-                    val size = context.getIntToDip(10f).toInt()
-                    val lp = FrameLayout.LayoutParams(12 * size, 3 * size)
-                    lp.gravity = Gravity.RIGHT or Gravity.TOP
-                    lp.topMargin = context.getIntToDip(125f).toInt()
-                    gravity = Gravity.CENTER_HORIZONTAL
-                    layoutParams = lp
-                }
-                frameLayout.addView(txtAuthor3)
                 BaseBindingViewHolder(frameLayout)
             }
             else -> {
@@ -192,52 +254,34 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 (holder.itemView as TextView).text = item.homeLableBean?.lable
             }
             1 -> {
-                ((holder.itemView as RecyclerView).adapter as KHomeItem1Adapter).notifyData(item.listNew!!)
+                holder.itemView.findViewById<TextView>(name).text = item.kMusicItemBean!!.author
+
+                holder.itemView.findViewById<TextView>(music_name).text = item.kMusicItemBean!!.musicName
+
+                holder.itemView.findViewById<ShapeableImageView>(img).loadUrl(item.kMusicItemBean!!.album_sizable_cover)
             }
             2 -> {
-                ((holder.itemView as RecyclerView).adapter as KHomeItem2Adapter).notifyData(item.listHot!!)
+                holder.itemView.findViewById<TextView>(music_name2).text = item.kKMusicHotSongBean!!.musicName
+                holder.itemView.findViewById<ShapeableImageView>(img2).loadUrl(item.kKMusicHotSongBean!!.imgUrl)
             }
             3 -> {
-                ((holder.itemView as RecyclerView).adapter as KHomeItem3Adapter).notifyData(item.rankList!!)
+                holder.itemView.findViewById<ImageView>(img3).loadUrl(item.kRankExBean!!.imgUrl)
+                item.kRankExBean!!.topBean[0]?.run {
+                    holder.itemView.findViewById<TextView>(txt1).text = "$no $musicName  $author"
+                }
+                item.kRankExBean!!.topBean[1]?.run {
+                    holder.itemView.findViewById<TextView>(txt2).text = "$no $musicName  $author"
+                }
+                item.kRankExBean!!.topBean[2]?.run {
+                    holder.itemView.findViewById<TextView>(txt3).text = "$no $musicName  $author"
+                }
             }
             4 -> {
-                item.singers?.let {
-                    holder.itemView.findViewById<ShapeableImageView>(img_singer1).apply {
-                        loadUrl(it[0].imgUrl)
-                        setOnClickListener { _ ->
-                            startToDetail(2, it[0].encodeID, it[0].name)
-                        }
-                    }
-                    holder.itemView.findViewById<ShapeableImageView>(img_singer2).apply {
-                        loadUrl(it[1].imgUrl)
-                        setOnClickListener { _ ->
-                            startToDetail(2, it[1].encodeID, it[1].name)
-//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, it[1].encodeID, 2, it[0].name)
-                        }
-                    }
-                    holder.itemView.findViewById<ShapeableImageView>(img_singer3).apply {
-                        loadUrl(it[2].imgUrl)
-                        setOnClickListener { _ ->
-                            startToDetail(2, it[2].encodeID, it[2].name)
-                        }
-                    }
-
-                    holder.itemView.findViewById<TextView>(txt_author1).text = it[0].name
-                    holder.itemView.findViewById<TextView>(txt_author2).text = it[1].name
-                    holder.itemView.findViewById<TextView>(txt_author3).text = it[2].name
+                item.kSingerBean?.run {
+                    holder.itemView.findViewById<ShapeableImageView>(img_singer1).loadUrl(imgUrl)
+                    holder.itemView.findViewById<TextView>(txt_author1).text = name
                 }
-
             }
-        }
-    }
-
-    private fun startToDetail(type: Int, encode: String, authorName: String = "") {
-        context?.let {
-            val intent = Intent(it, Class.forName("com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity"))
-                .putExtra("ENCODE_ID_KEY", encode)
-                .putExtra("TYPE_KEY", type)
-                .putExtra("AUTHOR_NAME_KEY", authorName)
-            it.startActivity(intent)
         }
     }
 }

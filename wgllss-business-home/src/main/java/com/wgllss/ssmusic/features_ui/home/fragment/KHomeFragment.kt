@@ -1,14 +1,17 @@
 package com.wgllss.ssmusic.features_ui.home.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.wgllss.core.viewmodel.BaseViewModel
+import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.data.DataContains
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
@@ -22,6 +25,7 @@ import kotlinx.coroutines.launch
 class KHomeFragment : TabTitleFragment<HomeViewModel>() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var kHomeAdapter: KHomeAdapter
 
     companion object {
         private const val TITLE_KEY = "TITLE_KEY"
@@ -45,6 +49,7 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
         if (!this::swipeRefreshLayout.isInitialized) {
             swipeRefreshLayout = HomeContains.getViewByKey(inflater.context, LaunchInflateKey.home_fragment)!! as SwipeRefreshLayout
             recyclerView = swipeRefreshLayout.findViewById(R.id.home_recycle_view)
+            kHomeAdapter = recyclerView.adapter as KHomeAdapter
         }
         return swipeRefreshLayout
     }
@@ -54,40 +59,85 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.homeKMusic()
         }
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                when (newState) {
-                    //滑动停止
-                    RecyclerView.SCROLL_STATE_IDLE -> activity?.let {
-                        Glide.with(it).resumeRequests()
-                    }
-                    else -> activity?.let {
-                        Glide.with(it).pauseRequests()
+        recyclerView?.apply {
+            layoutManager = GridLayoutManager(requireContext(), 3).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(i: Int): Int {
+                        //spanCount 当横向时，2代表每列2行，
+                        return when (adapter!!.getItemViewType(i)) {
+                            0, 3 -> 3 //   spanCount/3  个位置占满一格
+                            else -> 1 // spanCount/2  个位置占满一格
+                        }
                     }
                 }
             }
-        })
+            addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
+                override fun onItemClickListener(itemRootView: View, position: Int) {
+                    val item = kHomeAdapter.getItem(position)
+                    when (kHomeAdapter.getItemViewType(position)) {
+                        1 -> {
+                            viewModel.getMusicInfo(item.kMusicItemBean!!)
+                        }
+                        2 -> {
+                            startToDetail(0, item.kKMusicHotSongBean!!.detailUrl)
+//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, item.kKMusicHotSongBean!!.detailUrl)
+                        }
+                        3 -> {
+                            startToDetail(1, item.kRankExBean!!.linkUrl)
+//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, item.kRankExBean!!.linkUrl, 1)
+                        }
+                        4 -> {
+                            startToDetail(2, item.kSingerBean!!.encodeID, item.kSingerBean!!.name)
+//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, item.kSingerBean!!.encodeID, 2, item.kSingerBean!!.name)
+                        }
+                    }
+                }
+            })
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    when (newState) {
+                        //滑动停止
+                        RecyclerView.SCROLL_STATE_IDLE -> activity?.let {
+                            Glide.with(it).resumeRequests()
+                        }
+                        else -> activity?.let {
+                            Glide.with(it).pauseRequests()
+                        }
+                    }
+                }
+            })
+        }
+
         if (LrcHelp.getHomeData().isEmpty()) {
             DataContains.list.observe(viewLifecycleOwner) {
-                (recyclerView.adapter as KHomeAdapter).notifyData(it)
+                kHomeAdapter.notifyData(it)
             }
-        }
-        (recyclerView.adapter as KHomeAdapter).setOnItemClickNewList {
-            viewModel.getMusicInfo(it)
         }
 
         viewModel.list.observe(viewLifecycleOwner) {
-            (recyclerView.adapter as KHomeAdapter).notifyData(it)
+            kHomeAdapter.notifyData(it)
         }
+    }
 
+    private fun startToDetail(type: Int, encode: String, authorName: String = "") {
+        context?.let {
+            val intent = Intent(it, Class.forName("com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity"))
+                .putExtra("ENCODE_ID_KEY", encode)
+                .putExtra("TYPE_KEY", type)
+                .putExtra("AUTHOR_NAME_KEY", authorName)
+            it.startActivity(intent)
+        }
     }
 
     override fun initObserve() {
-//        super.initObserve()
+        super.initObserve()
         viewModel?.run {
             showUIDialog.observe(viewLifecycleOwner) {
-                swipeRefreshLayout.isRefreshing = it.isShow
+                if (!isClick)
+                    swipeRefreshLayout.isRefreshing = it.isShow
+                else
+                    if (it.isShow) showloading(it.msg) else hideLoading()
             }
         }
     }
