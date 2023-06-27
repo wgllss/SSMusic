@@ -71,7 +71,9 @@ class SongSheetViewModel : BaseViewModel() {
     fun getMusicInfo(musicItemBean: MusicItemBean) {
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
         val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
-        if (nowPlaying?.id?.toLong() == id) {
+        nowPlaying?.id?.takeIf {
+            it.isNotEmpty() && it.toLong() == id
+        }?.let {
             nowPlay.postValue(true)
             return
         }

@@ -28,6 +28,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
 import java.lang.Exception
+import java.util.concurrent.TimeoutException
 
 class KRepository private constructor(private val context: Context) {
     private val baseUrl = "https://m.kugou.com/"
@@ -167,10 +168,14 @@ class KRepository private constructor(private val context: Context) {
         loadWebViewUrl(musicItemBean.detailUrl, implWeb)
         return flow {
             var musicFileUrl: String
+            val startTime = System.currentTimeMillis()
             while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
                     musicFileUrl = it
                 })) {
-                delay(10)
+                delay(16)
+                if (System.currentTimeMillis() - startTime > 15000) {
+                    throw TimeoutException("获取播放链接超时")
+                }
             }
             log("####################################")
             val lrcUrl = implWeb.getMusicLrcUrl()
@@ -195,8 +200,9 @@ class KRepository private constructor(private val context: Context) {
                 }
                 emit(musicBean)
             }
-        }.catch { it.printStackTrace() }
-            .flowOn(Dispatchers.IO)
+        }
+//            .catch { it.printStackTrace() }
+//            .flowOn(Dispatchers.IO)
     }
 
     /**
