@@ -66,7 +66,7 @@ object GenerateHomeLayout {
                 bringToFront()
                 bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
             }
-            setBackgroundColor(Color.parseColor("#20000000"))
+            setBackgroundColor(Color.parseColor("#222222"))
         }
         val img = ShapeableImageView(context).apply {
             id = res.getIdentifier("play_bar_cover", "id", context.packageName)
