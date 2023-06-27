@@ -1,6 +1,7 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -12,9 +13,12 @@ import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
-import com.wgllss.ssmusic.features_ui.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
-import com.wgllss.ssmusic.features_ui.page.home.fragment.*
+import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
+import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeMVTabFragment
+import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeSingerTabFragment
+import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
+import com.wgllss.ssmusic.features_ui.playing.music_widget.PlayBarPanel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +43,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     lateinit var settingFragmentL: Lazy<SettingFragment>
 
     private lateinit var navigationView: BottomNavigationView
+    private lateinit var playBarLayout: View
+    private lateinit var playBarPanel: PlayBarPanel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         LogTimer.LogE(this, "onCreate")
@@ -53,6 +59,19 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         LogTimer.LogE(this@HomeActivity, "initControl savedInstanceState $savedInstanceState")
         val contentLayout = HomeContains.getViewByKey(this, LaunchInflateKey.home_activity)!!
         addContentView(contentLayout, contentLayout.layoutParams)
+        val playBarLayout = HomeContains.getViewByKey(this, LaunchInflateKey.play_bar_layout)!!
+        playBarLayout?.run {
+            playBarPanel = PlayBarPanel(
+                findViewById(R.id.play_bar_cover),
+                findViewById(R.id.play_bar_music_name),
+                findViewById(R.id.play_bar_author),
+                findViewById(R.id.play_bar_list),
+                findViewById(R.id.play_bar_next),
+                findViewById(R.id.play_bar_playOrPause),
+                resources
+            )
+        }
+        addContentView(playBarLayout, playBarLayout.layoutParams)
         if (savedInstanceState == null) {
             setCurrentFragment(homeFragment)
         } else {
@@ -61,6 +80,13 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         }
         LogTimer.LogE(this@HomeActivity, "initControl after")
         window.setBackgroundDrawable(null)//去掉主题背景颜色
+    }
+
+    override fun bindEvent() {
+        super.bindEvent()
+        viewModel?.run {
+            playBarPanel?.observe(nowPlaying, playbackState, this@HomeActivity)
+        }
     }
 
     override fun onBackPressed() {

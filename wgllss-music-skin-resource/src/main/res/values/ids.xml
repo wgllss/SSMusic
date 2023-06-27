@@ -10,5 +10,11 @@
     <item name="fmt_c" type="id" />
     <item name="fmt_d" type="id" />
     <item name="fmt_e" type="id" />
+    <item name="play_bar_cover" type="id" />
+    <item name="play_bar_playOrPause" type="id" />
+    <item name="play_bar_music_name" type="id" />
+    <item name="play_bar_author" type="id" />
+    <item name="play_bar_next" type="id" />
+    <item name="play_bar_list" type="id" />
     <item name="buttom_navigation" type="id" />
 </resources>

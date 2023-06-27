@@ -8,4 +8,5 @@ object LaunchInflateKey {
     const val home_tab_fragment = "home_tab_fragment"
     const val home_tab_fragment_layout = "home_tab_fragment_layout"
     const val home_tab_fragment_list = "home_tab_fragment_list"
+    const val play_bar_layout = "play_bar_layout"
 }

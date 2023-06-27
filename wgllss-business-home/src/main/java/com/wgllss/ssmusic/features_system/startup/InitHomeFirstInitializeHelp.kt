@@ -46,6 +46,9 @@ object InitHomeFirstInitializeHelp {
             async(Dispatchers.IO) {
                 HomeContains.putViewByKey(LaunchInflateKey.home_fragment, GenerateHomeLayout.syncCreateHomeFragmentLayout(context, res))
             }
+            async(Dispatchers.IO) {
+                HomeContains.putViewByKey(LaunchInflateKey.play_bar_layout, GenerateHomeLayout.syncCreatePlayPanelLayout(context, res))
+            }
 
             async(Dispatchers.IO) {
                 KRepository.getInstance(activity).homeKMusic()

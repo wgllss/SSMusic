@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.features_ui.home.viewmodels
 
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -38,6 +39,13 @@ class HomeViewModel : BaseViewModel() {
     private val currentMediaID by lazy { MutableLiveData("") }
     val mCurrentFragmentTAG by lazy { StringBuilder() }
 
+    val nowPlaying by lazy { MutableLiveData<MediaMetadataCompat>() }
+    val playbackState by lazy { MutableLiveData<PlaybackStateCompat>() }
+
+    private val mediaMetadataObserver = Observer<MediaMetadataCompat> {
+        nowPlaying.postValue(it)
+    }
+
     val nowPlay by lazy { MutableLiveData<Boolean>() }
     var isClick = false
     val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
@@ -71,7 +79,9 @@ class HomeViewModel : BaseViewModel() {
         isClick = true
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
         val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
-        if (nowPlaying?.id?.toLong() == id) {
+        nowPlaying?.id?.takeIf {
+            it.isNotEmpty() && it.toLong() == id
+        }?.let {
             nowPlay.postValue(true)
             return
         }
@@ -102,7 +112,11 @@ class HomeViewModel : BaseViewModel() {
     }
 
     override fun start() {
-        musicServiceConnectionL.startConnect()
+        musicServiceConnectionL.run {
+            startConnect()
+            playbackState.observeForever(playbackStateObserver)
+            nowPlaying.observeForever(mediaMetadataObserver)
+        }
     }
 
     fun subscribeByMediaID(mediaId: String) {
@@ -115,6 +129,7 @@ class HomeViewModel : BaseViewModel() {
 
     private val playbackStateObserver by lazy {
         Observer<PlaybackStateCompat> {
+            playbackState.postValue(it)
             currentMediaID.postValue(if (it.isPlaying) musicServiceConnectionL.nowPlaying.value?.id ?: "" else "")
         }
     }
@@ -131,5 +146,6 @@ class HomeViewModel : BaseViewModel() {
     override fun onCleared() {
         super.onCleared()
         musicServiceConnectionL.playbackState.removeObserver(playbackStateObserver)
+        musicServiceConnectionL.nowPlaying.removeObserver(mediaMetadataObserver)
     }
 }

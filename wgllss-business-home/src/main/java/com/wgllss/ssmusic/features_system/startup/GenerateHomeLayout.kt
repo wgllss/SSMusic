@@ -3,10 +3,13 @@ package com.wgllss.ssmusic.features_system.startup
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,23 +17,22 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.shape.RoundedCornerTreatment
+import com.google.android.material.shape.ShapeAppearanceModel
 import com.google.android.material.tabs.TabLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.wgllss.core.ex.getIntToDip
+import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.clearLongClickToast
 import com.wgllss.music.skin.R
-import com.wgllss.core.material.ThemeUtils
-import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.HomeItemBean
-import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.ex.initColors
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
-import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
-import com.wgllss.ssmusic.features_ui.home.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.home.adapter.KHomeAdapter
 
 object GenerateHomeLayout {
@@ -40,6 +42,7 @@ object GenerateHomeLayout {
         LaunchInflateKey.home_navigation -> syncCreateHomeNavigationLayout(context, context.resources)
         LaunchInflateKey.home_tab_fragment_layout -> syncCreateHomeTabFragmentLayout(context, context.resources)
         LaunchInflateKey.home_fragment -> syncCreateHomeFragmentLayout(context, context.resources)
+        LaunchInflateKey.play_bar_layout -> syncCreatePlayPanelLayout(context, context.resources)
         else -> null
     }
 
@@ -54,6 +57,84 @@ object GenerateHomeLayout {
         }
 //        ScreenManager.measureAndLayout(activityLayout)
         return activityLayout
+    }
+
+    fun syncCreatePlayPanelLayout(context: Context, res: Resources): View {
+        val frameLayout = FrameLayout(context).apply {
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, res.getDimension(R.dimen.play_bar_height).toInt()).apply {
+                gravity = Gravity.BOTTOM or Gravity.LEFT
+                bringToFront()
+                bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
+            }
+            setBackgroundColor(Color.parseColor("#20000000"))
+        }
+        val img = ShapeableImageView(context).apply {
+            id = res.getIdentifier("play_bar_cover", "id", context.packageName)
+            val size = context.getIntToDip(40f).toInt()
+            layoutParams = FrameLayout.LayoutParams(size, size).apply {
+                gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+            }
+            scaleType = ImageView.ScaleType.FIT_XY
+            shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
+                setAllCorners(RoundedCornerTreatment())
+                setAllCornerSizes(context.getIntToDip(20f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
+            }.build()
+        }
+        frameLayout.addView(img)
+        val txtMusicName = TextView(context).apply {
+            id = res.getIdentifier("play_bar_music_name", "id", context.packageName)
+            val size = context.getIntToDip(15f).toInt()
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 2 * size).apply {
+                gravity = Gravity.TOP or Gravity.LEFT
+                leftMargin = 3 * size
+                rightMargin = 6 * size
+            }
+            maxLines = 1
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        frameLayout.addView(txtMusicName)
+        val txtAuthor = TextView(context).apply {
+            id = res.getIdentifier("play_bar_author", "id", context.packageName)
+            val size = context.getIntToDip(5f).toInt()
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 4 * size).apply {
+                gravity = Gravity.BOTTOM or Gravity.LEFT
+                leftMargin = 9 * size
+                rightMargin = 18 * size
+            }
+            maxLines = 1
+            gravity = Gravity.CENTER_VERTICAL
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+        }
+        frameLayout.addView(txtAuthor)
+        val size = context.getIntToDip(30f).toInt()
+        val imgPlayList = ShapeableImageView(context).apply {
+            id = res.getIdentifier("play_bar_list", "id", context.packageName)
+            layoutParams = FrameLayout.LayoutParams(size, size).apply {
+                gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+            }
+            scaleType = ImageView.ScaleType.FIT_XY
+        }
+        frameLayout.addView(imgPlayList)
+        val imgPlayNext = ShapeableImageView(context).apply {
+            id = res.getIdentifier("play_bar_next", "id", context.packageName)
+            layoutParams = FrameLayout.LayoutParams(size, size).apply {
+                gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+                rightMargin = size
+            }
+            scaleType = ImageView.ScaleType.FIT_XY
+        }
+        frameLayout.addView(imgPlayNext)
+        val imgPlayPause = ShapeableImageView(context).apply {
+            id = res.getIdentifier("play_bar_playOrPause", "id", context.packageName)
+            layoutParams = FrameLayout.LayoutParams(size, size).apply {
+                gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
+                rightMargin = 2 * size
+            }
+            scaleType = ImageView.ScaleType.FIT_XY
+        }
+        frameLayout.addView(imgPlayPause)
+        return frameLayout
     }
 
     fun syncCreateHomeNavigationLayout(context: Context, res: Resources): View {
