@@ -70,11 +70,14 @@ class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
         })
     }
 
+    override fun lazyLoad() {
+        viewModel?.kSingers(key)
+    }
+
     override fun initObserve() {
         super.initObserve()
         viewModel?.run {
             initKey(key)
-            kSingers(key)
             result[key]?.observe(viewLifecycleOwner) {
                 singersAdapter.notifyData(it)
             }

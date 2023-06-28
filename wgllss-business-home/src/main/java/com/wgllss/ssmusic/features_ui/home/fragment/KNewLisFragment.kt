@@ -23,7 +23,7 @@ class KNewLisFragment : TabTitleFragment<HomeViewModel>() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private val homeItem1Adapter by lazy { KNewSongAdapter() }
 
-    private val homeTabViewModel = viewModels<NewListTabViewModel>()
+    private val homeTabViewModel by lazy { viewModels<NewListTabViewModel>().value }
 
     companion object {
         private const val TITLE_KEY = "TITLE_KEY"
@@ -52,13 +52,8 @@ class KNewLisFragment : TabTitleFragment<HomeViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        homeTabViewModel.value.initKey(key)
         swipeRefreshLayout.setOnRefreshListener {
-            homeTabViewModel.value.getData(key)
-        }
-        homeTabViewModel.value.result[key]?.observe(viewLifecycleOwner) {
-            WLog.e(this@KNewLisFragment, key)
-            homeItem1Adapter.notifyData(it)
+            homeTabViewModel.getData(key)
         }
         rvPlList.apply {
             adapter = homeItem1Adapter
@@ -84,12 +79,20 @@ class KNewLisFragment : TabTitleFragment<HomeViewModel>() {
             })
         }
         LogTimer.LogE(this, "key:$key")
-        homeTabViewModel.value.getData(key)
+    }
+
+    override fun lazyLoad() {
+        homeTabViewModel.getData(key)
     }
 
     override fun initObserve() {
         super.initObserve()
-        homeTabViewModel.value?.run {
+        homeTabViewModel.run {
+            initKey(key)
+            result[key]?.observe(viewLifecycleOwner) {
+                WLog.e(this@KNewLisFragment, key)
+                homeItem1Adapter.notifyData(it)
+            }
             showUIDialog.observe(viewLifecycleOwner) {
                 if (!isClick) {
                     swipeRefreshLayout.isRefreshing = it.isShow

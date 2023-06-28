@@ -93,20 +93,20 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
                     }
                 }
             })
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    when (newState) {
-                        //滑动停止
-                        RecyclerView.SCROLL_STATE_IDLE -> activity?.let {
-                            Glide.with(it).resumeRequests()
-                        }
-                        else -> activity?.let {
-                            Glide.with(it).pauseRequests()
-                        }
-                    }
-                }
-            })
+//            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//
+//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                    when (newState) {
+//                        //滑动停止
+//                        RecyclerView.SCROLL_STATE_IDLE -> activity?.let {
+//                            Glide.with(it).resumeRequests()
+//                        }
+//                        else -> activity?.let {
+//                            Glide.with(it).pauseRequests()
+//                        }
+//                    }
+//                }
+//            })
         }
 
         if (LrcHelp.getHomeData().isEmpty()) {

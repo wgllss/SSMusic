@@ -66,7 +66,7 @@ object GenerateHomeLayout {
                 bringToFront()
                 bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
             }
-            setBackgroundColor(Color.parseColor("#20000000"))
+            setBackgroundColor(Color.parseColor("#10000000"))
         }
         val img = ShapeableImageView(context).apply {
             id = res.getIdentifier("play_bar_cover", "id", context.packageName)
@@ -239,7 +239,7 @@ object GenerateHomeLayout {
             val itemDecoration = View(context)
             val size = context.getIntToDip(1.0f).toInt()
             itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-            itemDecoration.setBackgroundColor(Color.parseColor("#60000000"))
+            itemDecoration.setBackgroundColor(Color.parseColor("#10000000"))
             addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
             val kHomeAdapter = KHomeAdapter()
             adapter = kHomeAdapter

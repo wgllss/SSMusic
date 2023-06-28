@@ -118,6 +118,9 @@ class KSongSheetFragment : TabTitleFragment<HomeViewModel>() {
             itemDecoration.setBackgroundColor(Color.parseColor("#30000000"))
             addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
         }
+    }
+
+    override fun lazyLoad() {
         homeTabViewModel.homeKuGouSongSheet()
     }
 

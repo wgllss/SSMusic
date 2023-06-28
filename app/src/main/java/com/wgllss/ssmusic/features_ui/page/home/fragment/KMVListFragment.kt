@@ -100,11 +100,14 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
         }
     }
 
+    override fun lazyLoad() {
+        viewModel?.kmvList(key)
+    }
+
     override fun initObserve() {
         super.initObserve()
         viewModel.run {
             initKey(key)
-            kmvList(key)
             result[key]?.observe(viewLifecycleOwner) {
                 mvListAdapter.notifyData(it)
                 if (key == "9" || key == "13") {

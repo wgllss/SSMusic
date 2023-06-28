@@ -65,7 +65,6 @@ class RankFragment : TabTitleFragment<HomeViewModel>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        homeTabViewModel.start()
         rvPlList?.apply {
             adapter = kRankListAdapter
             setHasFixedSize(true)
@@ -107,6 +106,11 @@ class RankFragment : TabTitleFragment<HomeViewModel>() {
             homeTabViewModel.start()
         }
     }
+
+    override fun lazyLoad() {
+        homeTabViewModel.start()
+    }
+
 
     override fun initObserve() {
         super.initObserve()
