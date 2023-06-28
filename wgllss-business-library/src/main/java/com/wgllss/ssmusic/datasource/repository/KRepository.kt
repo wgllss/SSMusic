@@ -4,10 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.webkit.*
 import com.google.gson.Gson
-import com.wgllss.ssmusic.data.HomeItemBean
-import com.wgllss.ssmusic.data.HomeLableBean
-import com.wgllss.ssmusic.data.MusicBean
-import com.wgllss.ssmusic.data.MusicItemBean
+import com.wgllss.ssmusic.data.*
 import com.wgllss.ssmusic.datasource.net.KMusicApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.datasource.netbean.KMJson
@@ -136,6 +133,10 @@ class KRepository private constructor(private val context: Context) {
             singers?.forEach {
                 list.add(1, HomeItemBean(4, kSingerBean = it))
             }
+            list.add(0, HomeItemBean(5, kMenuBean = KMenuBean(1, "经典")))
+            list.add(1, HomeItemBean(5, kMenuBean = KMenuBean(2, "最新")))
+            list.add(2, HomeItemBean(5, kMenuBean = KMenuBean(3, "新歌")))
+            list.add(3, HomeItemBean(5, kMenuBean = KMenuBean(4, "搜索")))
             emit(list)
             LrcHelp.saveHomeData(Gson().toJson(list))
         }.catch { it.printStackTrace() }

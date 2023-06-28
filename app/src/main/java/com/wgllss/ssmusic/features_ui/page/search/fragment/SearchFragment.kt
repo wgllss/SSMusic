@@ -1,14 +1,15 @@
-package com.wgllss.ssmusic.features_ui.page.home.fragment
+package com.wgllss.ssmusic.features_ui.page.search.fragment
 
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.wgllss.core.ex.HideSoftInputFromWindow
+import com.wgllss.core.ex.finishActivity
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
-import com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter
+import com.wgllss.ssmusic.features_ui.page.search.adapter.MusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +52,9 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
                     else -> {}
                 }
                 false
+            }
+            imgBack.setOnClickListener {
+                activity?.run { finishActivity() }
             }
         }
         viewModel.result.observe(viewLifecycleOwner) {

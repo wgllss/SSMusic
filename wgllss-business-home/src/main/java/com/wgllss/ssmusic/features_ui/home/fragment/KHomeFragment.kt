@@ -60,13 +60,14 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
             viewModel.homeKMusic()
         }
         recyclerView?.apply {
-            layoutManager = GridLayoutManager(requireContext(), 3).apply {
+            layoutManager = GridLayoutManager(requireContext(), 12).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(i: Int): Int {
                         //spanCount 当横向时，2代表每列2行，
                         return when (adapter!!.getItemViewType(i)) {
-                            0, 3 -> 3 //   spanCount/3  个位置占满一格
-                            else -> 1 // spanCount/2  个位置占满一格
+                            0, 3 -> 12 //   spanCount/12  个位置占满一格
+                            5 -> 3
+                            else -> 4 // spanCount/4  个位置占满一格
                         }
                     }
                 }
@@ -80,15 +81,18 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
                         }
                         2 -> {
                             startToDetail(0, item.kKMusicHotSongBean!!.detailUrl)
-//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, item.kKMusicHotSongBean!!.detailUrl)
                         }
                         3 -> {
                             startToDetail(1, item.kRankExBean!!.linkUrl)
-//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, item.kRankExBean!!.linkUrl, 1)
                         }
                         4 -> {
                             startToDetail(2, item.kSingerBean!!.encodeID, item.kSingerBean!!.name)
-//                            SongSheetDetailActivity.startSongSheetDetailActivity(context, item.kSingerBean!!.encodeID, 2, item.kSingerBean!!.name)
+                        }
+                        5 -> {
+                            when (item.kMenuBean?.itemID) {
+                                1 -> startToDetailActivity("")
+                                4 -> startToDetailActivity("com.wgllss.ssmusic.features_ui.page.search.activity.SearchActivity")
+                            }
                         }
                     }
                 }
@@ -117,6 +121,17 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
 
         viewModel.list.observe(viewLifecycleOwner) {
             kHomeAdapter.notifyData(it)
+        }
+    }
+
+    private fun startToDetailActivity(className: String) {
+        context?.run {
+            try {
+                val clazz = Class.forName(className)
+                startActivity(Intent(this, clazz))
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

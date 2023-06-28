@@ -36,8 +36,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
-            android:exported="true"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/LauncherTheme2">
             <intent-filter>
@@ -48,20 +48,26 @@
         </activity>
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity"
-            android:exported="false"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SSMusic" />
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.playlist.activity.PlayListActivity"
-            android:exported="false"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.SSMusic" />
+        <activity
+            android:name="com.wgllss.ssmusic.features_ui.page.search.activity.SearchActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SSMusic" />
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity"
-            android:exported="false"
             android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SSMusic" />
         <activity
@@ -72,11 +78,11 @@
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:taskAffinity="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
             android:theme="@style/Transparent"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />

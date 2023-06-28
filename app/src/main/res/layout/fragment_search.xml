@@ -9,7 +9,7 @@
 
         <variable
             name="adapter"
-            type="com.wgllss.ssmusic.features_ui.page.home.adapter.MusicAdapter" />
+            type="com.wgllss.ssmusic.features_ui.page.search.adapter.MusicAdapter" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -41,6 +41,20 @@
             android:textColor="?android:textColorHighlight"
             android:textColorHint="?android:textColorHighlight"
             android:textSize="18dp" />
+
+        <ImageView
+            android:id="@+id/img_back"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="top|left"
+            android:layout_marginTop="36dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:theme="@style/RippleWhite80" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shapeable_search"

@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.features_ui.page.home.adapter
+package com.wgllss.ssmusic.features_ui.page.search.adapter
 
 import android.content.Context
 import android.util.TypedValue

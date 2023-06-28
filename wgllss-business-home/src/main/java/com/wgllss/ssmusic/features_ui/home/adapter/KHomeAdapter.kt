@@ -12,9 +12,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.view.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.shape.RoundedCornerTreatment
 import com.google.android.material.shape.ShapeAppearanceModel
@@ -23,25 +25,56 @@ import com.wgllss.core.ex.getIntToDip
 import com.wgllss.core.ex.loadUrl
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
+import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.data.HomeItemBean
 import com.wgllss.ssmusic.data.MusicItemBean
+import kotlin.random.Random
 
 class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
     private val img_singer1 = 1
+    private val txt_author1 = 2
 
-    private val txt_author1 = 5
+    private val img = 3
+    private val music_name = 4
+    private val name = 5
 
-    private val img = 1
-    private val music_name = 2
-    private val name = 3
+    private val img2 = 6
+    private val music_name2 = 7
 
-    private val img2 = 1
-    private val music_name2 = 2
+    private val img3 = 8
+    private val txt1 = 9
+    private val txt2 = 10
+    private val txt3 = 11
 
-    private val img3 = 1
-    private val txt1 = 2
-    private val txt2 = 3
-    private val txt3 = 4
+    private var textColorHighlight: Int = 0
+    private var textColorPrimary: Int = 0
+    private var cornerRadiusInt: Int = 0
+    private val textColor by lazy { Color.parseColor("#999999") }
+
+    private fun getTextHightColorPrimary(context: Context): Int {
+        if (textColorHighlight == 0) {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.textColorHighlight, typedValue, true)
+            textColorHighlight = typedValue.data
+        }
+        return textColorHighlight
+    }
+
+    private fun getTextColorPrimary(context: Context): Int {
+        if (textColorPrimary == 0) {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+            textColorPrimary = typedValue.data
+        }
+        return textColorPrimary
+    }
+
+    private val array = arrayOf(
+        R.color.color_random_0, R.color.color_random_1, R.color.color_random_2,
+        R.color.color_random_3, R.color.color_random_4, R.color.color_random_5,
+        R.color.color_random_6, R.color.color_random_7, R.color.color_random_8,
+        R.color.color_random_9, R.color.color_random_10, R.color.color_random_11,
+    )
 
     override fun getItemViewType(position: Int): Int {
         return mData[position].itemType
@@ -153,7 +186,7 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                     isFocusable = true
                 }
                 val image = ShapeableImageView(parent.context).apply {
-                    id = img
+                    id = img3
                     val size = context.getIntToDip(90f).toInt()
                     val lp = LinearLayout.LayoutParams(size, size)
                     lp.gravity = Gravity.TOP or Gravity.LEFT
@@ -235,6 +268,43 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 frameLayout.addView(txtAuthor1)
                 BaseBindingViewHolder(frameLayout)
             }
+            5 -> {
+                val size = parent.context.getIntToDip(50f).toInt()
+                val frameLayout = FrameLayout(context!!).apply {
+                    val margin = parent.context.getIntToDip(5f).toInt()
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
+                        topMargin = margin
+                        bottomMargin = margin
+                    }
+                }
+                val materialButton = MaterialButton(context!!).apply {
+                    layoutParams = FrameLayout.LayoutParams(size, size)
+                        .apply {
+                            gravity = Gravity.CENTER
+                        }
+                    gravity = Gravity.CENTER
+                    isClickable = false
+                    isFocusable = false
+                    insetBottom = 0
+                    insetTop = 0
+                    setTextColor(getTextHightColorPrimary(context))
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
+                    cornerRadius = if (cornerRadiusInt == 0) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 999f, context.resources.displayMetrics).toInt() else 0
+                }
+                frameLayout.addView(materialButton)
+//                val size = parent.context.getIntToDip(5f).toInt()
+//                val textView = MaterialButton(parent.context).apply {
+//                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 8 * size).apply {
+//                        gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
+//                        leftMargin = 7 * size
+//                        rightMargin = 7 * size
+//                    }
+//                    gravity = Gravity.CENTER_VERTICAL
+//                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
+//                    text = "请输入歌曲名字或歌手名字"
+//                }
+                BaseBindingViewHolder(frameLayout)
+            }
             else -> {
                 val textView = TextView(parent.context).apply {
                     val lp = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(50f).toInt())
@@ -280,6 +350,14 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 item.kSingerBean?.run {
                     holder.itemView.findViewById<ShapeableImageView>(img_singer1).loadUrl(imgUrl)
                     holder.itemView.findViewById<TextView>(txt_author1).text = name
+                }
+            }
+            5 -> {
+                item?.kMenuBean?.run {
+                    ((holder.itemView as FrameLayout).getChildAt(0) as MaterialButton).apply {
+                        background.setTint(context.getColor(array[Random.nextInt(array.size)]))
+                        text = menuName
+                    }
                 }
             }
         }

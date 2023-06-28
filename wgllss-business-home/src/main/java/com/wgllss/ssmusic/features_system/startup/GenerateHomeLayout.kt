@@ -237,9 +237,9 @@ object GenerateHomeLayout {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             val itemDecoration = View(context)
-            val size = context.getIntToDip(1.0f).toInt()
+            val size = context.getIntToDip(2.0f).toInt()
             itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-            itemDecoration.setBackgroundColor(Color.parseColor("#10000000"))
+            itemDecoration.setBackgroundColor(Color.parseColor("#20000000"))
             addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
             val kHomeAdapter = KHomeAdapter()
             adapter = kHomeAdapter
