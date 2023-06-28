@@ -69,12 +69,12 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
         return textColorPrimary
     }
 
-    private val array = arrayOf(
-        R.color.color_random_0, R.color.color_random_1, R.color.color_random_2,
-        R.color.color_random_3, R.color.color_random_4, R.color.color_random_5,
-        R.color.color_random_6, R.color.color_random_7, R.color.color_random_8,
-        R.color.color_random_9, R.color.color_random_10, R.color.color_random_11,
-    )
+//    private val array = arrayOf(
+//        R.color.color_random_0, R.color.color_random_1, R.color.color_random_2,
+//        R.color.color_random_3, R.color.color_random_4, R.color.color_random_5,
+//        R.color.color_random_6, R.color.color_random_7, R.color.color_random_8,
+//        R.color.color_random_9, R.color.color_random_10, R.color.color_random_11,
+//    )
 
     override fun getItemViewType(position: Int): Int {
         return mData[position].itemType
@@ -269,7 +269,7 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 BaseBindingViewHolder(frameLayout)
             }
             5 -> {
-                val size = parent.context.getIntToDip(50f).toInt()
+                val size = parent.context.getIntToDip(55f).toInt()
                 val frameLayout = FrameLayout(context!!).apply {
                     val margin = parent.context.getIntToDip(5f).toInt()
                     layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
@@ -355,7 +355,8 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
             5 -> {
                 item?.kMenuBean?.run {
                     ((holder.itemView as FrameLayout).getChildAt(0) as MaterialButton).apply {
-                        background.setTint(context.getColor(array[Random.nextInt(array.size)]))
+//                        background.setTint(context.getColor(array[Random.nextInt(array.size)]))
+                        background.setTint(context.getColor(R.color.color_random_11))
                         text = menuName
                     }
                 }

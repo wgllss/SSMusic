@@ -9,7 +9,7 @@ import com.wgllss.ssmusic.datasource.repository.KRepository
 import kotlinx.coroutines.flow.onEach
 
 class NewListTabViewModel : BaseViewModel() {
-    val kuGouRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicRepository>
+    private val kuGouRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicRepository>
     val liveDataLoadSuccessCount by lazy { MutableLiveData(0) }
 
     var isClick = false

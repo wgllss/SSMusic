@@ -8,7 +8,7 @@ import com.wgllss.ssmusic.datasource.repository.KRepository
 import kotlinx.coroutines.flow.onEach
 
 class RankViewModel : BaseViewModel() {
-    val kuGouRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicRepositor
+    private val kuGouRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicRepositor
     val list by lazy { MutableLiveData<MutableList<KRankBean>>() }
     val liveDataLoadSuccessCount by lazy { MutableLiveData(0) }
     var isClick = false

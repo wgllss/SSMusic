@@ -8,7 +8,6 @@ import com.wgllss.core.units.LogTimer
 import com.wgllss.ssmusic.data.DataContains
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
-import com.wgllss.ssmusic.features_ui.home.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.home.fragment.KHomeTabFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

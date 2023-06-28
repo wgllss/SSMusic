@@ -66,7 +66,7 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
                         //spanCount 当横向时，2代表每列2行，
                         return when (adapter!!.getItemViewType(i)) {
                             0, 3 -> 12 //   spanCount/12  个位置占满一格
-                            5 -> 3
+                            5 -> 6
                             else -> 4 // spanCount/4  个位置占满一格
                         }
                     }
@@ -90,7 +90,7 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
                         }
                         5 -> {
                             when (item.kMenuBean?.itemID) {
-                                1 -> startToDetailActivity("")
+                                1 -> startToDetailActivity("com.wgllss.ssmusic.features_ui.page.classics.activity.ClassicsActivity")
                                 4 -> startToDetailActivity("com.wgllss.ssmusic.features_ui.page.search.activity.SearchActivity")
                             }
                         }

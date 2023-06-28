@@ -134,9 +134,9 @@ class KRepository private constructor(private val context: Context) {
                 list.add(1, HomeItemBean(4, kSingerBean = it))
             }
             list.add(0, HomeItemBean(5, kMenuBean = KMenuBean(1, "经典")))
-            list.add(1, HomeItemBean(5, kMenuBean = KMenuBean(2, "最新")))
-            list.add(2, HomeItemBean(5, kMenuBean = KMenuBean(3, "新歌")))
-            list.add(3, HomeItemBean(5, kMenuBean = KMenuBean(4, "搜索")))
+//            list.add(1, HomeItemBean(5, kMenuBean = KMenuBean(2, "最新")))
+//            list.add(2, HomeItemBean(5, kMenuBean = KMenuBean(3, "新歌")))
+            list.add(1, HomeItemBean(5, kMenuBean = KMenuBean(4, "搜索")))
             emit(list)
             LrcHelp.saveHomeData(Gson().toJson(list))
         }.catch { it.printStackTrace() }
