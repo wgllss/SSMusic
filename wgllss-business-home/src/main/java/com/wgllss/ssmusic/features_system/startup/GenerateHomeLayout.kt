@@ -50,7 +50,7 @@ object GenerateHomeLayout {
         val activityLayout = FragmentContainerView(context).apply {
             val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
 //            lp.bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
-            setPadding(0, 0, 0, res.getDimension(R.dimen.navigation_height).toInt())
+            setPadding(0, 0, 0, res.getDimension(R.dimen.home_activity_padding_bottom).toInt())
             layoutParams = lp
             setBackgroundColor(ThemeUtils.getAndroidColorBackground(context))
             id = R.id.nav_host_fragment_activity_main
@@ -66,28 +66,28 @@ object GenerateHomeLayout {
                 bringToFront()
                 bottomMargin = res.getDimension(R.dimen.navigation_height).toInt()
             }
-            setBackgroundColor(Color.parseColor("#222222"))
+            setBackgroundColor(Color.parseColor("#20000000"))
         }
         val img = ShapeableImageView(context).apply {
             id = res.getIdentifier("play_bar_cover", "id", context.packageName)
-            val size = context.getIntToDip(40f).toInt()
+            val size = context.getIntToDip(45f).toInt()
             layoutParams = FrameLayout.LayoutParams(size, size).apply {
                 gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
             }
             scaleType = ImageView.ScaleType.FIT_XY
             shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
                 setAllCorners(RoundedCornerTreatment())
-                setAllCornerSizes(context.getIntToDip(20f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
+                setAllCornerSizes(context.getIntToDip(8f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
             }.build()
         }
         frameLayout.addView(img)
         val txtMusicName = TextView(context).apply {
             id = res.getIdentifier("play_bar_music_name", "id", context.packageName)
-            val size = context.getIntToDip(15f).toInt()
-            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 2 * size).apply {
+            val size = context.getIntToDip(5f).toInt()
+            layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 6 * size).apply {
                 gravity = Gravity.TOP or Gravity.LEFT
-                leftMargin = 3 * size
-                rightMargin = 6 * size
+                leftMargin = 10 * size
+                rightMargin = 24 * size
             }
             maxLines = 1
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
@@ -99,21 +99,30 @@ object GenerateHomeLayout {
             val size = context.getIntToDip(5f).toInt()
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 4 * size).apply {
                 gravity = Gravity.BOTTOM or Gravity.LEFT
-                leftMargin = 9 * size
-                rightMargin = 18 * size
+                leftMargin = 10 * size
+                rightMargin = 24 * size
             }
             maxLines = 1
             gravity = Gravity.CENTER_VERTICAL
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
         }
         frameLayout.addView(txtAuthor)
-        val size = context.getIntToDip(30f).toInt()
+        val size = context.getIntToDip(40f).toInt()
+        val padding = context.getIntToDip(3f).toInt()
         val imgPlayList = ShapeableImageView(context).apply {
             id = res.getIdentifier("play_bar_list", "id", context.packageName)
             layoutParams = FrameLayout.LayoutParams(size, size).apply {
                 gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
             }
-            scaleType = ImageView.ScaleType.FIT_XY
+            setPadding(padding, padding, padding, padding)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
+            val typedValue = TypedValue()
+            val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
+            foreground = attr.getDrawable(0)!!
+            attr.recycle()
+            isClickable = true
+            isFocusable = true
         }
         frameLayout.addView(imgPlayList)
         val imgPlayNext = ShapeableImageView(context).apply {
@@ -122,7 +131,15 @@ object GenerateHomeLayout {
                 gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
                 rightMargin = size
             }
-            scaleType = ImageView.ScaleType.FIT_XY
+            setPadding(padding, padding, padding, padding)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
+            val typedValue = TypedValue()
+            val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
+            foreground = attr.getDrawable(0)!!
+            attr.recycle()
+            isClickable = true
+            isFocusable = true
         }
         frameLayout.addView(imgPlayNext)
         val imgPlayPause = ShapeableImageView(context).apply {
@@ -131,7 +148,15 @@ object GenerateHomeLayout {
                 gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
                 rightMargin = 2 * size
             }
-            scaleType = ImageView.ScaleType.FIT_XY
+            setPadding(padding, padding, padding, padding)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
+            val typedValue = TypedValue()
+            val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
+            foreground = attr.getDrawable(0)!!
+            attr.recycle()
+            isClickable = true
+            isFocusable = true
         }
         frameLayout.addView(imgPlayPause)
         return frameLayout
