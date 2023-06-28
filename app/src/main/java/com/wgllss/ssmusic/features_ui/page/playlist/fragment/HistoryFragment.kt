@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.wgllss.core.ex.finishActivity
 import com.wgllss.core.ex.launchActivity
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.units.LogTimer
@@ -82,6 +83,12 @@ class HistoryFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, F
                     }
                 }
             })
+            imgBack.setOnClickListener {
+                activity?.run {
+                    finishActivity()
+                }
+            }
+//            img_back
         }
         viewModel.liveData.observe(viewLifecycleOwner) {
             playListAdapterL.get().notifyData(it)
