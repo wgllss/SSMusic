@@ -10,6 +10,6 @@ data class HomeItemBean(
     var kMusicItemBean: MusicItemBean? = null,
     var kKMusicHotSongBean: KMusicHotSongBean? = null,
     var kRankExBean: KRankExBean? = null,
-    var kSingerBean: KSingerBean? = null,
-    var kMenuBean: KMenuBean? = null
+    var kSingerBean: KSingerBean? = null
+//    var kMenuBean: KMenuBean? = null
 )

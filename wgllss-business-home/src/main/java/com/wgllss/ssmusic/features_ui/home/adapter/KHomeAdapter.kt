@@ -269,41 +269,42 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 BaseBindingViewHolder(frameLayout)
             }
             5 -> {
-                val size = parent.context.getIntToDip(55f).toInt()
-                val frameLayout = FrameLayout(context!!).apply {
-                    val margin = parent.context.getIntToDip(5f).toInt()
-                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
-                        topMargin = margin
-                        bottomMargin = margin
-                    }
-                }
-                val materialButton = MaterialButton(context!!).apply {
-                    layoutParams = FrameLayout.LayoutParams(size, size)
-                        .apply {
-                            gravity = Gravity.CENTER
-                        }
-                    gravity = Gravity.CENTER
-                    isClickable = false
-                    isFocusable = false
-                    insetBottom = 0
-                    insetTop = 0
-                    setTextColor(getTextHightColorPrimary(context))
-                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-                    cornerRadius = if (cornerRadiusInt == 0) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 999f, context.resources.displayMetrics).toInt() else 0
-                }
-                frameLayout.addView(materialButton)
-//                val size = parent.context.getIntToDip(5f).toInt()
-//                val textView = MaterialButton(parent.context).apply {
-//                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 8 * size).apply {
-//                        gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
-//                        leftMargin = 7 * size
-//                        rightMargin = 7 * size
+//                val size = parent.context.getIntToDip(55f).toInt()
+//                val frameLayout = FrameLayout(context!!).apply {
+//                    val margin = parent.context.getIntToDip(5f).toInt()
+//                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
+//                        topMargin = margin
+//                        bottomMargin = margin
 //                    }
-//                    gravity = Gravity.CENTER_VERTICAL
-//                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-//                    text = "请输入歌曲名字或歌手名字"
 //                }
-                BaseBindingViewHolder(frameLayout)
+//                val materialButton = MaterialButton(context!!).apply {
+//                    layoutParams = FrameLayout.LayoutParams(size, size)
+//                        .apply {
+//                            gravity = Gravity.CENTER
+//                        }
+//                    gravity = Gravity.CENTER
+//                    isClickable = false
+//                    isFocusable = false
+//                    insetBottom = 0
+//                    insetTop = 0
+//                    setTextColor(getTextHightColorPrimary(context))
+//                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
+//                    cornerRadius = if (cornerRadiusInt == 0) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 999f, context.resources.displayMetrics).toInt() else 0
+//                }
+//                frameLayout.addView(materialButton)
+                val size = parent.context.getIntToDip(5f).toInt()
+                val textView = MaterialButton(parent.context).apply {
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 8 * size).apply {
+                        gravity = Gravity.LEFT or Gravity.CENTER_VERTICAL
+                        leftMargin = 2 * size
+                        rightMargin = 2 * size
+                    }
+                    gravity = Gravity.CENTER_VERTICAL
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
+                    text = "请输入歌曲名字或歌手名字"
+                    cornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, context.resources.displayMetrics).toInt()// else 0
+                }
+                BaseBindingViewHolder(textView)
             }
             else -> {
                 val textView = TextView(parent.context).apply {
@@ -353,13 +354,16 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 }
             }
             5 -> {
-                item?.kMenuBean?.run {
-                    ((holder.itemView as FrameLayout).getChildAt(0) as MaterialButton).apply {
-//                        background.setTint(context.getColor(array[Random.nextInt(array.size)]))
-                        background.setTint(context.getColor(R.color.color_random_11))
-                        text = menuName
-                    }
-                }
+//                item?.kMenuBean?.run {
+//                    ((holder.itemView as FrameLayout).getChildAt(0) as MaterialButton).apply {
+////                        background.setTint(context.getColor(array[Random.nextInt(array.size)]))
+//                        background.setTint(context.getColor(R.color.color_random_11))
+//                        text = menuName
+//                    }
+//                }
+                val res = context.resources
+                val drawable = res.getDrawable(res.getIdentifier("ic_baseline_search_24", "drawable", context.packageName))
+                (holder.itemView as TextView).setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
             }
         }
     }

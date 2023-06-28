@@ -43,52 +43,52 @@ class HomeTabFragment : BaseViewModelFragment<HomeViewModel2>(0) {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.lazyTabViewPager2.observe(viewLifecycleOwner) {
-            childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
-            childAdapter.notifyData(getList())
-            mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
-                val textView = TextView(requireContext())
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                textView.setTextColor(ThemeUtils.getColorOnPrimary(requireContext()))
-                tab.customView = textView
-                textView.text = (childAdapter.list[position] as HomeFragment).title
-            }
-//            .apply(TabLayoutMediator::attach)
-            viewPager2.adapter = childAdapter
-            mTabLayoutMediator?.attach()
-            homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    tab?.customView?.takeIf {
-                        it is TextView
-                    }?.run {
-                        (this as TextView).run {
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
-//                            setTextColor(resources.getColor(R.color.colorPrimary))
-                        }
-                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab) {
-                    tab?.customView?.takeIf {
-                        it is TextView
-                    }?.run {
-                        (this as TextView).run {
-                            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-//                            setTextColor(resources.getColor(R.color.white))
-                        }
-                    }
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab) {
-                }
-            })
-            viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    if (position > 0 && viewPager2.offscreenPageLimit != childAdapter.itemCount)
-                        viewPager2.offscreenPageLimit = childAdapter.itemCount
-                }
-            })
+//        viewModel.lazyTabViewPager2.observe(viewLifecycleOwner) {
+        childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
+        childAdapter.notifyData(getList())
+        mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
+            val textView = TextView(requireContext())
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+            textView.setTextColor(ThemeUtils.getColorOnPrimary(requireContext()))
+            tab.customView = textView
+            textView.text = (childAdapter.list[position] as HomeFragment).title
         }
+//            .apply(TabLayoutMediator::attach)
+        viewPager2.adapter = childAdapter
+        mTabLayoutMediator?.attach()
+        homeTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                tab?.customView?.takeIf {
+                    it is TextView
+                }?.run {
+                    (this as TextView).run {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20f)
+//                            setTextColor(resources.getColor(R.color.colorPrimary))
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                tab?.customView?.takeIf {
+                    it is TextView
+                }?.run {
+                    (this as TextView).run {
+                        setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+//                            setTextColor(resources.getColor(R.color.white))
+                    }
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+            }
+        })
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if (position > 0 && viewPager2.offscreenPageLimit != childAdapter.itemCount)
+                    viewPager2.offscreenPageLimit = childAdapter.itemCount
+            }
+        })
+//        }
         LogTimer.LogE(this, "onActivityCreated")
     }
 

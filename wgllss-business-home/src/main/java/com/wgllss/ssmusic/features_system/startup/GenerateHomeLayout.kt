@@ -173,12 +173,10 @@ object GenerateHomeLayout {
             menu.apply {
                 clear()
                 add(0, R.id.fmt_a, 0, res.getString(R.string.title_home))//.setIcon(R.drawable.ic_home_black_24dp)
-//                add(0, R.id.fmt_b, 0, res.getString(R.string.title_history))//.setIcon(R.drawable.ic_dashboard_black_24dp)
-                add(0, R.id.fmt_b, 0, res.getString(R.string.title_singers))//.setIcon(R.drawable.ic_dashboard_black_24dp)
-//                add(0, R.id.fmt_c, 0, res.getString(R.string.title_search))//.setIcon(R.drawable.ic_dashboard_black_24dp)
-                add(0, R.id.fmt_c, 0, res.getString(R.string.title_MV))//.setIcon(R.drawable.ic_dashboard_black_24dp)
-//                add(0, R.id.fmt_d, 0, res.getString(R.string.title_history))//.setIcon(R.drawable.ic_notifications_black_24dp)
-                add(0, R.id.fmt_d, 0, res.getString(R.string.title_setting))//.setIcon(R.drawable.ic_notifications_black_24dp)
+                add(0, R.id.fmt_b, 0, res.getString(R.string.title_classics))//.setIcon(R.drawable.ic_dashboard_black_24dp)
+                add(0, R.id.fmt_c, 0, res.getString(R.string.title_singers))//.setIcon(R.drawable.ic_dashboard_black_24dp)
+                add(0, R.id.fmt_d, 0, res.getString(R.string.title_MV))//.setIcon(R.drawable.ic_dashboard_black_24dp)
+                add(0, R.id.fmt_e, 0, res.getString(R.string.title_setting))//.setIcon(R.drawable.ic_notifications_black_24dp)
             }
             clearLongClickToast(R.id.fmt_a, R.id.fmt_b, R.id.fmt_c, R.id.fmt_d)
         }

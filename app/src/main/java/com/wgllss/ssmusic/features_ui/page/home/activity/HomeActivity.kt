@@ -14,6 +14,7 @@ import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
+import com.wgllss.ssmusic.features_ui.page.classics.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.playlist.fragment.HistoryFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeMVTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeSingerTabFragment
@@ -31,13 +32,9 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
 
     private val kHomeMVTabFragment by lazy { KHomeMVTabFragment() }
+    private val homeTabFragment by lazy { HomeTabFragment() }
 
-    //    @Inject
-//    lateinit var historyFragmentL: Lazy<HistoryFragment>
     private val kHomeSingerTabFragment by lazy { KHomeSingerTabFragment() }
-
-//    @Inject
-//    lateinit var searchFragmentL: Lazy<SearchFragment>
 
     @Inject
     lateinit var settingFragmentL: Lazy<SettingFragment>
@@ -122,8 +119,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
                 get(0).setIcon(R.drawable.ic_home_black_24dp)
                 get(1).setIcon(R.drawable.ic_round_queue_music_24)
                 get(2).setIcon(R.drawable.ic_dashboard_black_24dp)
-//                get(3).setIcon(R.drawable.ic_round_queue_music_24)
-                get(3).setIcon(R.drawable.ic_notifications_black_24dp)
+                get(3).setIcon(R.drawable.ic_round_queue_music_24)
+                get(4).setIcon(R.drawable.ic_notifications_black_24dp)
             }
             if (viewModel.isFirst) viewModel.isFirst = false else selectedItemId = menu.getItem(getItemId()).itemId
             setOnItemSelectedListener {
@@ -135,26 +132,20 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     private fun getItemId() = when (viewModel.mCurrentFragmentTAG.toString()) {
         "HomeTabFragment" -> 0
-        KHomeSingerTabFragment::class.java.simpleName -> 1
-//        HistoryFragment::class.java.simpleName -> 1
-//        SearchFragment::class.java.simpleName -> 2
-        KHomeMVTabFragment::class.java.simpleName -> 2
-//        HistoryFragment::class.java.simpleName -> 3
-        SettingFragment::class.java.simpleName -> 3
+        HomeTabFragment::class.java.simpleName -> 1
+        KHomeSingerTabFragment::class.java.simpleName -> 2
+        KHomeMVTabFragment::class.java.simpleName -> 3
+        SettingFragment::class.java.simpleName -> 4
         else -> 0
     }
 
     private fun onNavBarItemSelected(itemId: Int): Boolean {
         when (itemId) {
-            R.id.fmt_a -> {
-                setCurrentFragment(homeFragment)
-            }
-//            R.id.fmt_b -> setCurrentFragment(historyFragmentL.get())
-            R.id.fmt_b -> setCurrentFragment(kHomeSingerTabFragment)
-//            R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
-            R.id.fmt_c -> setCurrentFragment(kHomeMVTabFragment)
-//            R.id.fmt_d -> setCurrentFragment(historyFragmentL.get())
-            R.id.fmt_d -> setCurrentFragment(settingFragmentL.get())
+            R.id.fmt_a -> setCurrentFragment(homeFragment)
+            R.id.fmt_b -> setCurrentFragment(homeTabFragment)
+            R.id.fmt_c -> setCurrentFragment(kHomeSingerTabFragment)
+            R.id.fmt_d -> setCurrentFragment(kHomeMVTabFragment)
+            R.id.fmt_e -> setCurrentFragment(settingFragmentL.get())
         }
         return true
     }
