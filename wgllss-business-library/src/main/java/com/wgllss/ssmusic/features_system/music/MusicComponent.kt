@@ -32,6 +32,7 @@ import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.extensions.*
 import com.wgllss.ssmusic.features_system.music.notifications.NotificationListener
 import com.wgllss.ssmusic.features_system.music.notifications.SSPlayerNotificationManager
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_system.services.MusicService
 import com.wgllss.ssmusic.features_ui.playing.activity.NotificationTargetActivity
 import kotlinx.coroutines.CoroutineScope
@@ -52,6 +53,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     protected val serviceJob by lazy { SupervisorJob() }
     protected val serviceScope by lazy { CoroutineScope(Dispatchers.Main + serviceJob) }
     private val playerListener by lazy { PlayerEventListener() }
+    protected var whenReady = false
 
     private val uAmpAudioAttributes by lazy {
         AudioAttributes.Builder()
@@ -166,7 +168,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         }
     }
 
-    protected open fun preparePlay(mediaId: String, musicTitle: String, author: String, pic: String, url: String) {
+    protected open fun preparePlay(mediaId: String, musicTitle: String, author: String, pic: String, url: String, playWhenReady: Boolean = true) {
         val mediaMetadataCompat = MediaMetadataCompat.Builder().apply {
             id = mediaId
             title = musicTitle
@@ -179,9 +181,11 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
         }
         currentMediaMetadataCompat = mediaMetadataCompat
         exoPlayer.stop()
-        exoPlayer.playWhenReady = true
+        exoPlayer.playWhenReady = playWhenReady
         exoPlayer.setMediaItem(mediaMetadataCompat.toMediaItem())
         exoPlayer.prepare()
+        whenReady = true
+        MMKVHelp.saveCurrentMediaId(mediaId)
     }
 
     private inner class PlayerEventListener : Player.Listener {

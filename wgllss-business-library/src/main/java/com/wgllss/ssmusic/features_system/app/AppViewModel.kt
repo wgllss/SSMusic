@@ -73,7 +73,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
     fun getPlayUrlFromMediaID(mediaId: String) {
         liveData.value?.forEachIndexed { position, it ->
             it.takeIf {
-                mediaId.toLong() == it.id
+                mediaId.isNotEmpty() && mediaId.toLong() == it.id
             }?.let {
                 playPosition(position)
                 return@forEachIndexed

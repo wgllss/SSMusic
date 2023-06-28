@@ -8,7 +8,9 @@ import android.support.v4.media.MediaDescriptionCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.features_system.app.AppViewModel
+import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_ROOT
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_system.services.MusicService
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
@@ -23,9 +25,20 @@ class MusicFactory constructor(context: Context, private val appViewModel: AppVi
 
     override fun onCreate(musicService: MusicService) {
         super.onCreate(musicService)
-        appViewModel.queryPlayList()
-        appViewModel.metadataPrepareCompletion.observe(this) {
-            preparePlay(it.id.toString(), it.title, it.author, it.pic, it.url)
+        appViewModel?.run {
+            queryPlayList()
+            metadataPrepareCompletion.observe(this@MusicFactory) {
+                preparePlay(it.id.toString(), it.title, it.author, it.pic, it.url, whenReady)
+            }
+            isInitSuccess.observe(this@MusicFactory) {
+                it.takeIf {
+                    it == true
+                }?.run {
+                    liveData.observe(this@MusicFactory) {
+                        getPlayUrlFromMediaID(MMKVHelp.getCurrentMediaId() ?: "")
+                    }
+                }
+            }
         }
     }
 
