@@ -53,6 +53,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SSMusic" />
         <activity
+            android:name="com.wgllss.ssmusic.features_ui.page.playlist.activity.PlayListActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.SSMusic" />
+        <activity
             android:name="com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity"
             android:exported="false"
             android:configChanges="orientation|screenSize|keyboardHidden"

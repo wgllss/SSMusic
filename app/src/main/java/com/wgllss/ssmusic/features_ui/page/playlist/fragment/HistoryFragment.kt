@@ -1,4 +1,4 @@
-package com.wgllss.ssmusic.features_ui.page.home.fragment
+package com.wgllss.ssmusic.features_ui.page.playlist.fragment
 
 import android.content.Context
 import android.content.Intent
@@ -15,7 +15,7 @@ import com.wgllss.core.units.WLog
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentHistoryBinding
-import com.wgllss.ssmusic.features_ui.page.home.adapter.PlayListAdapter
+import com.wgllss.ssmusic.features_ui.page.playlist.adapter.PlayListAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import dagger.Lazy
@@ -71,8 +71,10 @@ class HistoryFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, F
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     when (newState) {
                         //滑动停止
-                        RecyclerView.SCROLL_STATE_IDLE -> activity?.let {
-                            Glide.with(it).resumeRequests()
+                        RecyclerView.SCROLL_STATE_IDLE -> activity?.takeIf {
+                            !it.isFinishing
+                        }?.run {
+                            Glide.with(this).resumeRequests()
                         }
                         else -> activity?.let {
                             Glide.with(it).pauseRequests()

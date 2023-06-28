@@ -14,7 +14,7 @@ import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
-import com.wgllss.ssmusic.features_ui.page.home.fragment.HistoryFragment
+import com.wgllss.ssmusic.features_ui.page.playlist.fragment.HistoryFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeMVTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeSingerTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
@@ -32,8 +32,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     private val kHomeMVTabFragment by lazy { KHomeMVTabFragment() }
 
-    @Inject
-    lateinit var historyFragmentL: Lazy<HistoryFragment>
+    //    @Inject
+//    lateinit var historyFragmentL: Lazy<HistoryFragment>
     private val kHomeSingerTabFragment by lazy { KHomeSingerTabFragment() }
 
 //    @Inject
@@ -122,8 +122,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
                 get(0).setIcon(R.drawable.ic_home_black_24dp)
                 get(1).setIcon(R.drawable.ic_round_queue_music_24)
                 get(2).setIcon(R.drawable.ic_dashboard_black_24dp)
-                get(3).setIcon(R.drawable.ic_round_queue_music_24)
-                get(4).setIcon(R.drawable.ic_notifications_black_24dp)
+//                get(3).setIcon(R.drawable.ic_round_queue_music_24)
+                get(3).setIcon(R.drawable.ic_notifications_black_24dp)
             }
             if (viewModel.isFirst) viewModel.isFirst = false else selectedItemId = menu.getItem(getItemId()).itemId
             setOnItemSelectedListener {
@@ -139,8 +139,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 //        HistoryFragment::class.java.simpleName -> 1
 //        SearchFragment::class.java.simpleName -> 2
         KHomeMVTabFragment::class.java.simpleName -> 2
-        HistoryFragment::class.java.simpleName -> 3
-        SettingFragment::class.java.simpleName -> 4
+//        HistoryFragment::class.java.simpleName -> 3
+        SettingFragment::class.java.simpleName -> 3
         else -> 0
     }
 
@@ -153,8 +153,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
             R.id.fmt_b -> setCurrentFragment(kHomeSingerTabFragment)
 //            R.id.fmt_c -> setCurrentFragment(searchFragmentL.get())
             R.id.fmt_c -> setCurrentFragment(kHomeMVTabFragment)
-            R.id.fmt_d -> setCurrentFragment(historyFragmentL.get())
-            R.id.fmt_e -> setCurrentFragment(settingFragmentL.get())
+//            R.id.fmt_d -> setCurrentFragment(historyFragmentL.get())
+            R.id.fmt_d -> setCurrentFragment(settingFragmentL.get())
         }
         return true
     }

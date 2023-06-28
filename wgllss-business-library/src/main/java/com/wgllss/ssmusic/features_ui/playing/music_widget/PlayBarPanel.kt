@@ -46,7 +46,14 @@ class PlayBarPanel(
             musicServiceConnectionL.transportControls.skipToNext()
         }
         play_bar_list.setOnClickListener {
-
+            it.context?.run {
+                try {
+                    val clazz = Class.forName("com.wgllss.ssmusic.features_ui.page.playlist.activity.PlayListActivity")
+                    startActivity(Intent(this, clazz))
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
         }
         (play_bar_cover.parent as View).setOnClickListener {
             it.context?.run {
