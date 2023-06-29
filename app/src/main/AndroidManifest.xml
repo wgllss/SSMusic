@@ -60,10 +60,10 @@
             android:theme="@style/Theme.SSMusic" />
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.search.activity.SearchActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.SSMusic" />
+            android:theme="@style/Theme.SSMusic"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.classics.activity.ClassicsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"

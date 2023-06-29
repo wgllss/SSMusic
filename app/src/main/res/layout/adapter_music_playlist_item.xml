@@ -22,7 +22,6 @@
             android:paddingRight="20dp"
             android:clickable="true"
             android:focusable="true"
-            android:focusableInTouchMode="true"
             android:foreground="?android:attr/selectableItemBackground">
 
             <com.google.android.material.imageview.ShapeableImageView

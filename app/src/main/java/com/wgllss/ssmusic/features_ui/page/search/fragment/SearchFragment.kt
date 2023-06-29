@@ -42,6 +42,7 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
                     }
                 })
             }
+            etName.requestFocus()
             etName.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_SEARCH -> {
@@ -54,7 +55,10 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
                 false
             }
             imgBack.setOnClickListener {
-                activity?.run { finishActivity() }
+                activity?.run {
+                    HideSoftInputFromWindow(root)
+                    finishActivity()
+                }
             }
         }
         viewModel.result.observe(viewLifecycleOwner) {

@@ -5,7 +5,6 @@
     android:layout_height="88dp"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true"
     android:foreground="?android:attr/selectableItemBackground"
     android:paddingLeft="20dp"
     android:paddingRight="20dp">
