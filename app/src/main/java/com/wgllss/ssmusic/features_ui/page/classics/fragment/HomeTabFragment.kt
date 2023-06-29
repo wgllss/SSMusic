@@ -16,6 +16,7 @@ import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.units.LogTimer
 import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
+import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 
 
@@ -51,7 +52,7 @@ class HomeTabFragment : BaseViewModelFragment<HomeViewModel2>(0) {
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
             textView.setTextColor(ThemeUtils.getColorOnPrimary(requireContext()))
             tab.customView = textView
-            textView.text = (childAdapter.list[position] as HomeFragment).title
+            textView.text = (childAdapter.list[position] as TabTitleFragment<*>).title
         }
 //            .apply(TabLayoutMediator::attach)
         viewPager2.adapter = childAdapter

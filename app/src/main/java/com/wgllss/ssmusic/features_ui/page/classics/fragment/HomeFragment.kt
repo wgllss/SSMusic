@@ -20,14 +20,12 @@ import com.wgllss.core.units.WLog
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.ex.initColors
+import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
 import com.wgllss.ssmusic.features_ui.page.classics.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.classics.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 
-class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
-
-    var title: String = ""
-    private var key: String = ""
+class HomeFragment : TabTitleFragment<HomeViewModel2>() {
 
     companion object {
         private const val TITLE_KEY = "TITLE_KEY"
@@ -57,13 +55,6 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         LogTimer.LogE(this, "$title onAttach")
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        title = arguments?.getString(TITLE_KEY, "") ?: ""
-        key = arguments?.getString(KEY, "") ?: ""
-        LogTimer.LogE(this, "$title onCreate")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -135,11 +126,14 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
         }
     }
 
+    override fun lazyLoad() {
+        homeTabViewModel.getData(key)
+    }
+
     override fun initObserve() {
         super.initObserve()
         homeTabViewModel.run {
             initKey(key)
-            getData(key)
             result[key]?.observe(viewLifecycleOwner) {
                 WLog.e(this@HomeFragment, key)
                 musicAdapter.notifyData(it)
