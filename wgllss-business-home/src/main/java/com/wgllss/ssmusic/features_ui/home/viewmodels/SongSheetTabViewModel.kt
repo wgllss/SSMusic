@@ -20,14 +20,14 @@ class SongSheetTabViewModel : BaseViewModel() {
 
     fun enableLoadMore() = !isLoadingMore && enableLoadeMore.value!!
 
-    fun homeKuGouSongSheet() {
-        flowAsyncWorkOnViewModelScopeLaunch {
-            kuGouRepository.homeKSongSheet().onEach {
-                result.postValue(it)
-                pageNo = 2
-            }
-        }
-    }
+//    fun homeKuGouSongSheet() {
+//        flowAsyncWorkOnViewModelScopeLaunch {
+//            kuGouRepository.homeKSongSheet().onEach {
+//                result.postValue(it)
+//                pageNo = 2
+//            }
+//        }
+//    }
 
     fun homeKSongSheetLoadMore() {
         isLoadingMore = true
@@ -37,10 +37,15 @@ class SongSheetTabViewModel : BaseViewModel() {
                     total.takeIf { t ->
                         t > 0
                     }?.run {
-                        val list = result.value!!
-                        list.removeAt(list.size - 1)
-                        list.addAll(info)
-                        result.postValue(list)
+                        val resultList = if (pageNo == 1) {
+                            info
+                        } else {
+                            val list = result.value!!
+                            list.removeAt(list.size - 1)
+                            list.addAll(info)
+                            list
+                        }
+                        result.postValue(resultList)
                     }
                     if (has_next == 1) {
                         enableLoadeMore.postValue(true)

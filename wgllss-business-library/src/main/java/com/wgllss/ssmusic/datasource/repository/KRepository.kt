@@ -130,9 +130,9 @@ class KRepository private constructor(private val context: Context) {
 //                log("name $name")
                 singers.add(KSingerBean(name, url, img, encodeID))
             }
-            list.add(0, HomeItemBean(0, HomeLableBean("热门歌手")))
+            list.add(HomeItemBean(0, HomeLableBean("热门歌手")))
             singers?.forEach {
-                list.add(1, HomeItemBean(4, kSingerBean = it))
+                list.add(HomeItemBean(4, kSingerBean = it))
             }
 //            list.add(0, HomeItemBean(5, kMenuBean = KMenuBean(1, "经典")))
 //            list.add(1, HomeItemBean(5, kMenuBean = KMenuBean(2, "最新")))
@@ -246,23 +246,23 @@ class KRepository private constructor(private val context: Context) {
     /**
      * 歌单
      */
-    suspend fun homeKSongSheet() = flow {
-        val html = musiceApiL.homeKSongSheet()
-        val document = Jsoup.parse(html, baseUrl)
-        val ahrefList = document.select(".panel-img-list")
-        val links = ahrefList.first()?.select("a[href]")
-        val listHot = mutableListOf<KSheetListDtoPlistListItem>()
-        links?.forEach {
-            val url = it.attr("abs:href")!!
-            val imgTag = it.select("img[_src]")
-            val img = imgTag.first()?.attr("abs:_src")!!
-            val name = it.select(".panel-img-content-first").html()
-//            var encodeID = url.substring(0, url.length)
-//            val encodeID = url.substring(url.lastIndexOf("/") + 1, url.length)
-            listHot.add(KSheetListDtoPlistListItem(name, url, img))
-        }
-        emit(listHot)
-    }
+//    suspend fun homeKSongSheet() = flow {
+//        val html = musiceApiL.homeKSongSheet()
+//        val document = Jsoup.parse(html, baseUrl)
+//        val ahrefList = document.select(".panel-img-list")
+//        val links = ahrefList.first()?.select("a[href]")
+//        val listHot = mutableListOf<KSheetListDtoPlistListItem>()
+//        links?.forEach {
+//            val url = it.attr("abs:href")!!
+//            val imgTag = it.select("img[_src]")
+//            val img = imgTag.first()?.attr("abs:_src")!!
+//            val name = it.select(".panel-img-content-first").html()
+////            var encodeID = url.substring(0, url.length)
+////            val encodeID = url.substring(url.lastIndexOf("/") + 1, url.length)
+//            listHot.add(KSheetListDtoPlistListItem(name, url, img))
+//        }
+//        emit(listHot)
+//    }
 
     suspend fun homeKSongSheetLoadMore(page: Int) = flow {
         val data = musiceApiL.homeKSongSheetLoadMore(page)?.apply {

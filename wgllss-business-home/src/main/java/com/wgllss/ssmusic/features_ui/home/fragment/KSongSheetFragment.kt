@@ -121,7 +121,7 @@ class KSongSheetFragment : TabTitleFragment<HomeViewModel>() {
     }
 
     override fun lazyLoad() {
-        homeTabViewModel.homeKuGouSongSheet()
+        homeTabViewModel.homeKSongSheetLoadMore()
     }
 
     override fun initObserve() {

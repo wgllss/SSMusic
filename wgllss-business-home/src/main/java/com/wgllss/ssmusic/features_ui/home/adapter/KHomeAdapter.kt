@@ -46,11 +46,13 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
     private val txt1 = 9
     private val txt2 = 10
     private val txt3 = 11
+    private val txtListener = 12
 
     private var textColorHighlight: Int = 0
     private var textColorPrimary: Int = 0
     private var cornerRadiusInt: Int = 0
     private val textColor by lazy { Color.parseColor("#999999") }
+    private val t2Color by lazy { Color.parseColor("#20000000") }
 
     private fun getTextHightColorPrimary(context: Context): Int {
         if (textColorHighlight == 0) {
@@ -138,7 +140,7 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 BaseBindingViewHolder(linearLayout)
             }
             2 -> {
-                val linearLayout = LinearLayout(context).apply {
+                val frameLayout = FrameLayout(parent.context).apply {
                     layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(180f).toInt())
                     val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
                     val typedValue = TypedValue()
@@ -149,31 +151,52 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                     setPadding(size, size, size, size)
                     isClickable = true
                     isFocusable = true
-                    gravity = Gravity.CENTER_HORIZONTAL
-                    orientation = LinearLayout.VERTICAL
                 }
                 val image = ShapeableImageView(parent.context).apply {
                     id = img2
                     val size = context.getIntToDip(120f).toInt()
                     scaleType = ImageView.ScaleType.FIT_XY
-                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, size)
-                    layoutParams = lp
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
+                        gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                    }
                     shapeAppearanceModel = ShapeAppearanceModel.builder().apply {
                         setAllCorners(RoundedCornerTreatment())
                         setAllCornerSizes(context.getIntToDip(8f)) //设置圆， 40为正方形边长 80 一半，等于半径 ，需要注意单位
                     }.build()
                 }
-                linearLayout.addView(image)
+                frameLayout.addView(image)
                 val textViewMusicName = TextView(context).apply {
                     id = music_name2
-                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-                    lp.gravity = Gravity.CENTER_HORIZONTAL
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
+                        gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
+                        topMargin = context.getIntToDip(125f).toInt()
+                    }
                     maxLines = 2
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
-                    layoutParams = lp
                 }
-                linearLayout.addView(textViewMusicName)
-                BaseBindingViewHolder(linearLayout)
+                frameLayout.addView(textViewMusicName)
+                val txtListeners = MaterialButton(parent.context).apply {
+                    id = txtListener
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, context.getIntToDip(25f).toInt()).apply {
+                        gravity = Gravity.RIGHT or Gravity.TOP
+                        topMargin = context.getIntToDip(95f).toInt()
+                    }
+                    setTextColor(getTextColorPrimary(context))
+                    gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
+                    maxLines = 1
+                    insetTop = 0
+                    insetBottom = 0
+                    setPadding(context.getIntToDip(6f).toInt(), 0, 0, 0)
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12f)
+                    val colors = intArrayOf(t2Color, t2Color)
+                    val states = arrayOfNulls<IntArray>(2)
+                    states[0] = intArrayOf(android.R.attr.state_pressed)
+                    states[1] = intArrayOf(android.R.attr.state_enabled)
+                    backgroundTintList = ColorStateList(states, colors)
+                    cornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 13f, context.resources.displayMetrics).toInt()// else 0
+                }
+                frameLayout.addView(txtListeners)
+                BaseBindingViewHolder(frameLayout)
             }
             3 -> {
                 val frameLayout = FrameLayout(parent.context).apply {
@@ -270,29 +293,6 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 BaseBindingViewHolder(frameLayout)
             }
             5 -> {
-//                val size = parent.context.getIntToDip(55f).toInt()
-//                val frameLayout = FrameLayout(context!!).apply {
-//                    val margin = parent.context.getIntToDip(5f).toInt()
-//                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
-//                        topMargin = margin
-//                        bottomMargin = margin
-//                    }
-//                }
-//                val materialButton = MaterialButton(context!!).apply {
-//                    layoutParams = FrameLayout.LayoutParams(size, size)
-//                        .apply {
-//                            gravity = Gravity.CENTER
-//                        }
-//                    gravity = Gravity.CENTER
-//                    isClickable = false
-//                    isFocusable = false
-//                    insetBottom = 0
-//                    insetTop = 0
-//                    setTextColor(getTextHightColorPrimary(context))
-//                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-//                    cornerRadius = if (cornerRadiusInt == 0) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 999f, context.resources.displayMetrics).toInt() else 0
-//                }
-//                frameLayout.addView(materialButton)
                 val size = parent.context.getIntToDip(5f).toInt()
                 val textView = MaterialButton(parent.context).apply {
                     layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, 8 * size).apply {
@@ -341,6 +341,12 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
             }
             2 -> {
                 holder.itemView.findViewById<TextView>(music_name2).text = item.kKMusicHotSongBean!!.musicName
+                holder.itemView.findViewById<TextView>(txtListener).apply {
+                    text = item.kKMusicHotSongBean!!.listenerCount
+                    val res = context.resources
+                    val leftDrawable = res.getDrawable(res.getIdentifier("ic_baseline_play_arrow_12", "drawable", context.packageName))
+                    setCompoundDrawablesWithIntrinsicBounds(leftDrawable, null, null, null)
+                }
                 holder.itemView.findViewById<ShapeableImageView>(img2).loadUrl(item.kKMusicHotSongBean!!.imgUrl)
             }
             3 -> {
