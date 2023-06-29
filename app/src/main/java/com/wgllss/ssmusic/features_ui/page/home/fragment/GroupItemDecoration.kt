@@ -66,6 +66,8 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
      */
     private var headTextPadding = dp2px(15)
     private var headTextRect: Rect = Rect()
+    private var colorHeader = 0
+    private var colorHeaderTop = 0
 
 
     /**
@@ -81,7 +83,7 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
         topPaint.isAntiAlias = true
         topPaint.strokeWidth = 5f
         topPaint.style = Paint.Style.FILL
-        topPaint.color = Color.parseColor("#4076D5")
+        topPaint.color = colorHeaderTop
 
         topTextPaint.color = Color.WHITE
         topTextPaint.style = Paint.Style.FILL
@@ -91,7 +93,7 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
         headPaint.isAntiAlias = true
         headPaint.strokeWidth = 5f
         headPaint.style = Paint.Style.FILL
-        headPaint.color = Color.parseColor("#AFFFB2")
+        headPaint.color = colorHeader
 
         headTextPaint.color = Color.BLACK
         headTextPaint.style = Paint.Style.FILL
@@ -102,6 +104,13 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
         mPaint.strokeWidth = 5f
         mPaint.style = Paint.Style.FILL_AND_STROKE
         mPaint.color = Color.parseColor("#20000000")
+    }
+
+    fun setColor(colorHeader: Int, colorHeaderTop: Int) {
+        this.colorHeader = colorHeader
+        this.colorHeaderTop = colorHeaderTop
+        topPaint.color = colorHeaderTop
+        headPaint.color = colorHeader
     }
 
     /**

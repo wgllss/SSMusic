@@ -19,7 +19,7 @@
         android:layout_below="@+id/cn_bar"
         android:layout_alignParentRight="true"
         android:paddingRight="10dp"
-        android:textColor="@color/colorAccent"
+        android:textColor="?colorPrimary"
         android:textSize="14sp" />
 
 </FrameLayout>

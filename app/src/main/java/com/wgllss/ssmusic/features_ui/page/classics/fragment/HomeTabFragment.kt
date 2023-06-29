@@ -98,7 +98,7 @@ class HomeTabFragment : BaseViewModelFragment<HomeViewModel2>(0) {
     }
 
     private fun getList() = mutableListOf<Fragment>(
-        HomeFragment.newInstance("首页", "index"),
+        HomeFragment.newInstance("推荐", "index"),
         HomeFragment.newInstance("华语", "forum-1"),
         HomeFragment.newInstance("日韩", "forum-15"),
         HomeFragment.newInstance("欧美", "forum-10"),

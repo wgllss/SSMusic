@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.widget.SideBar
@@ -54,7 +55,10 @@ class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
         super.onActivityCreated(savedInstanceState)
         recycler_view.apply {
             adapter = singersAdapter
-            addItemDecoration(GroupItemDecoration(singersAdapter))
+            addItemDecoration(GroupItemDecoration(singersAdapter).apply {
+//                setColor(context.resources.getColor(com.wgllss.music.skin.R.color.color_recycler_singer_header), context.resources.getColor(com.wgllss.music.skin.R.color.color_recycler_singer_header))
+                setColor(ThemeUtils.getColorPrimary(context), context.resources.getColor(com.wgllss.music.skin.R.color.color_recycler_singer_header))
+            })
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
                     singersAdapter.getItem(position).run {
