@@ -128,9 +128,9 @@ class HomeViewModel2 : BaseViewModel() {
                         list
                     }
                     result.postValue(resultList)
+                    enableLoadeMore.postValue(pageNo < it.maxPage)
                     if (pageNo < it.maxPage)
                         pageNo++
-                    enableLoadeMore.postValue(pageNo < it.maxPage)
                     isLoadingMore = false
                 }
         }

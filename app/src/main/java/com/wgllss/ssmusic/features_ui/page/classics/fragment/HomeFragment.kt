@@ -122,7 +122,7 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
-                    if (homeTabViewModel.enableLoadMore() && linearLayoutManager!!.itemCount == linearLayoutManager.findLastVisibleItemPosition() + 1) {
+                    if (homeTabViewModel.enableLoadMore(key) && linearLayoutManager!!.itemCount == linearLayoutManager.findLastVisibleItemPosition() + 1) {
                         homeTabViewModel.getData(key)
                     }
                 }
@@ -144,6 +144,10 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
                 WLog.e(this@HomeFragment, key)
                 musicAdapter.notifyData(it)
                 musicAdapter.addFooter()
+            }
+            enableLoadeMore[key]?.observe(viewLifecycleOwner) {
+                if (!it)
+                    musicAdapter.removeFooter()
             }
             showUIDialog.observe(viewLifecycleOwner) {
                 if (!isLoadOffine)

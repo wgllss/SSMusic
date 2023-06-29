@@ -99,10 +99,18 @@ class MusicRepository private constructor(private val context: Context) {
                 }
             }
         }
-        emit(list)
-        if ("index" == tab_item) {
-            MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
+        var maxPage = 1
+        val pages = document.select(".page-link")
+        pages?.takeIf {
+            it.size > 2
+        }?.run {
+            maxPage = (pages[pages.size - 2].html()?.replace("...", "") ?: "1").toInt()
+            WLog.e(this@MusicRepository, "maxPage:$maxPage")
         }
+        emit(MusicListDto(maxPage, list))
+//        if ("index-1" == tab_item) {
+//            MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
+//        }
     }
 
     /**

@@ -27,16 +27,18 @@ class HomeTabViewModel : BaseViewModel() {
     var isLoadOffine = false
     val result by lazy { mutableMapOf<String, MutableLiveData<MutableList<MusicItemBean>>>() }
     private val pageNoMap by lazy { mutableMapOf<String, Int>() }
-    private var isLoadingMore = false
-    private var enableLoadeMore = true
+    private val isLoadingMore by lazy { mutableMapOf<String, Boolean>() }
+    val enableLoadeMore by lazy { mutableMapOf<String, MutableLiveData<Boolean>>() }
 
-    fun enableLoadMore() = !isLoadingMore && enableLoadeMore
+    fun enableLoadMore(key: String) = !isLoadingMore[key]!! && enableLoadeMore[key]!!.value!!
 
     override fun start() {
     }
 
     fun initKey(key: String) {
         result[key] = MutableLiveData<MutableList<MusicItemBean>>()
+        isLoadingMore[key] = false
+        enableLoadeMore[key] = MutableLiveData(true)
         pageNoMap[key] = 1
     }
 
@@ -45,7 +47,7 @@ class HomeTabViewModel : BaseViewModel() {
     }
 
     fun getData(key: String) {
-        isLoadingMore = true
+        isLoadingMore[key] = true
         isClick = false
         flowAsyncWorkOnViewModelScopeLaunch {
             val homeTag = "$key-${pageNoMap[key]}"
@@ -55,19 +57,20 @@ class HomeTabViewModel : BaseViewModel() {
                     if (!isLoadOffine) {
                         if (pageNoMap[key] == 1) {
                             WLog.e(this@HomeTabViewModel, key)
-                            result[key]?.postValue(it)
+                            result[key]?.postValue(it.list)
                         } else {
                             val list = result[key]?.value
                             list?.removeAt(list.size - 1)
-                            list?.addAll(it)
+                            list?.addAll(it.list)
                             result[key]?.postValue(list)
                         }
-                        pageNoMap[key] = pageNoMap[key]!!.plus(1)
+                        enableLoadeMore[key]?.postValue(pageNoMap[key]!! < it.maxPage)
+                        if (pageNoMap[key]!! < it.maxPage)
+                            pageNoMap[key] = pageNoMap[key]!!.plus(1)
                     } else isLoadOffine = false
                     var c = liveDataLoadSuccessCount.value?.plus(1)
                     liveDataLoadSuccessCount.postValue(c)
-                    enableLoadeMore = true
-                    isLoadingMore = false
+                    isLoadingMore[key] = false
                 }
         }
     }

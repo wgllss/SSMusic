@@ -52,10 +52,10 @@ class SongSingersViewModel : BaseViewModel() {
                         }
                         listLiveData.postValue(list)
                         isLoadingMore = false
+                        enableLoadeMore.postValue(pageNo < it2.maxPage)
                         if (pageNo < it2.maxPage) {
                             pageNo++
                         }
-                        enableLoadeMore.postValue(pageNo < it2.maxPage)
                     }
             } else {
                 musicRepositoryL.searchKeyByTitle(singerName, pageNo).onEach {
@@ -66,10 +66,10 @@ class SongSingersViewModel : BaseViewModel() {
                     }
                     listLiveData.postValue(list)
                     isLoadingMore = false
+                    enableLoadeMore.postValue(pageNo < it.maxPage)
                     if (pageNo < it.maxPage) {
                         pageNo++
                     }
-                    enableLoadeMore.postValue(pageNo < it.maxPage)
                 }
             }
         }
