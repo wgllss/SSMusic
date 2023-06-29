@@ -342,6 +342,7 @@ class KRepository private constructor(private val context: Context) {
                     .replace("\\", "")
                     .replace("{size}", "400")
                 it.title = info.title
+                it.singername = it.singername.replace("S.H.E", "SHE")
                 it.imgurl = img
                 it.titlePosition = titlePosition
                 list.add(it)
