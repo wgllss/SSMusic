@@ -21,7 +21,7 @@
     <color name="color_translucent90">#F44336</color>
     <color name="purple_500">#F44336</color>
     <!--    <color name="color_select">#0066C0</color>-->
-
+    <color name="color_search_bg">#333333</color>
 
     <color name="color_random_1">#CD4339</color>
     <color name="color_random_2">#158bb8</color>

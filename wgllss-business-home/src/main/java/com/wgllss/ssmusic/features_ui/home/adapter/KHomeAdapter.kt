@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.features_ui.home.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.util.TypedValue
 import android.view.Gravity
@@ -299,10 +300,17 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                         leftMargin = 2 * size
                         rightMargin = 2 * size
                     }
+                    setTextColor(getTextColorPrimary(context))
                     gravity = Gravity.CENTER_VERTICAL
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
                     text = "请输入歌曲名字或歌手名字"
                     cornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, context.resources.displayMetrics).toInt()// else 0
+                    val colorRes = context.resources.getColor(R.color.color_search_bg)
+                    val colors = intArrayOf(colorRes, colorRes)
+                    val states = arrayOfNulls<IntArray>(2)
+                    states[0] = intArrayOf(android.R.attr.state_pressed)
+                    states[1] = intArrayOf(android.R.attr.state_enabled)
+                    backgroundTintList = ColorStateList(states, colors)
                 }
                 BaseBindingViewHolder(textView)
             }
