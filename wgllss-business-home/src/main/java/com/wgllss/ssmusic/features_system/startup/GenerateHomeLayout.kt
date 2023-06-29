@@ -27,12 +27,13 @@ import com.google.gson.reflect.TypeToken
 import com.wgllss.core.ex.getIntToDip
 import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.ScreenManager
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.clearLongClickToast
 import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.data.HomeItemBean
 import com.wgllss.ssmusic.ex.initColors
-import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_ui.home.adapter.KHomeAdapter
 
 object GenerateHomeLayout {
@@ -55,7 +56,7 @@ object GenerateHomeLayout {
             setBackgroundColor(ThemeUtils.getAndroidColorBackground(context))
             id = R.id.nav_host_fragment_activity_main
         }
-//        ScreenManager.measureAndLayout(activityLayout)
+        ScreenManager.measureAndLayout(activityLayout)
         return activityLayout
     }
 
@@ -159,6 +160,7 @@ object GenerateHomeLayout {
             isFocusable = true
         }
         frameLayout.addView(imgPlayPause)
+        ScreenManager.measureAndLayout(frameLayout)
         return frameLayout
     }
 
@@ -180,7 +182,7 @@ object GenerateHomeLayout {
             }
             clearLongClickToast(R.id.fmt_a, R.id.fmt_b, R.id.fmt_c, R.id.fmt_d)
         }
-//        ScreenManager.measureAndLayout(bottomNavigationView)
+        ScreenManager.measureAndLayout(bottomNavigationView)
         return bottomNavigationView
     }
 
@@ -217,7 +219,7 @@ object GenerateHomeLayout {
             layoutParams = lp
         }
         tabFragmentLayout.addView(viewPager2Layout)
-//        ScreenManager.measureAndLayout(tabFragmentLayout)
+        ScreenManager.measureAndLayout(tabFragmentLayout)
         LogTimer.LogE(this, "LayoutContains tabFragmentLayout")
         return tabFragmentLayout
     }
@@ -241,13 +243,14 @@ object GenerateHomeLayout {
             addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
             val kHomeAdapter = KHomeAdapter()
             adapter = kHomeAdapter
-            LrcHelp.getHomeData()?.takeIf {
+            MMKVHelp.getHomeTab1Data()?.takeIf {
                 it.isNotEmpty()
             }?.let {
                 kHomeAdapter.notifyData(Gson().fromJson(it, object : TypeToken<MutableList<HomeItemBean>>() {}.type))
             }
         }
         swipeRefreshLayout.addView(homeFragmentView)
+//        ScreenManager.measureAndLayout(swipeRefreshLayout)
         return swipeRefreshLayout
     }
 }

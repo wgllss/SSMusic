@@ -5,6 +5,7 @@ import android.content.MutableContextWrapper
 import com.tencent.mmkv.MMKV
 import com.wgllss.core.ex.toTheme
 import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.ScreenManager
 import com.wgllss.ssmusic.data.DataContains
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
@@ -15,14 +16,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.lang.StringBuilder
 
 object InitHomeFirstInitializeHelp {
 
     fun initCreate(activity: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             LogTimer.LogE(this@InitHomeFirstInitializeHelp, "create ${Thread.currentThread().name}")
-//            ScreenManager.initScreenSize(activity)
+            ScreenManager.initScreenSize(activity)
             MMKV.initialize(activity)
             val themeID = activity.resources.getIdentifier("Theme.SSMusic", "style", activity.packageName)
 //            val context: Context = MutableContextWrapper(activity.toTheme(R.style.Theme_SSMusic))

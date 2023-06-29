@@ -20,6 +20,7 @@ import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetListDtoPlistListItem
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerItem
 import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -138,7 +139,7 @@ class KRepository private constructor(private val context: Context) {
 //            list.add(2, HomeItemBean(5, kMenuBean = KMenuBean(3, "新歌")))
             list.add(0, HomeItemBean(5))
             emit(list)
-            LrcHelp.saveHomeData(Gson().toJson(list))
+            MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
         }.catch { it.printStackTrace() }
             .flowOn(Dispatchers.IO)
     }

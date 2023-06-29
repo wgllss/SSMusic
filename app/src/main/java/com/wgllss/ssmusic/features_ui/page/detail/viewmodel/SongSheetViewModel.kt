@@ -68,7 +68,7 @@ class SongSheetViewModel : BaseViewModel() {
         }
     }
 
-    fun getMusicInfo(musicItemBean: MusicItemBean) {
+    private fun getMusicInfo(musicItemBean: MusicItemBean) {
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
         val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
         nowPlaying?.id?.takeIf {
