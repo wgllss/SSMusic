@@ -3,15 +3,16 @@ package com.wgllss.ssmusic.features_ui.page.search.fragment
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.core.ex.HideSoftInputFromWindow
 import com.wgllss.core.ex.finishActivity
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
-import com.wgllss.ssmusic.features_ui.page.search.adapter.MusicAdapter
+import com.wgllss.ssmusic.features_ui.page.classics.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
-import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -19,8 +20,9 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, FragmentSearchBinding>(R.layout.fragment_search) {
 
-    @Inject
-    lateinit var musicAdapterL: Lazy<MusicAdapter>
+    //    @Inject
+//    lateinit var musicAdapterL: Lazy<MusicAdapter>
+    private val musicAdapter by lazy { HomeMusicAdapter() }
 
     override fun activitySameViewModel() = true
 
@@ -28,10 +30,11 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
         super.onActivityCreated(savedInstanceState)
         binding?.apply {
             model = this@SearchFragment.viewModel
-            adapter = musicAdapterL.get()
+            adapter = musicAdapter
             lifecycleOwner = this@SearchFragment
             executePendingBindings()
             shapeableSearch.setOnClickListener {
+                viewModel.initPage()
                 viewModel.searchKeyByTitle()
                 HideSoftInputFromWindow(root)
             }
@@ -41,11 +44,22 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
                         viewModel.getDetailFromSearch(position)
                     }
                 })
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                        if (viewModel.enableLoadMore() && linearLayoutManager!!.itemCount == linearLayoutManager.findLastVisibleItemPosition() + 1) {
+                            viewModel.searchKeyByTitle()
+                        }
+                    }
+                })
             }
             etName.requestFocus()
             etName.setOnEditorActionListener { _, actionId, _ ->
                 when (actionId) {
                     EditorInfo.IME_ACTION_SEARCH -> {
+                        viewModel.initPage()
                         viewModel.searchKeyByTitle()
                         HideSoftInputFromWindow(root)
                         true
@@ -62,7 +76,23 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
             }
         }
         viewModel.result.observe(viewLifecycleOwner) {
-            musicAdapterL.get().notifyData(it)
+            musicAdapter.notifyData(it)
+            musicAdapter.addFooter()
+        }
+    }
+
+    override fun initObserve() {
+        super.initObserve()
+        viewModel?.run {
+            result.observe(viewLifecycleOwner) {
+                musicAdapter.notifyData(it)
+                musicAdapter.addFooter()
+            }
+            enableLoadeMore.observe(viewLifecycleOwner) {
+                if (!it) {
+                    musicAdapter.removeFooter()
+                }
+            }
         }
     }
 }

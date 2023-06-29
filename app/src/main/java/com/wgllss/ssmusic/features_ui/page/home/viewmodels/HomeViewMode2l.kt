@@ -38,8 +38,14 @@ class HomeViewModel2 : BaseViewModel() {
     val currentMediaID by lazy { MutableLiveData("") }
 //    val mCurrentFragmentTAG by lazy { StringBuilder() }
 
-    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
-    var isFirst = true
+//    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
+//    var isFirst = true
+
+    private var isLoadingMore = false
+    val enableLoadeMore by lazy { MutableLiveData<Boolean>(true) }
+    private var pageNo = 1
+
+    fun enableLoadMore() = !isLoadingMore && enableLoadeMore.value!!
 
     val rootMediaId: LiveData<String> by lazy {
         Transformations.map(musicServiceConnectionL.isConnected) { isConnected ->
@@ -78,9 +84,9 @@ class HomeViewModel2 : BaseViewModel() {
         }
     }
 
-    fun lazyTabView() {
-        lazyTabViewPager2.value = true
-    }
+//    fun lazyTabView() {
+//        lazyTabViewPager2.value = true
+//    }
 
     override fun start() {
         musicServiceConnectionL.startConnect()
@@ -100,15 +106,32 @@ class HomeViewModel2 : BaseViewModel() {
         }
     }
 
+    fun initPage() {
+        pageNo = 1
+    }
+
     fun searchKeyByTitle() {
         if (searchContent.value == null || searchContent.value.isNullOrEmpty()) {
             WLog.e(this, "searchContent.value ${searchContent.value}")
             return
         }
+        isLoadingMore = true
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.searchKeyByTitle(searchContent.value!!)
+            musicRepositoryL.searchKeyByTitle(searchContent.value!!, pageNo)
                 .onEach {
-                    result.postValue(it)
+                    val resultList = if (pageNo == 1) {
+                        it.list
+                    } else {
+                        val list = result.value
+                        list?.removeAt(list.size - 1)
+                        list?.addAll(it.list)
+                        list
+                    }
+                    result.postValue(resultList)
+                    if (pageNo < it.maxPage)
+                        pageNo++
+                    enableLoadeMore.postValue(pageNo < it.maxPage)
+                    isLoadingMore = false
                 }
         }
     }

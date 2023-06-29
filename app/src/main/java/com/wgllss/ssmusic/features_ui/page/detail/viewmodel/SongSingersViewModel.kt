@@ -27,27 +27,53 @@ class SongSingersViewModel : BaseViewModel() {
     val singerInfo by lazy { MutableLiveData<KSingerInfo>() }
     private val map by lazy { ConcurrentHashMap<String, KSingerSongBean>() }
     val listLiveData by lazy { MutableLiveData<MutableList<KSingerSongBean>>() }
+    private var isLoadingMore = false
+    val enableLoadeMore by lazy { MutableLiveData(true) }
+    private var pageNo = 1
+
+    fun enableLoadMore() = !isLoadingMore && enableLoadeMore.value == true
 
     override fun start() {
     }
 
     fun kSingerInfo(encodeID: String, singerName: String) {
+        isLoadingMore = true
         flowAsyncWorkOnViewModelScopeLaunch {
-            kRepository.kSingerInfo(encodeID)
-                .zip(musicRepositoryL.searchKeyByTitle(singerName)) { it1, it2 ->
-                    singerInfo.postValue(it1.info)
-                    it1.songs?.list?.forEach {
-                        map[it.audio_name] = it
+            if (pageNo == 1) {
+                kRepository.kSingerInfo(encodeID)
+                    .zip(musicRepositoryL.searchKeyByTitle(singerName)) { it1, it2 ->
+                        singerInfo.postValue(it1.info)
+                        it1.songs?.list?.forEach {
+                            map[it.audio_name] = it
+                        }
+                        val list = mutableListOf<KSingerSongBean>()
+                        it2.list.forEach {
+                            list.add(KSingerSongBean(it.musicName, it.detailUrl, it.author, if (map.containsKey(it.author)) map[it.author]?.mvhash ?: "" else ""))
+                        }
+                        listLiveData.postValue(list)
+                        isLoadingMore = false
+                        if (pageNo < it2.maxPage) {
+                            pageNo++
+                        }
+                        enableLoadeMore.postValue(pageNo < it2.maxPage)
                     }
-                    val list = mutableListOf<KSingerSongBean>()
-                    it2.forEach {
-                        list.add(KSingerSongBean(it.musicName, it.detailUrl, it.author, if (map.containsKey(it.author)) map[it.author]?.mvhash ?: "" else ""))
+            } else {
+                musicRepositoryL.searchKeyByTitle(singerName, pageNo).onEach {
+                    val list = listLiveData.value
+                    list?.removeAt(list.size - 1)
+                    it.list.forEach { item ->
+                        list?.add(KSingerSongBean(item.musicName, item.detailUrl, item.author, if (map.containsKey(item.author)) map[item.author]?.mvhash ?: "" else ""))
                     }
                     listLiveData.postValue(list)
+                    isLoadingMore = false
+                    if (pageNo < it.maxPage) {
+                        pageNo++
+                    }
+                    enableLoadeMore.postValue(pageNo < it.maxPage)
                 }
+            }
         }
     }
-
 
 
     fun getPlayUrl(item: KSingerSongBean) {

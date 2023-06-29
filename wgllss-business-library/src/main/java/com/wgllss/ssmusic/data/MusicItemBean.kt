@@ -8,5 +8,6 @@ data class MusicItemBean(
     val album_sizable_cover: String = "",
     val mvhash: String = "",
     val dataSourceType: Int = 0, //0 : hifi 1 :kg
-    val privilege: Int = 0
+    val privilege: Int = 0,
+    val viewType: Int = 0
 )

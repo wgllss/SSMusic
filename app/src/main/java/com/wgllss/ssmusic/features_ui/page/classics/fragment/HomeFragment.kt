@@ -19,10 +19,7 @@ import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
 import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
-import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.ex.initColors
-import com.wgllss.ssmusic.features_system.startup.HomeContains
-import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.page.classics.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.classics.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
@@ -109,6 +106,7 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
         super.onActivityCreated(savedInstanceState)
         LogTimer.LogE(this, "$title onActivityCreated")
         swipeRefreshLayout.setOnRefreshListener {
+            homeTabViewModel.reset(key)
             homeTabViewModel.getData(key)
         }
         rvPlList?.apply {
@@ -119,25 +117,22 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
                     homeTabViewModel.getDetailFromSearch(musicAdapter.getItem(position))
                 }
             })
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                    if (homeTabViewModel.enableLoadMore() && linearLayoutManager!!.itemCount == linearLayoutManager.findLastVisibleItemPosition() + 1) {
+                        homeTabViewModel.getData(key)
+                    }
+                }
+            })
         }
-//        homeTabViewModel.initKey(key)
-//        homeTabViewModel.result[key]?.observe(viewLifecycleOwner) {
-//            WLog.e(this@HomeFragment, key)
-//            musicAdapter.notifyData(it)
-//        }
-//        if (rvPlList.adapter == null) {
-//            musicAdapter = HomeMusicAdapter()
-//            rvPlList.adapter = musicAdapter
-//        } else {
-//            WLog.e(this, " json json 11")
-//            musicAdapter = rvPlList.adapter as HomeMusicAdapter
-//        }
         musicAdapter?.itemCount?.takeIf {
             it > 0
         }?.let {
             homeTabViewModel.isLoadOffine = true
         }
-//        homeTabViewModel.getData(key)
     }
 
     override fun initObserve() {
@@ -148,6 +143,7 @@ class HomeFragment : BaseViewModelFragment<HomeViewModel2>(0) {
             result[key]?.observe(viewLifecycleOwner) {
                 WLog.e(this@HomeFragment, key)
                 musicAdapter.notifyData(it)
+                musicAdapter.addFooter()
             }
             showUIDialog.observe(viewLifecycleOwner) {
                 if (!isLoadOffine)

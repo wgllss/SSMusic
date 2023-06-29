@@ -6,6 +6,7 @@ import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
+import com.wgllss.ssmusic.data.MusicListDto
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.features_system.room.SSDataBase
@@ -107,9 +108,9 @@ class MusicRepository private constructor(private val context: Context) {
     /**
      * 按照标题搜索
      */
-    suspend fun searchKeyByTitle(keyword: String): Flow<MutableList<MusicItemBean>> = flow {
+    suspend fun searchKeyByTitle(keyword: String, pageNo: Int = 1): Flow<MusicListDto> = flow {
         val keywordL = ChineseUtils.urlEncode(keyword)
-        val html = musiceApiL.searchKeyByTitle(keywordL)
+        val html = musiceApiL.searchKeyByTitle(keywordL, pageNo)
         val document = Jsoup.parse(html, "https://www.hifini.com/")
         val dcS = document.select(".break-all")
         val list = mutableListOf<MusicItemBean>()
@@ -175,7 +176,15 @@ class MusicRepository private constructor(private val context: Context) {
                 }
             }
         }
-        emit(list)
+        var maxPage = 1
+        val pages = document.select(".page-link")
+        pages?.takeIf {
+            it.size > 2
+        }?.run {
+            maxPage = (pages[pages.size - 2].html()?.replace("...", "") ?: "1").toInt()
+            WLog.e(this@MusicRepository, "maxPage:$maxPage")
+        }
+        emit(MusicListDto(maxPage, list))
     }
 
     /**

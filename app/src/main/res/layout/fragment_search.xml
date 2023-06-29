@@ -9,7 +9,7 @@
 
         <variable
             name="adapter"
-            type="com.wgllss.ssmusic.features_ui.page.search.adapter.MusicAdapter" />
+            type="com.wgllss.ssmusic.features_ui.page.classics.adapter.HomeMusicAdapter" />
     </data>
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"

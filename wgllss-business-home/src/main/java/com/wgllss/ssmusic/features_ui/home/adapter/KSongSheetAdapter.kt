@@ -26,13 +26,11 @@ class KSongSheetAdapter : BaseRecyclerAdapter<KSheetListDtoPlistListItem>() {
 
     fun addFooter() {
         mData.add(footer)
-//        notifyItemChanged(mData.size - 1)
         notifyItemInserted(mData.size - 1)
     }
 
     fun removeFooter() {
         mData.removeAt(mData.size - 1)
-//        notifyItemChanged(mData.size - 1)
         notifyItemRemoved(mData.size)
     }
 

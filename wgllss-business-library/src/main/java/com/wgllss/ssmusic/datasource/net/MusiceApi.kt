@@ -34,8 +34,8 @@ interface MusiceApi {
     /**
      * 通过标题搜索
      */
-    @GET("https://www.hifini.com/search-{keyword}-1.htm")
-    suspend fun searchKeyByTitle(@Path("keyword") keyword: String): String
+    @GET("https://www.hifini.com/search-{keyword}-1-{pageNo}.htm")
+    suspend fun searchKeyByTitle(@Path("keyword") keyword: String, @Path("pageNo") pageNo: Int): String
 
     @GET
     suspend fun getPlayUrl(@Url url: String): String

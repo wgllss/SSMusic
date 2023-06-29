@@ -26,31 +26,48 @@ class HomeTabViewModel : BaseViewModel() {
     var isClick = false
     var isLoadOffine = false
     val result by lazy { mutableMapOf<String, MutableLiveData<MutableList<MusicItemBean>>>() }
+    private val pageNoMap by lazy { mutableMapOf<String, Int>() }
+    private var isLoadingMore = false
+    private var enableLoadeMore = true
+
+    fun enableLoadMore() = !isLoadingMore && enableLoadeMore
 
     override fun start() {
     }
 
     fun initKey(key: String) {
         result[key] = MutableLiveData<MutableList<MusicItemBean>>()
+        pageNoMap[key] = 1
+    }
+
+    fun reset(key: String) {
+        pageNoMap[key] = 1
     }
 
     fun getData(key: String) {
+        isLoadingMore = true
         isClick = false
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.homeMusic(key)
+            val homeTag = "$key-${pageNoMap[key]}"
+            WLog.e(this@HomeTabViewModel, "homeTag $homeTag")
+            musicRepositoryL.homeMusic(homeTag)
                 .onEach {
-                    if (!isLoadOffine)
-                        if (result[key] == null) {
+                    if (!isLoadOffine) {
+                        if (pageNoMap[key] == 1) {
                             WLog.e(this@HomeTabViewModel, key)
-                            val list = MutableLiveData<MutableList<MusicItemBean>>()
-                            list.postValue(it)
-                            result[key] = list
-                        } else {
                             result[key]?.postValue(it)
+                        } else {
+                            val list = result[key]?.value
+                            list?.removeAt(list.size - 1)
+                            list?.addAll(it)
+                            result[key]?.postValue(list)
                         }
-                    else isLoadOffine = false
+                        pageNoMap[key] = pageNoMap[key]!!.plus(1)
+                    } else isLoadOffine = false
                     var c = liveDataLoadSuccessCount.value?.plus(1)
                     liveDataLoadSuccessCount.postValue(c)
+                    enableLoadeMore = true
+                    isLoadingMore = false
                 }
         }
     }

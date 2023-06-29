@@ -70,7 +70,6 @@ class SongSingersFragment(private val encodeID: String, private val authorName: 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.kSingerInfo(encodeID, authorName)
         toolbar?.setNavigationOnClickListener {
             requireActivity().finishActivity()
         }
@@ -81,6 +80,16 @@ class SongSingersFragment(private val encodeID: String, private val authorName: 
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
                     viewModel.getPlayUrl(songDetailAdapter.getItem(position))
+                }
+            })
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                    if (viewModel.enableLoadMore() && linearLayoutManager!!.itemCount == linearLayoutManager.findLastVisibleItemPosition() + 1) {
+                        viewModel.kSingerInfo(encodeID, authorName)
+                    }
                 }
             })
         }
@@ -95,12 +104,26 @@ class SongSingersFragment(private val encodeID: String, private val authorName: 
             }
         }
 
-        viewModel.singerInfo.observe(viewLifecycleOwner) {
-            img_bg.loadUrl(it.imgurl)
-            toolbar_layout.title = it.singername
-        }
-        viewModel.listLiveData.observe(viewLifecycleOwner) {
-            songDetailAdapter.notifyData(it)
+
+    }
+
+    override fun initObserve() {
+        super.initObserve()
+        viewModel?.run {
+            kSingerInfo(encodeID, authorName)
+            singerInfo.observe(viewLifecycleOwner) {
+                img_bg.loadUrl(it.imgurl)
+                toolbar_layout.title = it.singername
+            }
+            listLiveData.observe(viewLifecycleOwner) {
+                songDetailAdapter.notifyData(it)
+                songDetailAdapter.addFooter()
+            }
+            enableLoadeMore.observe(viewLifecycleOwner) {
+                if (!it) {
+                    songDetailAdapter.removeFooter()
+                }
+            }
         }
     }
 }
