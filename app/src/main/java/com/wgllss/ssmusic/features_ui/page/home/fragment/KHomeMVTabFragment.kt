@@ -97,24 +97,10 @@ class KHomeMVTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
     }
 
     private fun getList() = mutableListOf<Fragment>(
-        KMVListFragment.newInstance("新歌", "9"),
-        KMVListFragment.newInstance("华语", "13"),
-        KMVListFragment.newInstance("日韩", "17"),
-        KMVListFragment.newInstance("欧美", "16")
-//        KHomeFragment.newInstance("首页", ""),
-//        KSongSheetFragment.newInstance("歌单", ""),
-//        RankFragment.newInstance("榜单", ""),
-//        KNewLisFragment.newInstance("华语", "https://m.kugou.com/newsong/index"),
-//        KNewLisFragment.newInstance("欧美", "https://m.kugou.com/newsong/index/2"),
-//        KNewLisFragment.newInstance("韩国", "https://m.kugou.com/newsong/index/4"),
-//        KNewLisFragment.newInstance("日本", "https://m.kugou.com/newsong/index/5")
-//        HomeFragment.newInstance("首页", "index"),
-//        HomeFragment.newInstance("华语", "forum-1"),
-//        HomeFragment.newInstance("日韩", "forum-15"),
-//        HomeFragment.newInstance("欧美", "forum-10"),
-//        HomeFragment.newInstance("remix", "forum-11"),
-//        HomeFragment.newInstance("纯音乐", "forum-12"),
-//        HomeFragment.newInstance("异次元", "forum-13"),
+        TabTitleFragment.newInstance("新歌", "9", KMVListFragment::class.java),
+        TabTitleFragment.newInstance("华语", "13", KMVListFragment::class.java),
+        TabTitleFragment.newInstance("日韩", "17", KMVListFragment::class.java),
+        TabTitleFragment.newInstance("欧美", "16", KMVListFragment::class.java)
     )
 
     override fun onDetach() {

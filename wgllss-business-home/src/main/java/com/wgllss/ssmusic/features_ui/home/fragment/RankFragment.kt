@@ -25,22 +25,6 @@ class RankFragment : TabTitleFragment<HomeViewModel>() {
     private val kRankListAdapter by lazy { KRankListAdapter() }
     private val homeTabViewModel by lazy { viewModels<RankViewModel>().value }
 
-    companion object {
-        private const val TITLE_KEY = "TITLE_KEY"
-        private const val KEY = "KEY"
-
-        fun newInstance(titleS: String, keyS: String): RankFragment {
-            val fragment = RankFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TITLE_KEY, titleS)
-                    putString(KEY, keyS)
-                }
-                title = titleS
-            }
-            return fragment
-        }
-    }
-
     override fun activitySameViewModel() = true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         if (!this::swipeRefreshLayout.isInitialized) {

@@ -31,22 +31,6 @@ class KSongSheetFragment : TabTitleFragment<HomeViewModel>() {
 
     private val homeTabViewModel by lazy { viewModels<SongSheetTabViewModel>().value }
 
-    companion object {
-        private const val TITLE_KEY = "TITLE_KEY"
-        private const val KEY = "KEY"
-
-        fun newInstance(titleS: String, keyS: String): KSongSheetFragment {
-            val fragment = KSongSheetFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TITLE_KEY, titleS)
-                    putString(KEY, keyS)
-                }
-                title = titleS
-            }
-            return fragment
-        }
-    }
-
     override fun activitySameViewModel() = true
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         if (!this::swipeRefreshLayout.isInitialized) {

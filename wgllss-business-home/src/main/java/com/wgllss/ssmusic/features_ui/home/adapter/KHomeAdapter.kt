@@ -218,39 +218,42 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 }
                 frameLayout.addView(image)
 
+                val size = parent.context.getIntToDip(25f).toInt()
                 val textView1 = TextView(context).apply {
                     id = txt1
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
-                    lp.leftMargin = context.getIntToDip(100f).toInt()
-                    lp.gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
+                        leftMargin = 4 * size
+                        bottomMargin = size
+                        gravity = Gravity.CENTER_VERTICAL
+                    }
                     maxLines = 1
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                     gravity = Gravity.CENTER_VERTICAL
-                    layoutParams = lp
                 }
                 frameLayout.addView(textView1)
 
                 val textView2 = TextView(context).apply {
                     id = txt2
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
-                    lp.leftMargin = context.getIntToDip(100f).toInt()
-                    lp.gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
+                        leftMargin = 4 * size
+                        gravity = Gravity.CENTER_VERTICAL
+                    }
                     maxLines = 1
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                     gravity = Gravity.CENTER_VERTICAL
-                    layoutParams = lp
                 }
                 frameLayout.addView(textView2)
 
                 val textView3 = TextView(context).apply {
                     id = txt3
-                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
-                    lp.leftMargin = context.getIntToDip(100f).toInt()
-                    lp.gravity = Gravity.CENTER_VERTICAL
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
+                        leftMargin = 4 * size
+                        gravity = Gravity.CENTER_VERTICAL
+                        topMargin = size
+                    }
                     maxLines = 1
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                     gravity = Gravity.CENTER_VERTICAL
-                    layoutParams = lp
                 }
                 frameLayout.addView(textView3)
                 BaseBindingViewHolder(frameLayout)

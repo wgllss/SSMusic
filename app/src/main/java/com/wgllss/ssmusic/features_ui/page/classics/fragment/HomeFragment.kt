@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.wgllss.core.ex.getIntToDip
-import com.wgllss.core.fragment.BaseViewModelFragment
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
 import com.wgllss.core.widget.DividerGridItemDecoration
@@ -26,23 +25,6 @@ import com.wgllss.ssmusic.features_ui.page.classics.viewmodels.HomeTabViewModel
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 
 class HomeFragment : TabTitleFragment<HomeViewModel2>() {
-
-    companion object {
-        private const val TITLE_KEY = "TITLE_KEY"
-        private const val KEY = "KEY"
-
-        fun newInstance(titleS: String, keyS: String): HomeFragment {
-            val fragment = HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TITLE_KEY, titleS)
-                    putString(KEY, keyS)
-                }
-                title = titleS
-            }
-            return fragment
-        }
-    }
-
 
     private val homeTabViewModel by lazy { viewModels<HomeTabViewModel>().value }
     private lateinit var rvPlList: RecyclerView

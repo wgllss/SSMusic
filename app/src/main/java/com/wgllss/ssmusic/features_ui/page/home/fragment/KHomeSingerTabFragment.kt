@@ -97,12 +97,12 @@ class KHomeSingerTabFragment : BaseViewModelFragment<HomeViewModel>(0) {
     }
 
     private fun getList() = mutableListOf<Fragment>(
-        KSingersFragment.newInstance("华语", "1"),
-        KSingersFragment.newInstance("韩国", "6"),
-        KSingersFragment.newInstance("日本", "5"),
-        KSingersFragment.newInstance("欧美", "2"),
-        KSingersFragment.newInstance("音乐人", ""),
-        KSingersFragment.newInstance("其他", "4")
+        TabTitleFragment.newInstance("华语", "1", KSingersFragment::class.java),
+        TabTitleFragment.newInstance("韩国", "6", KSingersFragment::class.java),
+        TabTitleFragment.newInstance("日本", "5", KSingersFragment::class.java),
+        TabTitleFragment.newInstance("欧美", "2", KSingersFragment::class.java),
+        TabTitleFragment.newInstance("音乐人", "", KSingersFragment::class.java),
+        TabTitleFragment.newInstance("其他", "4", KSingersFragment::class.java)
     )
 
     override fun onDetach() {

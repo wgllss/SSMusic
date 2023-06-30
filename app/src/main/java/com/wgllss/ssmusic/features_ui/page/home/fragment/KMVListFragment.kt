@@ -25,22 +25,6 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
     private lateinit var recyclerView: RecyclerView
     private val mvListAdapter by lazy { MVListAdapter() }
 
-    companion object {
-        private const val TITLE_KEY = "TITLE_KEY"
-        private const val KEY = "KEY"
-
-        fun newInstance(titleS: String, keyS: String): KMVListFragment {
-            val fragment = KMVListFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TITLE_KEY, titleS)
-                    putString(KEY, keyS)
-                }
-                title = titleS
-            }
-            return fragment
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (!this::swipeRefreshLayout.isInitialized) {
             swipeRefreshLayout = SwipeRefreshLayout(inflater.context).apply {
@@ -105,7 +89,7 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
     }
 
     override fun initObserve() {
-        super.initObserve()
+//        super.initObserve()
         viewModel.run {
             initKey(key)
             result[key]?.observe(viewLifecycleOwner) {

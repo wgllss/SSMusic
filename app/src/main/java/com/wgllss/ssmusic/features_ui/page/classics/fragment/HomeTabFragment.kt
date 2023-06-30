@@ -99,13 +99,13 @@ class HomeTabFragment : BaseViewModelFragment<HomeViewModel2>(0) {
     }
 
     private fun getList() = mutableListOf<Fragment>(
-        HomeFragment.newInstance("推荐", "index"),
-        HomeFragment.newInstance("华语", "forum-1"),
-        HomeFragment.newInstance("日韩", "forum-15"),
-        HomeFragment.newInstance("欧美", "forum-10"),
-        HomeFragment.newInstance("remix", "forum-11"),
-        HomeFragment.newInstance("纯音乐", "forum-12"),
-        HomeFragment.newInstance("异次元", "forum-13"),
+        TabTitleFragment.newInstance("推荐", "index", HomeFragment::class.java),
+        TabTitleFragment.newInstance("华语", "forum-1", HomeFragment::class.java),
+        TabTitleFragment.newInstance("日韩", "forum-15", HomeFragment::class.java),
+        TabTitleFragment.newInstance("欧美", "forum-10", HomeFragment::class.java),
+        TabTitleFragment.newInstance("remix", "forum-11", HomeFragment::class.java),
+        TabTitleFragment.newInstance("纯音乐", "forum-12", HomeFragment::class.java),
+        TabTitleFragment.newInstance("异次元", "forum-13", HomeFragment::class.java),
     )
 
     override fun onDetach() {

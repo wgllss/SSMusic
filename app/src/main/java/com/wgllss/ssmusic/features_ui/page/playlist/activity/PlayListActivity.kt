@@ -20,4 +20,8 @@ class PlayListActivity : BaseMVVMActivity<HomeViewModel2, ActivityPlayBinding>(R
         super.initControl(savedInstanceState)
         setFramgment(historyFragmentL.get(), R.id.content)
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(Bundle())
+    }
 }

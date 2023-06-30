@@ -21,22 +21,6 @@ class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
     private lateinit var side_bar: SideBar
     private val singersAdapter by lazy { SingersAdapter() }
 
-    companion object {
-        private const val TITLE_KEY = "TITLE_KEY"
-        private const val KEY = "KEY"
-
-        fun newInstance(titleS: String, keyS: String): KSingersFragment {
-            val fragment = KSingersFragment().apply {
-                arguments = Bundle().apply {
-                    putString(TITLE_KEY, titleS)
-                    putString(KEY, keyS)
-                }
-                title = titleS
-            }
-            return fragment
-        }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (!this::rootView.isInitialized) {
             rootView = inflater.inflate(R.layout.fragment_singers, container, false)
