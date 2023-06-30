@@ -30,15 +30,6 @@ class MusicFactory constructor(context: Context, private val appViewModel: AppVi
             metadataPrepareCompletion.observe(this@MusicFactory) {
                 preparePlay(it.id.toString(), it.title, it.author, it.pic, it.url, whenReady)
             }
-            isInitSuccess.observe(this@MusicFactory) {
-                it.takeIf {
-                    it == true
-                }?.run {
-                    liveData.observe(this@MusicFactory) {
-                        getPlayUrlFromMediaID(MMKVHelp.getCurrentMediaId() ?: "")
-                    }
-                }
-            }
         }
     }
 
@@ -47,38 +38,42 @@ class MusicFactory constructor(context: Context, private val appViewModel: AppVi
     override fun onLoadChildren(parentId: String, result: MediaBrowserServiceCompat.Result<MutableList<MediaBrowserCompat.MediaItem>>) {
         if (MEDIA_ID_ROOT == parentId) {
             WLog.e(this, "onLoadChildren parentId 333: $parentId")
-            appViewModel.isInitSuccess.observe(this) {
-                it.takeIf {
-                    it == true
-                }?.let {
-                    appViewModel.liveData.observe(this@MusicFactory) { list ->
-                        serviceScope.launch {
-                            if (!mSendResultCalled) {
-                                val child = withContext(IO) {
-                                    list.map { musicTableBean ->
-                                        MediaBrowserCompat.MediaItem(
-                                            MediaDescriptionCompat.Builder()
-                                                .setMediaId(musicTableBean.id.toString())
-                                                .setTitle(musicTableBean.title)
-                                                .setIconUri(Uri.parse(musicTableBean.pic))
-                                                .setMediaUri(Uri.parse(musicTableBean.url))
-                                                .setSubtitle(musicTableBean.author)
-                                                .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
-                                        )
-                                    }?.toMutableList()
-                                }
-                                try {
-                                    result.sendResult(child)
-                                    mSendResultCalled = true
-                                    WLog.e(this@MusicFactory, " result.sendResult(child) $parentId  ")
-                                } catch (e: Exception) {
+            appViewModel.run {
+                isInitSuccess.observe(this@MusicFactory) {
+                    it.takeIf {
+                        it == true
+                    }?.let {
+                        liveData.observe(this@MusicFactory) { list ->
+                            if (!whenReady)
+                                getPlayUrlFromMediaID(MMKVHelp.getCurrentMediaId() ?: "")
+                            serviceScope.launch {
+                                if (!mSendResultCalled) {
+                                    val child = withContext(IO) {
+                                        list.map { musicTableBean ->
+                                            MediaBrowserCompat.MediaItem(
+                                                MediaDescriptionCompat.Builder()
+                                                    .setMediaId(musicTableBean.id.toString())
+                                                    .setTitle(musicTableBean.title)
+                                                    .setIconUri(Uri.parse(musicTableBean.pic))
+                                                    .setMediaUri(Uri.parse(musicTableBean.url))
+                                                    .setSubtitle(musicTableBean.author)
+                                                    .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
+                                            )
+                                        }?.toMutableList()
+                                    }
+                                    try {
+                                        result.sendResult(child)
+                                        mSendResultCalled = true
+                                        WLog.e(this@MusicFactory, " result.sendResult(child) $parentId  ")
+                                    } catch (e: Exception) {
+                                        mSendResultCalled = false
+                                        WLog.e(this@MusicFactory, "Exception e： ${e.message}")
+                                    }
+                                } else {
                                     mSendResultCalled = false
-                                    WLog.e(this@MusicFactory, "Exception e： ${e.message}")
+                                    musicService.notifyChildrenChanged(parentId)
+                                    WLog.e(this@MusicFactory, "notifyChildrenChanged $parentId  ")
                                 }
-                            } else {
-                                mSendResultCalled = false
-                                musicService.notifyChildrenChanged(parentId)
-                                WLog.e(this@MusicFactory, "notifyChildrenChanged $parentId  ")
                             }
                         }
                     }

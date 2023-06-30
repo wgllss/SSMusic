@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.features_ui.page.home.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.get
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.wgllss.core.activity.BaseViewModelActivity
+import com.wgllss.core.ex.launchActivity
 import com.wgllss.core.ex.switchFragment
 import com.wgllss.core.units.LogTimer
 import com.wgllss.music.skin.R
@@ -19,6 +21,7 @@ import com.wgllss.ssmusic.features_ui.page.playlist.fragment.HistoryFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeMVTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeSingerTabFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.SettingFragment
+import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import com.wgllss.ssmusic.features_ui.playing.music_widget.PlayBarPanel
 import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,6 +86,9 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         super.bindEvent()
         viewModel?.run {
             playBarPanel?.observe(nowPlaying, playbackState, this@HomeActivity)
+            nowPlay.observe(this@HomeActivity) {
+                launchActivity(Intent(this@HomeActivity, PlayActivity::class.java))
+            }
         }
     }
 

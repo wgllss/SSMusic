@@ -203,8 +203,6 @@ class KRepository private constructor(private val context: Context) {
                 emit(musicBean)
             }
         }
-//            .catch { it.printStackTrace() }
-//            .flowOn(Dispatchers.IO)
     }
 
     /**

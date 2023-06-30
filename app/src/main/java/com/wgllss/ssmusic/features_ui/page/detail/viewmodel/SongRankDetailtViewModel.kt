@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.onEach
 
 class SongRankDetailtViewModel : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
-    val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicReposito
+    private val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicReposito
     private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
     val nowPlay by lazy { MutableLiveData<Boolean>() }
     private val transportControls by lazy { musicServiceConnectionL.transportControls }

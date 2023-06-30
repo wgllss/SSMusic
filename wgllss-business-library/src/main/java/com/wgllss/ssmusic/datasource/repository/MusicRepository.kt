@@ -261,7 +261,7 @@ class MusicRepository private constructor(private val context: Context) {
     suspend fun addToPlayList(it: MusicBean): Flow<Long> {
         return flow {
             it.run {
-                WLog.e(this@MusicRepository, "addToPlayList id: ${it.id} requestRealUrl $requestRealUrl")
+                WLog.e(this@MusicRepository, "addToPlayList id: ${it.id} title:${it.title} author:${it.author}")
                 val count = mSSDataBaseL.musicDao().queryByUUID(it.id)
                 if (count > 0) {
                     WLog.e(this@MusicRepository, "已经在播放列表里面")

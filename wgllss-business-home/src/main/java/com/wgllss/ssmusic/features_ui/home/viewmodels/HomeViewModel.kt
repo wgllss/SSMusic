@@ -101,7 +101,7 @@ class HomeViewModel : BaseViewModel() {
                         putString(MEDIA_ARTNETWORK_URL_KEY, it.pic)
                         putString(MEDIA_URL_KEY, it.url)
                     })
-                    nowPlay.postValue(true)
+//                    nowPlay.postValue(true)
                     musicRepositoryL.addToPlayList(it).collect()
                 }
         }

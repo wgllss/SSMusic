@@ -5,11 +5,13 @@ import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.viewmodel.BaseViewModel
+import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerInfo
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerSongBean
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants
+import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -19,11 +21,10 @@ import java.util.concurrent.ConcurrentHashMap
 class SongSingersViewModel : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
     private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
-    val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicReposito
+    private val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicReposito
     val nowPlay by lazy { MutableLiveData<Boolean>() }
     private val transportControls by lazy { musicServiceConnectionL.transportControls }
 
-    //    val songSheetDetail by lazy { MutableLiveData<SongSheetDetailDto>() }
     val singerInfo by lazy { MutableLiveData<KSingerInfo>() }
     private val map by lazy { ConcurrentHashMap<String, KSingerSongBean>() }
     val listLiveData by lazy { MutableLiveData<MutableList<KSingerSongBean>>() }
@@ -77,6 +78,14 @@ class SongSingersViewModel : BaseViewModel() {
 
 
     fun getPlayUrl(item: KSingerSongBean) {
+        val nowPlaying = musicServiceConnectionL.nowPlaying.value
+        val id = UUIDHelp.getMusicUUID(item.audio_name, item.audio_name)
+        nowPlaying?.id?.takeIf {
+            it.isNotEmpty() && it.toLong() == id
+        }?.let {
+            nowPlay.postValue(true)
+            return
+        }
         flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.getPlayUrl(item.song_url)
                 .onEach {
