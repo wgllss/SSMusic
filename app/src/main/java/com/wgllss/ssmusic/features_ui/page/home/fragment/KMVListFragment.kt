@@ -89,7 +89,6 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
     }
 
     override fun initObserve() {
-//        super.initObserve()
         viewModel.run {
             initKey(key)
             result[key]?.observe(viewLifecycleOwner) {

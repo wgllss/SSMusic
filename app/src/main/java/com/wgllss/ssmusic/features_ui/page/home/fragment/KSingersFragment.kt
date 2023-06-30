@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
@@ -16,27 +17,30 @@ import com.wgllss.ssmusic.features_ui.page.home.viewmodels.KSingerViewModel
 
 class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
 
-    private lateinit var rootView: View
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recycler_view: RecyclerView
     private lateinit var side_bar: SideBar
     private val singersAdapter by lazy { SingersAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (!this::rootView.isInitialized) {
-            rootView = inflater.inflate(R.layout.fragment_singers, container, false)
-            recycler_view = rootView.findViewById(R.id.recycler_view)
-            side_bar = rootView.findViewById(R.id.side_bar)
+        if (!this::swipeRefreshLayout.isInitialized) {
+            swipeRefreshLayout = inflater.inflate(R.layout.fragment_singers, container, false) as SwipeRefreshLayout
+            recycler_view = swipeRefreshLayout.findViewById(R.id.recycler_view)
+            side_bar = swipeRefreshLayout.findViewById(R.id.side_bar)
         }
-        rootView?.parent?.takeIf {
+        swipeRefreshLayout?.parent?.takeIf {
             it is ViewGroup
         }?.let {
-            (it as ViewGroup).removeView(rootView)
+            (it as ViewGroup).removeView(swipeRefreshLayout)
         }
-        return rootView
+        return swipeRefreshLayout
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        swipeRefreshLayout.setOnRefreshListener {
+            lazyLoad()
+        }
         recycler_view.apply {
             adapter = singersAdapter
             addItemDecoration(GroupItemDecoration(singersAdapter).apply {
@@ -53,7 +57,12 @@ class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
         }
         side_bar.setOnStrSelectCallBack(object : SideBar.ISideBarSelectCallBack {
             override fun onSelectStr(index: Int, selectStr: String) {
-                recycler_view.layoutManager?.scrollToPosition(singersAdapter.getLetterPosition(selectStr))
+                recycler_view.layoutManager?.takeIf {
+                    it.itemCount > 0 && singersAdapter.itemCount > 0
+                }?.run {
+                    scrollToPosition(singersAdapter.getLetterPosition(selectStr))
+                }
+//                recycler_view.layoutManager?.scrollToPosition(singersAdapter.getLetterPosition(selectStr))
             }
         })
     }
@@ -63,15 +72,17 @@ class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
     }
 
     override fun initObserve() {
-        super.initObserve()
         viewModel?.run {
             initKey(key)
             result[key]?.observe(viewLifecycleOwner) {
                 singersAdapter.notifyData(it)
             }
-//            liveDataLoadSuccessCount.observe(viewLifecycleOwner) {
-//                if (it > 1) swipeRefreshLayout.isRefreshing = false
-//            }
+            showUIDialog.observe(viewLifecycleOwner) {
+                swipeRefreshLayout.isRefreshing = it.isShow
+            }
+            errorMsgLiveData.observe(viewLifecycleOwner) {
+                onToast(it)
+            }
         }
     }
 }
