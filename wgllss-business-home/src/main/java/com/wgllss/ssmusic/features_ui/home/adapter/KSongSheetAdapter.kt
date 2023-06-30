@@ -94,7 +94,7 @@ class KSongSheetAdapter : BaseRecyclerAdapter<KSheetListDtoPlistListItem>() {
                     gravity = Gravity.RIGHT or Gravity.TOP
                     topMargin = context.getIntToDip(95f).toInt()
                 }
-                setTextColor(getTextColorPrimary(context))
+                setTextColor(Color.WHITE)
                 gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
                 maxLines = 1
                 insetTop = 0

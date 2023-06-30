@@ -42,7 +42,7 @@ class HomeViewModel2 : BaseViewModel() {
 //    var isFirst = true
 
     private var isLoadingMore = false
-    val enableLoadeMore by lazy { MutableLiveData<Boolean>(true) }
+    val enableLoadeMore by lazy { MutableLiveData(true) }
     private var pageNo = 1
 
     fun enableLoadMore() = !isLoadingMore && enableLoadeMore.value!!
@@ -116,6 +116,7 @@ class HomeViewModel2 : BaseViewModel() {
             return
         }
         isLoadingMore = true
+        WLog.e(this, "isLoadingMore : $isLoadingMore")
         flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.searchKeyByTitle(searchContent.value!!, pageNo)
                 .onEach {

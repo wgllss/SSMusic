@@ -47,7 +47,6 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
                 addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
                         val linearLayoutManager = recyclerView.layoutManager as LinearLayoutManager?
                         if (viewModel.enableLoadMore() && linearLayoutManager!!.itemCount == linearLayoutManager.findLastVisibleItemPosition() + 1) {
                             viewModel.searchKeyByTitle()
@@ -74,10 +73,6 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
                     finishActivity()
                 }
             }
-        }
-        viewModel.result.observe(viewLifecycleOwner) {
-            musicAdapter.notifyData(it)
-            musicAdapter.addFooter()
         }
     }
 

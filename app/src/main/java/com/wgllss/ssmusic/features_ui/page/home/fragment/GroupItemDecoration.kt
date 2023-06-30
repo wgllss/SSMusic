@@ -101,9 +101,9 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
         headTextPaint.textSize = headTextSize.toFloat()
 
         mPaint.isAntiAlias = true
-        mPaint.strokeWidth = 5f
+        mPaint.strokeWidth = 1f
         mPaint.style = Paint.Style.FILL_AND_STROKE
-        mPaint.color = Color.parseColor("#20000000")
+        mPaint.color = Color.parseColor("#30000000")
     }
 
     fun setColor(colorHeader: Int, colorHeaderTop: Int) {
@@ -151,7 +151,7 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
                 }
                 //如果不是头部，就绘制分隔线
                 else {
-                    val rect = Rect(left, view.top - 5, right, view.top)
+                    val rect = Rect(left, view.top - 1, right, view.top)
                     c.drawRect(rect, mPaint)
                 }
             }
@@ -164,10 +164,7 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
      */
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
-//        if (parent.adapter is UserAdapter) {
-//            val adapter = parent.adapter as UserAdapter
         val layoutManager = parent.layoutManager
-        //只考虑LinearLayoutManager
         if (layoutManager is LinearLayoutManager) {
             //找到RecyclerView第一个显示的view的position
             val position = layoutManager.findFirstVisibleItemPosition()
@@ -233,12 +230,7 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
         state: RecyclerView.State
     ) {
         super.getItemOffsets(outRect, view, parent, state)
-//        if (parent.adapter is UserAdapter) {
-//            val adapter = parent.adapter as UserAdapter
-        //RecyclerView的LayoutParams，是有viewHolder的，所以可以通过View 获取LayoutParams,再拿到ViewHolder
-        //获取当前view对应的position
         val position = parent.getChildAdapterPosition(view)
-
         //判断分组头
         if (adapter.isGroupHead(position)) {
             outRect.set(0, headHeight, 0, 0)
@@ -247,7 +239,6 @@ class GroupItemDecoration(val adapter: SingersAdapter) : RecyclerView.ItemDecora
         else {
             outRect.set(0, 1, 0, 0)
         }
-//        }
     }
 
     private fun dp2px(dp: Int): Int {

@@ -181,7 +181,7 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                         gravity = Gravity.RIGHT or Gravity.TOP
                         topMargin = context.getIntToDip(95f).toInt()
                     }
-                    setTextColor(getTextColorPrimary(context))
+                    setTextColor(Color.WHITE)
                     gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
                     maxLines = 1
                     insetTop = 0
@@ -212,16 +212,17 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 val image = ShapeableImageView(parent.context).apply {
                     id = img3
                     val size = context.getIntToDip(90f).toInt()
-                    val lp = LinearLayout.LayoutParams(size, size)
-                    lp.gravity = Gravity.TOP or Gravity.LEFT
+                    val lp = FrameLayout.LayoutParams(size, size)
+                    lp.gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
                     layoutParams = lp
                 }
                 frameLayout.addView(image)
 
                 val textView1 = TextView(context).apply {
                     id = txt1
-                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
                     lp.leftMargin = context.getIntToDip(100f).toInt()
+                    lp.gravity = Gravity.CENTER_VERTICAL
                     maxLines = 1
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                     gravity = Gravity.CENTER_VERTICAL
@@ -231,9 +232,9 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
 
                 val textView2 = TextView(context).apply {
                     id = txt2
-                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
                     lp.leftMargin = context.getIntToDip(100f).toInt()
-                    lp.topMargin = context.getIntToDip(30f).toInt()
+                    lp.gravity = Gravity.CENTER_VERTICAL
                     maxLines = 1
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                     gravity = Gravity.CENTER_VERTICAL
@@ -243,9 +244,9 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
 
                 val textView3 = TextView(context).apply {
                     id = txt3
-                    val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, context.getIntToDip(25f).toInt())
                     lp.leftMargin = context.getIntToDip(100f).toInt()
-                    lp.topMargin = context.getIntToDip(60f).toInt()
+                    lp.gravity = Gravity.CENTER_VERTICAL
                     maxLines = 1
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
                     gravity = Gravity.CENTER_VERTICAL

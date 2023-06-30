@@ -50,7 +50,7 @@ class KMVListFragment : TabTitleFragment<KMVListViewModel>() {
             recyclerView = RecyclerView(inflater.context).apply {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                 val itemDecoration = View(context)
-                val size = context.getIntToDip(10.0f).toInt()
+                val size = context.getIntToDip(1.0f).toInt()
                 itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
                 itemDecoration.setBackgroundColor(Color.parseColor("#30000000"))
                 addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))

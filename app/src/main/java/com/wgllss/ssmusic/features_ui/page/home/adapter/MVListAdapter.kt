@@ -56,6 +56,8 @@ class MVListAdapter : BaseRecyclerAdapter<KMVItem>() {
                 isFocusable = true
                 gravity = Gravity.CENTER_HORIZONTAL
                 orientation = LinearLayout.VERTICAL
+                val size = context.getIntToDip(6f).toInt()
+                setPadding(size, size, size, size)
             }
             val image = ShapeableImageView(parent.context).apply {
                 id = img
