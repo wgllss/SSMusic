@@ -75,7 +75,7 @@ class SongRankDetailtViewModel : BaseViewModel() {
                     it.musicLrcStr?.takeIf {
                         it.isNotEmpty()
                     }?.let { lrc ->
-                        LrcHelp.savve(id.toString(), lrc)
+                        LrcHelp.saveLrc(it.id.toString(), lrc)
                     }
                     transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
                         putString(Constants.MEDIA_ID_KEY, it.id.toString())

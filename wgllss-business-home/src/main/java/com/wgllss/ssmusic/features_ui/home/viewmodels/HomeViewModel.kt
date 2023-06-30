@@ -31,7 +31,6 @@ import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
-//@HiltViewModel
 class HomeViewModel : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
     private val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }
@@ -92,7 +91,7 @@ class HomeViewModel : BaseViewModel() {
                     it.musicLrcStr?.takeIf {
                         it.isNotEmpty()
                     }?.let { lrc ->
-                        LrcHelp.savve(id.toString(), lrc)
+                        LrcHelp.saveLrc(id.toString(), lrc)
                     }
                     transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
                         putString(MEDIA_ID_KEY, it.id.toString())
@@ -101,7 +100,6 @@ class HomeViewModel : BaseViewModel() {
                         putString(MEDIA_ARTNETWORK_URL_KEY, it.pic)
                         putString(MEDIA_URL_KEY, it.url)
                     })
-//                    nowPlay.postValue(true)
                     musicRepositoryL.addToPlayList(it).collect()
                 }
         }

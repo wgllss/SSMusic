@@ -50,7 +50,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     protected lateinit var musicService: MusicService
     private var currentMediaMetadataCompat: MediaMetadataCompat? = null
 
-    protected val serviceJob by lazy { SupervisorJob() }
+    private val serviceJob by lazy { SupervisorJob() }
     protected val serviceScope by lazy { CoroutineScope(Dispatchers.Main + serviceJob) }
     private val playerListener by lazy { PlayerEventListener() }
     protected var whenReady = false

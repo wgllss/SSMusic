@@ -12,6 +12,7 @@ import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.LogTimer
 import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
+import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
@@ -38,9 +39,9 @@ class HomeViewModel2 : BaseViewModel() {
     val currentMediaID by lazy { MutableLiveData("") }
 //    val mCurrentFragmentTAG by lazy { StringBuilder() }
 
-//    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
+    //    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
 //    var isFirst = true
-
+    val nowPlay by lazy { MutableLiveData<Boolean>() }
     private var isLoadingMore = false
     val enableLoadeMore by lazy { MutableLiveData(true) }
     private var pageNo = 1
@@ -141,6 +142,14 @@ class HomeViewModel2 : BaseViewModel() {
         result?.value?.takeIf {
             it.size > position
         }?.run {
+            val nowPlaying = musicServiceConnectionL.nowPlaying.value
+            val id = UUIDHelp.getMusicUUID(get(position).musicName, get(position).author)
+            nowPlaying?.id?.takeIf {
+                it.isNotEmpty() && it.toLong() == id
+            }?.let {
+                nowPlay.postValue(true)
+                return
+            }
             flowAsyncWorkOnViewModelScopeLaunch {
                 val detailUrl = get(position).detailUrl
                 musicRepositoryL.getPlayUrl(detailUrl)

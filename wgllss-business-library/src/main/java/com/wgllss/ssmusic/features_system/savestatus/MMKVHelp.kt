@@ -31,7 +31,7 @@ object MMKVHelp {
 
     fun saveHomeTab1Data(data: String) = mmkv.encode("home_fragment_tab1", data)
 
-    fun getHomeTab1Data() = mmkv.decodeString("home_fragment_tab1")
+    fun getHomeTab1Data() = mmkv.decodeString("home_fragment_tab1") ?: ""
 
     fun saveCurrentMediaId(mediaId: String) = mmkv.encode("current_mediaId", mediaId)
 

@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.features_ui.page.search.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -7,12 +8,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.core.ex.HideSoftInputFromWindow
 import com.wgllss.core.ex.finishActivity
+import com.wgllss.core.ex.launchActivity
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
 import com.wgllss.ssmusic.features_ui.page.classics.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
+import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -79,6 +82,15 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
     override fun initObserve() {
         super.initObserve()
         viewModel?.run {
+            nowPlay.observe(viewLifecycleOwner) {
+                it?.takeIf {
+                    it
+                }?.let {
+                    activity?.run {
+                        launchActivity(Intent(this, PlayActivity::class.java))
+                    }
+                }
+            }
             result.observe(viewLifecycleOwner) {
                 musicAdapter.notifyData(it)
                 musicAdapter.addFooter()

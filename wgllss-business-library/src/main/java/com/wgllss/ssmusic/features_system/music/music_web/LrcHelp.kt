@@ -4,7 +4,7 @@ import com.tencent.mmkv.MMKV
 
 object LrcHelp {
 
-    fun savve(id: String, lrc: String) {
+    fun saveLrc(id: String, lrc: String) {
         MMKV.defaultMMKV().encode(id, lrc)
     }
 
@@ -12,13 +12,13 @@ object LrcHelp {
         return MMKV.defaultMMKV().decodeString(id) ?: ""
     }
 
-    fun saveHomeData(json: String) {
-        MMKV.defaultMMKV().encode("home_key_json", json)
-    }
-
-    fun getHomeData(): String {
-        return MMKV.defaultMMKV().decodeString("home_key_json") ?: ""
-    }
+//    fun saveHomeData(json: String) {
+//        MMKV.defaultMMKV().encode("home_key_json", json)
+//    }
+//
+//    fun getHomeData(): String {
+//        return MMKV.defaultMMKV().decodeString("home_key_json") ?: ""
+//    }
 
     fun saveJsPath(path: String) {
         MMKV.defaultMMKV().encode("webview_js_Key", path)

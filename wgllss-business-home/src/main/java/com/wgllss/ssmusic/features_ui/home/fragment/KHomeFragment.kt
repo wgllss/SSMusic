@@ -12,6 +12,7 @@ import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.music.skin.R
 import com.wgllss.ssmusic.data.DataContains
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_ui.home.adapter.KHomeAdapter
@@ -94,7 +95,7 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
 //            })
         }
 
-        if (LrcHelp.getHomeData().isEmpty()) {
+        if (MMKVHelp.getHomeTab1Data().isEmpty()) {
             DataContains.list.observe(viewLifecycleOwner) {
                 kHomeAdapter.notifyData(it)
             }
