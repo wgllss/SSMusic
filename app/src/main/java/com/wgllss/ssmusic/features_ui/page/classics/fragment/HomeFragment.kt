@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,7 +27,7 @@ import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 
 class HomeFragment : TabTitleFragment<HomeViewModel2>() {
 
-    private val homeTabViewModel by lazy { viewModels<HomeTabViewModel>().value }
+    private val homeTabViewModel by lazy { activityViewModels<HomeTabViewModel>().value }
     private lateinit var rvPlList: RecyclerView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 

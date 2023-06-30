@@ -21,4 +21,8 @@ class SearchActivity : BaseMVVMActivity<HomeViewModel2, ActivityPlayBinding>(R.l
         super.initControl(savedInstanceState)
         setFramgment(searchFragmentL.get(), R.id.content)
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(Bundle())
+    }
 }

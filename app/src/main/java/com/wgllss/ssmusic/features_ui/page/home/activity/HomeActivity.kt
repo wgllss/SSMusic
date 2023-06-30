@@ -32,8 +32,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     private val homeFragment by lazy { HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) }
-
-
     private val kHomeMVTabFragment by lazy { KHomeMVTabFragment() }
     private val homeTabFragment by lazy { HomeTabFragment() }
 
@@ -43,7 +41,6 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     lateinit var settingFragmentL: Lazy<SettingFragment>
 
     private lateinit var navigationView: BottomNavigationView
-    private lateinit var playBarLayout: View
     private lateinit var playBarPanel: PlayBarPanel
 
     override fun onCreate(savedInstanceState: Bundle?) {

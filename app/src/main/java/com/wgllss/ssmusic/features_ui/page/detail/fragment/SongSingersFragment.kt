@@ -126,4 +126,9 @@ class SongSingersFragment(private val encodeID: String, private val authorName: 
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.nowPlay.postValue(false)
+    }
 }

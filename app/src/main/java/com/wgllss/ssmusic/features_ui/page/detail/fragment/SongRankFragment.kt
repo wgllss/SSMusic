@@ -117,4 +117,9 @@ class SongRankFragment(private val encodeID: String) : BaseViewModelFragment<Son
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.nowPlay.postValue(false)
+    }
 }

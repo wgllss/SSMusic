@@ -169,4 +169,9 @@ class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<So
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.nowPlay.postValue(false)
+    }
 }

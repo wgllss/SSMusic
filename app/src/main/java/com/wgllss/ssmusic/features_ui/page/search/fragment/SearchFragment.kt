@@ -102,4 +102,9 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        viewModel.nowPlay.postValue(false)
+    }
 }
