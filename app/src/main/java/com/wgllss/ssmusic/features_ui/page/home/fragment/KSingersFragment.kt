@@ -17,23 +17,25 @@ import com.wgllss.ssmusic.features_ui.page.home.viewmodels.KSingerViewModel
 
 class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
 
+    private lateinit var rootView: View
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recycler_view: RecyclerView
     private lateinit var side_bar: SideBar
     private val singersAdapter by lazy { SingersAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (!this::swipeRefreshLayout.isInitialized) {
-            swipeRefreshLayout = inflater.inflate(R.layout.fragment_singers, container, false) as SwipeRefreshLayout
-            recycler_view = swipeRefreshLayout.findViewById(R.id.recycler_view)
-            side_bar = swipeRefreshLayout.findViewById(R.id.side_bar)
+        if (!this::rootView.isInitialized) {
+            rootView = inflater.inflate(R.layout.fragment_singers, container, false)
+            swipeRefreshLayout = rootView.findViewById(R.id.swiperefreshlayout)
+            recycler_view = rootView.findViewById(R.id.recycler_view)
+            side_bar = rootView.findViewById(R.id.side_bar)
         }
-        swipeRefreshLayout?.parent?.takeIf {
+        rootView?.parent?.takeIf {
             it is ViewGroup
         }?.let {
-            (it as ViewGroup).removeView(swipeRefreshLayout)
+            (it as ViewGroup).removeView(rootView)
         }
-        return swipeRefreshLayout
+        return rootView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
