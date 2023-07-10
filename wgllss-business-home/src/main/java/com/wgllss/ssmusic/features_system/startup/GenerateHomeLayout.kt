@@ -160,7 +160,7 @@ object GenerateHomeLayout {
             isFocusable = true
         }
         frameLayout.addView(imgPlayPause)
-        ScreenManager.measureAndLayout(frameLayout)
+//        ScreenManager.measureAndLayout(frameLayout)
         return frameLayout
     }
 
