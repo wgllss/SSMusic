@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.wgllss.core.material.ThemeUtils
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.core.widget.SideBar
+import com.wgllss.ssmusic.ex.initColors
 import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
 import com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity
 import com.wgllss.ssmusic.features_ui.page.home.adapter.SingersAdapter
@@ -26,7 +28,10 @@ class KSingersFragment : TabTitleFragment<KSingerViewModel>() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (!this::rootView.isInitialized) {
             rootView = inflater.inflate(R.layout.fragment_singers, container, false)
-            swipeRefreshLayout = rootView.findViewById(R.id.swiperefreshlayout)
+            swipeRefreshLayout = rootView.findViewById<SwipeRefreshLayout>(R.id.swiperefreshlayout).apply {
+                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                initColors()
+            }
             recycler_view = rootView.findViewById(R.id.recycler_view)
             side_bar = rootView.findViewById(R.id.side_bar)
         }

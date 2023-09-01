@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:lrcAnimationDuration="1000"
-        app:lrcCurrentTextColor="@color/colorPrimary"
+        app:lrcCurrentTextColor="@color/color_recycler_singer_header"
         app:lrcDividerHeight="20dp"
         app:lrcLabel="找不到歌词(@_@)"
         app:lrcNormalTextColor="@color/textColorPrimary"

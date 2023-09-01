@@ -67,22 +67,22 @@ class HistoryFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, F
                     activity?.let { it.launchActivity(Intent(it, PlayActivity::class.java)) }
                 }
             })
-            rvPlList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    when (newState) {
-                        //滑动停止
-                        RecyclerView.SCROLL_STATE_IDLE -> activity?.takeIf {
-                            !it.isFinishing
-                        }?.run {
-                            Glide.with(this).resumeRequests()
-                        }
-                        else -> activity?.let {
-                            Glide.with(it).pauseRequests()
-                        }
-                    }
-                }
-            })
+//            rvPlList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//
+//                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                    when (newState) {
+//                        //滑动停止
+//                        RecyclerView.SCROLL_STATE_IDLE -> activity?.takeIf {
+//                            !it.isFinishing
+//                        }?.run {
+//                            Glide.with(this).resumeRequests()
+//                        }
+//                        else -> activity?.let {
+//                            Glide.with(it).pauseRequests()
+//                        }
+//                    }
+//                }
+//            })
             imgBack.setOnClickListener {
                 activity?.run {
                     finishActivity()

@@ -36,12 +36,13 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             it?.let {
                 it.id?.let { id ->
-                    LrcHelp.getLrc(id)?.takeIf { l ->
-                        l.isNotEmpty()
-                    }?.let { lrc ->
-                        binding.lrcView.loadLrc(lrc)
-//                        binding   lrcView.loadLrc(lrc)
-                    }
+                    binding.lrcView.loadLrc(LrcHelp.getLrc(id).ifEmpty { "暂无歌词" })
+//                    LrcHelp.getLrc(id)?.takeIf { l ->
+//                        l.isNotEmpty()
+//                    }?.let { lrc ->
+//                        binding.lrcView.loadLrc(lrc)
+////                        binding   lrcView.loadLrc(lrc)
+//                    }
                 }
                 binding.materMusicName.text = it.title
                 binding.musicAutor.text = it.artist
@@ -58,8 +59,8 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
                                     binding.txtTime.setTextColor(s.bodyTextColor)
                                     binding.txtWeek.setTextColor(s.bodyTextColor)
                                     binding.txtButtom.setTextColor(s.bodyTextColor)
-                                    binding.lrcView?.setCurrentColor(p.getMutedColor(s.titleTextColor))
-                                    binding.lrcView?.setNormalColor(s.bodyTextColor)
+//                                    binding.lrcView?.setCurrentColor(p.getMutedColor(s.titleTextColor))
+//                                    binding.lrcView?.setNormalColor(s.bodyTextColor)
                                 }
                             }
                         }

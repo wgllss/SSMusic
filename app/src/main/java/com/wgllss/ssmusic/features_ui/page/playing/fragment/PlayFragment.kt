@@ -79,11 +79,12 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             it.id?.let { id ->
-                LrcHelp.getLrc(id)?.takeIf { l ->
-                    l.isNotEmpty()
-                }?.let { lrc ->
-                    lrcView.loadLrc(lrc)
-                }
+                lrcView.loadLrc(LrcHelp.getLrc(id).ifEmpty { "暂无歌词" })
+//                LrcHelp.getLrc(id)?.takeIf { l ->
+//                    l.isNotEmpty()
+//                }?.let { lrc ->
+//                    lrcView.loadLrc(lrc)
+//                }
             }
             binding.materMusicName.text = it!!.title
             iv_center.loadUrl(it.albumArtUri)
@@ -96,7 +97,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                                 p?.lightMutedSwatch?.let { s ->
                                     binding.layoutPlayBg.setBackgroundColor(s.rgb)
                                     binding.materMusicName.setTextColor(s.titleTextColor)
-                                    lrcView?.setCurrentColor(p.getMutedColor(s.titleTextColor))
+//                                    lrcView?.setCurrentColor(p.getMutedColor(s.titleTextColor))
                                     lrcView?.setNormalColor(s.bodyTextColor)
                                     binding.tvTotalTime.setTextColor(s.bodyTextColor)
                                     binding.tvCurrentTime.setTextColor(s.bodyTextColor)
