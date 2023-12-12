@@ -1,9 +1,8 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import android.content.Context
-import android.webkit.WebSettings
+import android.text.TextUtils
 import android.webkit.WebView
-import com.google.gson.Gson
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.core.units.ChineseUtils
 import com.wgllss.ssmusic.data.MusicBean
@@ -15,7 +14,6 @@ import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
 import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
-import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -25,6 +23,18 @@ import java.util.concurrent.TimeoutException
 class MusicRepository private constructor(private val context: Context) {
     private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
     private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
+    private val implWeb = ImplWebViewClient()
+    private val webView by lazy {
+        WebView(context).apply {
+            settings.apply {
+                defaultTextEncodingName = "UTF-8"
+                allowFileAccess = true
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                webViewClient = implWeb
+            }
+        }
+    }
 
     companion object {
 
@@ -118,36 +128,22 @@ class MusicRepository private constructor(private val context: Context) {
 //        }
     }
 
-    private fun loadWebViewUrl(url: String, implWeb: ImplWebViewClient, javaScriptX: InplJavaScriptX) {
-        WebView(context).apply {
-            settings.apply {
-                defaultTextEncodingName = "UTF-8"
-                allowFileAccess = true
-                cacheMode = WebSettings.LOAD_NO_CACHE
-                javaScriptEnabled = true
-                domStorageEnabled = true
-                webViewClient = implWeb
-
-            }
-            addJavascriptInterface(javaScriptX, "script_ex")
-            loadUrl(url)
-        }
-    }
-
     /**
      * 按照标题搜索
      */
     suspend fun searchKeyByTitle(keyword: String, pageNo: Int = 1): Flow<MusicListDto> {
         val keywordL = ChineseUtils.urlEncode(keyword)
         val javaScriptX = InplJavaScriptX()
-        var html: String? = null
-        javaScriptX.setSearchResponse {
-            html = it
+        webView.run {
+            addJavascriptInterface(javaScriptX, "script_ex")
+            loadUrl("https://www.hifini.com/search-$keywordL-1-$pageNo.htm")
         }
-        loadWebViewUrl("https://www.hifini.com/search-$keywordL-1-$pageNo.htm", ImplWebViewClient(), javaScriptX)
         return flow {
             val startTime = System.currentTimeMillis()
-            while (html == null) {
+            var html: String?
+            while (TextUtils.isEmpty(javaScriptX.html.also {
+                    html = it
+                })) {
                 delay(16)
                 if (System.currentTimeMillis() - startTime > 30000) {
                     throw TimeoutException("获取数据超时")

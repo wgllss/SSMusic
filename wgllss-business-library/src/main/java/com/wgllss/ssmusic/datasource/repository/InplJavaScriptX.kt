@@ -4,14 +4,10 @@ import android.webkit.JavascriptInterface
 
 class InplJavaScriptX {
 
-    private var block: ((String) -> Unit)? = null
-
-    fun setSearchResponse(block: (String) -> Unit) {
-        this.block = block
-    }
+    var html: String? = null
 
     @JavascriptInterface
     fun getWebViewData(html: String) {
-        block?.invoke(html)
+        this.html = html
     }
 }
