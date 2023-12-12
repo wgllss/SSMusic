@@ -77,4 +77,14 @@ class ImplWebViewClient : WebViewClient() {
         mvRequestUrl = ""
         return url
     }
+
+    override fun onPageFinished(view: WebView, url: String) {
+        super.onPageFinished(view, url)
+        if (url.contains("search-")) {
+            view.loadUrl(
+                "javascript:window.script_ex.getWebViewData('<head>'+"
+                        + "document.getElementsByTagName('html')[0].innerHTML+'</head>');"
+            )/**/
+        }
+    }
 }

@@ -1,6 +1,8 @@
 package com.wgllss.ssmusic.datasource.repository
 
 import android.content.Context
+import android.webkit.WebSettings
+import android.webkit.WebView
 import com.google.gson.Gson
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.core.units.ChineseUtils
@@ -9,13 +11,16 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.MusicListDto
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
+import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
 import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
+import java.util.concurrent.TimeoutException
 
 class MusicRepository private constructor(private val context: Context) {
     private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
@@ -113,86 +118,116 @@ class MusicRepository private constructor(private val context: Context) {
 //        }
     }
 
+    private fun loadWebViewUrl(url: String, implWeb: ImplWebViewClient, javaScriptX: InplJavaScriptX) {
+        WebView(context).apply {
+            settings.apply {
+                defaultTextEncodingName = "UTF-8"
+                allowFileAccess = true
+                cacheMode = WebSettings.LOAD_NO_CACHE
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                webViewClient = implWeb
+
+            }
+            addJavascriptInterface(javaScriptX, "script_ex")
+            loadUrl(url)
+        }
+    }
+
     /**
      * 按照标题搜索
      */
-    suspend fun searchKeyByTitle(keyword: String, pageNo: Int = 1): Flow<MusicListDto> = flow {
+    suspend fun searchKeyByTitle(keyword: String, pageNo: Int = 1): Flow<MusicListDto> {
         val keywordL = ChineseUtils.urlEncode(keyword)
-        val html = musiceApiL.searchKeyByTitle(keywordL, pageNo)
-        val document = Jsoup.parse(html, "https://www.hifini.com/")
-        val dcS = document.select(".break-all")
-        val list = mutableListOf<MusicItemBean>()
-        dcS?.forEach {
-            val links = it.select("a[href]")
-            //links:<a href="thread-5061.htm">周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]</a>
-            //links:<a href="thread-11307.htm">买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]</a>
-            WLog.e(this@MusicRepository, "links:${links}")
-            links?.first()?.attr("abs:href")?.run {
-                try {
-                    //content:买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]
-                    //content:周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]
-                    val content = links.html()//树深时见鹿dear《<em>三国</em><em>杀</em>》[FLAC/MP3-320K]
-                    WLog.e(this@MusicRepository, "content:${content}")
-                    content?.takeIf { c ->
-                        c.isNotEmpty() && !c.contains("专辑")
-                    }?.let {
-                        val startIndex = content.indexOf("《")
-                        val endIndex = content.indexOf("》")
-                        if (startIndex != -1 && endIndex != -1) {
-                            var author: String = content.substring(0, startIndex)
-                            author = author.replace("&amp;", "、")
-                                .replace("<em>", "")
-                                .replace("</em>", "")
-                                .replace("em>", "")
-                                .replace("</em", "")
-                            var samplingRate = if (content.indexOf("[") != -1) {
-                                content.substring(content.indexOf("[") + 1, content.length - 1)
-                            } else {
-                                content.substring(endIndex + 1, content.length - 1)
-                            }
-                            var musicName = content.substring(startIndex + 1, endIndex)
-                            musicName = musicName.replace("<em>", "")
-                                .replace("</em>", "")
-                                .replace("em>", "")
-                                .replace("</em", "")
-                            list.add(MusicItemBean(author, musicName, this, samplingRate))
-                        } else {
-
-                            val startIndex = content.indexOf("<")
-                            val endIndex = content.lastIndexOf(">")
-                            var author: String = content.substring(0, startIndex)
-                            author = author.replace("&amp;", "、")
-                                .replace("<em>", "")
-                                .replace("</em>", "")
-                                .replace("em>", "")
-                                .replace("</em", "")
-                            var samplingRate = if (content.indexOf("[") != -1) {
-                                content.substring(content.indexOf("[") + 1, content.length - 1)
-                            } else {
-                                content.substring(endIndex + 1, content.length - 1)
-                            }
-                            var musicName = content.substring(startIndex + 1, endIndex)
-                            musicName = musicName.replace("<em>", "")
-                                .replace("</em>", "")
-                                .replace("em>", "")
-                                .replace("</em", "")
-                            list.add(MusicItemBean(author, musicName, this, samplingRate))
-                        }
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        val javaScriptX = InplJavaScriptX()
+        var html: String? = null
+        javaScriptX.setSearchResponse {
+            html = it
+        }
+        loadWebViewUrl("https://www.hifini.com/search-$keywordL-1-$pageNo.htm", ImplWebViewClient(), javaScriptX)
+        return flow {
+            val startTime = System.currentTimeMillis()
+            while (html == null) {
+                delay(16)
+                if (System.currentTimeMillis() - startTime > 30000) {
+                    throw TimeoutException("获取数据超时")
                 }
             }
+            val document = Jsoup.parse(html, "https://www.hifini.com/")
+            val dcS = document.select(".break-all")
+            val list = mutableListOf<MusicItemBean>()
+            dcS?.forEach {
+                val links = it.select("a[href]")
+                //links:<a href="thread-5061.htm">周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]</a>
+                //links:<a href="thread-11307.htm">买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]</a>
+                WLog.e(this@MusicRepository, "links:${links}")
+                links?.first()?.attr("abs:href")?.run {
+                    try {
+                        //content:买辣椒也用券《<em>起风</em><em>了</em>（旧版）》[FLAC/MP3-320K]
+                        //content:周杰伦《<em>爱在</em><em>西<em>元前</em></em>》[FLAC/MP3-320K]
+                        val content = links.html()//树深时见鹿dear《<em>三国</em><em>杀</em>》[FLAC/MP3-320K]
+                        WLog.e(this@MusicRepository, "content:${content}")
+                        content?.takeIf { c ->
+                            c.isNotEmpty() && !c.contains("专辑")
+                        }?.let {
+                            val startIndex = content.indexOf("《")
+                            val endIndex = content.indexOf("》")
+                            if (startIndex != -1 && endIndex != -1) {
+                                var author: String = content.substring(0, startIndex)
+                                author = author.replace("&amp;", "、")
+                                    .replace("<em>", "")
+                                    .replace("</em>", "")
+                                    .replace("em>", "")
+                                    .replace("</em", "")
+                                var samplingRate = if (content.indexOf("[") != -1) {
+                                    content.substring(content.indexOf("[") + 1, content.length - 1)
+                                } else {
+                                    content.substring(endIndex + 1, content.length - 1)
+                                }
+                                var musicName = content.substring(startIndex + 1, endIndex)
+                                musicName = musicName.replace("<em>", "")
+                                    .replace("</em>", "")
+                                    .replace("em>", "")
+                                    .replace("</em", "")
+                                list.add(MusicItemBean(author, musicName, this, samplingRate))
+                            } else {
+
+                                val startIndex = content.indexOf("<")
+                                val endIndex = content.lastIndexOf(">")
+                                var author: String = content.substring(0, startIndex)
+                                author = author.replace("&amp;", "、")
+                                    .replace("<em>", "")
+                                    .replace("</em>", "")
+                                    .replace("em>", "")
+                                    .replace("</em", "")
+                                var samplingRate = if (content.indexOf("[") != -1) {
+                                    content.substring(content.indexOf("[") + 1, content.length - 1)
+                                } else {
+                                    content.substring(endIndex + 1, content.length - 1)
+                                }
+                                var musicName = content.substring(startIndex + 1, endIndex)
+                                musicName = musicName.replace("<em>", "")
+                                    .replace("</em>", "")
+                                    .replace("em>", "")
+                                    .replace("</em", "")
+                                list.add(MusicItemBean(author, musicName, this, samplingRate))
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            var maxPage = 1
+            val pages = document.select(".page-link")
+            pages?.takeIf {
+                it.size > 2
+            }?.run {
+                maxPage = (pages[pages.size - 2].html()?.replace("...", "") ?: "1").toInt()
+                WLog.e(this@MusicRepository, "maxPage:$maxPage")
+            }
+            emit(MusicListDto(maxPage, list))
         }
-        var maxPage = 1
-        val pages = document.select(".page-link")
-        pages?.takeIf {
-            it.size > 2
-        }?.run {
-            maxPage = (pages[pages.size - 2].html()?.replace("...", "") ?: "1").toInt()
-            WLog.e(this@MusicRepository, "maxPage:$maxPage")
-        }
-        emit(MusicListDto(maxPage, list))
     }
 
     /**
