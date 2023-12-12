@@ -65,6 +65,12 @@ object InitHomeFirstInitializeHelp {
                             strOfflineResources.append(resJs[i])
                         }
                     }
+                    val resCss = am.list("css")
+                    if (resCss != null && resCss.isNotEmpty()) {
+                        for (i in resCss.indices) {
+                            strOfflineResources.append(resCss[i])
+                        }
+                    }
                     LrcHelp.saveJsPath(strOfflineResources.toString())
                 } catch (e: Exception) {
                     e.printStackTrace()

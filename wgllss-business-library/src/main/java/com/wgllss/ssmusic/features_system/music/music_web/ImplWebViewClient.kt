@@ -29,6 +29,16 @@ class ImplWebViewClient : WebViewClient() {
                 mp3Url = url
                 android.util.Log.e("ImplWebViewClient", "request :${url}")
             }
+            if (suffix.endsWith(".css")) {
+                if (strOfflineResources.contains(suffix)) {
+                    val mimeType = "text/css"
+                    val offlineRes = "css/"
+                    val inputs = view.context.assets.open("$offlineRes$suffix")
+                    return WebResourceResponse(mimeType, "UTF-8", inputs)
+                } else {
+                    android.util.Log.e("ImplWebViewClient", "request css :${url}")
+                }
+            }
             if (suffix.endsWith(".js")) {
                 if (strOfflineResources.contains(suffix)) {
                     val mimeType = "application/x-javascript"
@@ -39,6 +49,8 @@ class ImplWebViewClient : WebViewClient() {
                     android.util.Log.e("ImplWebViewClient", "request js :${url}")
                 }
             }
+
+
             if (url.contains("https://m3ws.kugou.com/api/v1/mv/infov2?")) {
                 mvRequestUrl = url
                 android.util.Log.e("ImplWebViewClient", "request mvRequestUrl :${mvRequestUrl}")
