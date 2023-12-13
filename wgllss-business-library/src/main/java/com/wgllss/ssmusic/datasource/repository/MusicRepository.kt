@@ -135,6 +135,11 @@ class MusicRepository private constructor(private val context: Context) {
         val keywordL = ChineseUtils.urlEncode(keyword)
         val javaScriptX = InplJavaScriptX()
         webView.run {
+//            clearHistory()
+//            clearFormData()
+//            clearMatches()
+//            clearCache(true)
+            removeJavascriptInterface("script_ex")
             addJavascriptInterface(javaScriptX, "script_ex")
             loadUrl("https://www.hifini.com/search-$keywordL-1-$pageNo.htm")
         }

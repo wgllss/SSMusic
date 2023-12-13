@@ -128,6 +128,8 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
                     }
                 }
                 STATE_PAUSED -> {
+                    binding.pbLoad.visibility = View.GONE
+                    binding.ivPlay.visibility = View.VISIBLE
                     binding.ivPlay.isSelected = false
                     viewModel.isPlaying = false
                     if (iv_point.rotation == 0f) {
