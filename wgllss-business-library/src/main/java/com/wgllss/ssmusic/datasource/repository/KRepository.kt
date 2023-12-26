@@ -368,8 +368,20 @@ class KRepository private constructor(private val context: Context) {
                 })) {
                 delay(10)
             }
-            emit(musiceApiL.getMvData(mvRequestUrl))
+            val dto = musiceApiL.getMvData(mvRequestUrl).apply {
+                val img = mvicon.replace("\\", "")
+                    .replace("{size}", "400")
+                mvicon = img
+            }
+            emit(dto)
         }
+    }
+
+    suspend fun pingdao() = flow {
+        val html = musiceApiL.pingDaoList()
+        val document = Jsoup.parse(html, "https://www.kugou.com/")
+        val cdocs = document.select(".main")
+        emit(0)
     }
 
     suspend fun kmvList(url: String) = flow {

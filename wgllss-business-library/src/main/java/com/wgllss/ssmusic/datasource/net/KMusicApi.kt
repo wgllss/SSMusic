@@ -25,6 +25,8 @@ interface KMusicApi {
     @GET("https://www.kugou.com/mvweb/html/index_{path}.html") //只有html 无json
     suspend fun kmvList(@Path("path") path: String): String
 
+    @GET("https://www.kugou.com/fmweb/html/index.html") //只有html 无json
+    suspend fun pingDaoList(): String
 
     @GET("https://m.kugou.com/plist/index/")   //36.38k
     //https://m.kugou.com/plist/index?page=1&json=true   // 137.65k

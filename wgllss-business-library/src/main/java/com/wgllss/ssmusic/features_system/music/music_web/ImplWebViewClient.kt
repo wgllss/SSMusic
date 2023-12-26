@@ -49,14 +49,13 @@ class ImplWebViewClient : WebViewClient() {
                     android.util.Log.e("ImplWebViewClient", "request js :${url}")
                 }
             }
-
-
             if (url.contains("https://m3ws.kugou.com/api/v1/mv/infov2?")) {
                 mvRequestUrl = url
                 android.util.Log.e("ImplWebViewClient", "request mvRequestUrl :${mvRequestUrl}")
             }
             if (suffix.endsWith(".jpg") && url.contains("stdmusic")) {
                 sTdMusicUrl = url
+                android.util.Log.e("ImplWebViewClient", "sTdMusicUrl :${url}")
             }
             if (url.contains("get_lyrics")) {
                 lrcUrl = url

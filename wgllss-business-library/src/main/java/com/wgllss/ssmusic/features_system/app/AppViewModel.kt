@@ -7,10 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.core.ex.flowAsyncWorkOnLaunch
 import com.wgllss.core.units.WLog
-import com.wgllss.ssmusic.data.FlowEXData
-import com.wgllss.ssmusic.data.MusicBean
-import com.wgllss.ssmusic.data.MusicItemBean
-import com.wgllss.ssmusic.data.RandomPosition
+import com.wgllss.ssmusic.data.*
 import com.wgllss.ssmusic.datasource.repository.AppRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
@@ -151,7 +148,12 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
             }
             if (!webViewIsRequest) {
                 webViewIsRequest = true
-                doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
+                if (privilege == 10) {
+                    val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
+                    getMvData(musicBean, position)
+                } else {
+                    doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
+                }
             } else {
                 if (!queueMap.containsKey(id)) {
                     queue.add(FlowEXData(this, position))
@@ -179,6 +181,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                     WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
                 } else
                     WLog.e(this@AppViewModel, "缓存了:${title}")
+                appRepository.putToCache(id.toString(), it.url)
             }.catch {
                 queueMap.remove(id)
                 webViewIsRequest = false
@@ -219,6 +222,50 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 }.flowOn(Dispatchers.IO)
                     .collect()
             }
+        }
+    }
+
+    private suspend fun getMvData(musicBean: MusicBean, position: Int) {
+        musicBean.run {
+            val mvUrl = "https://www.kugou.com/mvweb/html/mv_${mvhash}.html"
+            appRepository.getMvData(mvUrl)
+                .onEach {
+                    val data = MVPlayData(if (it.mvdata.rq != null && it.mvdata.rq.downurl != null) it.mvdata.rq.downurl else it.mvdata.le.downurl, title)
+                    musicBean.url = data.url
+                    musicBean.requestRealUrl = mvUrl
+                    WLog.e(this@AppViewModel, "mp4 url :$title ${url} id$id  currentMediaID:$currentMediaID")
+                    if (currentMediaID == id) {
+                        metadataPrepareCompletion.postValue(musicBean)
+                        WLog.e(this@AppViewModel, "当前该播放 position:$position   ${title}")
+                    } else
+                        WLog.e(this@AppViewModel, "缓存了:${title}")
+                    appRepository.putToCache(id.toString(), data.url)
+                }.catch {
+                    queueMap.remove(id)
+                    webViewIsRequest = false
+                    it.printStackTrace()
+                }.flowOn(Dispatchers.IO)
+                .onCompletion {
+                    webViewIsRequest = false
+                    queueMap.remove(id)
+                    queue.takeIf {
+                        it.size > 0
+                    }?.let {
+                        webViewIsRequest = true
+                        val first = it.removeFirst()
+                        WLog.e(this@AppViewModel, "取出一个:${first.item.title}:获取 剩余长度: ${it.size}")
+                        first.run {
+                            item.run {
+                                if (privilege == 10) {
+                                    val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
+                                    getMvData(musicBean, position)
+                                } else {
+                                    doFLowEx(item, position, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
+                                }
+                            }
+                        }
+                    }
+                }.collect()
         }
     }
 

@@ -10,6 +10,7 @@ import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
+import com.wgllss.ssmusic.datasource.netbean.mv.KMVDto
 import com.wgllss.ssmusic.features_system.music.MusicCachePlayUrl
 import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
 import com.wgllss.ssmusic.features_system.room.SSDataBase
@@ -38,6 +39,18 @@ class AppRepository private constructor(private val context: Context) {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 webViewClient = implWeb
+            }
+        }
+    }
+
+    private val webViewMV by lazy {
+        WebView(context).apply {
+            settings.apply {
+                defaultTextEncodingName = "UTF-8"
+                allowFileAccess = true
+                cacheMode = WebSettings.LOAD_NO_CACHE
+                javaScriptEnabled = true
+                domStorageEnabled = true
             }
         }
     }
@@ -135,6 +148,8 @@ class AppRepository private constructor(private val context: Context) {
 
     fun containsKey(mediaID: String) = cache.get(mediaID)
 
+    fun putToCache(key: String, url: String) = cache.put(key, url)
+
     /**
      * 获取歌词
      */
@@ -159,7 +174,6 @@ class AppRepository private constructor(private val context: Context) {
             var sTdMusicUrl = implWeb.getSTdMusicUrl()
             if (!TextUtils.isEmpty(lrcUrl)) {
                 val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)
-//                WLog.e(this@AppRepository, "kLrcDto status : ${kLrcDto.status}")
                 WLog.e(this@AppRepository, "kLrcDto data lrc : ${kLrcDto.data?.lrc}")
                 kLrcDto?.takeIf {
                     it.status == 1
@@ -172,8 +186,25 @@ class AppRepository private constructor(private val context: Context) {
                 requestRealUrl = htmlUrl
                 musicLrcStr = lrcStr
             }
-            cache.put(mediaID, musicFileUrl)
+//            cache.put(mediaID, musicFileUrl)
             emit(musicBean)
+        }
+    }
+
+    suspend fun getMvData(url: String): Flow<KMVDto> {
+//        log("mv url:${url}")
+        val implWeb = ImplWebViewClient()
+        webViewMV.webViewClient = implWeb
+        webViewMV.loadUrl(url)
+//        webView.loadUrl(url)
+        return flow {
+            var mvRequestUrl: String
+            while (TextUtils.isEmpty(implWeb.getMvRequestUrl().also {
+                    mvRequestUrl = it
+                })) {
+                delay(10)
+            }
+            emit(musiceApiL.getMvData(mvRequestUrl))
         }
     }
 }

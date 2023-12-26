@@ -6,7 +6,7 @@ data class KMVDto(
     val remark: String,
     val publish_date: String,
     val play_count: String,
-    val mvicon: String,
+    var mvicon: String = "",
     val timelength: String,
     val mvdata: KMVDtoMvData
 )

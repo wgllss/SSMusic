@@ -19,6 +19,7 @@ import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConne
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.zip
 
 class SongRankDetailtViewModel : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
@@ -52,10 +53,33 @@ class SongRankDetailtViewModel : BaseViewModel() {
     private fun playMv(item: MusicItemBean) {
         flowAsyncWorkOnViewModelScopeLaunch {
             val mvUrl = "https://www.kugou.com/mvweb/html/mv_${item.mvhash}.html"
-            kRepository.getMvData(mvUrl).onEach {
-                val data = MVPlayData(if (it.mvdata.rq != null && it.mvdata.rq.downurl != null) it.mvdata.rq.downurl else it.mvdata.le.downurl, item.musicName)
-                liveDataMV.postValue(data)
+            kRepository.getMusicInfo(item).zip(kRepository.getMvData(mvUrl)) { it, it2 ->
+                val data = MVPlayData(if (it2.mvdata.rq != null && it2.mvdata.rq.downurl != null) it2.mvdata.rq.downurl else it2.mvdata.le.downurl, item.musicName)
+//                logE("lrc-11111->${it.musicLrcStr}")
+                val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
+                it.musicLrcStr?.takeIf {
+                    it.isNotEmpty()
+                }?.let { lrc ->
+                    LrcHelp.saveLrc(id.toString(), lrc)
+                }
+                it.url = data.url
+                it.pic = it2.mvicon
+                transportControls.prepareFromUri(data.url.toUri(), Bundle().apply {
+                    putString(Constants.MEDIA_ID_KEY, it.id.toString())
+                    putString(Constants.MEDIA_TITLE_KEY, it.title)
+                    putString(Constants.MEDIA_AUTHOR_KEY, it.author)
+                    putString(Constants.MEDIA_ARTNETWORK_URL_KEY, it.pic)
+                    putString(Constants.MEDIA_URL_KEY, data.url)
+                })
+                nowPlay.postValue(true)
+                musicRepositoryL.addToPlayList(it).collect()
             }
+
+//            val mvUrl = "https://www.kugou.com/mvweb/html/mv_${item.mvhash}.html"
+//            kRepository.getMvData(mvUrl).onEach {
+//                val data = MVPlayData(if (it.mvdata.rq != null && it.mvdata.rq.downurl != null) it.mvdata.rq.downurl else it.mvdata.le.downurl, item.musicName)
+//                liveDataMV.postValue(data)
+//            }
         }
     }
 

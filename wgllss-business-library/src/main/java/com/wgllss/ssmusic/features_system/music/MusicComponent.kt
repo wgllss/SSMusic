@@ -25,6 +25,7 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.google.android.exoplayer2.trackselection.TrackSelectionParameters
 import com.wgllss.core.units.SdkIntUtils
 import com.wgllss.core.units.WLog
 import com.wgllss.music.skin.R
@@ -67,6 +68,12 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
             setAudioAttributes(uAmpAudioAttributes, true)
             setHandleAudioBecomingNoisy(true)
             addListener(playerListener)
+            val builder = TrackSelectionParameters.Builder( /* context= */context)
+            builder.setTrackTypeDisabled(C.TRACK_TYPE_VIDEO, true)
+            builder.setTrackTypeDisabled(C.TRACK_TYPE_AUDIO, false)
+            builder.clearOverridesOfType(C.TRACK_TYPE_VIDEO)
+            builder.clearOverridesOfType(C.TRACK_TYPE_AUDIO)
+            trackSelectionParameters = builder.build()
         }
     }
 

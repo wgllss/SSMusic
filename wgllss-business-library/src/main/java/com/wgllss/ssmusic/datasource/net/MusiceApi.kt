@@ -1,6 +1,7 @@
 package com.wgllss.ssmusic.datasource.net
 
 import com.wgllss.ssmusic.datasource.netbean.lrc.KLrcDto
+import com.wgllss.ssmusic.datasource.netbean.mv.KMVDto
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.GET
@@ -45,4 +46,7 @@ interface MusiceApi {
 
     @GET
     suspend fun getKLrcJson(@Url url: String): KLrcDto
+
+    @GET
+    suspend fun getMvData(@Url url: String): KMVDto
 }
