@@ -233,7 +233,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                     val data = MVPlayData(if (it.mvdata.rq != null && it.mvdata.rq.downurl != null) it.mvdata.rq.downurl else it.mvdata.le.downurl, title)
                     musicBean.url = data.url
                     musicBean.requestRealUrl = mvUrl
-                    WLog.e(this@AppViewModel, "mp4 url :$title ${url} id$id  currentMediaID:$currentMediaID")
+                    WLog.e(this@AppViewModel, "mp4 url :$title $url ")
                     if (currentMediaID == id) {
                         metadataPrepareCompletion.postValue(musicBean)
                         WLog.e(this@AppViewModel, "当前该播放 position:$position   ${title}")
