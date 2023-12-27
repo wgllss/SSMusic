@@ -53,6 +53,14 @@ class SongSheetViewModel : BaseViewModel() {
 //    }
 
     fun doPlay(item: MusicItemBean) {
+        val nowPlaying = musicServiceConnectionL.nowPlaying.value
+        val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
+        nowPlaying?.id?.takeIf {
+            it.isNotEmpty() && it.toLong() == id
+        }?.let {
+            nowPlay.postValue(true)
+            return
+        }
         if (item.privilege == 10 && item.mvhash.isNotEmpty()) {
             playMv(item)
         } else {
@@ -65,7 +73,6 @@ class SongSheetViewModel : BaseViewModel() {
             val mvUrl = "https://www.kugou.com/mvweb/html/mv_${item.mvhash}.html"
             kRepository.getMusicInfo(item).zip(kRepository.getMvData(mvUrl)) { it, it2 ->
                 val data = MVPlayData(if (it2.mvdata.rq != null && it2.mvdata.rq.downurl != null) it2.mvdata.rq.downurl else it2.mvdata.le.downurl, item.musicName)
-//                logE("lrc-11111->${it.musicLrcStr}")
                 val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
                 it.musicLrcStr?.takeIf {
                     it.isNotEmpty()
@@ -84,38 +91,10 @@ class SongSheetViewModel : BaseViewModel() {
                 nowPlay.postValue(true)
                 musicRepositoryL.addToPlayList(it).collect()
             }
-
-//            kRepository.getMvData(mvUrl).onEach {
-//                val data = MVPlayData(if (it.mvdata.rq != null && it.mvdata.rq.downurl != null) it.mvdata.rq.downurl else it.mvdata.le.downurl, item.musicName)
-////                liveDataMV.postValue(data)
-//                item.run {
-//                    val musicBean = MusicBean(musicName, author, data.url, album_sizable_cover, dataSourceType, privilege, mvhash).apply {
-//                        requestRealUrl = detailUrl
-////                        musicLrcStr = lrcStr
-//                    }
-//                    transportControls.prepareFromUri(musicBean.url.toUri(), Bundle().apply {
-//                        putString(Constants.MEDIA_ID_KEY, musicBean.id.toString())
-//                        putString(Constants.MEDIA_TITLE_KEY, musicBean.title)
-//                        putString(Constants.MEDIA_AUTHOR_KEY, musicBean.author)
-//                        putString(Constants.MEDIA_ARTNETWORK_URL_KEY, musicBean.pic)
-//                        putString(Constants.MEDIA_URL_KEY, musicBean.url)
-//                    })
-//                    nowPlay.postValue(true)
-//                    musicRepositoryL.addToPlayList(musicBean).collect()
-//                }
-//            }
         }
     }
 
     private fun getMusicInfo(musicItemBean: MusicItemBean) {
-        val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
-        nowPlaying?.id?.takeIf {
-            it.isNotEmpty() && it.toLong() == id
-        }?.let {
-            nowPlay.postValue(true)
-            return
-        }
         flowAsyncWorkOnViewModelScopeLaunch {
             kRepository.getMusicInfo(musicItemBean)
                 .onEach {
@@ -123,7 +102,7 @@ class SongSheetViewModel : BaseViewModel() {
                     it.musicLrcStr?.takeIf {
                         it.isNotEmpty()
                     }?.let { lrc ->
-                        LrcHelp.saveLrc(id.toString(), lrc)
+                        LrcHelp.saveLrc(it.id.toString(), lrc)
                     }
                     transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
                         putString(Constants.MEDIA_ID_KEY, it.id.toString())

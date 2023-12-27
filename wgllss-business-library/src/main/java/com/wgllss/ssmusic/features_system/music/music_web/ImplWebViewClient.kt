@@ -60,11 +60,11 @@ class ImplWebViewClient : WebViewClient() {
             }
             if (suffix.endsWith(".jpg") && url.contains("stdmusic")) {
                 sTdMusicUrl = url
-                android.util.Log.e("ImplWebViewClient", "sTdMusicUrl :${url}")
+//                android.util.Log.e("ImplWebViewClient", "sTdMusicUrl :${url}")
             }
             if (url.contains("get_lyrics")) {
                 lrcUrl = url
-                android.util.Log.e("ImplWebViewClient", "request :${url}")
+                android.util.Log.e("ImplWebViewClient", "request lrcUrl :${url}")
             }
         }
         return super.shouldInterceptRequest(view, request)

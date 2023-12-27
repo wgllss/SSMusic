@@ -176,6 +176,7 @@ open class MusicComponent(val context: Context) : LifecycleOwner, MediaSessionCo
     }
 
     protected open fun preparePlay(mediaId: String, musicTitle: String, author: String, pic: String, url: String, playWhenReady: Boolean = true) {
+        WLog.e(this, "mediaId:$mediaId musicTitle:$musicTitle url:url")
         val mediaMetadataCompat = MediaMetadataCompat.Builder().apply {
             id = mediaId
             title = musicTitle

@@ -171,28 +171,39 @@ class KRepository private constructor(private val context: Context) {
     /**
      * 获取歌词
      */
-    suspend fun getMusicInfo(musicItemBean: MusicItemBean): Flow<MusicBean> {
+    suspend fun getMusicInfo(musicItemBean: MusicItemBean, isOnlyGeLRc: Boolean = false): Flow<MusicBean> {
         val implWeb = ImplWebViewClient()
         loadWebViewUrl(musicItemBean.detailUrl, implWeb)
         return flow {
-            var musicFileUrl: String
-            val startTime = System.currentTimeMillis()
-            while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
-                    musicFileUrl = it
-                })) {
-                delay(16)
-                if (System.currentTimeMillis() - startTime > 15000) {
-                    throw TimeoutException("获取播放链接超时,请重试")
+            log("mp3html url:${musicItemBean.detailUrl}")
+            var musicFileUrl = ""
+            if (!isOnlyGeLRc) {
+                val startTime = System.currentTimeMillis()
+                while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
+                        musicFileUrl = it
+                    })) {
+                    delay(16)
+                    if (System.currentTimeMillis() - startTime > 15000) {
+                        throw TimeoutException("获取播放链接超时,请重试")
+                    }
                 }
             }
-            log("####################################")
-            val lrcUrl = implWeb.getMusicLrcUrl()
+            var lrcUrl = implWeb.getMusicLrcUrl()
+            if (isOnlyGeLRc) {
+                val startTime = System.currentTimeMillis()
+                while (TextUtils.isEmpty(lrcUrl)) {
+                    delay(16)
+                    lrcUrl = implWeb.getMusicLrcUrl()
+                    if (System.currentTimeMillis() - startTime > 15000) {
+                        break
+                    }
+                }
+            }
             log("lrcUrl 00000 :${lrcUrl}")
             var lrcStr = ""
             var sTdMusicUrl = implWeb.getSTdMusicUrl()
             if (!TextUtils.isEmpty(lrcUrl)) {
                 val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)
-                log("kLrcDto status : ${kLrcDto.status}")
                 log("kLrcDto data lrc : ${kLrcDto.data?.lrc}")
                 kLrcDto?.takeIf {
                     it.status == 1

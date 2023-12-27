@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import com.wgllss.core.ex.logE
 import com.wgllss.core.units.AppGlobals
+import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.data.MVPlayData
@@ -43,6 +44,14 @@ class SongRankDetailtViewModel : BaseViewModel() {
     }
 
     fun doPlay(item: MusicItemBean) {
+        val nowPlaying = musicServiceConnectionL.nowPlaying.value
+        val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
+        nowPlaying?.id?.takeIf {
+            it.isNotEmpty() && it.toLong() == id
+        }?.let {
+            nowPlay.postValue(true)
+            return
+        }
         if (item.privilege == 10 && item.mvhash.isNotEmpty()) {
             playMv(item)
         } else {
@@ -55,7 +64,6 @@ class SongRankDetailtViewModel : BaseViewModel() {
             val mvUrl = "https://www.kugou.com/mvweb/html/mv_${item.mvhash}.html"
             kRepository.getMusicInfo(item).zip(kRepository.getMvData(mvUrl)) { it, it2 ->
                 val data = MVPlayData(if (it2.mvdata.rq != null && it2.mvdata.rq.downurl != null) it2.mvdata.rq.downurl else it2.mvdata.le.downurl, item.musicName)
-//                logE("lrc-11111->${it.musicLrcStr}")
                 val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
                 it.musicLrcStr?.takeIf {
                     it.isNotEmpty()
@@ -64,6 +72,7 @@ class SongRankDetailtViewModel : BaseViewModel() {
                 }
                 it.url = data.url
                 it.pic = it2.mvicon
+                WLog.e(this@SongRankDetailtViewModel, "id:$id  it.id:${it.id} ${it.title}")
                 transportControls.prepareFromUri(data.url.toUri(), Bundle().apply {
                     putString(Constants.MEDIA_ID_KEY, it.id.toString())
                     putString(Constants.MEDIA_TITLE_KEY, it.title)
@@ -74,28 +83,13 @@ class SongRankDetailtViewModel : BaseViewModel() {
                 nowPlay.postValue(true)
                 musicRepositoryL.addToPlayList(it).collect()
             }
-
-//            val mvUrl = "https://www.kugou.com/mvweb/html/mv_${item.mvhash}.html"
-//            kRepository.getMvData(mvUrl).onEach {
-//                val data = MVPlayData(if (it.mvdata.rq != null && it.mvdata.rq.downurl != null) it.mvdata.rq.downurl else it.mvdata.le.downurl, item.musicName)
-//                liveDataMV.postValue(data)
-//            }
         }
     }
 
     private fun getMusicInfo(musicItemBean: MusicItemBean) {
-        val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
-        nowPlaying?.id?.takeIf {
-            it.isNotEmpty() && it.toLong() == id
-        }?.let {
-            nowPlay.postValue(true)
-            return
-        }
         flowAsyncWorkOnViewModelScopeLaunch {
             kRepository.getMusicInfo(musicItemBean)
                 .onEach {
-                    logE("lrc-11111->${it.musicLrcStr}")
                     it.musicLrcStr?.takeIf {
                         it.isNotEmpty()
                     }?.let { lrc ->

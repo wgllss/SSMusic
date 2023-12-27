@@ -115,6 +115,14 @@ class HomeViewModel3 : BaseViewModel() {
     }
 
     fun doPlay(item: MusicItemBean) {
+        val nowPlaying = musicServiceConnectionL.nowPlaying.value
+        val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
+        nowPlaying?.id?.takeIf {
+            it.isNotEmpty() && it.toLong() == id
+        }?.let {
+            nowPlay.postValue(true)
+            return
+        }
         if (item.privilege == 10 && item.mvhash.isNotEmpty()) {
             playMv(item)
         } else {
@@ -149,14 +157,6 @@ class HomeViewModel3 : BaseViewModel() {
     }
 
     private fun getMusicInfo(musicItemBean: MusicItemBean) {
-        val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
-        nowPlaying?.id?.takeIf {
-            it.isNotEmpty() && it.toLong() == id
-        }?.let {
-            nowPlay.postValue(true)
-            return
-        }
         flowAsyncWorkOnViewModelScopeLaunch {
             kRepository.getMusicInfo(musicItemBean)
                 .onEach {
