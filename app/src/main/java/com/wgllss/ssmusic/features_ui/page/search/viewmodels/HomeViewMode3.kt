@@ -142,7 +142,9 @@ class HomeViewModel3 : BaseViewModel() {
                     LrcHelp.saveLrc(id.toString(), lrc)
                 }
                 it.url = data.url
-                it.pic = it2.mvicon
+                WLog.e(this@HomeViewModel3, "item.album_sizable_cover:${item.album_sizable_cover} it.pic:${it.pic} it2.mvicon:${it2.mvicon}")
+//                it.pic = it2.mvicon
+
                 transportControls.prepareFromUri(data.url.toUri(), Bundle().apply {
                     putString(MEDIA_ID_KEY, it.id.toString())
                     putString(MEDIA_TITLE_KEY, it.title)

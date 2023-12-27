@@ -71,7 +71,7 @@ class SongRankDetailtViewModel : BaseViewModel() {
                     LrcHelp.saveLrc(id.toString(), lrc)
                 }
                 it.url = data.url
-                it.pic = it2.mvicon
+//                it.pic = it2.mvicon
                 WLog.e(this@SongRankDetailtViewModel, "id:$id  it.id:${it.id} ${it.title}")
                 transportControls.prepareFromUri(data.url.toUri(), Bundle().apply {
                     putString(Constants.MEDIA_ID_KEY, it.id.toString())
