@@ -87,4 +87,12 @@ interface KMusicApi {
 
     @GET
     suspend fun getMvData(@Url url: String): KMVDto
+
+
+    @GET("https://mobiles.kugou.com/api/v3/search/song?format=json&pagesize=30&showtype=1")  //有json 无法去搜索歌词
+    suspend fun searchKeyWordJson(@Query("keyword") keyword: String, @Query("page") page: String): String
+
+    //    @GET("https://www.kugou.com/yy/html/search.html#searchType=song")
+    @GET
+    suspend fun searchKeyWord(@Url url: String): String
 }

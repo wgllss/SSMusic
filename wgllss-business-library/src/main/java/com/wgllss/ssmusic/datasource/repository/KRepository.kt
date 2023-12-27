@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.webkit.*
 import com.google.gson.Gson
+import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.*
 import com.wgllss.ssmusic.datasource.net.KMusicApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
@@ -16,6 +17,7 @@ import com.wgllss.ssmusic.datasource.netbean.mv.KMVItem
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankExBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KTopBean
+import com.wgllss.ssmusic.datasource.netbean.search.KGSearchDto
 import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetListDtoPlistListItem
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerItem
 import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
@@ -148,7 +150,8 @@ class KRepository private constructor(private val context: Context) {
         android.util.Log.e("KuGouRepository", message)
     }
 
-    private fun loadWebViewUrl(url: String, implWeb: ImplWebViewClient) {
+    private fun loadWebViewUrl(url: String, implWeb: ImplWebViewClient, isUserAgentPC: Boolean = false) {
+        val userAgent: String = if (isUserAgentPC) "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0" else ""
         WebView(context).apply {
             settings.apply {
                 defaultTextEncodingName = "UTF-8"
@@ -157,6 +160,8 @@ class KRepository private constructor(private val context: Context) {
                 javaScriptEnabled = true
                 domStorageEnabled = true
                 webViewClient = implWeb
+                if (isUserAgentPC)
+                    userAgentString = userAgent
             }
             loadUrl(url)
         }
@@ -400,5 +405,33 @@ class KRepository private constructor(private val context: Context) {
             list.add(KMVItem(title, imgUrl, url))
         }
         emit(list)
+    }
+
+    suspend fun searchKeyWord(keyword: String): Flow<Int> {
+        val implWeb = ImplWebViewClient()
+        val htmlUrl = "https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=$keyword"
+        loadWebViewUrl(htmlUrl, implWeb, true)
+        return flow {
+            var kgSearchUrl: String
+            while (TextUtils.isEmpty(implWeb.getSearchUrl().also {
+                    kgSearchUrl = it
+                })) {
+                delay(10)
+            }
+            val jsoup = musiceApiL.searchKeyWord(kgSearchUrl)
+            val start = jsoup.indexOf("(")
+            val end = jsoup.lastIndexOf(")")
+            val json = jsoup.substring(start + 1, end)
+            val kGSearchDto = Gson().fromJson(json, KGSearchDto::class.java)
+            kGSearchDto?.data?.lists?.forEach {
+                val img = it.Image
+                    .replace("\\", "")
+                    .replace("{size}", "400")
+                it.Image = img
+            }
+            val bean = kGSearchDto?.data?.lists?.get(0)
+            WLog.e(this@KRepository, "@@@@ json:${bean?.SingerName}--${bean?.SongName}  ${bean?.SingerName} ${bean?.MvHash}  ${bean?.EMixSongID} ${bean?.Image}")
+            emit(0)
+        }
     }
 }

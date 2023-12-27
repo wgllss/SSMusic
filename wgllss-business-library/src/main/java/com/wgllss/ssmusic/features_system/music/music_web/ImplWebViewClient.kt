@@ -15,6 +15,7 @@ class ImplWebViewClient : WebViewClient() {
 
     private var sTdMusicUrl = ""
     private var mvRequestUrl = ""
+    private var kgSearchUrl = ""
 
     private val strOfflineResources by lazy { LrcHelp.getJsPath() }
 
@@ -27,7 +28,7 @@ class ImplWebViewClient : WebViewClient() {
             val suffix: String = url.substring(lastSlash + 1)
             if (suffix.endsWith(".m4a") || suffix.endsWith(".mp3")) {
                 mp3Url = url
-                android.util.Log.e("ImplWebViewClient", "request :${url}")
+                android.util.Log.e("ImplWebViewClient", "request mp3 :${url}")
             }
             if (suffix.endsWith(".css")) {
                 if (strOfflineResources.contains(suffix)) {
@@ -52,6 +53,10 @@ class ImplWebViewClient : WebViewClient() {
             if (url.contains("https://m3ws.kugou.com/api/v1/mv/infov2?")) {
                 mvRequestUrl = url
                 android.util.Log.e("ImplWebViewClient", "request mvRequestUrl :${mvRequestUrl}")
+            }
+            if (url.contains("https://complexsearch.kugou.com/v2/search/song?")) {
+                kgSearchUrl = url
+                android.util.Log.e("ImplWebViewClient", "request kgSearchUrl :${kgSearchUrl}")
             }
             if (suffix.endsWith(".jpg") && url.contains("stdmusic")) {
                 sTdMusicUrl = url
@@ -86,6 +91,12 @@ class ImplWebViewClient : WebViewClient() {
     fun getMvRequestUrl(): String {
         val url = mvRequestUrl
         mvRequestUrl = ""
+        return url
+    }
+
+    fun getSearchUrl(): String {
+        val url = kgSearchUrl
+        kgSearchUrl = ""
         return url
     }
 

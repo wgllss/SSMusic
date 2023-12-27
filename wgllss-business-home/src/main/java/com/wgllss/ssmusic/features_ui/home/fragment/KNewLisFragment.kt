@@ -38,6 +38,7 @@ class KNewLisFragment : TabTitleFragment<HomeViewModel>() {
         super.onActivityCreated(savedInstanceState)
         swipeRefreshLayout.setOnRefreshListener {
             homeTabViewModel.getData(key)
+            homeTabViewModel.search()
         }
         rvPlList.apply {
             adapter = homeItem1Adapter

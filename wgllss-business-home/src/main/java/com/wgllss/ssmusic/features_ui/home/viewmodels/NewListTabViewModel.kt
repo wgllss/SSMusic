@@ -40,4 +40,10 @@ class NewListTabViewModel : BaseViewModel() {
                 }
         }
     }
+
+    fun search() {
+        flowAsyncWorkOnViewModelScopeLaunch {
+            kuGouRepository.searchKeyWord("化身孤岛的鲸")
+        }
+    }
 }
