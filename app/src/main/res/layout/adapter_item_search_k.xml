@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="86dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/img_song"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_vertical|left" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/author"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="95dp"
+        android:gravity="bottom"
+        android:lineSpacingMultiplier="1.0"
+        android:maxLines="2"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="14dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginLeft="95dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center_vertical"
+        android:lineSpacingMultiplier="1.0"
+        android:maxLines="2"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="18dp" />
+</FrameLayout>

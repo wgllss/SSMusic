@@ -17,6 +17,7 @@ import com.wgllss.ssmusic.datasource.netbean.mv.KMVItem
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankExBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KTopBean
+import com.wgllss.ssmusic.datasource.netbean.search.KGSearchBean
 import com.wgllss.ssmusic.datasource.netbean.search.KGSearchDto
 import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetListDtoPlistListItem
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerItem
@@ -181,7 +182,7 @@ class KRepository private constructor(private val context: Context) {
                 })) {
                 delay(16)
                 if (System.currentTimeMillis() - startTime > 15000) {
-                    throw TimeoutException("获取播放链接超时")
+                    throw TimeoutException("获取播放链接超时,请重试")
                 }
             }
             log("####################################")
@@ -407,31 +408,31 @@ class KRepository private constructor(private val context: Context) {
         emit(list)
     }
 
-    suspend fun searchKeyWord(keyword: String): Flow<Int> {
+    suspend fun searchKeyWord(keyword: String): Flow<MutableList<MusicItemBean>> {
         val implWeb = ImplWebViewClient()
         val htmlUrl = "https://www.kugou.com/yy/html/search.html#searchType=song&searchKeyWord=$keyword"
         loadWebViewUrl(htmlUrl, implWeb, true)
         return flow {
             var kgSearchUrl: String
+            val startTime = System.currentTimeMillis()
             while (TextUtils.isEmpty(implWeb.getSearchUrl().also {
                     kgSearchUrl = it
                 })) {
                 delay(10)
+                if (System.currentTimeMillis() - startTime > 15000) {
+                    throw TimeoutException("获取播放链接超时,请重试")
+                }
             }
             val jsoup = musiceApiL.searchKeyWord(kgSearchUrl)
             val start = jsoup.indexOf("(")
             val end = jsoup.lastIndexOf(")")
             val json = jsoup.substring(start + 1, end)
             val kGSearchDto = Gson().fromJson(json, KGSearchDto::class.java)
+            val list = mutableListOf<MusicItemBean>()//<MusicItemBean>()
             kGSearchDto?.data?.lists?.forEach {
-                val img = it.Image
-                    .replace("\\", "")
-                    .replace("{size}", "400")
-                it.Image = img
+                list.add(MusicItemBean(it.SingerName, it.SongName, "https://www.kugou.com/mixsong/${it.EMixSongID}.html", "", it.Image.replace("\\", "").replace("{size}", "400"), it.MvHash, 1, it.Privilege))
             }
-            val bean = kGSearchDto?.data?.lists?.get(0)
-            WLog.e(this@KRepository, "@@@@ json:${bean?.SingerName}--${bean?.SongName}  ${bean?.SingerName} ${bean?.MvHash}  ${bean?.EMixSongID} ${bean?.Image}")
-            emit(0)
+            emit(list)
         }
     }
 }

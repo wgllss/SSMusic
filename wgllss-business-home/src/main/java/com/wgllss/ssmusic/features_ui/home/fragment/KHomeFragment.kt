@@ -110,7 +110,7 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
         context?.run {
             try {
                 val clazz = Class.forName(className)
-                startActivity(Intent(this, clazz))
+                startActivity(Intent(this, clazz).apply { putExtra("SEARCH_TYPE_KEY", 1) })
             } catch (e: Exception) {
                 e.printStackTrace()
             }
