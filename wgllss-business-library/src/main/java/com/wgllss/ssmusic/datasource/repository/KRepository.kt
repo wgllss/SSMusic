@@ -394,11 +394,47 @@ class KRepository private constructor(private val context: Context) {
         }
     }
 
-    suspend fun pingdao() = flow {
+    suspend fun pingDao() = flow {
         val html = musiceApiL.pingDaoList()
         val document = Jsoup.parse(html, "https://www.kugou.com/")
         val cdocs = document.select(".main")
-        emit(0)
+        val links = cdocs.first()?.select("a[href]")
+        val listPinDao = mutableListOf<MusicItemBean>()
+        links?.forEach {
+            val url = it.attr("abs:href")!!
+            val imgTag = it.select("img[src]")
+            val imgUrl = imgTag.first()?.attr("abs:src")!!
+            val name = it.select("span").html()
+//            WLog.e(this@KRepository, "url:${url} name:${name} imgUrl:${imgUrl}")
+            listPinDao.add(MusicItemBean("", name, url, "", imgUrl))
+        }
+        emit(listPinDao)
+    }
+
+    suspend fun playPinDaoDetail(htmlUrl: String): Flow<MusicBean> {
+        val implWeb = ImplWebViewClient()
+        loadWebViewUrl(htmlUrl, implWeb)
+        return flow {
+            var kPinDaoRequestUrl: String
+            val startTime = System.currentTimeMillis()
+            while (TextUtils.isEmpty(implWeb.getPinDaoRequestUrl().also {
+                    kPinDaoRequestUrl = it
+                })) {
+                delay(10)
+                if (System.currentTimeMillis() - startTime > 15000) {
+                    throw TimeoutException("获取播放链接超时,请重试")
+                }
+            }
+            musiceApiL.getPinDaoDetail(kPinDaoRequestUrl)?.data?.run {
+                emit(MusicBean(song_name, author_name, play_url, img, 1, privilege, "").apply {
+                    requestRealUrl = "https://www.kugou.com/mixsong/${encode_album_audio_id}.html"
+                    var lrcStr = lyrics.replace("\r", "")
+                    val start = lrcStr.indexOf("[offset:0]")
+                    lrcStr = lrcStr.substring(start + 10)//.replace("offset:0]", "00:00.00")
+                    musicLrcStr = lrcStr
+                })
+            }
+        }
     }
 
     suspend fun kmvList(url: String) = flow {

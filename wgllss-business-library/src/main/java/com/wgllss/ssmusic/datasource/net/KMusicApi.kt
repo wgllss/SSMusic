@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.datasource.net
 
 import com.wgllss.ssmusic.datasource.netbean.lrc.KLrcDto
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVDto
+import com.wgllss.ssmusic.datasource.netbean.pindao.PinDaoDto
 import com.wgllss.ssmusic.datasource.netbean.sheet.KRankSheetDetailDto
 import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetDetailDto
 import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetListDto
@@ -95,4 +96,7 @@ interface KMusicApi {
     //    @GET("https://www.kugou.com/yy/html/search.html#searchType=song")
     @GET
     suspend fun searchKeyWord(@Url url: String): String
+
+    @GET
+    suspend fun getPinDaoDetail(@Url url: String): PinDaoDto
 }

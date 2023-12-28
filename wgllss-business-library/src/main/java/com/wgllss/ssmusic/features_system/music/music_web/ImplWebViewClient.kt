@@ -16,6 +16,7 @@ class ImplWebViewClient : WebViewClient() {
     private var sTdMusicUrl = ""
     private var mvRequestUrl = ""
     private var kgSearchUrl = ""
+    private var kPinDaoRequestUrl = ""
 
     private val strOfflineResources by lazy { LrcHelp.getJsPath() }
 
@@ -58,9 +59,12 @@ class ImplWebViewClient : WebViewClient() {
                 kgSearchUrl = url
                 android.util.Log.e("ImplWebViewClient", "request kgSearchUrl :${kgSearchUrl}")
             }
+            if (url.contains("https://wwwapi.kugou.com/play/songinfo?")) {
+                kPinDaoRequestUrl = url
+                android.util.Log.e("ImplWebViewClient", "request kPinDaoRequestUrl :${kPinDaoRequestUrl}")
+            }
             if (suffix.endsWith(".jpg") && url.contains("stdmusic")) {
                 sTdMusicUrl = url
-//                android.util.Log.e("ImplWebViewClient", "sTdMusicUrl :${url}")
             }
             if (url.contains("get_lyrics")) {
                 lrcUrl = url
@@ -97,6 +101,12 @@ class ImplWebViewClient : WebViewClient() {
     fun getSearchUrl(): String {
         val url = kgSearchUrl
         kgSearchUrl = ""
+        return url
+    }
+
+    fun getPinDaoRequestUrl(): String {
+        val url = kPinDaoRequestUrl
+        kPinDaoRequestUrl = ""
         return url
     }
 
