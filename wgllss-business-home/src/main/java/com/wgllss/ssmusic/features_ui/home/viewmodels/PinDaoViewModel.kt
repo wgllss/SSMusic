@@ -14,6 +14,7 @@ import com.wgllss.ssmusic.datasource.repository.MusicRepository
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
+import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 
@@ -44,7 +45,12 @@ class PinDaoViewModel : BaseViewModel() {
         }
         flowAsyncWorkOnViewModelScopeLaunch {
             kuGouRepository.playPinDaoDetail(item.detailUrl).onEach {
-                WLog.e(this@PinDaoViewModel, "lrc ####---222--:${it.musicLrcStr}")
+                WLog.e(this@PinDaoViewModel, "lrc :${it.musicLrcStr}")
+                it.musicLrcStr?.takeIf {
+                    it.isNotEmpty()
+                }?.let { lrc ->
+                    LrcHelp.saveLrc(it.id.toString(), lrc)
+                }
                 transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
                     putString(Constants.MEDIA_ID_KEY, it.id.toString())
                     putString(Constants.MEDIA_TITLE_KEY, it.title)

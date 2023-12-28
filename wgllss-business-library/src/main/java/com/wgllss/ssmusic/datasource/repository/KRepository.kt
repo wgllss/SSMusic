@@ -425,7 +425,9 @@ class KRepository private constructor(private val context: Context) {
                     throw TimeoutException("获取播放链接超时,请重试")
                 }
             }
-            musiceApiL.getPinDaoDetail(kPinDaoRequestUrl)?.data?.run {
+            musiceApiL.getPinDaoDetail(kPinDaoRequestUrl)?.takeIf {
+                it.status == 1
+            }?.data?.run {
                 emit(MusicBean(song_name, author_name, play_url, img, 1, privilege, "").apply {
                     requestRealUrl = "https://www.kugou.com/mixsong/${encode_album_audio_id}.html"
                     var lrcStr = lyrics.replace("\r", "")
