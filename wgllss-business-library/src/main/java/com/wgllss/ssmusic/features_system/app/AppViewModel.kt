@@ -181,7 +181,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                     WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
                 } else
                     WLog.e(this@AppViewModel, "缓存了:${title}")
-                appRepository.putToCache(id.toString(), it.url)
+                putToCache(id.toString(), it.url)
             }.catch {
                 queueMap.remove(id)
                 webViewIsRequest = false
@@ -249,7 +249,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                         WLog.e(this@AppViewModel, "当前该播放 position:$position   ${title}")
                     } else
                         WLog.e(this@AppViewModel, "缓存了:${title}")
-                    appRepository.putToCache(id.toString(), data.url)
+                    putToCache(id.toString(), data.url)
                 }.catch {
                     queueMap.remove(id)
                     webViewIsRequest = false
@@ -258,7 +258,6 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 .onCompletion {
                     webViewIsRequest = false
                     queueMap.remove(id)
-                    WLog.e(this@AppViewModel, "onCompletion")
                     queue.takeIf {
                         it.size > 0
                     }?.let {
@@ -382,6 +381,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 }
             }
         }
+    }
+
+    /**
+     * 点击新播放的也缓存好
+     */
+    fun putToCache(key: String, url: String) {
+        appRepository.putToCache(key, url)
     }
 
     /**

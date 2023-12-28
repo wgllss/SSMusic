@@ -91,6 +91,9 @@ class MusicFactory constructor(context: Context, private val appViewModel: AppVi
 
     override fun onPrepareFromUri(uri: Uri, playWhenReady: Boolean, extras: Bundle?) {
         super.onPrepareFromUri(uri, playWhenReady, extras)
+        extras?.run {
+            appViewModel.putToCache(getString(Constants.MEDIA_ID_KEY) ?: "", getString(Constants.MEDIA_URL_KEY) ?: "")
+        }
         appViewModel.getCacheURL()
     }
 

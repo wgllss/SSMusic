@@ -43,18 +43,6 @@ class AppRepository private constructor(private val context: Context) {
         }
     }
 
-//    private val webViewMV by lazy {
-//        WebView(context).apply {
-//            settings.apply {
-//                defaultTextEncodingName = "UTF-8"
-//                allowFileAccess = true
-//                cacheMode = WebSettings.LOAD_NO_CACHE
-//                javaScriptEnabled = true
-//                domStorageEnabled = true
-//            }
-//        }
-//    }
-
     companion object {
 
         @Volatile
@@ -192,7 +180,6 @@ class AppRepository private constructor(private val context: Context) {
     }
 
     suspend fun getMvData(url: String): Flow<KMVDto> {
-//        webViewMV.webViewClient = ImplWebViewClient()
         webView.loadUrl(url)
         return flow {
             var mvRequestUrl: String
