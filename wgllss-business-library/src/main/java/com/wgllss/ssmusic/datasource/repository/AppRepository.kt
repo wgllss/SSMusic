@@ -43,17 +43,17 @@ class AppRepository private constructor(private val context: Context) {
         }
     }
 
-    private val webViewMV by lazy {
-        WebView(context).apply {
-            settings.apply {
-                defaultTextEncodingName = "UTF-8"
-                allowFileAccess = true
-                cacheMode = WebSettings.LOAD_NO_CACHE
-                javaScriptEnabled = true
-                domStorageEnabled = true
-            }
-        }
-    }
+//    private val webViewMV by lazy {
+//        WebView(context).apply {
+//            settings.apply {
+//                defaultTextEncodingName = "UTF-8"
+//                allowFileAccess = true
+//                cacheMode = WebSettings.LOAD_NO_CACHE
+//                javaScriptEnabled = true
+//                domStorageEnabled = true
+//            }
+//        }
+//    }
 
     companion object {
 
@@ -192,17 +192,18 @@ class AppRepository private constructor(private val context: Context) {
     }
 
     suspend fun getMvData(url: String): Flow<KMVDto> {
-//        log("mv url:${url}")
-        val implWeb = ImplWebViewClient()
-        webViewMV.webViewClient = implWeb
-        webViewMV.loadUrl(url)
-//        webView.loadUrl(url)
+//        webViewMV.webViewClient = ImplWebViewClient()
+        webView.loadUrl(url)
         return flow {
             var mvRequestUrl: String
+            val startTime = System.currentTimeMillis()
             while (TextUtils.isEmpty(implWeb.getMvRequestUrl().also {
                     mvRequestUrl = it
                 })) {
-                delay(10)
+                delay(16)
+                if (System.currentTimeMillis() - startTime > 15000) {
+                    throw TimeoutException("获取播放链接超时")
+                }
             }
             emit(musiceApiL.getMvData(mvRequestUrl))
         }

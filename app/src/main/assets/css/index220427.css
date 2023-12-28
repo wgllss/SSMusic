@@ -1,0 +1,19 @@
+
+
+
+.m_warp {
+  padding: 0 15px;
+}
+
+
+img.m_warp_a1_i1 {
+  width: 100%;
+  display: block;
+  max-height: 27vw;
+}
+
+a.m_warp_a1 {
+  display: block;
+  margin: 5px 15px 0;
+  position: relative;
+}

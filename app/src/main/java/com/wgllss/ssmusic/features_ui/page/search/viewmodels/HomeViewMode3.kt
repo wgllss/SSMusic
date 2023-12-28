@@ -142,7 +142,7 @@ class HomeViewModel3 : BaseViewModel() {
                     LrcHelp.saveLrc(id.toString(), lrc)
                 }
                 it.url = data.url
-                WLog.e(this@HomeViewModel3, "item.album_sizable_cover:${item.album_sizable_cover} it.pic:${it.pic} it2.mvicon:${it2.mvicon}")
+//                WLog.e(this@HomeViewModel3, "item.album_sizable_cover:${item.album_sizable_cover} it.pic:${it.pic} it2.mvicon:${it2.mvicon}")
 //                it.pic = it2.mvicon
 
                 transportControls.prepareFromUri(data.url.toUri(), Bundle().apply {
@@ -153,6 +153,7 @@ class HomeViewModel3 : BaseViewModel() {
                     putString(MEDIA_URL_KEY, data.url)
                 })
                 nowPlay.postValue(true)
+                WLog.e(this@HomeViewModel3, "it.privilege:${it.privilege} it.requestRealUrl:${it.requestRealUrl} it.url:${it.url}")
                 musicRepositoryL.addToPlayList(it).collect()
             }
         }

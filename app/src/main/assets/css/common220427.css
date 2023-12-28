@@ -1,0 +1,314 @@
+
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+  font-family: \5FAE\8F6F\96C5\9ED1,simsun,sans-serif;
+}
+
+
+
+.m_cm_title1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 70px;
+  padding-top: 20px;
+}
+
+h2.m_cm_title1_h21 {
+  font-size: 16px;
+  color: #000;
+}
+
+a.m_cm_title1_a1 {
+  font-size: 12px;
+  color: #818894;
+  position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 12px;
+  line-height: 12px;
+}
+a.m_cm_title1_a1::after {
+  content: " ";
+  background: url(https://m.kugou.com/v3/static/images/img/icon_arrow_right_gray.png) no-repeat;
+  width: 11px;
+  height: 11px;
+  background-size: 100%;
+  display: block;
+  margin-left: 2px;
+  margin-top: -1px;
+}
+
+
+.m_cm_item1warp {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+}
+
+.m_cm_i1w_d1 {
+  width: 33.3%;
+}
+.m_cm_i1w_d1:nth-child(n+4) {
+  margin-top: 10px;
+}
+
+.m_cm_i1w_d1_d0 {
+  width: 103px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 340px) {
+  .m_cm_i1w_d1_d0 {
+    width: 92px;
+  }
+}
+a.m_cm_i1w_d1_a1 {
+  display: block;
+  position: relative;
+}
+
+img.m_cm_i1w_d1_i1 {
+  display: block;
+  width: 100%;
+  border-radius: 10px;
+}
+
+p.m_cm_i1w_d1_a2_p1 {
+  font-size: 12px;
+  color: #000;
+  height: 18px;
+  line-height: 18px;
+  word-break: break-all;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+p.m_cm_i1w_d1_a2_p2 {
+  font-size: 12px;
+  color: #818894;
+  height: 18px;
+  line-height: 18px;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+a.m_cm_i1w_d1_a2 {
+  display: block;
+  margin-top: 5px;
+}
+.m_cm_i1w_d1_a1_d1 {
+  background: rgba(75, 84, 91, 0.3);
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: #fff;
+  font-size: 10px;
+  padding: 5px 7px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.m_cm_i1w_d1_a1_d1::before {
+  content: "";
+  background: url(https://m.kugou.com/v3/static/images/img/icon_play_white.png) no-repeat;
+  width: 10px;
+  height: 10px;
+  background-size: 100%;
+  display: block;
+  margin-right: 3px;
+  margin-top: 1px;
+}
+
+p.m_cm_i1w_d1_a2_p3 {
+  font-size: 12px;
+  color: #000;
+  height: 36px;
+  line-height: 18px;
+  word-break: break-all;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.m_cm_i2w_d1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  background: rgb(98 119 192 / 4%);
+  margin-top: 10px;
+}
+
+img.m_cm_i2w_d1_a1_i1 {
+  display: block;
+  width: 103px;
+  height: 103px;
+  -webkit-flex-shrink: 0;
+      -ms-flex-negative: 0;
+          flex-shrink: 0;
+}
+
+.m_cm_i2w_d1_a1 {}
+
+.m_cm_i2w_d1_d1 {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.m_cm_i2w_d1_d1_a1 {
+  font-size: 12px;
+  margin-left: 12px;
+  color: #818894;
+  margin-top: 10px;
+  word-break: break-all;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+span.m_cm_i2w_d1_d1_a1_sp2 {
+  color: #000;
+}
+
+.m_cm_i2w_d1_d1_a1:nth-child(1) {
+  margin-top: 0;
+}
+
+.m_cm_i2w_d1:nth-child(1) {
+  margin-top: 0;
+}
+
+.m_cm_i1w_d1_a1_d2 {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 5px;
+  top: 5px;
+  left: 5px;
+  padding: 3px 5px;
+  font-size: 10px;
+  color: #fff;
+}
+
+.m_footer1 {
+  background: url(https://m.kugou.com/v3/static/images/img/bg_footer1.png) no-repeat;
+  height: 244px;
+  background-size: cover;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: 10px;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+a.m_footer1_a1 {
+  width: 250px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid #00A9FF;
+  -webkit-backdrop-filter: blur(14px);
+          backdrop-filter: blur(14px);
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #00A9FF;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-size: 13px;
+}
+.m_footer1_a1::after {
+  content: "";
+  background: url(https://m.kugou.com/v3/static/images/img/icon_arrow_right_blue.png) no-repeat;
+  width: 11px;
+  height: 11px;
+  background-size: 100%;
+  display: block;
+  margin-right: 3px;
+  margin-top: 0px;
+}
+img.m_footer1_i1 {
+  width: 150px;
+  height: 40px;
+  margin-bottom: 25px;
+}

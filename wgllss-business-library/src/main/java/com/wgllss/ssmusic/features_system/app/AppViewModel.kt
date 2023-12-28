@@ -150,7 +150,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 webViewIsRequest = true
                 if (privilege == 10) {
                     val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
-                    getMvData(musicBean, position)
+                    doFLowMv(musicBean, position)
                 } else {
                     doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
                 }
@@ -190,6 +190,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 .onCompletion {
                     webViewIsRequest = false
                     queueMap.remove(id)
+                    WLog.e(this@AppViewModel, "onCompletion")
                     queue.takeIf {
                         it.size > 0
                     }?.let {
@@ -197,7 +198,15 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                         val first = it.removeFirst()
                         WLog.e(this@AppViewModel, "取出一个:${first.item.title}:获取 剩余长度: ${it.size}")
                         first.run {
-                            doFLowEx(item, this.position, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
+                            val flowPosition = this.position
+                            item.run {
+                                if (privilege == 10) {
+                                    val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
+                                    doFLowMv(musicBean, flowPosition)
+                                } else {
+                                    doFLowEx(item, flowPosition, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
+                                }
+                            }
                         }
                     }
                 }.collect()
@@ -225,8 +234,9 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         }
     }
 
-    private suspend fun getMvData(musicBean: MusicBean, position: Int) {
+    private suspend fun doFLowMv(musicBean: MusicBean, position: Int) {
         musicBean.run {
+            WLog.e(this@AppViewModel, "正在获取mv:${title}")
             val mvUrl = "https://www.kugou.com/mvweb/html/mv_${mvhash}.html"
             appRepository.getMvData(mvUrl)
                 .onEach {
@@ -248,6 +258,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 .onCompletion {
                     webViewIsRequest = false
                     queueMap.remove(id)
+                    WLog.e(this@AppViewModel, "onCompletion")
                     queue.takeIf {
                         it.size > 0
                     }?.let {
@@ -255,12 +266,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                         val first = it.removeFirst()
                         WLog.e(this@AppViewModel, "取出一个:${first.item.title}:获取 剩余长度: ${it.size}")
                         first.run {
+                            val flowPosition = this.position
                             item.run {
                                 if (privilege == 10) {
                                     val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
-                                    getMvData(musicBean, position)
+                                    doFLowMv(musicBean, flowPosition)
                                 } else {
-                                    doFLowEx(item, position, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
+                                    doFLowEx(item, flowPosition, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
                                 }
                             }
                         }
