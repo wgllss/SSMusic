@@ -307,7 +307,7 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                     setTextColor(getTextColorPrimary(context))
                     gravity = Gravity.CENTER_VERTICAL
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
-                    text = "请输入歌曲名字或歌手名字"
+                    text = "请输入歌曲/歌手/专辑名字"
                     cornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20f, context.resources.displayMetrics).toInt()// else 0
                     val colorRes = context.resources.getColor(R.color.color_search_bg)
                     val colors = intArrayOf(colorRes, colorRes)
