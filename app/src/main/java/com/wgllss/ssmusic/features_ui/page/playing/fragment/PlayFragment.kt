@@ -144,7 +144,12 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         viewModel.start()
     }
 
-    fun initViewPage() {
+    override fun onDetach() {
+        super.onDetach()
+        releaseAnimator()
+    }
+
+    private fun initViewPage() {
         val coverView: View = LayoutInflater.from(context).inflate(R.layout.music_cd_layout, null)
         iv_point = coverView.findViewById(R.id.iv_point)
         cd_layout = coverView.findViewById(R.id.cd_layout)
@@ -156,7 +161,6 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         views.add(lrcLayout)
         val pagerAdapter = BasePagerAdapter(views)
         binding.viewPager.adapter = pagerAdapter
-
 
         // 加载歌词文本
         lrcView.setDraggable(true, object : LrcView.OnPlayClickListener {
@@ -237,11 +241,11 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
             setRepeatCount(ValueAnimator.INFINITE)
             setDuration(15000)
             setInterpolator(lin)
-            addUpdateListener(AnimatorUpdateListener { animation ->
+            addUpdateListener { animation ->
                 val current = animation.animatedValue as Float
 //                setCdRodio(current)  todo
                 cd_layout.setRotation(current)
-            })
+            }
         }
     }
 
@@ -262,5 +266,16 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         if (cdAnimator != null && cdAnimator!!.isRunning) {
             cdAnimator!!.cancel()
         }
+    }
+
+    private fun releaseAnimator() {
+        cdAnimator?.removeAllUpdateListeners()
+        cdAnimator?.removeAllListeners()
+        pauseCDanimat()
+        cdAnimator = null
+        pointAnimator?.removeAllUpdateListeners()
+        pointAnimator?.removeAllListeners()
+        pointAnimator?.cancel()
+        pointAnimator = null
     }
 }

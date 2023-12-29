@@ -23,10 +23,10 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.math.abs
 
 class LrcView : View {
 
-    private val TAG = "LrcView"
     private val ADJUST_DURATION: Long = 100
     private val TIMELINE_KEEP_TIME = 4 * DateUtils.SECOND_IN_MILLIS
 
@@ -46,6 +46,7 @@ class LrcView : View {
     private var mTimeTextColor = 0
     private var mDrawableWidth = 0
     private var mTimeTextWidth = 0
+    private var mTimeTextWidthFloat = 0f
     private var mDefaultLabel: String? = null
     private var mLrcPadding = 0f
     private var mOnPlayClickListener: OnPlayClickListener? = null
@@ -59,6 +60,9 @@ class LrcView : View {
     private var isShowTimeline = false
     private var isTouching = false
     private var isFling = false
+    private var staticLayout: StaticLayout? = null
+    private var centerY = 0
+    private var centerYFloat = 0f
 
     /**
      * 歌词显示位置，靠左/居中/靠右
@@ -121,6 +125,12 @@ class LrcView : View {
         mTimelineTextColor = ta.getColor(R.styleable.LrcView_lrcTimelineTextColor, resources.getColor(R.color.lrc_timeline_text_color))
         mDefaultLabel = ta.getString(R.styleable.LrcView_lrcLabel)
         mDefaultLabel = if (TextUtils.isEmpty(mDefaultLabel)) context.getString(R.string.lrc_label) else mDefaultLabel
+
+        staticLayout = StaticLayout.Builder.obtain(mDefaultLabel!!, 0, mDefaultLabel!!.length, mLrcPaint, getLrcWidth().toInt())
+            .setAlignment(Layout.Alignment.ALIGN_CENTER)
+            .setLineSpacing(1f, 0f)
+            .setIncludePad(false).build()
+
         mLrcPadding = ta.getDimension(R.styleable.LrcView_lrcPadding, 0f)
         mTimelineColor = ta.getColor(R.styleable.LrcView_lrcTimelineColor, resources.getColor(R.color.lrc_timeline_color))
         val timelineHeight = ta.getDimension(R.styleable.LrcView_lrcTimelineHeight, resources.getDimension(R.dimen.lrc_timeline_height))
@@ -132,6 +142,7 @@ class LrcView : View {
         ta.recycle()
         mDrawableWidth = resources.getDimension(R.dimen.lrc_drawable_width).toInt()
         mTimeTextWidth = resources.getDimension(R.dimen.lrc_time_width).toInt()
+        mTimeTextWidthFloat = mTimeTextWidth.toFloat()
         mLrcPaint.isAntiAlias = true
         mLrcPaint.textSize = mCurrentTextSize
         mLrcPaint.textAlign = Paint.Align.LEFT
@@ -144,6 +155,12 @@ class LrcView : View {
         mGestureDetector = GestureDetector(context, mSimpleOnGestureListener)
         mGestureDetector.setIsLongpressEnabled(false)
         mScroller = Scroller(context)
+    }
+
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        centerY = height / 2
+        centerYFloat = centerY.toFloat()
     }
 
     /**
@@ -239,6 +256,10 @@ class LrcView : View {
     fun setLabel(label: String) {
         runOnUi {
             mDefaultLabel = label
+            staticLayout = StaticLayout.Builder.obtain(mDefaultLabel!!, 0, mDefaultLabel!!.length, mLrcPaint, getLrcWidth().toInt())
+                .setAlignment(Layout.Alignment.ALIGN_CENTER)
+                .setLineSpacing(1f, 0f)
+                .setIncludePad(false).build()
             invalidate()
         }
     }
@@ -392,42 +413,41 @@ class LrcView : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val centerY = height / 2
-
         // 无歌词文件
         if (!hasLrc()) {
-            mLrcPaint.setColor(mCurrentTextColor)
-            @SuppressLint("DrawAllocation") val staticLayout = StaticLayout(mDefaultLabel, mLrcPaint, getLrcWidth().toInt(), Layout.Alignment.ALIGN_CENTER, 1f, 0f, false)
-            drawText(canvas, staticLayout, centerY.toFloat())
+            mLrcPaint.color = mCurrentTextColor
+            staticLayout?.let {
+                drawText(canvas, it, centerYFloat)
+            }
             return
         }
         val centerLine = getCenterLine()
         if (isShowTimeline) {
             mPlayDrawable?.draw(canvas)
-            mTimePaint.setColor(mTimelineColor)
-            canvas.drawLine(mTimeTextWidth.toFloat(), centerY.toFloat(), (width - mTimeTextWidth).toFloat(), centerY.toFloat(), mTimePaint)
-            mTimePaint.setColor(mTimeTextColor)
-            val timeText = LrcUtils.formatTime(mLrcEntryList.get(centerLine).time)
-            val timeX: Float = (width - mTimeTextWidth / 2).toFloat()
-            val timeY: Float = centerY - (mTimeFontMetrics.descent + mTimeFontMetrics.ascent) / 2
+            mTimePaint.color = mTimelineColor
+            canvas.drawLine(mTimeTextWidthFloat, centerYFloat, (width - mTimeTextWidthFloat), centerYFloat, mTimePaint)
+            mTimePaint.color = mTimeTextColor
+            val timeText = LrcUtils.formatTime(mLrcEntryList[centerLine].time)
+            val timeX: Float = (width - mTimeTextWidthFloat / 2)
+            val timeY: Float = centerYFloat - (mTimeFontMetrics.descent + mTimeFontMetrics.ascent) / 2
             canvas.drawText(timeText!!, timeX, timeY, mTimePaint)
         }
         canvas.translate(0f, mOffset)
         var y = 0f
         for (i in mLrcEntryList.indices) {
             if (i > 0) {
-                y += (mLrcEntryList.get(i - 1).getHeight() + mLrcEntryList.get(i).getHeight() shr 1) + mDividerHeight
+                y += (mLrcEntryList[i - 1].getHeight() + mLrcEntryList[i].getHeight() shr 1) + mDividerHeight
             }
             if (i == mCurrentLine) {
-                mLrcPaint.setTextSize(mCurrentTextSize)
-                mLrcPaint.setColor(mCurrentTextColor)
+                mLrcPaint.textSize = mCurrentTextSize
+                mLrcPaint.color = mCurrentTextColor
             } else if (isShowTimeline && i == centerLine) {
-                mLrcPaint.setColor(mTimelineTextColor)
+                mLrcPaint.color = mTimelineTextColor
             } else {
-                mLrcPaint.setTextSize(mNormalTextSize)
-                mLrcPaint.setColor(mNormalTextColor)
+                mLrcPaint.textSize = mNormalTextSize
+                mLrcPaint.color = mNormalTextColor
             }
-            drawText(canvas, mLrcEntryList.get(i).staticLayout!!, y)
+            drawText(canvas, mLrcEntryList[i].staticLayout!!, y)
         }
     }
 
@@ -484,8 +504,8 @@ class LrcView : View {
                 isShowTimeline = true
             } else {
                 mOffset += -distanceY
-                mOffset = Math.min(mOffset, getOffset(0))
-                mOffset = Math.max(mOffset, getOffset(mLrcEntryList.size - 1))
+                mOffset = mOffset.coerceAtMost(getOffset(0))
+                mOffset = mOffset.coerceAtLeast(getOffset(mLrcEntryList.size - 1))
             }
             invalidate()
             return true
@@ -505,9 +525,9 @@ class LrcView : View {
         }
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            if (hasLrc() && mOnPlayClickListener != null && isShowTimeline && mPlayDrawable!!.getBounds().contains(e.x.toInt(), e.y.toInt())) {
+            if (hasLrc() && mOnPlayClickListener != null && isShowTimeline && mPlayDrawable!!.bounds.contains(e.x.toInt(), e.y.toInt())) {
                 val centerLine = getCenterLine()
-                val centerLineTime: Long = mLrcEntryList.get(centerLine).time
+                val centerLineTime: Long = mLrcEntryList[centerLine].time
                 // onPlayClick 消费了才更新 UI
                 if (mOnPlayClickListener != null && mOnPlayClickListener!!.onPlayClick(this@LrcView, centerLineTime)) {
                     isShowTimeline = false
@@ -532,10 +552,10 @@ class LrcView : View {
 
     override fun computeScroll() {
         if (mScroller!!.computeScrollOffset()) {
-            mOffset = mScroller!!.getCurrY().toFloat()
+            mOffset = mScroller!!.currY.toFloat()
             invalidate()
         }
-        if (isFling && mScroller!!.isFinished()) {
+        if (isFling && mScroller!!.isFinished) {
             isFling = false
             if (hasLrc() && !isTouching) {
                 adjustCenter()
@@ -612,10 +632,10 @@ class LrcView : View {
         mAnimator = ValueAnimator.ofFloat(mOffset, offset).apply {
             setDuration(duration)
             interpolator = LinearInterpolator()
-            addUpdateListener(ValueAnimator.AnimatorUpdateListener { animation: ValueAnimator ->
+            addUpdateListener { animation: ValueAnimator ->
                 mOffset = animation.animatedValue as Float
                 invalidate()
-            })
+            }
         }
         LrcUtils.resetDurationScale()
         mAnimator?.start()
@@ -636,11 +656,11 @@ class LrcView : View {
         var right: Int = mLrcEntryList.size
         while (left <= right) {
             val middle = (left + right) / 2
-            val middleTime: Long = mLrcEntryList.get(middle).time
+            val middleTime: Long = mLrcEntryList[middle].time
             if (time < middleTime) {
                 right = middle - 1
             } else {
-                if (middle + 1 >= mLrcEntryList.size || time < mLrcEntryList.get(middle + 1).time) {
+                if (middle + 1 >= mLrcEntryList.size || time < mLrcEntryList[middle + 1].time) {
                     return middle
                 }
                 left = middle + 1
@@ -656,8 +676,8 @@ class LrcView : View {
         var centerLine = 0
         var minDistance = Float.MAX_VALUE
         for (i in mLrcEntryList.indices) {
-            if (Math.abs(mOffset - getOffset(i)) < minDistance) {
-                minDistance = Math.abs(mOffset - getOffset(i))
+            if (abs(mOffset - getOffset(i)) < minDistance) {
+                minDistance = abs(mOffset - getOffset(i))
                 centerLine = i
             }
         }
@@ -669,14 +689,14 @@ class LrcView : View {
      * 采用懒加载方式
      */
     private fun getOffset(line: Int): Float {
-        if (mLrcEntryList.get(line).offset === Float.MIN_VALUE) {
+        if (mLrcEntryList[line].offset === Float.MIN_VALUE) {
             var offset = (height / 2).toFloat()
             for (i in 1..line) {
-                offset -= (mLrcEntryList.get(i - 1).getHeight() + mLrcEntryList.get(i).getHeight() shr 1) + mDividerHeight
+                offset -= (mLrcEntryList[i - 1].getHeight() + mLrcEntryList[i].getHeight() shr 1) + mDividerHeight
             }
-            mLrcEntryList.get(line).offset = offset
+            mLrcEntryList[line].offset = offset
         }
-        return mLrcEntryList.get(line).offset
+        return mLrcEntryList[line].offset
     }
 
     /**

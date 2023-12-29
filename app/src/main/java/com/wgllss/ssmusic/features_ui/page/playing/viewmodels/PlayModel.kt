@@ -102,8 +102,8 @@ class PlayModel @Inject constructor() : BaseViewModel() {
                     val currPosition = playbackState?.value?.currentPlayBackPosition ?: 0
                     if (mediaPosition.value != currPosition)
                         mediaPosition.postValue(currPosition)
+                    delay(998)
                 }
-                delay(300)
                 emit(0)
             }.flowOnIOAndCatch()
                 .collect()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.lifecycle.LiveData
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.MVPlayData
@@ -31,7 +32,6 @@ class AppRepository private constructor(private val context: Context) {
     private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
     private val cache by lazy { MusicCachePlayUrl.instance } //Lazy<MusicCachePlayUrl>
 
-    //    private val implWeb = ImplWebViewClient()
     private val webView by lazy {
         WebView(context).apply {
             settings.apply {
@@ -40,7 +40,6 @@ class AppRepository private constructor(private val context: Context) {
                 cacheMode = WebSettings.LOAD_NO_CACHE
                 javaScriptEnabled = true
                 domStorageEnabled = true
-//                webViewClient = implWeb
             }
         }
     }
@@ -144,14 +143,14 @@ class AppRepository private constructor(private val context: Context) {
      * 获取歌词
      */
     suspend fun getMusicInfo(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", mvhash: String): Flow<MusicBean> {
-        val implWeb = ImplWebViewClient()
-        webView.webViewClient = implWeb
+        var implWeb: ImplWebViewClient? = ImplWebViewClient()
+        webView.webViewClient = implWeb!!
         webView.loadUrl(htmlUrl)
         return flow {
             var musicFileUrl: String
             WLog.e(this@AppRepository, "########## 0  $title")
             val startTime = System.currentTimeMillis()
-            while (TextUtils.isEmpty(implWeb.getMusicFileUrl().also {
+            while (TextUtils.isEmpty(implWeb!!.getMusicFileUrl().also {
                     musicFileUrl = it
                 })) {
                 delay(16)
@@ -160,10 +159,10 @@ class AppRepository private constructor(private val context: Context) {
                 }
             }
             WLog.e(this@AppRepository, "########## 1  $title")
-            val lrcUrl = implWeb.getMusicLrcUrl()
+            val lrcUrl = implWeb!!.getMusicLrcUrl()
             WLog.e(this@AppRepository, "lrcUrl 00000 :${lrcUrl}")
             var lrcStr = ""
-            var sTdMusicUrl = implWeb.getSTdMusicUrl()
+            var sTdMusicUrl = implWeb!!.getSTdMusicUrl()
             if (!TextUtils.isEmpty(lrcUrl)) {
                 val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)
                 WLog.e(this@AppRepository, "kLrcDto data lrc : ${kLrcDto.data?.lrc}")
@@ -179,18 +178,19 @@ class AppRepository private constructor(private val context: Context) {
                 musicLrcStr = lrcStr
             }
             cache.put(mediaID, musicFileUrl)
+            implWeb = null
             emit(musicBean)
         }
     }
 
     suspend fun getMvData(musicBean: MusicBean, mvUrl: String): Flow<MusicBean> {
-        val implWeb = ImplWebViewClient()
-        webView.webViewClient = implWeb
+        var implWeb: ImplWebViewClient? = ImplWebViewClient()
+        webView.webViewClient = implWeb!!
         webView.loadUrl(mvUrl)
         return flow {
             var mvRequestUrl: String
             val startTime = System.currentTimeMillis()
-            while (TextUtils.isEmpty(implWeb.getMvRequestUrl().also {
+            while (TextUtils.isEmpty(implWeb!!.getMvRequestUrl().also {
                     mvRequestUrl = it
                 })) {
                 delay(16)
@@ -204,6 +204,7 @@ class AppRepository private constructor(private val context: Context) {
                 musicBean.url = data.url
                 musicBean.requestRealUrl = mvUrl
                 cache.put(musicBean.id.toString(), data.url)
+                implWeb = null
                 emit(musicBean)
             }
         }

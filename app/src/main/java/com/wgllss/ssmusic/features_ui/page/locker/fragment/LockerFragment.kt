@@ -8,7 +8,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.wgllss.core.ex.loadUrl
-import com.wgllss.core.ex.logE
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentLockerBinding
@@ -16,7 +15,6 @@ import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.artist
 import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.extensions.title
-import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils
 import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import com.wgllss.ssmusic.features_ui.page.playing.viewmodels.PlayModel
 import javax.inject.Inject
@@ -37,12 +35,6 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
             it?.let {
                 it.id?.let { id ->
                     binding.lrcView.loadLrc(LrcHelp.getLrc(id).ifEmpty { "暂无歌词" })
-//                    LrcHelp.getLrc(id)?.takeIf { l ->
-//                        l.isNotEmpty()
-//                    }?.let { lrc ->
-//                        binding.lrcView.loadLrc(lrc)
-////                        binding   lrcView.loadLrc(lrc)
-//                    }
                 }
                 binding.materMusicName.text = it.title
                 binding.musicAutor.text = it.artist
