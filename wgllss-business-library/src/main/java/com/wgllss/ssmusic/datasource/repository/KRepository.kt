@@ -4,31 +4,25 @@ import android.content.Context
 import android.text.TextUtils
 import android.webkit.*
 import com.google.gson.Gson
-import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.*
 import com.wgllss.ssmusic.datasource.net.KMusicApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.datasource.netbean.KMJson
 import com.wgllss.ssmusic.datasource.netbean.KMusicHotSongBean
-import com.wgllss.ssmusic.datasource.netbean.KMusicInfoBean
 import com.wgllss.ssmusic.datasource.netbean.KSingerBean
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVDto
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVItem
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankExBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KTopBean
-import com.wgllss.ssmusic.datasource.netbean.search.KGSearchBean
 import com.wgllss.ssmusic.datasource.netbean.search.KGSearchDto
-import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetListDtoPlistListItem
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerItem
 import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
-import com.wgllss.ssmusic.features_system.music.music_web.LrcHelp
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import org.jsoup.Jsoup
-import java.lang.Exception
 import java.util.concurrent.TimeoutException
 
 class KRepository private constructor(private val context: Context) {
@@ -137,10 +131,12 @@ class KRepository private constructor(private val context: Context) {
             singers?.forEach {
                 list.add(HomeItemBean(4, kSingerBean = it))
             }
-//            list.add(0, HomeItemBean(5, kMenuBean = KMenuBean(1, "经典")))
-//            list.add(1, HomeItemBean(5, kMenuBean = KMenuBean(2, "最新")))
-//            list.add(2, HomeItemBean(5, kMenuBean = KMenuBean(3, "新歌")))
             list.add(0, HomeItemBean(5))
+            list.add(1, HomeItemBean(6, kMenuBean = KMenuBean(1, "最新")))
+            list.add(2, HomeItemBean(6, kMenuBean = KMenuBean(2, "专辑")))
+            list.add(3, HomeItemBean(6, kMenuBean = KMenuBean(3, "经典")))
+            list.add(4, HomeItemBean(6, kMenuBean = KMenuBean(4, "频道")))
+
             emit(list)
             MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
         }.catch { it.printStackTrace() }

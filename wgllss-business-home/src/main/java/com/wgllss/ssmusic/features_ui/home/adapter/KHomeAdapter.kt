@@ -72,12 +72,12 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
         return textColorPrimary
     }
 
-//    private val array = arrayOf(
-//        R.color.color_random_0, R.color.color_random_1, R.color.color_random_2,
-//        R.color.color_random_3, R.color.color_random_4, R.color.color_random_5,
-//        R.color.color_random_6, R.color.color_random_7, R.color.color_random_8,
-//        R.color.color_random_9, R.color.color_random_10, R.color.color_random_11,
-//    )
+    private val array = arrayOf(
+        R.color.color_random_0, R.color.color_random_1, R.color.color_random_2,
+        R.color.color_random_3, R.color.color_random_4, R.color.color_random_5,
+        R.color.color_random_6, R.color.color_random_7, R.color.color_random_8,
+        R.color.color_random_9, R.color.color_random_10, R.color.color_random_11,
+    )
 
     override fun getItemViewType(position: Int): Int {
         return mData[position].itemType
@@ -318,6 +318,32 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 }
                 BaseBindingViewHolder(textView)
             }
+            6 -> {
+                val size = parent.context.getIntToDip(55f).toInt()
+                val frameLayout = FrameLayout(context!!).apply {
+                    val margin = parent.context.getIntToDip(5f).toInt()
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
+                        topMargin = margin
+                        bottomMargin = margin
+                    }
+                }
+                val materialButton = MaterialButton(context!!).apply {
+                    layoutParams = FrameLayout.LayoutParams(size, size)
+                        .apply {
+                            gravity = Gravity.CENTER
+                        }
+                    gravity = Gravity.CENTER
+                    isClickable = false
+                    isFocusable = false
+                    insetBottom = 0
+                    insetTop = 0
+                    setTextColor(getTextHightColorPrimary(context))
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14f)
+                    cornerRadius = if (cornerRadiusInt == 0) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 999f, context.resources.displayMetrics).toInt() else 0
+                }
+                frameLayout.addView(materialButton)
+                BaseBindingViewHolder(frameLayout)
+            }
             else -> {
                 val textView = TextView(parent.context).apply {
                     val lp = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(50f).toInt())
@@ -372,16 +398,18 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 }
             }
             5 -> {
-//                item?.kMenuBean?.run {
-//                    ((holder.itemView as FrameLayout).getChildAt(0) as MaterialButton).apply {
-////                        background.setTint(context.getColor(array[Random.nextInt(array.size)]))
-//                        background.setTint(context.getColor(R.color.color_random_11))
-//                        text = menuName
-//                    }
-//                }
                 val res = context.resources
                 val drawable = res.getDrawable(res.getIdentifier("ic_baseline_search_24", "drawable", context.packageName))
                 (holder.itemView as TextView).setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null)
+            }
+            6 -> {
+                item?.kMenuBean?.run {
+                    ((holder.itemView as FrameLayout).getChildAt(0) as MaterialButton).apply {
+                        background.setTint(context.getColor(array[Random.nextInt(array.size)]))
+//                        background.setTint(context.getColor(R.color.color_random_11))
+                        text = menuName
+                    }
+                }
             }
         }
     }

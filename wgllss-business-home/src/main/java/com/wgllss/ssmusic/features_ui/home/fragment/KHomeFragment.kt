@@ -46,6 +46,7 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
                         //spanCount 当横向时，2代表每列2行，
                         return when (adapter!!.getItemViewType(i)) {
                             0, 3, 5 -> 12 //   spanCount/12  个位置占满一格
+                            6 -> 3
 //                            5 -> 6
                             else -> 4 // spanCount/4  个位置占满一格
                         }
