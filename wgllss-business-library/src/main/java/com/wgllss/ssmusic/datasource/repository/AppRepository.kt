@@ -6,6 +6,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.lifecycle.LiveData
 import com.wgllss.core.units.WLog
+import com.wgllss.ssmusic.data.MVPlayData
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.net.MusiceApi
@@ -29,7 +30,8 @@ class AppRepository private constructor(private val context: Context) {
     private val musiceApiL by lazy { RetrofitUtils.getInstance(context).create(MusiceApi::class.java) }// Lazy<MusiceApi>
     private val mSSDataBaseL by lazy { SSDataBase.getInstance(context, RoomDBMigration.instance) }
     private val cache by lazy { MusicCachePlayUrl.instance } //Lazy<MusicCachePlayUrl>
-    private val implWeb = ImplWebViewClient()
+
+    //    private val implWeb = ImplWebViewClient()
     private val webView by lazy {
         WebView(context).apply {
             settings.apply {
@@ -38,7 +40,7 @@ class AppRepository private constructor(private val context: Context) {
                 cacheMode = WebSettings.LOAD_NO_CACHE
                 javaScriptEnabled = true
                 domStorageEnabled = true
-                webViewClient = implWeb
+//                webViewClient = implWeb
             }
         }
     }
@@ -142,6 +144,8 @@ class AppRepository private constructor(private val context: Context) {
      * 获取歌词
      */
     suspend fun getMusicInfo(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = "", mvhash: String): Flow<MusicBean> {
+        val implWeb = ImplWebViewClient()
+        webView.webViewClient = implWeb
         webView.loadUrl(htmlUrl)
         return flow {
             var musicFileUrl: String
@@ -174,13 +178,15 @@ class AppRepository private constructor(private val context: Context) {
                 requestRealUrl = htmlUrl
                 musicLrcStr = lrcStr
             }
-//            cache.put(mediaID, musicFileUrl)
+            cache.put(mediaID, musicFileUrl)
             emit(musicBean)
         }
     }
 
-    suspend fun getMvData(url: String): Flow<KMVDto> {
-        webView.loadUrl(url)
+    suspend fun getMvData(musicBean: MusicBean, mvUrl: String): Flow<MusicBean> {
+        val implWeb = ImplWebViewClient()
+        webView.webViewClient = implWeb
+        webView.loadUrl(mvUrl)
         return flow {
             var mvRequestUrl: String
             val startTime = System.currentTimeMillis()
@@ -192,7 +198,14 @@ class AppRepository private constructor(private val context: Context) {
                     throw TimeoutException("获取播放链接超时")
                 }
             }
-            emit(musiceApiL.getMvData(mvRequestUrl))
+            val mvDto = musiceApiL.getMvData(mvRequestUrl)
+            mvDto.run {
+                val data = MVPlayData(if (mvdata.rq != null && mvdata.rq.downurl != null) mvdata.rq.downurl else mvdata.le.downurl, musicBean.title)
+                musicBean.url = data.url
+                musicBean.requestRealUrl = mvUrl
+                cache.put(musicBean.id.toString(), data.url)
+                emit(musicBean)
+            }
         }
     }
 }

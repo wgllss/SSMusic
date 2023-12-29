@@ -131,10 +131,10 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         if (it.dataSourceType == 0)
             getPlayUrl(it, position)
         else
-            getMusicInfo(it, position)
+            getKMusicInfo(it, position)
     }
 
-    private suspend fun getMusicInfo(it: MusicTableBean, position: Int) {
+    private suspend fun getKMusicInfo(it: MusicTableBean, position: Int) {
         it.run {
             appRepository.containsKey(id.toString())?.let {
                 doFlow(this, position, flow {
@@ -146,6 +146,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 })
                 return
             }
+            WLog.e(this@AppViewModel, "正常请求:${title}  privilege:${privilege}")
             if (!webViewIsRequest) {
                 webViewIsRequest = true
                 if (privilege == 10) {
@@ -178,10 +179,9 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
             flow.onEach {
                 if (currentMediaID == it.id) {
                     metadataPrepareCompletion.postValue(it)
-                    WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
+                    WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title} : ${it.url}")
                 } else
                     WLog.e(this@AppViewModel, "缓存了:${title}")
-                putToCache(id.toString(), it.url)
             }.catch {
                 queueMap.remove(id)
                 webViewIsRequest = false
@@ -190,11 +190,9 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 .onCompletion {
                     webViewIsRequest = false
                     queueMap.remove(id)
-                    WLog.e(this@AppViewModel, "onCompletion")
                     queue.takeIf {
                         it.size > 0
                     }?.let {
-                        webViewIsRequest = true
                         val first = it.removeFirst()
                         WLog.e(this@AppViewModel, "取出一个:${first.item.title}:获取 剩余长度: ${it.size}")
                         first.run {
@@ -221,7 +219,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                 flow.onEach {
                     if (currentMediaID == it.id) {
                         metadataPrepareCompletion.postValue(it)
-                        WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title}")
+                        WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title} : ${it.url}")
                     } else
                         WLog.e(this@AppViewModel, "缓存了:${title}")
                     mapRuningRequest.remove(it.id)
@@ -238,18 +236,15 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         musicBean.run {
             WLog.e(this@AppViewModel, "正在获取mv:${title}")
             val mvUrl = "https://www.kugou.com/mvweb/html/mv_${mvhash}.html"
-            appRepository.getMvData(mvUrl)
+            webViewIsRequest = true
+            appRepository.getMvData(this, mvUrl)
                 .onEach {
-                    val data = MVPlayData(if (it.mvdata.rq != null && it.mvdata.rq.downurl != null) it.mvdata.rq.downurl else it.mvdata.le.downurl, title)
-                    musicBean.url = data.url
-                    musicBean.requestRealUrl = mvUrl
-                    WLog.e(this@AppViewModel, "mp4 url :$title $url ")
+                    WLog.e(this@AppViewModel, "mp4 ## url :$title $url ")
                     if (currentMediaID == id) {
-                        metadataPrepareCompletion.postValue(musicBean)
+                        metadataPrepareCompletion.postValue(it)
                         WLog.e(this@AppViewModel, "当前该播放 position:$position   ${title}")
                     } else
                         WLog.e(this@AppViewModel, "缓存了:${title}")
-                    putToCache(id.toString(), data.url)
                 }.catch {
                     queueMap.remove(id)
                     webViewIsRequest = false
@@ -261,7 +256,6 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                     queue.takeIf {
                         it.size > 0
                     }?.let {
-                        webViewIsRequest = true
                         val first = it.removeFirst()
                         WLog.e(this@AppViewModel, "取出一个:${first.item.title}:获取 剩余长度: ${it.size}")
                         first.run {
