@@ -8,10 +8,7 @@ import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetDetailDto
 import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetListDto
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerDetailDto
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingersDto
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
-import retrofit2.http.Url
+import retrofit2.http.*
 
 interface KMusicApi {
 
@@ -102,4 +99,7 @@ interface KMusicApi {
 
     @GET("https://www.kugou.com/yy/album/index/{pageNo}-1-{key}.html") //只有html 无json
     suspend fun queryAlbumList(@Path("pageNo") pageNo: Int, @Path("key") key: String): String
+
+    @GET
+    suspend fun getAlbumDetail(@Url url: String, @Header("User-Agent") user_Agent: String = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0"): String
 }

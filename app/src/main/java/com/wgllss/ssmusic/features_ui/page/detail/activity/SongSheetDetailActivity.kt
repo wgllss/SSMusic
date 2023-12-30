@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.wgllss.core.activity.BaseViewModelActivity
 import com.wgllss.core.ex.setFramgment
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.features_ui.page.detail.fragment.AlbumDetailFragment
 import com.wgllss.ssmusic.features_ui.page.detail.fragment.SongRankFragment
 import com.wgllss.ssmusic.features_ui.page.detail.fragment.SongSheetFragment
 import com.wgllss.ssmusic.features_ui.page.detail.fragment.SongSingersFragment
@@ -36,6 +37,7 @@ class SongSheetDetailActivity : BaseViewModelActivity<SongSheetViewModel>() {
                     when (getIntExtra(TYPE_KEY, 0)) {
                         1 -> SongRankFragment(it)
                         2 -> SongSingersFragment(it, getStringExtra(AUTHOR_NAME_KEY) ?: "")
+                        3 -> AlbumDetailFragment(it)
                         else -> SongSheetFragment(it)
                     }
 

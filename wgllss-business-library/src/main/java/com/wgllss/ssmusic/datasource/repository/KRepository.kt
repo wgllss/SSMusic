@@ -18,6 +18,9 @@ import com.wgllss.ssmusic.datasource.netbean.rank.KRankBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankExBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KTopBean
 import com.wgllss.ssmusic.datasource.netbean.search.KGSearchDto
+import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetDetailDto
+import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetDetailDtoInfo
+import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetDetailDtoInfoList
 import com.wgllss.ssmusic.datasource.netbean.singer.KSingerItem
 import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
@@ -508,9 +511,42 @@ class KRepository private constructor(private val context: Context) {
                 .replace("<p>", "")
                 .replace("</p>", "")
             val sps = text.split("<br />")
-            WLog.e(this@KRepository, "title:$title imgUrl:$imgUrl url:$url text:${sps[0]} ${sps[1]}")
+//            WLog.e(this@KRepository, "title:$title imgUrl:$imgUrl url:$url text:${sps[0]} ${sps[1]}")
             list.add(AlbumBean(title, sps[1], url, imgUrl, sps[0]))
         }
         emit(list)
+    }
+
+    suspend fun getAlbumDetail(url: String) = flow {
+        val html = musiceApiL.getAlbumDetail(url)
+        val document = Jsoup.parse(html, "https://www.kugou.com/")
+        val albumDoc = document.select(".l").first()
+        val imgDiv = albumDoc?.select(".pic")?.first()
+        val img = imgDiv?.select("img[_src]")?.first()?.attr("abs:_src")!!
+        val detail = albumDoc?.select(".detail")?.first()
+        val span = detail?.select("span")
+        span?.remove()
+        val text = detail?.html()!!
+        val sps = text.split("<br>")!!
+        val intro = albumDoc?.select(".intro")?.first()
+        val introSpan = intro?.select("span")?.first()
+        introSpan?.remove()
+        val strIntro = intro?.html()?.replace("<p>", "")?.replace("</p>", "") ?: ""
+        val songList = document?.select(".songList")?.first()
+        val links = songList?.select("a[href]")
+        var listData = mutableListOf<MusicItemBean>()
+        links?.forEach {
+            val url = it.attr("abs:href")!!
+            var title = it.attr("abs:title")?.replace("https://www.kugou.com/", "")?.replace("https://www.kugou.com", "") ?: ""
+            val sps = title.split("-")
+            val author = sps[0]
+            val musicName = sps[1]
+            WLog.e(this@KRepository, "url:$url musicName:$musicName author:$author")
+            listData.add(MusicItemBean(author, musicName, url, "", img, "", 1, 0))
+        }
+        val list = KSheetDetailDtoInfoList("", sps[1], sps[0], img, strIntro)
+        val info = KSheetDetailDtoInfo(list)
+        val kSheetDetailDto = KSheetDetailDto(null, listData, info)
+        emit(kSheetDetailDto)
     }
 }

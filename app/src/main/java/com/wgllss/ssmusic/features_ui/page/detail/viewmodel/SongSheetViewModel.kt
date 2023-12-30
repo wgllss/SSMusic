@@ -25,9 +25,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 
-class SongSheetViewModel : BaseViewModel() {
+open class SongSheetViewModel : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
-    private val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicReposito
+    val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicReposito
     val nowPlay by lazy { MutableLiveData<Boolean>() }
     private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
     private val transportControls by lazy { musicServiceConnectionL.transportControls }
@@ -37,7 +37,7 @@ class SongSheetViewModel : BaseViewModel() {
     override fun start() {
     }
 
-    fun kSongSheetDetail(encodeID: String) {
+    open fun kSongSheetDetail(encodeID: String) {
         flowAsyncWorkOnViewModelScopeLaunch {
             kRepository.kSongSheetDetail1(encodeID)
                 .onEach {

@@ -19,6 +19,7 @@ import com.wgllss.ssmusic.ex.initColors
 import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
 import com.wgllss.ssmusic.features_ui.page.album.adapter.AlbumAdapter
 import com.wgllss.ssmusic.features_ui.page.album.viewmodels.AlbumViewModel
+import com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity
 
 class KAlbumFragment : TabTitleFragment<AlbumViewModel>() {
     private lateinit var rvPlList: RecyclerView
@@ -61,7 +62,11 @@ class KAlbumFragment : TabTitleFragment<AlbumViewModel>() {
             rvPlList.adapter = albumAdapter
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
-//                    homeTabViewModel.getDetailFromSearch(albumAdapter.getItem(position))
+                    activity?.let {
+                        albumAdapter.getItem(position).run {
+                            SongSheetDetailActivity.startSongSheetDetailActivity(it, detailUrl, 3)
+                        }
+                    }
                 }
             })
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
