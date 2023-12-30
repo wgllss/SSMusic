@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:layout_marginTop="1dp"
+    android:layout_marginBottom="1dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/album_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="top|left"
+        android:scaleType="fitCenter"
+        app:shapeAppearance="@style/CircleStyle_corner_size_8" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="95dp"
+        android:gravity="center_vertical"
+        android:maxLines="2"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="17dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_company"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginLeft="95dp"
+        android:layout_marginTop="40dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="11dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/txt_create_time"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginLeft="95dp"
+        android:layout_marginTop="60dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="10dp" />
+
+</FrameLayout>

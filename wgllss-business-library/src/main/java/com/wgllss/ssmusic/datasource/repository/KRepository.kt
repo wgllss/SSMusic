@@ -4,12 +4,14 @@ import android.content.Context
 import android.text.TextUtils
 import android.webkit.*
 import com.google.gson.Gson
+import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.data.*
 import com.wgllss.ssmusic.datasource.net.KMusicApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
 import com.wgllss.ssmusic.datasource.netbean.KMJson
 import com.wgllss.ssmusic.datasource.netbean.KMusicHotSongBean
 import com.wgllss.ssmusic.datasource.netbean.KSingerBean
+import com.wgllss.ssmusic.datasource.netbean.album.AlbumBean
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVDto
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVItem
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankBean
@@ -479,5 +481,36 @@ class KRepository private constructor(private val context: Context) {
             }
             emit(list)
         }
+    }
+
+    suspend fun queryAlbumList(pageNo: Int, key: String) = flow {
+        val html = musiceApiL.queryAlbumList(pageNo, key)
+        val document = Jsoup.parse(html, "https://www.kugou.com/")
+        val docR = document.select(".r")
+        val ul = docR.select("ul")?.first()
+        val list = mutableListOf<AlbumBean>()
+        ul?.select("li")?.forEach {
+            val links = it.select("a[href]").first()
+            val url = links?.attr("abs:href")!!
+            val imgTag = links.select("img[_src]")
+            val imgUrl = imgTag.first()?.attr("abs:_src")!!
+            var title = links.attr("abs:title")?.replace("https://www.kugou.com/", "")?.replace("https://www.kugou.com", "") ?: ""
+
+            val elements = it.select("div")
+            val elementStrong = elements.first()?.select("strong")
+            val elementspan = elements.first()?.select("span")
+            elementStrong?.remove()
+            elementspan?.remove()
+            var text = elements.html()
+            text = text.replace("<!--", "")
+                .replace("<br>", "")
+                .replace("-->", "")
+                .replace("<p>", "")
+                .replace("</p>", "")
+            val sps = text.split("<br />")
+            WLog.e(this@KRepository, "title:$title imgUrl:$imgUrl url:$url text:${sps[0]} ${sps[1]}")
+            list.add(AlbumBean(title, sps[1], url, imgUrl, sps[0]))
+        }
+        emit(list)
     }
 }

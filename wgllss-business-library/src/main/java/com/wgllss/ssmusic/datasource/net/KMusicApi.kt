@@ -99,4 +99,7 @@ interface KMusicApi {
 
     @GET
     suspend fun getPinDaoDetail(@Url url: String): PinDaoDto
+
+    @GET("https://www.kugou.com/yy/album/index/{pageNo}-1-{key}.html") //只有html 无json
+    suspend fun queryAlbumList(@Path("pageNo") pageNo: Int, @Path("key") key: String): String
 }

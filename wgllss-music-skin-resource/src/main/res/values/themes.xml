@@ -67,6 +67,11 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="CircleStyle_corner_size_8">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8%</item>
+    </style>
+
     <style name="RippleWhite80" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:colorControlHighlight">#FF4081</item>
         <!--        <item name="paddingStart">20dp</item>-->

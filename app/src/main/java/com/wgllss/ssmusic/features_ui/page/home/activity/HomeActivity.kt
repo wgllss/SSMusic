@@ -16,6 +16,7 @@ import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
+import com.wgllss.ssmusic.features_ui.page.album.fragment.AlbumTabFragment
 import com.wgllss.ssmusic.features_ui.page.classics.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.playlist.fragment.HistoryFragment
 import com.wgllss.ssmusic.features_ui.page.home.fragment.KHomeMVTabFragment
@@ -32,10 +33,12 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
     private val homeFragment by lazy { HomeContains.getFragmentByKey(LaunchInflateKey.home_tab_fragment) }
-    private val kHomeMVTabFragment by lazy { KHomeMVTabFragment() }
-    private val homeTabFragment by lazy { HomeTabFragment() }
+
+    //    private val homeTabFragment by lazy { HomeTabFragment() }
+    private val homeTabFragment by lazy { AlbumTabFragment() }
 
     private val kHomeSingerTabFragment by lazy { KHomeSingerTabFragment() }
+    private val kHomeMVTabFragment by lazy { KHomeMVTabFragment() }
 
     @Inject
     lateinit var settingFragmentL: Lazy<SettingFragment>
