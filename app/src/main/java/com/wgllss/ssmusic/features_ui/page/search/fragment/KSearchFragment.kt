@@ -2,8 +2,11 @@ package com.wgllss.ssmusic.features_ui.page.search.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.databinding.DataBindingUtil
 import com.wgllss.core.ex.HideSoftInputFromWindow
 import com.wgllss.core.ex.finishActivity
 import com.wgllss.core.ex.launchActivity
@@ -11,6 +14,7 @@ import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.databinding.FragmentKsearchBinding
+import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import com.wgllss.ssmusic.features_ui.page.search.adapter.KSearchAdapter
 import com.wgllss.ssmusic.features_ui.page.search.viewmodels.HomeViewModel3
@@ -18,11 +22,17 @@ import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-@AndroidEntryPoint
-class KSearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel3, FragmentKsearchBinding>(R.layout.fragment_ksearch) {
+class KSearchFragment : TabTitleFragment<HomeViewModel3>() {
 
-    @Inject
-    lateinit var kSearchAdapterL: Lazy<KSearchAdapter>
+    private lateinit var binding: FragmentKsearchBinding
+
+    private val kSearchAdapterL by lazy { KSearchAdapter() }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (!this::binding.isInitialized)
+            binding = DataBindingUtil.inflate(inflater, R.layout.fragment_ksearch, container, false)
+        return binding.root
+    }
 
 //    override fun activitySameViewModel() = false
 
@@ -30,37 +40,15 @@ class KSearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel3, F
         super.onActivityCreated(savedInstanceState)
         binding?.apply {
             model = this@KSearchFragment.viewModel
-            adapter = kSearchAdapterL.get()
+            adapter = kSearchAdapterL
             lifecycleOwner = this@KSearchFragment
             executePendingBindings()
-            shapeableSearch.setOnClickListener {
-                viewModel.searchKeyByTitle()
-                HideSoftInputFromWindow(root)
-            }
             rvResult?.run {
                 addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                     override fun onItemClickListener(itemRootView: View, position: Int) {
-                        viewModel.doPlay(kSearchAdapterL.get().getItem(position))
+                        viewModel.doPlay(kSearchAdapterL.getItem(position))
                     }
                 })
-            }
-            etName.requestFocus()
-            etName.setOnEditorActionListener { _, actionId, _ ->
-                when (actionId) {
-                    EditorInfo.IME_ACTION_SEARCH -> {
-                        viewModel.searchKeyByTitle()
-                        HideSoftInputFromWindow(root)
-                        true
-                    }
-                    else -> {}
-                }
-                false
-            }
-            imgBack.setOnClickListener {
-                activity?.run {
-                    HideSoftInputFromWindow(root)
-                    finishActivity()
-                }
             }
         }
     }
@@ -78,7 +66,7 @@ class KSearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel3, F
                 }
             }
             result.observe(viewLifecycleOwner) {
-                kSearchAdapterL.get().notifyData(it)
+                kSearchAdapterL.notifyData(it)
             }
         }
     }
@@ -86,5 +74,9 @@ class KSearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel3, F
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.nowPlay.postValue(false)
+    }
+
+    fun searchKey(content: String) {
+        viewModel.searchKeyByTitle(content)
     }
 }

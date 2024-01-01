@@ -12,75 +12,18 @@
             type="com.wgllss.ssmusic.features_ui.page.classics.adapter.HomeMusicAdapter" />
     </data>
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/rv_result"
+        itemColorStr="@{`#30000000`}"
+        itemWidth="@{1.0f}"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:adapter="@{adapter}"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_height"
-            android:layout_gravity="top|left"
-            android:background="?colorPrimary" />
-
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_name"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/title_bar_text_height"
-            android:layout_gravity="top"
-            android:layout_marginTop="@dimen/status_bar_height"
-            android:background="@color/color_translucent"
-            android:gravity="center_vertical"
-            android:hint="@string/hint_name"
-            android:imeOptions="actionSearch"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingLeft="50dp"
-            android:text="@={model.searchContent}"
-            android:textColor="?android:textColorHighlight"
-            android:textColorHint="?android:textColorHighlight"
-            android:textSize="18dp" />
-
-        <ImageView
-            android:id="@+id/img_back"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="top|left"
-            android:layout_marginTop="36dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_arrow_back_24"
-            android:theme="@style/RippleWhite80" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/shapeable_search"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_gravity="top|right"
-            android:layout_marginTop="@dimen/status_bar_height"
-            android:layout_marginRight="20dp"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:padding="8dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_baseline_search_24"
-            android:theme="@style/RippleWhite80" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_result"
-            itemColorStr="@{`#30000000`}"
-            itemWidth="@{1.0f}"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/title_bar_height"
-            android:adapter="@{adapter}"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    </FrameLayout>
 </layout>

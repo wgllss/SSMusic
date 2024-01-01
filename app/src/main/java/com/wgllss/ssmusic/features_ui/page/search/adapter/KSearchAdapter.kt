@@ -13,7 +13,8 @@ import com.wgllss.ssmusic.R
 import com.wgllss.ssmusic.data.MusicItemBean
 import javax.inject.Inject
 
-class KSearchAdapter @Inject constructor() : BaseRecyclerAdapter<MusicItemBean>() {
+//class KSearchAdapter @Inject constructor() : BaseRecyclerAdapter<MusicItemBean>() {
+class KSearchAdapter : BaseRecyclerAdapter<MusicItemBean>() {
     override fun getLayoutResId(viewType: Int) = R.layout.adapter_item_search_k
 
     override fun onBindItem(context: Context, item: MusicItemBean, holder: RecyclerView.ViewHolder, position: Int) {

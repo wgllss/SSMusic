@@ -32,7 +32,8 @@ class HomeViewModel2 : BaseViewModel() {
     private val musicServiceConnectionL by lazy { MusicServiceConnection.getInstance(AppGlobals.sApplication) }
     private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
 
-    val searchContent by lazy { MutableLiveData<String>() }
+    //    val searchContent by lazy { MutableLiveData<String>() }
+    var contentCache: String = ""
 
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
@@ -40,11 +41,11 @@ class HomeViewModel2 : BaseViewModel() {
 //    val mCurrentFragmentTAG by lazy { StringBuilder() }
 
     //    val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
-//    var isFirst = true
+    var isFirst = true
     val nowPlay by lazy { MutableLiveData<Boolean>() }
     private var isLoadingMore = false
     val enableLoadeMore by lazy { MutableLiveData(true) }
-    private var pageNo = 1
+    var pageNo = 1
 
     fun enableLoadMore() = !isLoadingMore && enableLoadeMore.value!!
 
@@ -111,15 +112,16 @@ class HomeViewModel2 : BaseViewModel() {
         pageNo = 1
     }
 
-    fun searchKeyByTitle() {
-        if (searchContent.value == null || searchContent.value.isNullOrEmpty()) {
-            WLog.e(this, "searchContent.value ${searchContent.value}")
+    fun searchKeyByTitle(content: String = contentCache) {
+        if (content == null || content.isNullOrEmpty()) {
+//            WLog.e(this, "searchContent.value ${searchContent.value}")
             return
         }
+        contentCache = content
         isLoadingMore = true
         WLog.e(this, "isLoadingMore : $isLoadingMore")
         flowAsyncWorkOnViewModelScopeLaunch {
-            musicRepositoryL.searchKeyByTitle(searchContent.value!!, pageNo)
+            musicRepositoryL.searchKeyByTitle(content, pageNo)
                 .onEach {
                     val resultList = if (pageNo == 1) {
                         it.list

@@ -2,8 +2,11 @@ package com.wgllss.ssmusic.features_ui.page.search.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wgllss.core.ex.HideSoftInputFromWindow
@@ -12,22 +15,26 @@ import com.wgllss.core.ex.launchActivity
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.databinding.FragmentKsearchBinding
 import com.wgllss.ssmusic.databinding.FragmentSearchBinding
+import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
 import com.wgllss.ssmusic.features_ui.page.classics.adapter.HomeMusicAdapter
 import com.wgllss.ssmusic.features_ui.page.home.viewmodels.HomeViewModel2
 import com.wgllss.ssmusic.features_ui.page.playing.activity.PlayActivity
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-//@FragmentDestination(pageUrl = "fmt_search", label = "搜索", iconId = R.drawable.ic_dashboard_black_24dp)
-@AndroidEntryPoint
-class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, FragmentSearchBinding>(R.layout.fragment_search) {
+class SearchFragment : TabTitleFragment<HomeViewModel2>() {
 
-    //    @Inject
-//    lateinit var musicAdapterL: Lazy<MusicAdapter>
+    private lateinit var binding: FragmentSearchBinding
+
     private val musicAdapter by lazy { HomeMusicAdapter() }
 
-    override fun activitySameViewModel() = true
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (!this::binding.isInitialized)
+            binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -36,11 +43,6 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
             adapter = musicAdapter
             lifecycleOwner = this@SearchFragment
             executePendingBindings()
-            shapeableSearch.setOnClickListener {
-                viewModel.initPage()
-                viewModel.searchKeyByTitle()
-                HideSoftInputFromWindow(root)
-            }
             rvResult?.run {
                 addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                     override fun onItemClickListener(itemRootView: View, position: Int) {
@@ -57,31 +59,21 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
                     }
                 })
             }
-            etName.requestFocus()
-            etName.setOnEditorActionListener { _, actionId, _ ->
-                when (actionId) {
-                    EditorInfo.IME_ACTION_SEARCH -> {
-                        viewModel.initPage()
-                        viewModel.searchKeyByTitle()
-                        HideSoftInputFromWindow(root)
-                        true
-                    }
-                    else -> {}
-                }
-                false
-            }
-            imgBack.setOnClickListener {
-                activity?.run {
-                    HideSoftInputFromWindow(root)
-                    finishActivity()
-                }
-            }
         }
     }
 
     override fun initObserve() {
-        super.initObserve()
         viewModel?.run {
+            showUIDialog.observe(viewLifecycleOwner) {
+                if (it.isShow) {
+                    if (pageNo == 1) {
+                        showloading(it.msg)
+                    }
+                } else hideLoading()
+            }
+            errorMsgLiveData.observe(viewLifecycleOwner) {
+                onToast(it)
+            }
             nowPlay.observe(viewLifecycleOwner) {
                 it?.takeIf {
                     it
@@ -106,5 +98,16 @@ class SearchFragment @Inject constructor() : BaseMVVMFragment<HomeViewModel2, Fr
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         viewModel.nowPlay.postValue(false)
+    }
+
+    fun searchKey(content: String) {
+        viewModel.searchKeyByTitle(content)
+    }
+
+    fun noSearch(): Boolean {
+        return if (viewModel.isFirst) {
+            viewModel.isFirst = false
+            musicAdapter.itemCount == 0
+        } else false
     }
 }

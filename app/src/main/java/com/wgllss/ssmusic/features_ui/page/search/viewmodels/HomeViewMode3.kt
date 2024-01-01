@@ -37,7 +37,7 @@ class HomeViewModel3 : BaseViewModel() {
     private val kRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicReposito
     private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
 
-    val searchContent by lazy { MutableLiveData<String>() }
+    //    val searchContent by lazy { MutableLiveData<String>() }
     val result by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
 
     val currentMediaID by lazy { MutableLiveData("") }
@@ -98,13 +98,13 @@ class HomeViewModel3 : BaseViewModel() {
         }
     }
 
-    fun searchKeyByTitle() {
-        if (searchContent.value == null || searchContent.value.isNullOrEmpty()) {
-            WLog.e(this, "searchContent.value ${searchContent.value}")
+    fun searchKeyByTitle(content: String) {
+        if (content == null || content.isNullOrEmpty()) {
+//            WLog.e(this, "searchContent.value ${searchContent.value}")
             return
         }
         flowAsyncWorkOnViewModelScopeLaunch {
-            kRepository.searchKeyWord(searchContent.value!!).onEach {
+            kRepository.searchKeyWord(content).onEach {
                 result.postValue(it)
             }
         }

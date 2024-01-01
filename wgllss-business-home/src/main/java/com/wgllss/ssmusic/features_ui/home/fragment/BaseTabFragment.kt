@@ -20,8 +20,8 @@ import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
 
 abstract class BaseTabFragment<VM : HomeViewModel> : BaseViewModelFragment<VM>(0) {
     private lateinit var childAdapter: ViewPage2ChildFragmentAdapter
-    private lateinit var homeTabLayout: TabLayout
-    private lateinit var viewPager2: ViewPager2
+    protected lateinit var homeTabLayout: TabLayout
+    protected lateinit var viewPager2: ViewPager2
     private var mTabLayoutMediator: TabLayoutMediator? = null
 
     override fun activitySameViewModel() = true

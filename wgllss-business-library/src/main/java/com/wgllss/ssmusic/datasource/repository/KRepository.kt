@@ -137,10 +137,10 @@ class KRepository private constructor(private val context: Context) {
                 list.add(HomeItemBean(4, kSingerBean = it))
             }
             list.add(0, HomeItemBean(5))
-            list.add(1, HomeItemBean(6, kMenuBean = KMenuBean(1, "最新")))
-            list.add(2, HomeItemBean(6, kMenuBean = KMenuBean(2, "专辑")))
-            list.add(3, HomeItemBean(6, kMenuBean = KMenuBean(3, "经典")))
-            list.add(4, HomeItemBean(6, kMenuBean = KMenuBean(4, "频道")))
+//            list.add(1, HomeItemBean(6, kMenuBean = KMenuBean(1, "最新")))
+//            list.add(2, HomeItemBean(6, kMenuBean = KMenuBean(2, "歌单")))
+//            list.add(3, HomeItemBean(6, kMenuBean = KMenuBean(3, "榜单")))
+//            list.add(4, HomeItemBean(6, kMenuBean = KMenuBean(4, "频道")))
 
             emit(list)
             MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
