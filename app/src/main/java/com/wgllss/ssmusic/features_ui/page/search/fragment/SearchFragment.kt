@@ -27,7 +27,7 @@ import javax.inject.Inject
 class SearchFragment : TabTitleFragment<HomeViewModel2>() {
 
     private lateinit var binding: FragmentSearchBinding
-
+    private var isActivityCreated = false
     private val musicAdapter by lazy { HomeMusicAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -64,6 +64,7 @@ class SearchFragment : TabTitleFragment<HomeViewModel2>() {
 
     override fun initObserve() {
         viewModel?.run {
+            isActivityCreated = true
             showUIDialog.observe(viewLifecycleOwner) {
                 if (it.isShow) {
                     if (pageNo == 1 || isClick) {
@@ -105,7 +106,7 @@ class SearchFragment : TabTitleFragment<HomeViewModel2>() {
     }
 
     fun noSearch(): Boolean {
-        return if (viewModel.isFirst) {
+        return if (isActivityCreated && viewModel.isFirst) {
             viewModel.isFirst = false
             musicAdapter.itemCount == 0
         } else false
