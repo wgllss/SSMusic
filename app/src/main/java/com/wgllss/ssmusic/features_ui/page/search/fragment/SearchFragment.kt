@@ -66,7 +66,7 @@ class SearchFragment : TabTitleFragment<HomeViewModel2>() {
         viewModel?.run {
             showUIDialog.observe(viewLifecycleOwner) {
                 if (it.isShow) {
-                    if (pageNo == 1) {
+                    if (pageNo == 1 || isClick) {
                         showloading(it.msg)
                     }
                 } else hideLoading()

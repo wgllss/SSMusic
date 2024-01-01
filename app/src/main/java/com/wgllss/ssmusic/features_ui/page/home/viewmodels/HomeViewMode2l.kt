@@ -46,6 +46,7 @@ class HomeViewModel2 : BaseViewModel() {
     private var isLoadingMore = false
     val enableLoadeMore by lazy { MutableLiveData(true) }
     var pageNo = 1
+    var isClick = false
 
     fun enableLoadMore() = !isLoadingMore && enableLoadeMore.value!!
 
@@ -119,6 +120,7 @@ class HomeViewModel2 : BaseViewModel() {
         }
         contentCache = content
         isLoadingMore = true
+        isClick = false
         WLog.e(this, "isLoadingMore : $isLoadingMore")
         flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.searchKeyByTitle(content, pageNo)
@@ -152,6 +154,7 @@ class HomeViewModel2 : BaseViewModel() {
                 nowPlay.postValue(true)
                 return
             }
+            isClick = true
             flowAsyncWorkOnViewModelScopeLaunch {
                 val detailUrl = get(position).detailUrl
                 musicRepositoryL.getPlayUrl(detailUrl)
