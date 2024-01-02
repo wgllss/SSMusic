@@ -1,0 +1,19 @@
+package com.wgllss.ssmusic.features_ui.page.newsongs.fragment
+
+import androidx.fragment.app.Fragment
+import com.wgllss.ssmusic.features_ui.home.fragment.BaseTabFragment
+import com.wgllss.ssmusic.features_ui.home.fragment.KNewLisFragment
+import com.wgllss.ssmusic.features_ui.home.fragment.TabTitleFragment
+import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
+
+class NewSongsFragment : BaseTabFragment<HomeViewModel>() {
+
+    override fun isLazyTab() = false
+
+    override fun getList() = mutableListOf<Fragment>(
+        TabTitleFragment.newInstance("华语", "https://m.kugou.com/newsong/index", KNewLisFragment::class.java),
+        TabTitleFragment.newInstance("欧美", "https://m.kugou.com/newsong/index/2", KNewLisFragment::class.java),
+        TabTitleFragment.newInstance("韩国", "https://m.kugou.com/newsong/index/4", KNewLisFragment::class.java),
+        TabTitleFragment.newInstance("日本", "https://m.kugou.com/newsong/index/5", KNewLisFragment::class.java)
+    )
+}

@@ -81,15 +81,15 @@ class KRepository private constructor(private val context: Context) {
                     }
                 }
             }
-            list.add(HomeItemBean(0, HomeLableBean("新歌首发")))
+            list.add(HomeItemBean(0, HomeLableBean("新歌首发", 1, "更多新歌 >")))
             listNew.forEach {
                 list.add(HomeItemBean(1, kMusicItemBean = it))
             }
-            list.add(HomeItemBean(0, HomeLableBean("热门歌单")))
+            list.add(HomeItemBean(0, HomeLableBean("热门歌单", 2, "更多热门 >")))
             listHot?.forEach {
                 list.add(HomeItemBean(2, kKMusicHotSongBean = it))
             }
-            list.add(HomeItemBean(0, HomeLableBean("热歌榜单")))
+            list.add(HomeItemBean(0, HomeLableBean("热歌榜单", 3)))
 
             val rankList = mutableListOf<KRankExBean>()
             val dcSHref = document.select(".m_cm_i2w_d1")
@@ -132,7 +132,7 @@ class KRepository private constructor(private val context: Context) {
 //                log("name $name")
                 singers.add(KSingerBean(name, url, img, encodeID))
             }
-            list.add(HomeItemBean(0, HomeLableBean("热门歌手")))
+            list.add(HomeItemBean(0, HomeLableBean("热门歌手", 5)))
             singers?.forEach {
                 list.add(HomeItemBean(4, kSingerBean = it))
             }
@@ -201,7 +201,7 @@ class KRepository private constructor(private val context: Context) {
                 }
             }
             log("lrcUrl 00000 :${lrcUrl}")
-            var lrcStr = ""
+            var lrcStr = "暂无歌词"
             var sTdMusicUrl = implWeb.getSTdMusicUrl()
             if (!TextUtils.isEmpty(lrcUrl)) {
                 val kLrcDto = musiceApiL.getKLrcJson(lrcUrl)

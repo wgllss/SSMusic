@@ -57,6 +57,14 @@ class KHomeFragment : TabTitleFragment<HomeViewModel>() {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
                     val item = kHomeAdapter.getItem(position)
                     when (kHomeAdapter.getItemViewType(position)) {
+                        0 -> {
+                            val clazzName = when (item.homeLableBean!!.labType) {
+                                1 -> "com.wgllss.ssmusic.features_ui.page.newsongs.activity.NewSongsActivity"
+                                2 -> "com.wgllss.ssmusic.features_ui.page.classics.activity.ClassicsActivity"
+                                else -> return
+                            }
+                            startToDetailActivity(clazzName)
+                        }
                         1 -> {
                             viewModel.getMusicInfo(item.kMusicItemBean!!)
                         }

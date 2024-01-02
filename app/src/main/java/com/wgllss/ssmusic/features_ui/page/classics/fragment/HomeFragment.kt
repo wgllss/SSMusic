@@ -33,7 +33,7 @@ class HomeFragment : TabTitleFragment<HomeViewModel2>() {
 
     lateinit var musicAdapter: HomeMusicAdapter
 
-    override fun activitySameViewModel() = true
+//    override fun activitySameViewModel() = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

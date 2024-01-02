@@ -47,6 +47,8 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
     private val txt2 = 10
     private val txt3 = 11
     private val txtListener = 12
+    private val txt_lab = 13
+    private val txt_right = 15
 
     private var textColorHighlight: Int = 0
     private var textColorPrimary: Int = 0
@@ -345,14 +347,36 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
                 BaseBindingViewHolder(frameLayout)
             }
             else -> {
+                val height = context!!.getIntToDip(50f).toInt()
+                val frameLayout = FrameLayout(context!!).apply {
+                    layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, height)
+                }
                 val textView = TextView(parent.context).apply {
-                    val lp = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(50f).toInt())
+                    id = txt_lab
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, height).apply {
+                        gravity = Gravity.LEFT
+                    }
                     setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22f)
                     paint.isFakeBoldText = true
                     layoutParams = lp
                     gravity = Gravity.CENTER_VERTICAL
                 }
-                BaseBindingViewHolder(textView)
+                frameLayout.addView(textView)
+                val textViewRight = TextView(parent.context).apply {
+                    id = txt_right
+                    val size15 = context.getIntToDip(20f).toInt()
+                    val lp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, height).apply {
+                        gravity = Gravity.RIGHT
+                        rightMargin = size15
+                    }
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f)
+                    paint.isFakeBoldText = true
+                    layoutParams = lp
+                    gravity = Gravity.CENTER_VERTICAL
+//                    text = "更多新歌 >"
+                }
+                frameLayout.addView(textViewRight)
+                BaseBindingViewHolder(frameLayout)
             }
         }
     }
@@ -360,7 +384,8 @@ class KHomeAdapter : BaseRecyclerAdapter<HomeItemBean>() {
     override fun onBindItem(context: Context, item: HomeItemBean, holder: RecyclerView.ViewHolder, position: Int) {
         when (item.itemType) {
             0 -> {
-                (holder.itemView as TextView).text = item.homeLableBean?.lable
+                holder.itemView.findViewById<TextView>(txt_lab).text = item.homeLableBean?.lable
+                holder.itemView.findViewById<TextView>(txt_right).text = item.homeLableBean?.moreDetail
             }
             1 -> {
                 holder.itemView.findViewById<TextView>(name).text = item.kMusicItemBean!!.author
