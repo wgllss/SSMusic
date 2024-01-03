@@ -78,6 +78,7 @@ class KPinDaoFragment : TabTitleFragment<PinDaoViewModel>() {
             addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
                 override fun onItemClickListener(itemRootView: View, position: Int) {
                     viewModel.clickItem(pinDaoSideAdapter.getItem(position).dataID)
+                    pinDaoSideAdapter.setSelectPosition(position)
                 }
             })
         }

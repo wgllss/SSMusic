@@ -21,6 +21,12 @@ class PinDaoSideAdapter : BaseRecyclerAdapter<PinDaoSideBean>() {
     private var currentPosition: Int = 0
     private var colorInt: Int = 0
     private var colorPrimary: Int = 0
+
+    fun setSelectPosition(currentPosition: Int) {
+        this.currentPosition = currentPosition
+        notifyDataSetChanged()
+    }
+
     private fun getAndroidColorBackground(context: Context): Int {
         if (colorInt == 0) {
             val typedValue = TypedValue()
