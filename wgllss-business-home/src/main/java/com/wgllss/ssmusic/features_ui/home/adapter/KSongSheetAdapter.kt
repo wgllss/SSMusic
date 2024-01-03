@@ -85,14 +85,14 @@ class KSongSheetAdapter : BaseRecyclerAdapter<KSheetListDtoPlistListItem>() {
                     topMargin = context.getIntToDip(125f).toInt()
                 }
                 maxLines = 2
-                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+                setTextSize(TypedValue.COMPLEX_UNIT_DIP, 15f)
             }
             frameLayout.addView(textViewMusicName)
             val txtListeners = MaterialButton(parent.context).apply {
                 id = txtListener
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, context.getIntToDip(25f).toInt()).apply {
                     gravity = Gravity.RIGHT or Gravity.TOP
-                    topMargin = context.getIntToDip(95f).toInt()
+                    topMargin = context.getIntToDip(80f).toInt()
                 }
                 setTextColor(Color.WHITE)
                 gravity = Gravity.CENTER_VERTICAL or Gravity.LEFT
