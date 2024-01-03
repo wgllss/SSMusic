@@ -73,8 +73,8 @@ class SongSheetFragment(private val encodeID: String) : BaseViewModelFragment<So
                 setContentScrimColor(ThemeUtils.getColorPrimary(inflater.context))
                 setStatusBarScrimColor(ThemeUtils.getColorPrimary(inflater.context))
                 expandedTitleGravity = Gravity.TOP or Gravity.LEFT
-                expandedTitleMarginStart = inflater.context.getIntToDip(165f).toInt()
-                expandedTitleMarginTop = inflater.context.getIntToDip(81f).toInt()
+                expandedTitleMarginStart = inflater.context.getIntToDip(15f).toInt()
+                expandedTitleMarginTop = inflater.context.getIntToDip(193f).toInt()
 //                setExpandedTitleTextAppearance(R.style.UserpageUserNameExpandedStyle)
                 (layoutParams as AppBarLayout.LayoutParams).scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED
             }
