@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:layout_gravity="top|left"
+        android:background="?colorPrimary" />
+
+    <ImageView
+        android:id="@+id/img_back"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="top|left"
+        android:layout_marginTop="36dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        android:theme="@style/RippleWhite80" />
+
+    <TextView
+        android:id="@+id/mater_music_name"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="36dp"
+        android:gravity="center"
+        android:text="经典歌曲"
+        android:textColor="?android:textColorHighlight"
+        android:textSize="18dp" />
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_view"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="@dimen/title_bar_height"
+        app:tabIndicatorColor="?colorPrimary"
+        app:tabMode="auto"
+        app:tabIndicatorFullWidth="false" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/homeViewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="126dp" />
+</FrameLayout>
