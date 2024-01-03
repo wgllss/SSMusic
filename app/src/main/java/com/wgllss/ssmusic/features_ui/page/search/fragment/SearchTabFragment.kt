@@ -1,6 +1,7 @@
 package com.wgllss.ssmusic.features_ui.page.search.fragment
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +33,12 @@ class SearchTabFragment @Inject constructor() : BaseTabFragment<HomeViewModel>()
     }
 
     override fun isLazyTab() = false
+
+    override fun getTextColor(): Int {
+        val typedValue = TypedValue()
+        requireActivity().theme.resolveAttribute(android.R.attr.colorPrimary, typedValue, true)
+        return typedValue.data
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         if (!this::root.isInitialized) {

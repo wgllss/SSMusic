@@ -28,7 +28,7 @@ class PinDaoAdapter : BaseRecyclerAdapter<MusicItemBean>() {
             context = parent.context
         }
         val frameLayout = FrameLayout(parent.context).apply {
-            layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(180f).toInt())
+            layoutParams = RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT, context.getIntToDip(145f).toInt())
             val array: IntArray = intArrayOf(android.R.attr.selectableItemBackground)
             val typedValue = TypedValue()
             val attr = context.theme.obtainStyledAttributes(typedValue.resourceId, array)
@@ -41,7 +41,7 @@ class PinDaoAdapter : BaseRecyclerAdapter<MusicItemBean>() {
         }
         val image = ShapeableImageView(parent.context).apply {
             id = img
-            val size = context.getIntToDip(120f).toInt()
+            val size = context.getIntToDip(85f).toInt()
             scaleType = ImageView.ScaleType.FIT_XY
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, size).apply {
                 gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
@@ -56,7 +56,7 @@ class PinDaoAdapter : BaseRecyclerAdapter<MusicItemBean>() {
             id = music_name
             layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply {
                 gravity = Gravity.CENTER_HORIZONTAL or Gravity.TOP
-                topMargin = context.getIntToDip(125f).toInt()
+                topMargin = context.getIntToDip(90f).toInt()
             }
             maxLines = 2
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)

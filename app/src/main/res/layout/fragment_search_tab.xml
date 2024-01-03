@@ -60,12 +60,10 @@
         android:layout_height="45dp"
         android:layout_marginTop="@dimen/title_bar_height"
         app:tabGravity="center"
-        app:tabIndicatorColor="@color/red"
+        app:tabIndicatorColor="?colorPrimary"
         app:tabIndicatorFullWidth="false"
         app:tabMinWidth="120dp"
-        app:tabMode="fixed"
-        app:tabSelectedTextColor="?android:textColorPrimary"
-        app:tabTextColor="?android:textColorPrimary" />
+        app:tabMode="fixed" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/homeViewPager2"

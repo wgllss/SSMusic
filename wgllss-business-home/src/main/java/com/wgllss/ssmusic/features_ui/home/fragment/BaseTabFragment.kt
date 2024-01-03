@@ -2,6 +2,7 @@ package com.wgllss.ssmusic.features_ui.home.fragment
 
 import android.os.Bundle
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,11 +46,12 @@ abstract class BaseTabFragment<VM : HomeViewModel> : BaseViewModelFragment<VM>(0
             childAdapter = ViewPage2ChildFragmentAdapter(childFragmentManager, lifecycle)
             childAdapter.notifyData(getList())
             mTabLayoutMediator = TabLayoutMediator(homeTabLayout, viewPager2) { tab: TabLayout.Tab, position: Int ->
-                val textView = TextView(requireContext())
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
-                textView.setTextColor(ThemeUtils.getColorOnPrimary(requireContext()))
-                tab.customView = textView
-                textView.text = (childAdapter.list[position] as TabTitleFragment<*>).title
+                tab.customView = TextView(requireContext()).apply {
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18f)
+                    setTextColor(getTextColor())
+                    gravity = Gravity.CENTER
+                    text = (childAdapter.list[position] as TabTitleFragment<*>).title
+                }
             }
 //            .apply(TabLayoutMediator::attach)
             viewPager2.adapter = childAdapter
@@ -89,6 +91,8 @@ abstract class BaseTabFragment<VM : HomeViewModel> : BaseViewModelFragment<VM>(0
         }
         LogTimer.LogE(this, "onActivityCreated")
     }
+
+    open fun getTextColor() = ThemeUtils.getColorOnPrimary(requireContext())
 
     override fun onResume() {
         super.onResume()

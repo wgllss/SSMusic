@@ -44,14 +44,13 @@ class KPinDaoFragment : TabTitleFragment<PinDaoViewModel>() {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)
                 val itemDecoration = View(context)
-                itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-                itemDecoration.setBackgroundColor(Color.parseColor("#20000000"))
+                itemDecoration.layoutParams = ViewGroup.LayoutParams(size / 5, size / 5)
+                itemDecoration.setBackgroundColor(Color.parseColor("#10000000"))
                 addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
             }
 
             rvPlList = RecyclerView(inflater.context).apply {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT).apply {
-//                    leftMargin = 10 * size
                     gravity = Gravity.LEFT and Gravity.TOP
                 }
                 layoutManager = GridLayoutManager(requireContext(), 3)
@@ -59,8 +58,8 @@ class KPinDaoFragment : TabTitleFragment<PinDaoViewModel>() {
                 val itemDecoration = View(context)
                 val size = context.getIntToDip(5.0f).toInt()
                 setPadding(14 * size, 0, 0, 0)
-                itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
-                itemDecoration.setBackgroundColor(Color.parseColor("#20000000"))
+                itemDecoration.layoutParams = ViewGroup.LayoutParams(size / 5, size / 5)
+                itemDecoration.setBackgroundColor(Color.parseColor("#30000000"))
                 addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
             }
             swipeRefreshLayout.addView(rvPlList)
