@@ -8,6 +8,7 @@ import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.data.MusicItemBean
+import com.wgllss.ssmusic.datasource.netbean.pindao.PinDaoSideBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankBean
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
@@ -24,14 +25,23 @@ class PinDaoViewModel : BaseViewModel() {
     private val kuGouRepository by lazy { KRepository.getInstance(AppGlobals.sApplication) }//: Lazy<MusicRepositor
     private val musicRepositoryL by lazy { MusicRepository.getInstance(AppGlobals.sApplication) }
     val nowPlay by lazy { MutableLiveData<Boolean>() }
+
     val list by lazy { MutableLiveData<MutableList<MusicItemBean>>() }
+    private val map by lazy { MutableLiveData<MutableMap<String, MutableList<MusicItemBean>>>() }
+    val listSides by lazy { MutableLiveData<MutableList<PinDaoSideBean>>() }
 
     override fun start() {
         flowAsyncWorkOnViewModelScopeLaunch {
             kuGouRepository.pingDao().onEach {
-                list.postValue(it)
+                map.postValue(it.map)
+                listSides.postValue(it.sides)
+                list.postValue(it.map["-1"])
             }
         }
+    }
+
+    fun clickItem(dataID: String) {
+        list.value = map.value!![dataID]
     }
 
     fun playPinDaoDetail(item: MusicItemBean) {

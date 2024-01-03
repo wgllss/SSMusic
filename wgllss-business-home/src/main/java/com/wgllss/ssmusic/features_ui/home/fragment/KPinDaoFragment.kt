@@ -3,11 +3,13 @@ package com.wgllss.ssmusic.features_ui.home.fragment
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.wgllss.core.ex.getIntToDip
@@ -16,36 +18,69 @@ import com.wgllss.core.widget.DividerGridItemDecoration
 import com.wgllss.core.widget.OnRecyclerViewItemClickListener
 import com.wgllss.ssmusic.ex.initColors
 import com.wgllss.ssmusic.features_ui.home.adapter.PinDaoAdapter
+import com.wgllss.ssmusic.features_ui.home.adapter.PinDaoSideAdapter
 import com.wgllss.ssmusic.features_ui.home.viewmodels.PinDaoViewModel
 
 class KPinDaoFragment : TabTitleFragment<PinDaoViewModel>() {
     private lateinit var rvPlList: RecyclerView
+    private lateinit var sideView: RecyclerView
+    private lateinit var frameLayout: FrameLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private val pinDaoSideAdapter by lazy { PinDaoSideAdapter() }
     private val pingDaoAdapter by lazy { PinDaoAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        if (!this::swipeRefreshLayout.isInitialized) {
+        if (!this::frameLayout.isInitialized) {
+            frameLayout = FrameLayout(inflater.context).apply {
+                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+            }
+            val size = inflater.context.getIntToDip(5.0f).toInt()
             swipeRefreshLayout = SwipeRefreshLayout(inflater.context).apply {
                 layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                 initColors()
             }
+            sideView = RecyclerView(inflater.context).apply {
+                layoutParams = FrameLayout.LayoutParams(14 * size, FrameLayout.LayoutParams.MATCH_PARENT)
+                layoutManager = LinearLayoutManager(context)
+                setHasFixedSize(true)
+                val itemDecoration = View(context)
+                itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
+                itemDecoration.setBackgroundColor(Color.parseColor("#20000000"))
+                addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
+            }
+
             rvPlList = RecyclerView(inflater.context).apply {
-                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                layoutParams = FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT).apply {
+//                    leftMargin = 10 * size
+                    gravity = Gravity.LEFT and Gravity.TOP
+                }
                 layoutManager = GridLayoutManager(requireContext(), 3)
                 setHasFixedSize(true)
                 val itemDecoration = View(context)
                 val size = context.getIntToDip(5.0f).toInt()
+                setPadding(14 * size, 0, 0, 0)
                 itemDecoration.layoutParams = ViewGroup.LayoutParams(size, size)
                 itemDecoration.setBackgroundColor(Color.parseColor("#20000000"))
                 addItemDecoration(DividerGridItemDecoration(context, GridLayoutManager.VERTICAL, itemDecoration))
             }
             swipeRefreshLayout.addView(rvPlList)
+            frameLayout.addView(swipeRefreshLayout)
+            frameLayout.addView(sideView)
         }
-        return swipeRefreshLayout
+        return frameLayout
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        sideView.apply {
+            adapter = pinDaoSideAdapter
+            setHasFixedSize(true)
+            addOnItemTouchListener(object : OnRecyclerViewItemClickListener(this) {
+                override fun onItemClickListener(itemRootView: View, position: Int) {
+                    viewModel.clickItem(pinDaoSideAdapter.getItem(position).dataID)
+                }
+            })
+        }
         rvPlList?.apply {
             adapter = pingDaoAdapter
             setHasFixedSize(true)
@@ -72,6 +107,9 @@ class KPinDaoFragment : TabTitleFragment<PinDaoViewModel>() {
             list.observe(viewLifecycleOwner) {
                 pingDaoAdapter.notifyData(it)
                 swipeRefreshLayout.isRefreshing = false
+            }
+            listSides.observe(viewLifecycleOwner) {
+                pinDaoSideAdapter.notifyData(it)
             }
             nowPlay.observe(viewLifecycleOwner) {
                 it?.takeIf {

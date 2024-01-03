@@ -14,6 +14,8 @@ import com.wgllss.ssmusic.datasource.netbean.KSingerBean
 import com.wgllss.ssmusic.datasource.netbean.album.AlbumBean
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVDto
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVItem
+import com.wgllss.ssmusic.datasource.netbean.pindao.PinDaoAllData
+import com.wgllss.ssmusic.datasource.netbean.pindao.PinDaoSideBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KRankExBean
 import com.wgllss.ssmusic.datasource.netbean.rank.KTopBean
@@ -399,17 +401,34 @@ class KRepository private constructor(private val context: Context) {
         val html = musiceApiL.pingDaoList()
         val document = Jsoup.parse(html, "https://www.kugou.com/")
         val cdocs = document.select(".main")
+        val side = document.select(".side")
+
+        val listPinDao = mutableMapOf<String, MutableList<MusicItemBean>>()
+        val sides = mutableListOf<PinDaoSideBean>()
+        val dd = side.select("dd")
+        dd.forEach {
+            val dataID = it.attr("abs:data-id").replace("https://www.kugou.com/", "")
+                .replace("https://www.kugou.com", "").ifEmpty { "-1" }
+            val sts = it.html()
+            val dataNames = sts.split("<span>")
+            val dataName = dataNames[1]
+            sides.add(PinDaoSideBean(dataID, dataName))
+            listPinDao[dataID] = mutableListOf<MusicItemBean>()
+            WLog.e(this@KRepository, "dataID:${dataID} dataName:${dataName} ")
+        }
         val links = cdocs.first()?.select("a[href]")
-        val listPinDao = mutableListOf<MusicItemBean>()
+
         links?.forEach {
+            var dataID = it.attr("abs:data-id").replace("https://www.kugou.com/", "")
+                .replace("https://www.kugou.com", "").ifEmpty { "-1" }
             val url = it.attr("abs:href")!!
             val imgTag = it.select("img[src]")
             val imgUrl = imgTag.first()?.attr("abs:src")!!
             val name = it.select("span").html()
-//            WLog.e(this@KRepository, "url:${url} name:${name} imgUrl:${imgUrl}")
-            listPinDao.add(MusicItemBean("", name, url, "", imgUrl))
+            listPinDao["-1"]?.add(MusicItemBean("", name, url, "", imgUrl))
+            listPinDao[dataID]?.add(MusicItemBean("", name, url, "", imgUrl))
         }
-        emit(listPinDao)
+        emit(PinDaoAllData(listPinDao, sides))
     }
 
     suspend fun playPinDaoDetail(htmlUrl: String): Flow<MusicBean> {
