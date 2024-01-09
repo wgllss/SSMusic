@@ -146,8 +146,9 @@ class KRepository private constructor(private val context: Context) {
 
             emit(list)
             MMKVHelp.saveHomeTab1Data(Gson().toJson(list))
-        }.catch { it.printStackTrace() }
-            .flowOn(Dispatchers.IO)
+        }
+//            .catch { it.printStackTrace() }
+//            .flowOn(Dispatchers.IO)
     }
 
     private fun log(message: String) {

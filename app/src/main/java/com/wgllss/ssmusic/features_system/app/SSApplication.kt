@@ -3,6 +3,8 @@ package com.wgllss.ssmusic.features_system.app
 import android.content.Context
 import com.wgllss.core.app.AndroidApplication
 import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.WLog
+import com.wgllss.ssmusic.core.units.DeviceIdUtil
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
@@ -11,5 +13,6 @@ class SSApplication : AndroidApplication() {
     override fun attachBaseContext(base: Context?) {
         LogTimer.initTime(this)
         super.attachBaseContext(base)
+        WLog.e(this, "device 0 sn: ${DeviceIdUtil.getDeviceId(true)}")
     }
 }

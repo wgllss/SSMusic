@@ -11,7 +11,9 @@ import com.wgllss.core.activity.BaseViewModelActivity
 import com.wgllss.core.ex.launchActivity
 import com.wgllss.core.ex.switchFragment
 import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.WLog
 import com.wgllss.music.skin.R
+import com.wgllss.ssmusic.core.units.DeviceIdUtil
 import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
@@ -117,6 +119,8 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
         lifecycleScope.launch(Dispatchers.IO) {
             UMHelp.umInit(this@HomeActivity)
         }
+        WLog.e(this, "device 1 sn: ${DeviceIdUtil.getDeviceId(true)}")
+        viewModel.checkActivation()
     }
 
     private fun initNavigation(bottomNavigationView: BottomNavigationView) {
@@ -133,7 +137,6 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
                 return@setOnItemSelectedListener onNavBarItemSelected(it.itemId)
             }
         }
-
     }
 
     private fun getItemId() = when (viewModel.mCurrentFragmentTAG.toString()) {

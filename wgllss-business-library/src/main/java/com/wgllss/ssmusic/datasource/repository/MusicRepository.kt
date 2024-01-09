@@ -5,6 +5,7 @@ import android.text.TextUtils
 import android.webkit.WebView
 import com.wgllss.core.units.WLog
 import com.wgllss.ssmusic.core.units.ChineseUtils
+import com.wgllss.ssmusic.core.units.DeviceIdUtil
 import com.wgllss.ssmusic.data.MusicBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.MusicListDto
@@ -310,5 +311,19 @@ class MusicRepository private constructor(private val context: Context) {
         WLog.e(this, "deledeFromId id: $id")
         mSSDataBaseL.musicDao().deleteFromID(id)
         emit(0)
+    }
+
+    suspend fun checkActivation() = flow {
+        try {
+            WLog.e(this@MusicRepository, "开始检查激活")
+            musiceApiL.checkActivation(DeviceIdUtil.getDeviceId(true))
+            emit(0)
+        } catch (e: Exception) {
+            e?.message?.takeIf {
+                it.contains("HTTP 404 Not Found")
+            }?.run {
+                emit(-1)
+            }
+        }
     }
 }

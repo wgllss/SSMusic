@@ -12,6 +12,7 @@ import androidx.lifecycle.Transformations
 import com.wgllss.core.ex.logE
 import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.LogTimer
+import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.data.DataContains
@@ -137,6 +138,18 @@ class HomeViewModel : BaseViewModel() {
         flowAsyncWorkOnViewModelScopeLaunch {
             kRepository.homeKMusic().onEach {
                 list.postValue(it)
+            }
+        }
+    }
+
+    fun checkActivation() {
+        flowAsyncWorkOnViewModelScopeLaunch {
+            musicRepositoryL.checkActivation().onEach {
+                if (it == -1) {
+                    WLog.e(this@HomeViewModel, "没有激活过")
+                } else if (it == 0) {
+                    WLog.e(this@HomeViewModel, "激活成功了")
+                }
             }
         }
     }
