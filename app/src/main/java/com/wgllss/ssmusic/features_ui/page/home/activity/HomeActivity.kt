@@ -150,7 +150,10 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
 
     private fun onNavBarItemSelected(itemId: Int): Boolean {
         when (itemId) {
-            R.id.fmt_a -> setCurrentFragment(homeFragment)
+            R.id.fmt_a -> {
+                setCurrentFragment(homeFragment)
+                viewModel.checkActivation()
+            }
             R.id.fmt_b -> setCurrentFragment(homeTabFragment)
             R.id.fmt_c -> setCurrentFragment(kHomeSingerTabFragment)
             R.id.fmt_d -> setCurrentFragment(kHomeMVTabFragment)

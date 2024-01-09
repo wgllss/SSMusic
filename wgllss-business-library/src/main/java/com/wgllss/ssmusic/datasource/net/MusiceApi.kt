@@ -50,6 +50,6 @@ interface MusiceApi {
     @GET
     suspend fun getMvData(@Url url: String): KMVDto
 
-    @GET("https://gitee.com/wgllss888/WeexDemo/raw/develop-wg/assets/{path}")
+    @GET("https://gitee.com/wgllss888/WeexDemo/raw/develop-wg/assets/0000_Activation/{path}.txt")
     suspend fun checkActivation(@Path("path") path: String): String
 }

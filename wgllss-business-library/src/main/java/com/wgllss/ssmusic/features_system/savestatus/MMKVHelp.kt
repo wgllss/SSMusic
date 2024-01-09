@@ -36,4 +36,8 @@ object MMKVHelp {
     fun saveCurrentMediaId(mediaId: String) = mmkv.encode("current_mediaId", mediaId)
 
     fun getCurrentMediaId() = mmkv.decodeString("current_mediaId")
+
+    fun saveUnActiveTime(time: Long) = mmkv.encode("unActivation_time", time)
+
+    fun getUnActiveTime() = mmkv.decodeLong("unActivation_time")
 }

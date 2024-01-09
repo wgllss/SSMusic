@@ -15,7 +15,7 @@ import java.util.*
  */
 object DeviceIdUtil {
 
-    private const val isDeviceSelfSerial = false
+    private const val isDeviceSelfSerial = true
     private const val WD = "B03E4AFB9ADC842C9B3BDB6C57346ACEF6CE7504"
     private const val CD = "2F6039397BA7EEC402E7036339963B23810CCBFD"
     private const val ELSED = "dxde_m_p"
@@ -23,8 +23,7 @@ object DeviceIdUtil {
     fun getDeviceId(needDevice: Boolean = false): String {
         if (isDeviceSelfSerial) {
             //todo 模拟序列号
-            return "2F6039397BA7EEC402E7036339963B23810CCBFD"
-//            return getSerial(AppGlobals.sApplication)
+            return CD
         } else {
             val context = AppGlobals.sApplication
             val sbDeviceId = StringBuilder()

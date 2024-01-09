@@ -11,10 +11,12 @@ import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.data.MusicListDto
 import com.wgllss.ssmusic.datasource.net.MusiceApi
 import com.wgllss.ssmusic.datasource.net.RetrofitUtils
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.music.music_web.ImplWebViewClient
 import com.wgllss.ssmusic.features_system.room.SSDataBase
 import com.wgllss.ssmusic.features_system.room.help.RoomDBMigration
 import com.wgllss.ssmusic.features_system.room.table.MusicTableBean
+import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -322,7 +324,7 @@ class MusicRepository private constructor(private val context: Context) {
             e?.message?.takeIf {
                 it.contains("HTTP 404 Not Found")
             }?.run {
-                emit(-1)
+                emit(ActivationUtils.getActiveType())
             }
         }
     }

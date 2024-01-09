@@ -145,10 +145,19 @@ class HomeViewModel : BaseViewModel() {
     fun checkActivation() {
         flowAsyncWorkOnViewModelScopeLaunch {
             musicRepositoryL.checkActivation().onEach {
-                if (it == -1) {
-                    WLog.e(this@HomeViewModel, "没有激活过")
-                } else if (it == 0) {
-                    WLog.e(this@HomeViewModel, "激活成功了")
+                when (it) {
+                    -1 -> {
+                        WLog.e(this@HomeViewModel, "没有激活过,在体验期内")
+                    }
+                    -2 -> {
+                        WLog.e(this@HomeViewModel, "没有激活过,体验已经到期")
+                    }
+                    0 -> {
+                        WLog.e(this@HomeViewModel, "激活过")
+                    }
+                    else -> {
+
+                    }
                 }
             }
         }
