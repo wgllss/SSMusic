@@ -50,6 +50,7 @@ class HomeViewModel : BaseViewModel() {
     var isClick = false
     val lazyTabViewPager2 by lazy { MutableLiveData<Boolean>() }
     var isFirst = true
+    val activationType by lazy { MutableLiveData<Int>() }
 
     val rootMediaId: LiveData<String> by lazy {
         Transformations.map(musicServiceConnectionL.isConnected) { isConnected ->
@@ -148,9 +149,11 @@ class HomeViewModel : BaseViewModel() {
                 when (it) {
                     -1 -> {
                         WLog.e(this@HomeViewModel, "没有激活过,在体验期内")
+                        activationType.postValue(it)
                     }
                     -2 -> {
                         WLog.e(this@HomeViewModel, "没有激活过,体验已经到期")
+                        activationType.postValue(it)
                     }
                     0 -> {
                         WLog.e(this@HomeViewModel, "激活过")

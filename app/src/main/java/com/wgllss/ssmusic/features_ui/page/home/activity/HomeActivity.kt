@@ -18,6 +18,7 @@ import com.wgllss.ssmusic.features_system.startup.HomeContains
 import com.wgllss.ssmusic.features_system.startup.LaunchInflateKey
 import com.wgllss.ssmusic.features_third.um.UMHelp
 import com.wgllss.ssmusic.features_ui.home.viewmodels.HomeViewModel
+import com.wgllss.ssmusic.features_ui.page.activation.ActiveActivity
 import com.wgllss.ssmusic.features_ui.page.album.fragment.AlbumTabFragment
 import com.wgllss.ssmusic.features_ui.page.classics.fragment.HomeTabFragment
 import com.wgllss.ssmusic.features_ui.page.playlist.fragment.HistoryFragment
@@ -90,6 +91,11 @@ class HomeActivity : BaseViewModelActivity<HomeViewModel>() {
             playBarPanel?.observe(nowPlaying, playbackState, this@HomeActivity)
             nowPlay.observe(this@HomeActivity) {
                 launchActivity(Intent(this@HomeActivity, PlayActivity::class.java))
+            }
+            activationType.observe(this@HomeActivity) {
+                launchActivity(Intent(this@HomeActivity, ActiveActivity::class.java).apply {
+                    putExtra("activationType", it)
+                })
             }
         }
     }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wgllss.ssmusic">
@@ -15,7 +16,6 @@
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.GET_TOP" />
-
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
@@ -34,6 +34,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name="com.wgllss.ssmusic.features_ui.page.activation.ActiveActivity"
+            android:exported="false"
+            android:theme="@style/LauncherTheme2" />
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.home.activity.HomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -70,14 +74,12 @@
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SSMusic" />
-
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.classics.activity.ClassicsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.SSMusic" />
-
         <activity
             android:name="com.wgllss.ssmusic.features_ui.page.detail.activity.SongSheetDetailActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -100,10 +102,6 @@
             android:taskAffinity="com.wgllss.ssmusic.features_ui.page.locker.activity.LockerActivity"
             android:theme="@style/Transparent"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
-
     </application>
 
 </manifest>
-
-
-

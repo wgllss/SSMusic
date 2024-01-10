@@ -146,7 +146,7 @@ dependencies {
 //    implementation 'jp.wasabeef:glide-transformations:2.0.1'
     //边播放边缓存
 //    implementation 'com.danikula:videocache:2.7.0'
-
+    implementation 'com.google.zxing:zxingorg:3.4.0'
 
     def exoplayer_version = '2.18.0'
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayer_version"
