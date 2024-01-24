@@ -31,7 +31,7 @@
         android:layout_height="45dp"
         android:layout_marginTop="36dp"
         android:gravity="center"
-        android:text="授权"
+        android:text="激活授权"
         android:textColor="?android:textColorHighlight"
         android:textSize="18dp" />
 
@@ -63,7 +63,19 @@
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:text="联系QQ:283495283"
+        android:text="联系QQ:   283495283"
+        android:textColor="?colorPrimary"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="400dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="联系VX:   wgllss"
         android:textColor="?colorPrimary"
         android:textSize="16dp" />
 </FrameLayout>
