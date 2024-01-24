@@ -15,6 +15,7 @@ import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_KEY
@@ -143,6 +144,10 @@ class HomeViewModel2 : BaseViewModel() {
     }
 
     fun getDetailFromSearch(position: Int) {
+        if (ActivationUtils.isUnUsed()) {
+            errorMsgLiveData.value = "亲！请您先激活吧"
+            return
+        }
         result?.value?.takeIf {
             it.size > position
         }?.run {

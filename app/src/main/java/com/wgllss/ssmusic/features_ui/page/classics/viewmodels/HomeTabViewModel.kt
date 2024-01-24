@@ -8,6 +8,7 @@ import com.wgllss.core.units.WLog
 import com.wgllss.core.viewmodel.BaseViewModel
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import kotlinx.coroutines.flow.collect
@@ -79,6 +80,10 @@ class HomeTabViewModel : BaseViewModel() {
 //        result[key]?.value?.takeIf {
 //            it.size > position
 //        }?.run {
+        if (ActivationUtils.isUnUsed()) {
+            errorMsgLiveData.value = "亲！请您先激活吧"
+            return
+        }
         isClick = true
         flowAsyncWorkOnViewModelScopeLaunch {
             val detailUrl = musicItemBean.detailUrl

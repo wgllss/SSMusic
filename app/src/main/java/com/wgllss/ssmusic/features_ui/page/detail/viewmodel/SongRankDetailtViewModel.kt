@@ -15,6 +15,7 @@ import com.wgllss.ssmusic.datasource.netbean.sheet.KRankSheetDetailDto
 import com.wgllss.ssmusic.datasource.netbean.sheet.KSheetSongBean
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.globle.Constants
 import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
@@ -46,6 +47,10 @@ class SongRankDetailtViewModel : BaseViewModel() {
     }
 
     fun doPlay(item: MusicItemBean) {
+        if (ActivationUtils.isUnUsed()) {
+            errorMsgLiveData.value = "亲！请您先激活吧"
+            return
+        }
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
         val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
         nowPlaying?.id?.takeIf {

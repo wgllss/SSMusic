@@ -1,20 +1,25 @@
 package com.wgllss.ssmusic.features_system.activation
 
+import com.wgllss.core.units.WLog
+import com.wgllss.core.widget.CommonToast
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 
 object ActivationUtils {
 
+    //3天试用期
+    const val deTime = 24 * 60 * 60 * 1000
+
     fun getActiveType(): Int {
         val unActivityTime = MMKVHelp.getUnActiveTime()
         val currentTime = System.currentTimeMillis()
+        val delayTime = currentTime - unActivityTime
         return if (unActivityTime == 0L) {
             MMKVHelp.saveUnActiveTime(currentTime)
-            //没有激活过,在体验期内
-            -1
-        } else if (currentTime - unActivityTime > 24 * 60 * 60 * 1000) {
+            -3
+        } else if (delayTime > 3 * deTime) {
             //没有激活过,体验已经到期
             -2
-        } else if (currentTime - unActivityTime < 24 * 60 * 60 * 1000) {
+        } else if (delayTime > deTime && delayTime < 3 * deTime) {
             //没有激活过,在体验期内
             -1
         } else {
@@ -23,6 +28,10 @@ object ActivationUtils {
         }
     }
 
-    fun isUnActive() = getActiveType() == -1
+    /**
+     * 不可用状态
+     */
+    fun isUnUsed() = getActiveType() == -2
+
 
 }

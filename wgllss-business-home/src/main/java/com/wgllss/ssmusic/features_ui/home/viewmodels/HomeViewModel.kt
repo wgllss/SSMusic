@@ -20,6 +20,7 @@ import com.wgllss.ssmusic.data.HomeItemBean
 import com.wgllss.ssmusic.data.MusicItemBean
 import com.wgllss.ssmusic.datasource.repository.KRepository
 import com.wgllss.ssmusic.datasource.repository.MusicRepository
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ARTNETWORK_URL_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_AUTHOR_KEY
 import com.wgllss.ssmusic.features_system.globle.Constants.MEDIA_ID_KEY
@@ -77,6 +78,10 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun getMusicInfo(musicItemBean: MusicItemBean) {
+        if (ActivationUtils.isUnUsed()) {
+            errorMsgLiveData.value = "亲！请您先激活吧"
+            return
+        }
         isClick = true
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
         val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)

@@ -12,7 +12,9 @@ import androidx.lifecycle.MutableLiveData
 import com.wgllss.core.ex.loadUrl
 import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.units.WLog
+import com.wgllss.core.widget.CommonToast
 import com.wgllss.music.skin.R
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.artist
 import com.wgllss.ssmusic.features_system.music.extensions.title
@@ -39,7 +41,13 @@ class PlayBarPanel(
         play_bar_playOrPause.isSelected = false
         play_bar_playOrPause.setOnClickListener {
             musicServiceConnectionL.transportControls.run {
-                if (it.isSelected) pause() else play()
+                if (it.isSelected) pause() else {
+                    if (ActivationUtils.isUnUsed()) {
+                        CommonToast.show("亲！请您先激活吧")
+                        return@run
+                    }
+                    play()
+                }
             }
         }
         play_bar_next.setOnClickListener {
