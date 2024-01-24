@@ -63,7 +63,7 @@ class SongRankDetailtViewModel : BaseViewModel() {
 
     private fun playMv(item: MusicItemBean) {
         viewModelScope.launch {
-            kRepository.getMusicInfo(item, true).flowOnIOAndCatch().onStartAndShow().onCompletionAndHide().collect {
+            kRepository.getMusicInfo(item).flowOnIOAndCatch().onStartAndShow().onCompletionAndHide().collect {
                 flowAsyncWorkOnViewModelScopeLaunch {
                     val mvUrl = "https://www.kugou.com/mvweb/html/mv_${item.mvhash}.html"
                     kRepository.getMvData(mvUrl).onEach { it2 ->

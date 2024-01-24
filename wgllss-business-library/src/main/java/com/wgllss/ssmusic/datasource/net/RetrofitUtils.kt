@@ -40,7 +40,7 @@ class RetrofitUtils private constructor(val context: Context) {
                 .readTimeout(timeout, TimeUnit.MILLISECONDS)
                 //设置写信息超时
                 .writeTimeout(timeout, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(true)//设置出现错误进行重新连接。
+                .retryOnConnectionFailure(false)//设置出现错误进行重新连接。
                 .cache(Cache(context.cacheDir, 50 * 1024 * 1024)) //10M cache
                 .build();
             return Retrofit.Builder()

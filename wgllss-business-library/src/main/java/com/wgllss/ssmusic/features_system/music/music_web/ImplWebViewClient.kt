@@ -17,6 +17,7 @@ class ImplWebViewClient : WebViewClient() {
     private var mvRequestUrl = ""
     private var kgSearchUrl = ""
     private var kPinDaoRequestUrl = ""
+    private var mp3RequestUrl = ""
 
     private val strOfflineResources by lazy { LrcHelp.getJsPath() }
 
@@ -50,6 +51,10 @@ class ImplWebViewClient : WebViewClient() {
                 } else {
                     android.util.Log.e("ImplWebViewClient", "request js :${url}")
                 }
+            }
+            if (url.contains("https://wwwapi.kugou.com/play/songinfo")) {
+                mp3RequestUrl = url
+                android.util.Log.e("ImplWebViewClient", "request mvRequestUrl :${mp3RequestUrl}")
             }
             if (url.contains("https://m3ws.kugou.com/api/v1/mv/infov2?")) {
                 mvRequestUrl = url
@@ -95,6 +100,12 @@ class ImplWebViewClient : WebViewClient() {
     fun getMvRequestUrl(): String {
         val url = mvRequestUrl
         mvRequestUrl = ""
+        return url
+    }
+
+    fun getMp3RequestUrl(): String {
+        val url = mp3RequestUrl
+        mp3RequestUrl = ""
         return url
     }
 

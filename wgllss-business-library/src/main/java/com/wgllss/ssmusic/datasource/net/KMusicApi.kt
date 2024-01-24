@@ -1,5 +1,6 @@
 package com.wgllss.ssmusic.datasource.net
 
+import com.wgllss.ssmusic.datasource.netbean.audioDetail.MP3Dto
 import com.wgllss.ssmusic.datasource.netbean.lrc.KLrcDto
 import com.wgllss.ssmusic.datasource.netbean.mv.KMVDto
 import com.wgllss.ssmusic.datasource.netbean.pindao.PinDaoDto
@@ -82,6 +83,9 @@ interface KMusicApi {
 
     @GET
     suspend fun getKLrcJson(@Url url: String): KLrcDto
+
+    @GET
+    suspend fun getKMp3Json(@Url url: String): MP3Dto
 
     @GET
     suspend fun getMvData(@Url url: String): KMVDto
