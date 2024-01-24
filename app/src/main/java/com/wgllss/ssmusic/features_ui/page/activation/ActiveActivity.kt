@@ -1,5 +1,8 @@
 package com.wgllss.ssmusic.features_ui.page.activation
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -43,6 +46,12 @@ class ActiveActivity : FragmentActivity() {
                 .collect {
                     img_sn.setImageBitmap(it)
                 }
+        }
+
+        img_sn.setOnClickListener {
+            val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("label", DeviceIdUtil.getDeviceId(true))
+            clipboardManager.setPrimaryClip(clip)
         }
     }
 }
