@@ -321,6 +321,7 @@ class MusicRepository private constructor(private val context: Context) {
             musiceApiL.checkActivation(DeviceIdUtil.getDeviceId(true))
             emit(0)
         } catch (e: Exception) {
+            WLog.e(this@MusicRepository, "没有激活过")
             e?.message?.takeIf {
                 it.contains("HTTP 404 Not Found")
             }?.run {

@@ -8,13 +8,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import com.wgllss.core.units.AppGlobals
 import com.wgllss.core.viewmodel.BaseViewModel
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_SONG
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
 import com.wgllss.ssmusic.features_system.music.extensions.currentPlayBackPosition
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.MusicServiceConnection
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
-import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -52,15 +52,29 @@ class PlayModel @Inject constructor() : BaseViewModel() {
     val onPlay = View.OnClickListener {//true 暂停 false 继续播放
         isPlaying = !it.isSelected
         musicServiceConnectionL.transportControls.run {
-            if (it.isSelected) pause() else play()
+            if (it.isSelected) pause() else {
+                if (ActivationUtils.isUnUsed()) {
+                    errorMsgLiveData.value = "亲！请您先激活吧"
+                    return@OnClickListener
+                }
+                play()
+            }
         }
     }
 
     val onPlayNext = View.OnClickListener {
+        if (ActivationUtils.isUnUsed()) {
+            errorMsgLiveData.value = "亲！请您先激活吧"
+            return@OnClickListener
+        }
         musicServiceConnectionL.transportControls.skipToNext()
     }
 
     val onPlayPrevious = View.OnClickListener {
+        if (ActivationUtils.isUnUsed()) {
+            errorMsgLiveData.value = "亲！请您先激活吧"
+            return@OnClickListener
+        }
         musicServiceConnectionL.transportControls.skipToPrevious()
     }
 

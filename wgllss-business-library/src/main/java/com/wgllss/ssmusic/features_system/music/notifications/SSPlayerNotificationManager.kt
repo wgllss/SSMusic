@@ -28,7 +28,9 @@ import com.google.android.exoplayer2.util.Assertions
 import com.google.android.exoplayer2.util.Util
 import com.wgllss.core.units.SdkIntUtils
 import com.wgllss.core.units.WLog
+import com.wgllss.core.widget.CommonToast
 import com.wgllss.music.skin.R
+import com.wgllss.ssmusic.features_system.activation.ActivationUtils
 import com.wgllss.ssmusic.features_system.globle.Constants.NOTIFICATION_LARGE_ICON_SIZE
 import com.wgllss.ssmusic.features_system.globle.Constants.glideOptions
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
@@ -351,15 +353,27 @@ class SSPlayerNotificationManager(private val context: Context, private val medi
                     } else if (player!!.playbackState == Player.STATE_ENDED) {
                         player?.seekToDefaultPosition(player!!.currentMediaItemIndex)
                     }
+                    if (ActivationUtils.isUnUsed()) {
+                        CommonToast.show("亲！请您先激活吧")
+                        return
+                    }
                     player?.play()
                 }
                 ACTION_PAUSE -> {
                     player?.pause()
                 }
                 ACTION_PREVIOUS -> {
+                    if (ActivationUtils.isUnUsed()) {
+                        CommonToast.show("亲！请您先激活吧")
+                        return
+                    }
                     mediaSession.controller?.transportControls?.skipToPrevious()
                 }
                 ACTION_NEXT -> {
+                    if (ActivationUtils.isUnUsed()) {
+                        CommonToast.show("亲！请您先激活吧")
+                        return
+                    }
                     mediaSession.controller?.transportControls?.skipToNext()
                 }
                 Intent.ACTION_SCREEN_OFF, Intent.ACTION_POWER_CONNECTED, Intent.ACTION_SCREEN_ON -> {//锁屏显示歌词等等

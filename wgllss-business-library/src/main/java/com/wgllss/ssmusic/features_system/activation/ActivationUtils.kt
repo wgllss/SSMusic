@@ -1,7 +1,5 @@
 package com.wgllss.ssmusic.features_system.activation
 
-import com.wgllss.core.units.WLog
-import com.wgllss.core.widget.CommonToast
 import com.wgllss.ssmusic.features_system.savestatus.MMKVHelp
 
 object ActivationUtils {
