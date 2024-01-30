@@ -17,7 +17,7 @@ object DeviceIdUtil {
 
     private const val isDeviceSelfSerial = true
     private const val WD = "B03E4AFB9ADC842C9B3BDB6C57346ACEF6CE7504"
-    private const val CD = "2F6039397BA7EEC402E7036339963B23810CCBFD__"
+    private const val CD = "2F6039397BA7EEC402E7036339963B23810CCBFD"
     private const val ELSED = "dxde_m_p"
 
     fun getDeviceId(needDevice: Boolean = false): String {
