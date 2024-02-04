@@ -9,6 +9,10 @@ object ActivationUtils {
 
     fun getActiveType(): Int {
         val unActivityTime = MMKVHelp.getUnActiveTime()
+        if (unActivityTime == -1L) {
+            //激活过
+            return 0
+        }
         val currentTime = System.currentTimeMillis()
         val delayTime = currentTime - unActivityTime
         return if (unActivityTime == 0L) {

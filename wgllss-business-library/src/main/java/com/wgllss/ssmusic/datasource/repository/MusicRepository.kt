@@ -319,6 +319,7 @@ class MusicRepository private constructor(private val context: Context) {
         try {
             WLog.e(this@MusicRepository, "开始检查激活")
             musiceApiL.checkActivation(DeviceIdUtil.getDeviceId(true))
+            MMKVHelp.saveUnActiveTime(-1L)
             emit(0)
         } catch (e: Exception) {
             WLog.e(this@MusicRepository, "没有激活过")
