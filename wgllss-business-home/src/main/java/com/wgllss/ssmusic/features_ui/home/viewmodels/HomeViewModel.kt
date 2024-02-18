@@ -84,7 +84,7 @@ class HomeViewModel : BaseViewModel() {
         }
         isClick = true
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author)
+        val id = UUIDHelp.getMusicUUID(musicItemBean.musicName, musicItemBean.author, musicItemBean.dataSourceType)
         nowPlaying?.id?.takeIf {
             it.isNotEmpty() && it.toLong() == id
         }?.let {
@@ -98,7 +98,8 @@ class HomeViewModel : BaseViewModel() {
                     it.musicLrcStr?.takeIf {
                         it.isNotEmpty()
                     }?.let { lrc ->
-                        LrcHelp.saveLrc(id.toString(), lrc)
+                        val lrcId = UUIDHelp.getMusicLRCUUID(musicItemBean.musicName, musicItemBean.author)
+                        LrcHelp.saveLrc(lrcId.toString(), lrc)
                     }
                     transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
                         putString(MEDIA_ID_KEY, it.id.toString())

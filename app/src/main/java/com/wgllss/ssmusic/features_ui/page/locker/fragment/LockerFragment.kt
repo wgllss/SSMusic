@@ -10,6 +10,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.wgllss.core.ex.loadUrl
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.databinding.FragmentLockerBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
 import com.wgllss.ssmusic.features_system.music.extensions.artist
@@ -33,9 +34,8 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             it?.let {
-                it.id?.let { id ->
-                    binding.lrcView.loadLrc(LrcHelp.getLrc(id).ifEmpty { "暂无歌词" })
-                }
+                val lrcId = UUIDHelp.getMusicLRCUUID(it.title ?: "", it.artist ?: "")
+                binding.lrcView.loadLrc(LrcHelp.getLrc(lrcId.toString()).ifEmpty { "暂无歌词" })
                 binding.materMusicName.text = it.title
                 binding.musicAutor.text = it.artist
                 binding.ivCenter.loadUrl(it.albumArtUri)

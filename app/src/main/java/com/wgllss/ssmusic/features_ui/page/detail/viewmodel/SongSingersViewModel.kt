@@ -85,7 +85,7 @@ class SongSingersViewModel : BaseViewModel() {
         }
 
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = UUIDHelp.getMusicUUID(item.audio_name, item.audio_name)
+        val id = UUIDHelp.getMusicUUID(item.audio_name, item.audio_name, 0)
         nowPlaying?.id?.takeIf {
             it.isNotEmpty() && it.toLong() == id
         }?.let {

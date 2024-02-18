@@ -28,7 +28,8 @@ class MusicFactory constructor(context: Context, private val appViewModel: AppVi
         appViewModel?.run {
             queryPlayList()
             metadataPrepareCompletion.observe(this@MusicFactory) {
-                preparePlay(it.id.toString(), it.title, it.author, it.pic, it.url, whenReady)
+                val title = if (it.dataSourceType == 0) "${it.title}(高品质)" else it.title
+                preparePlay(it.id.toString(), title, it.author, it.pic, it.url, whenReady)
             }
         }
     }
@@ -49,14 +50,15 @@ class MusicFactory constructor(context: Context, private val appViewModel: AppVi
                             serviceScope.launch {
                                 if (!mSendResultCalled) {
                                     val child = withContext(IO) {
-                                        list.map { musicTableBean ->
+                                        list.map { m ->
+                                            val title = if (m.dataSourceType == 0) "${m.title}(高品质)" else m.title
                                             MediaBrowserCompat.MediaItem(
                                                 MediaDescriptionCompat.Builder()
-                                                    .setMediaId(musicTableBean.id.toString())
-                                                    .setTitle(musicTableBean.title)
-                                                    .setIconUri(Uri.parse(musicTableBean.pic))
-                                                    .setMediaUri(Uri.parse(musicTableBean.url))
-                                                    .setSubtitle(musicTableBean.author)
+                                                    .setMediaId(m.id.toString())
+                                                    .setTitle(title)
+                                                    .setIconUri(Uri.parse(m.pic))
+                                                    .setMediaUri(Uri.parse(m.url))
+                                                    .setSubtitle(m.author)
                                                     .build(), MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
                                             )
                                         }?.toMutableList()

@@ -15,5 +15,8 @@ data class MusicBean(
     var requestRealUrl: String = ""
     var musicLrcStr: String = ""
     inline val id: Long
-        get() = UUIDHelp.getMusicUUID(title, author)
+        get() = UUIDHelp.getMusicUUID(title, author, dataSourceType)
+
+    inline val lrcId: Long
+        get() = UUIDHelp.getMusicLRCUUID(title, author)
 }

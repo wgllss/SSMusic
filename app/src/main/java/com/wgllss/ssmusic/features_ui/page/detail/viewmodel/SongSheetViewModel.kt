@@ -62,7 +62,7 @@ open class SongSheetViewModel : BaseViewModel() {
             return
         }
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
+        val id = UUIDHelp.getMusicUUID(item.musicName, item.author, item.dataSourceType)
         nowPlaying?.id?.takeIf {
             it.isNotEmpty() && it.toLong() == id
         }?.let {
@@ -83,7 +83,7 @@ open class SongSheetViewModel : BaseViewModel() {
                     val mvUrl = "https://www.kugou.com/mvweb/html/mv_${item.mvhash}.html"
                     kRepository.getMvData(mvUrl).onEach { it2 ->
                         val data = MVPlayData(if (it2.mvdata.rq != null && it2.mvdata.rq.downurl != null) it2.mvdata.rq.downurl else it2.mvdata.le.downurl, item.musicName)
-                        val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
+                        val id = UUIDHelp.getMusicLRCUUID(item.musicName, item.author)
                         it.musicLrcStr?.takeIf {
                             it.isNotEmpty()
                         }?.let { lrc ->
@@ -113,7 +113,7 @@ open class SongSheetViewModel : BaseViewModel() {
                     it.musicLrcStr?.takeIf {
                         it.isNotEmpty()
                     }?.let { lrc ->
-                        LrcHelp.saveLrc(it.id.toString(), lrc)
+                        LrcHelp.saveLrc(it.lrcId.toString(), lrc)
                     }
                     transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
                         putString(Constants.MEDIA_ID_KEY, it.id.toString())

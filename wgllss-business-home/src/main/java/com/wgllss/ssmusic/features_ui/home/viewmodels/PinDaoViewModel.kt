@@ -51,7 +51,7 @@ class PinDaoViewModel : BaseViewModel() {
             return
         }
         val nowPlaying = musicServiceConnectionL.nowPlaying.value
-        val id = UUIDHelp.getMusicUUID(item.musicName, item.author)
+        val id = UUIDHelp.getMusicUUID(item.musicName, item.author, item.dataSourceType)
         nowPlaying?.id?.takeIf {
             it.isNotEmpty() && it.toLong() == id
         }?.let {
@@ -64,7 +64,7 @@ class PinDaoViewModel : BaseViewModel() {
                 it.musicLrcStr?.takeIf {
                     it.isNotEmpty()
                 }?.let { lrc ->
-                    LrcHelp.saveLrc(it.id.toString(), lrc)
+                    LrcHelp.saveLrc(it.lrcId.toString(), lrc)
                 }
                 transportControls.prepareFromUri(it.url.toUri(), Bundle().apply {
                     putString(Constants.MEDIA_ID_KEY, it.id.toString())

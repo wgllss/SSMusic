@@ -23,8 +23,10 @@ import com.wgllss.core.ex.loadUrl
 import com.wgllss.core.fragment.BaseMVVMFragment
 import com.wgllss.dynamic.lrclibrary.LrcView
 import com.wgllss.ssmusic.R
+import com.wgllss.ssmusic.core.units.UUIDHelp
 import com.wgllss.ssmusic.databinding.FragmentPlayBinding
 import com.wgllss.ssmusic.features_system.music.extensions.albumArtUri
+import com.wgllss.ssmusic.features_system.music.extensions.artist
 import com.wgllss.ssmusic.features_system.music.extensions.id
 import com.wgllss.ssmusic.features_system.music.extensions.title
 import com.wgllss.ssmusic.features_system.music.impl.exoplayer.ExoPlayerUtils.timestampToMSS
@@ -78,9 +80,8 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         initCDAnimat()
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
-            it.id?.let { id ->
-                lrcView.loadLrc(LrcHelp.getLrc(id).ifEmpty { "暂无歌词" })
-            }
+            val lrcId = UUIDHelp.getMusicLRCUUID(it.title ?: "", it.artist ?: "")
+            lrcView.loadLrc(LrcHelp.getLrc(lrcId.toString()).ifEmpty { "暂无歌词" })
             binding.materMusicName.text = it!!.title
             iv_center.loadUrl(it.albumArtUri)
             Glide.with(this).asBitmap()

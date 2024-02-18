@@ -152,7 +152,7 @@ class HomeViewModel2 : BaseViewModel() {
             it.size > position
         }?.run {
             val nowPlaying = musicServiceConnectionL.nowPlaying.value
-            val id = UUIDHelp.getMusicUUID(get(position).musicName, get(position).author)
+            val id = UUIDHelp.getMusicUUID(get(position).musicName, get(position).author, 0)
             nowPlaying?.id?.takeIf {
                 it.isNotEmpty() && it.toLong() == id
             }?.let {
@@ -166,7 +166,7 @@ class HomeViewModel2 : BaseViewModel() {
                     .onEach {
                         val extras = Bundle().apply {
                             putString(MEDIA_ID_KEY, it.id.toString())
-                            putString(MEDIA_TITLE_KEY, it.title)
+                            putString(MEDIA_TITLE_KEY, "${it.title}(高品质)")
                             putString(MEDIA_AUTHOR_KEY, it.author)
                             putString(MEDIA_ARTNETWORK_URL_KEY, it.pic)
                             putString(MEDIA_URL_KEY, it.url)
