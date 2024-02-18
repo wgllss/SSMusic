@@ -64,18 +64,24 @@ class AppRepository private constructor(private val context: Context) {
      * 得到播放地址
      */
     suspend fun getPlayUrl(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = ""): Flow<MusicBean> {
-        cache.get(mediaID)?.let {
-            return flow {
-                WLog.e(this@AppRepository, "拿到缓存: $title")
-                val musicBean = MusicBean(title, author, it, pic)
-                musicBean.requestRealUrl = htmlUrl
-                emit(musicBean)
-            }
+        val javaScriptX = InplJavaScriptX()
+        webView.run {
+            webView.webViewClient = ImplWebViewClient()
+            removeJavascriptInterface("script_ex")
+            addJavascriptInterface(javaScriptX, "script_ex")
+            loadUrl(htmlUrl)
         }
         return flow {
-            WLog.e(this@AppRepository, "当前线程: ${Thread.currentThread().name}")
             val startTime = System.currentTimeMillis()
-            val html = musiceApiL.getPlayUrl(htmlUrl)
+            var html: String?
+            while (TextUtils.isEmpty(javaScriptX.html.also {
+                    html = it
+                })) {
+                delay(16)
+                if (System.currentTimeMillis() - startTime > 30000) {
+                    throw TimeoutException("获取数据超时")
+                }
+            }
             val baseUrl = "https://www.hifini.com/"
             val document = Jsoup.parse(html, baseUrl)
             val element = document.select("script")

@@ -22,8 +22,6 @@
         android:layout_height="match_parent"
         android:adapter="@{adapter}"
         android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </layout>

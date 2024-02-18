@@ -129,5 +129,11 @@ class ImplWebViewClient : WebViewClient() {
                         + "document.getElementsByTagName('html')[0].innerHTML+'</head>');"
             )/**/
         }
+        if (url.contains("thread-")) {
+            view.loadUrl(
+                "javascript:window.script_ex.getWebViewData('<head>'+"
+                        + "document.getElementsByTagName('html')[0].innerHTML+'</head>');"
+            )/**/
+        }
     }
 }

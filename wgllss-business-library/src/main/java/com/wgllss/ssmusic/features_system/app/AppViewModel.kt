@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wgllss.core.ex.flowAsyncWorkOnLaunch
 import com.wgllss.core.units.WLog
-import com.wgllss.ssmusic.data.*
+import com.wgllss.ssmusic.data.FlowEXData
+import com.wgllss.ssmusic.data.MusicBean
+import com.wgllss.ssmusic.data.RandomPosition
 import com.wgllss.ssmusic.datasource.repository.AppRepository
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_REPEAT_QUEUE
 import com.wgllss.ssmusic.features_system.globle.Constants.MODE_PLAY_SHUFFLE_ALL
@@ -38,9 +40,6 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
     val isInitSuccess by lazy { MutableLiveData<Boolean>() }
     private var currentPosition: Int = 0
     private var currentMediaID = 0L
-
-    //正在网络请求的队列里面 需要等待 避免重复请求
-    private val mapRuningRequest by lazy { ConcurrentHashMap<Long, Boolean>() }
 
     //当前播放 数据源 准备完成
     val metadataPrepareCompletion by lazy { MutableLiveData<MusicBean>() }
@@ -113,13 +112,6 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         currentPosition = position
         findBeanByPosition(position)?.run {
             currentMediaID = id
-            if (dataSourceType == 0) {
-                if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
-                    WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
-                    return@run
-                } else
-                    mapRuningRequest[id] = true
-            }
             viewModelScope.launch {
                 getPlaySwitch(this@run, position)
             }
@@ -128,32 +120,29 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
     }
 
     private suspend fun getPlaySwitch(it: MusicTableBean, position: Int) {
-        if (it.dataSourceType == 0)
-            getPlayUrl(it, position)
-        else
-            getKMusicInfo(it, position)
-    }
-
-    private suspend fun getKMusicInfo(it: MusicTableBean, position: Int) {
         it.run {
             appRepository.containsKey(id.toString())?.let {
                 doFlow(this, position, flow {
                     WLog.e(this@AppViewModel, "拿到缓存: $title")
-                    val musicBean = MusicBean(title, author, it, pic, 1, 0, mvhash).apply {
+                    val musicBean = if (dataSourceType == 0) MusicBean(title, author, it, pic).apply {
+                        requestRealUrl = url
+                    } else MusicBean(title, author, it, pic, 1, 0, mvhash).apply {
                         requestRealUrl = url
                     }
                     emit(musicBean)
                 })
                 return
             }
-            WLog.e(this@AppViewModel, "正常请求:${title}  privilege:${privilege}")
+            WLog.e(this@AppViewModel, "正常请求:${title}  privilege:${privilege} dataSourceType:${dataSourceType}")
             if (!webViewIsRequest) {
                 webViewIsRequest = true
-                if (privilege == 10) {
+                if (dataSourceType == 1 && privilege == 10) {
                     val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
                     doFLowMv(musicBean, position)
+                } else if (dataSourceType == 1 && privilege != 10) {
+                    doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash))
                 } else {
-                    doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash), 1)
+                    doFlow(it, position, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
                 }
             } else {
                 if (!queueMap.containsKey(id)) {
@@ -165,14 +154,7 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         }
     }
 
-    private suspend fun getPlayUrl(it: MusicTableBean, position: Int) {
-        it.run {
-            doFlow(it, position, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
-        }
-    }
-
-
-    private suspend fun doFLowEx(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
+    private suspend fun doFlow(it: MusicTableBean, position: Int, flow: Flow<MusicBean>) {
         it.run {
             WLog.e(this@AppViewModel, "正在获取0:${title}")
             webViewIsRequest = true
@@ -198,37 +180,18 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                         first.run {
                             val flowPosition = this.position
                             item.run {
-                                if (privilege == 10) {
+                                if (dataSourceType == 1 && privilege == 10) {
                                     val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
                                     doFLowMv(musicBean, flowPosition)
+                                } else if (dataSourceType == 1 && privilege != 10) {
+                                    doFlow(item, flowPosition, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
                                 } else {
-                                    doFLowEx(item, flowPosition, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
+                                    doFlow(item, flowPosition, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
                                 }
                             }
                         }
                     }
                 }.collect()
-        }
-    }
-
-    private suspend fun doFlow(it: MusicTableBean, position: Int, flow: Flow<MusicBean>, type: Int = 0) {
-        it.run {
-            if (type == 1) {
-                doFLowEx(it, position, flow)
-            } else {
-                flow.onEach {
-                    if (currentMediaID == it.id) {
-                        metadataPrepareCompletion.postValue(it)
-                        WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title} : ${it.url}")
-                    } else
-                        WLog.e(this@AppViewModel, "缓存了:${title}")
-                    mapRuningRequest.remove(it.id)
-                }.catch {
-                    mapRuningRequest.remove(id)
-                    it.printStackTrace()
-                }.flowOn(Dispatchers.IO)
-                    .collect()
-            }
         }
     }
 
@@ -261,11 +224,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                         first.run {
                             val flowPosition = this.position
                             item.run {
-                                if (privilege == 10) {
+                                if (dataSourceType == 1 && privilege == 10) {
                                     val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
                                     doFLowMv(musicBean, flowPosition)
+                                } else if (dataSourceType == 1 && privilege != 10) {
+                                    doFlow(item, flowPosition, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
                                 } else {
-                                    doFLowEx(item, flowPosition, appRepository.getMusicInfo(item.id.toString(), item.url, item.title, item.author, item.pic, item.mvhash))
+                                    doFlow(item, flowPosition, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
                                 }
                             }
                         }
@@ -390,13 +355,6 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
      */
     private fun getCache(position: Int) {
         findBeanByPosition(position)?.run {
-            if (dataSourceType == 0) {
-                if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
-                    WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
-                    return@run
-                } else
-                    mapRuningRequest[id] = true
-            }
             viewModelScope.launch {
                 getPlaySwitch(this@run, position)
             }
