@@ -34,7 +34,7 @@ class LockerFragment @Inject constructor() : BaseMVVMFragment<PlayModel, Fragmen
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
             it?.let {
-                val lrcId = UUIDHelp.getMusicLRCUUID(it.title ?: "", it.artist ?: "")
+                val lrcId = UUIDHelp.getMusicLRCUUID(it.title?.replace("(高品质)", "") ?: "", it.artist ?: "")
                 binding.lrcView.loadLrc(LrcHelp.getLrc(lrcId.toString()).ifEmpty { "暂无歌词" })
                 binding.materMusicName.text = it.title
                 binding.musicAutor.text = it.artist

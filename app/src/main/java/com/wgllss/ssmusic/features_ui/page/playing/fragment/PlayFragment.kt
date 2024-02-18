@@ -80,7 +80,7 @@ class PlayFragment @Inject constructor() : BaseMVVMFragment<PlayModel, FragmentP
         initCDAnimat()
 
         viewModel.nowPlaying.observe(viewLifecycleOwner) {
-            val lrcId = UUIDHelp.getMusicLRCUUID(it.title ?: "", it.artist ?: "")
+            val lrcId = UUIDHelp.getMusicLRCUUID(it.title?.replace("(高品质)", "") ?: "", it.artist ?: "")
             lrcView.loadLrc(LrcHelp.getLrc(lrcId.toString()).ifEmpty { "暂无歌词" })
             binding.materMusicName.text = it!!.title
             iv_center.loadUrl(it.albumArtUri)
