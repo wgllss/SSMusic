@@ -10,7 +10,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "com.wgllss.ssmusic22"
+        applicationId "com.wgllss.ssmusic"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -58,6 +58,8 @@ android {
             shrinkResources true // 启动资源压缩
             zipAlignEnabled true // 开启zipalign优化
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationIdSuffix "22"
+            resValue "string", "app_name", "@string/app_name"
             signingConfig signingConfigs.debug
         }
 
@@ -66,8 +68,18 @@ android {
             shrinkResources true // 启动资源压缩
             zipAlignEnabled true // 开启zipalign优化
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            applicationIdSuffix "22"
+            resValue "string", "app_name", "@string/app_name"
             signingConfig signingConfigs.release
         }
+
+        qa_release.initWith(release)
+        qa_release{
+            applicationIdSuffix ""
+            resValue "string", "app_name", "@string/app_name_qa"
+            matchingFallbacks = ['qa-release', 'release']
+        }
+
         applicationVariants.all {
             variant ->
                 variant.outputs.all {
