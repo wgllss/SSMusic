@@ -41,6 +41,9 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
     private var currentPosition: Int = 0
     private var currentMediaID = 0L
 
+    //正在网络请求的队列里面 需要等待 避免重复请求
+    private val mapRuningRequest by lazy { ConcurrentHashMap<Long, Boolean>() }
+
     //当前播放 数据源 准备完成
     val metadataPrepareCompletion by lazy { MutableLiveData<MusicBean>() }
 
@@ -112,6 +115,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
         currentPosition = position
         findBeanByPosition(position)?.run {
             currentMediaID = id
+            if (dataSourceType == 0) {
+                if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
+                    WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
+                    return@run
+                } else
+                    mapRuningRequest[id] = true
+            }
             viewModelScope.launch {
                 getPlaySwitch(this@run, position)
             }
@@ -121,36 +131,46 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
 
     private suspend fun getPlaySwitch(it: MusicTableBean, position: Int) {
         it.run {
-            appRepository.containsKey(id.toString())?.let {
-                doFlow(this, position, flow {
-                    WLog.e(this@AppViewModel, "拿到缓存: $title")
-                    val musicBean = if (dataSourceType == 0) MusicBean(title, author, it, pic).apply {
-                        requestRealUrl = url
-                    } else MusicBean(title, author, it, pic, 1, 0, mvhash).apply {
-                        requestRealUrl = url
+            if (dataSourceType == 0)
+                getPlayUrl(it, position)
+            else {
+                appRepository.containsKey(id.toString())?.let {
+                    doFlow(this, position, flow {
+                        WLog.e(this@AppViewModel, "拿到缓存: $title")
+                        val musicBean = if (dataSourceType == 0) MusicBean(title, author, it, pic).apply {
+                            requestRealUrl = url
+                        } else MusicBean(title, author, it, pic, 1, 0, mvhash).apply {
+                            requestRealUrl = url
+                        }
+                        emit(musicBean)
+                    })
+                    return
+                }
+                WLog.e(this@AppViewModel, "正常请求:${title}  privilege:${privilege} dataSourceType:${dataSourceType}")
+                if (!webViewIsRequest) {
+                    webViewIsRequest = true
+                    if (dataSourceType == 1 && privilege == 10) {
+                        val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
+                        doFLowMv(musicBean, position)
+                    } else if (dataSourceType == 1 && privilege != 10) {
+                        doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash))
+                    } else {
+                        doFlow(it, position, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
                     }
-                    emit(musicBean)
-                })
-                return
-            }
-            WLog.e(this@AppViewModel, "正常请求:${title}  privilege:${privilege} dataSourceType:${dataSourceType}")
-            if (!webViewIsRequest) {
-                webViewIsRequest = true
-                if (dataSourceType == 1 && privilege == 10) {
-                    val musicBean = MusicBean(title, author, "", pic, 1, 0, mvhash)
-                    doFLowMv(musicBean, position)
-                } else if (dataSourceType == 1 && privilege != 10) {
-                    doFlow(it, position, appRepository.getMusicInfo(id.toString(), url, title, author, pic, mvhash))
                 } else {
-                    doFlow(it, position, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
+                    if (!queueMap.containsKey(id)) {
+                        queue.add(FlowEXData(this, position))
+                        queueMap[it.id] = ""
+                    }
+                    WLog.e(this@AppViewModel, "加入队列:${title}:队列长度:${queue.size}")
                 }
-            } else {
-                if (!queueMap.containsKey(id)) {
-                    queue.add(FlowEXData(this, position))
-                    queueMap[it.id] = ""
-                }
-                WLog.e(this@AppViewModel, "加入队列:${title}:队列长度:${queue.size}")
             }
+        }
+    }
+
+    private suspend fun getPlayUrl(it: MusicTableBean, position: Int) {
+        it.run {
+            doFlow(it, position, appRepository.getPlayUrl(id.toString(), url, title, author, pic))
         }
     }
 
@@ -164,9 +184,11 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
                     WLog.e(this@AppViewModel, "当前该播放 position:$position   ${it.title} : ${it.url}")
                 } else
                     WLog.e(this@AppViewModel, "缓存了:${title}")
+                mapRuningRequest.remove(it.id)
             }.catch {
                 queueMap.remove(id)
                 webViewIsRequest = false
+                mapRuningRequest.remove(id)
                 it.printStackTrace()
             }.flowOn(Dispatchers.IO)
                 .onCompletion {
@@ -355,6 +377,13 @@ class AppViewModel private constructor(application: Application) : AndroidViewMo
      */
     private fun getCache(position: Int) {
         findBeanByPosition(position)?.run {
+            if (dataSourceType == 0) {
+                if (mapRuningRequest.containsKey(id) && mapRuningRequest[id] == true) {
+                    WLog.e(this@AppViewModel, "该资源正在请求中.. $title")
+                    return@run
+                } else
+                    mapRuningRequest[id] = true
+            }
             viewModelScope.launch {
                 getPlaySwitch(this@run, position)
             }

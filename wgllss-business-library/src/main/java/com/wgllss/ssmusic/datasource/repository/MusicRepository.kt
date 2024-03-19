@@ -138,20 +138,22 @@ class MusicRepository private constructor(private val context: Context) {
      * 按照标题搜索
      */
     suspend fun searchKeyByTitle(keyword: String, pageNo: Int = 1): Flow<MusicListDto> {
-        val keywordL = ChineseUtils.urlEncode(keyword)
-        val javaScriptX = InplJavaScriptX()
-        loadWebViewUrl("https://www.hifini.com/search-$keywordL-1-$pageNo.htm", javaScriptX)
+//        val keywordL = ChineseUtils.urlEncode(keyword)
+//        val javaScriptX = InplJavaScriptX()
+//        loadWebViewUrl("https://www.hifini.com/search-$keywordL-1-$pageNo.htm", javaScriptX)
         return flow {
             val startTime = System.currentTimeMillis()
-            var html: String?
-            while (TextUtils.isEmpty(javaScriptX.html.also {
-                    html = it
-                })) {
-                delay(16)
-                if (System.currentTimeMillis() - startTime > 30000) {
-                    throw TimeoutException("获取数据超时")
-                }
-            }
+//            var html: String?
+//            while (TextUtils.isEmpty(javaScriptX.html.also {
+//                    html = it
+//                })) {
+//                delay(16)
+//                if (System.currentTimeMillis() - startTime > 30000) {
+//                    throw TimeoutException("获取数据超时")
+//                }
+//            }
+            val keywordL = ChineseUtils.urlEncode(keyword)
+            val html = musiceApiL.searchKeyByTitle(keywordL, pageNo)
             val document = Jsoup.parse(html, "https://www.hifini.com/")
             val dcS = document.select(".break-all")
             val list = mutableListOf<MusicItemBean>()
@@ -233,19 +235,20 @@ class MusicRepository private constructor(private val context: Context) {
      * 得到播放地址
      */
     suspend fun getPlayUrl(htmlUrl: String): Flow<MusicBean> {
-        val javaScriptX = InplJavaScriptX()
-        loadWebViewUrl(htmlUrl, javaScriptX)
+//        val javaScriptX = InplJavaScriptX()
+//        loadWebViewUrl(htmlUrl, javaScriptX)
         return flow {
             val startTime = System.currentTimeMillis()
-            var html: String?
-            while (TextUtils.isEmpty(javaScriptX.html.also {
-                    html = it
-                })) {
-                delay(16)
-                if (System.currentTimeMillis() - startTime > 30000) {
-                    throw TimeoutException("获取数据超时")
-                }
-            }
+//            var html: String?
+//            while (TextUtils.isEmpty(javaScriptX.html.also {
+//                    html = it
+//                })) {
+//                delay(16)
+//                if (System.currentTimeMillis() - startTime > 30000) {
+//                    throw TimeoutException("获取数据超时")
+//                }
+//            }
+            val html = musiceApiL.getPlayUrl(htmlUrl)
             val baseUrl = "https://www.hifini.com/"
             val document = Jsoup.parse(html, baseUrl)
             val element = document.select("script")

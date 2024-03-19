@@ -64,24 +64,33 @@ class AppRepository private constructor(private val context: Context) {
      * 得到播放地址
      */
     suspend fun getPlayUrl(mediaID: String, htmlUrl: String, title: String = "", author: String = "", pic: String = ""): Flow<MusicBean> {
-        val javaScriptX = InplJavaScriptX()
-        webView.run {
-            webView.webViewClient = ImplWebViewClient()
-            removeJavascriptInterface("script_ex")
-            addJavascriptInterface(javaScriptX, "script_ex")
-            loadUrl(htmlUrl)
+        cache.get(mediaID)?.let {
+            return flow {
+                WLog.e(this@AppRepository, "拿到缓存: $title")
+                val musicBean = MusicBean(title, author, it, pic)
+                musicBean.requestRealUrl = htmlUrl
+                emit(musicBean)
+            }
         }
+//        val javaScriptX = InplJavaScriptX()
+//        webView.run {
+//            webView.webViewClient = ImplWebViewClient()
+//            removeJavascriptInterface("script_ex")
+//            addJavascriptInterface(javaScriptX, "script_ex")
+//            loadUrl(htmlUrl)
+//        }
         return flow {
             val startTime = System.currentTimeMillis()
-            var html: String?
-            while (TextUtils.isEmpty(javaScriptX.html.also {
-                    html = it
-                })) {
-                delay(16)
-                if (System.currentTimeMillis() - startTime > 30000) {
-                    throw TimeoutException("获取数据超时")
-                }
-            }
+//            var html: String?
+//            while (TextUtils.isEmpty(javaScriptX.html.also {
+//                    html = it
+//                })) {
+//                delay(16)
+//                if (System.currentTimeMillis() - startTime > 30000) {
+//                    throw TimeoutException("获取数据超时")
+//                }
+//            }
+            val html = musiceApiL.getPlayUrl(htmlUrl)
             val baseUrl = "https://www.hifini.com/"
             val document = Jsoup.parse(html, baseUrl)
             val element = document.select("script")
